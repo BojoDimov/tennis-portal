@@ -7,3 +7,5 @@ app.post('/api/tournament/editions', (req, res) => {
   console.log(req.body)
   res.send(JSON.stringify(req.body));
 });
+
+const { Tournaments, TournamentEditionsm, TournamentSchemes } = require('./sequelize.config.js');

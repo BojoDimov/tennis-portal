@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+
 const db = new Sequelize('tennis-portal-db', 'postgres', '12345678', {
   host: 'localhost',
   dialect: 'postgres',
@@ -12,31 +13,53 @@ const db = new Sequelize('tennis-portal-db', 'postgres', '12345678', {
   operatorsAliases: false
 });
 
-const User = db.define('user', {
-  username: Sequelize.STRING,
-  birthday: Sequelize.DATE
+const Tournaments = db.define('Tournaments', {
+  id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+  name: { type: Sequelize.STRING, allowNull: false },
+  info: Sequelize.TEXT
 });
 
-// sequelize.sync()
-//   .then(() => User.create({
-//     username: 'janedoe',
-//     birthday: new Date(1980, 6, 20)
-//   }))
-//   .then(jane => {
-//     console.log(jane.toJSON());
-//   });
-
-const TournamentEdition = db.define('TournamentEdition', {
-  id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
-  tournamentId: { type: Sequelize.INTEGER, allowNull: true },
-  name: Sequelize.STRING,
+const TournamentEditions = db.define('TournamentEditions', {
+  id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+  tournamentId: {
+    type: Sequelize.INTEGER,
+    references: {
+      model: Tournaments,
+      key: 'id'
+    },
+    allowNull: false
+  },
+  name: { type: Sequelize.STRING, allowNull: false },
   info: Sequelize.TEXT,
-  players: Sequelize.INTEGER,
-  registrationStart: Sequelize.DATE,
-  registrationEnd: Sequelize.DATE,
-  preRegistrationStart: { type: Sequelize.DATE, allowNull: true },
-  tournamentDate: Sequelize.DATE,
-  hasGroupPhase: Sequelize.BOOLEAN
+  startDate: Sequelize.DATEONLY,
+  endDate: Sequelize.DATEONLY
 });
 
-TournamentEdition.sync();
+const TournamentSchemes = db.define('TournamentSchemes', {
+  id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
+  tournamentEditionId: {
+    type: Sequelize.INTEGER,
+    references: {
+      model: TournamentEditions,
+      key: 'id'
+    },
+    allowNull: false
+  },
+  name: { type: Sequelize.STRING, allowNull: false },
+  info: Sequelize.TEXT,
+  date: { type: Sequelize.DATEONLY, allowNull: false },
+  singleTeams: { type: Sequelize.BOOLEAN, allowNull: false },
+  maleTeams: { type: Sequelize.BOOLEAN, allowNull: false },
+  femaleTeams: { type: Sequelize.BOOLEAN, allowNull: false },
+  mixedTeams: { type: Sequelize.BOOLEAN, allowNull: false },
+  ageFrom: Sequelize.INTEGER,
+  ageTo: Sequelize.INTEGER,
+  maxPlayerCount: { type: Sequelize.INTEGER, allowNull: false },
+  registrationStart: { type: Sequelize.DATEONLY, allowNull: false },
+  registrationEnd: { type: Sequelize.DATEONLY, allowNull: false },
+  hasGroupPhase: { type: Sequelize.BOOLEAN, allowNull: false },
+  status: Sequelize.INTEGER
+});
+
+db.sync().then(() => process.exit());
+module.exports = { Tournaments, TournamentEditions, TournamentSchemes };
