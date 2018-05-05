@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { post } from '../services/fetch';
 
 export class CreateTournamentEdition extends Component {
   constructor(props) {
@@ -12,51 +13,42 @@ export class CreateTournamentEdition extends Component {
   }
 
   render() {
-    return <div className="margin border">
-      <h4 className="margin">Ново издание</h4>
-      <div className="margin">
+    return <div className="margin">
+      <h2 className="section">Ново издание</h2>
+      <div className="margin input">
         <div>Име</div>
         <input
           type="text"
           value={this.state.name}
           onChange={e => this.setState({ name: e.target.value })} />
       </div>
-      <div className="margin">
+      <div className="margin input">
         <div>Допълнителна иформация</div>
-        <input
-          type="text"
+        <textarea
           value={this.state.info}
           onChange={e => this.setState({ info: e.target.value })} />
       </div>
-      <div className="margin">
+      <div className="margin input">
         <div>Начало на турнира</div>
         <input type="date"
           value={this.state.startDate}
           onChange={e => this.setState({ startDate: e.target.value })} />
       </div>
-      <div className="margin">
+      <div className="margin input">
         <div>Край на турнира</div>
         <input type="date"
           value={this.state.endDate}
           onChange={e => this.setState({ endDate: e.target.value })} />
       </div>
-      <div className="margin">
-        <button onClick={() => this.create()} disabled={!this.validate()}>Готово</button>
+      <div className="margin input">
+        <span className="button" onClick={() => this.create()} disabled={!this.validate()}>Готово</span>
       </div>
     </div>;
   }
 
   create() {
-    let request = new Request('http://localhost:3100/api/tournament/editions', {
-      method: 'POST',
-      body: JSON.stringify(this.state),
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    });
-
-    fetch(request).then(res => console.log(res));
+    return post('/tournaments/editions', this.state)
+      .then(res => console.log(res));
   }
 
   validate() {

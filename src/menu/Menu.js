@@ -7,7 +7,7 @@ export class Menu extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      active: null
+      active: props.defaultState
     };
   }
 
@@ -15,17 +15,20 @@ export class Menu extends Component {
     return <div id='menu'>
       <img src={logo} className="logo" alt="logo" />
       <ul>
-        <li onClick={() => this.setState({ active: '/tournaments' })}
-          className={this.GetActiveClass('/tournaments')}>
-          <Link to="/tournaments">турнири</Link>
+        <li className={this.GetActiveClass('/tournaments')}>
+          <Link to="/tournaments" onClick={() => this.setState({ active: '/tournaments' })}>
+            турнири
+          </Link>
         </li>
-        <li onClick={() => this.setState({ active: '/editions' })}
-          className={this.GetActiveClass('/editions')}>
-          <Link to="/editions">издания</Link>
+        <li className={this.GetActiveClass('/editions')}>
+          <Link to="/editions" onClick={() => this.setState({ active: '/editions' })}>
+            издания
+          </Link>
         </li>
-        <li onClick={() => this.setState({ active: '/schemes' })}
-          className={this.GetActiveClass('/schemes')}>
-          <Link to="/schemes">схеми</Link>
+        <li className={this.GetActiveClass('/schemes')}>
+          <Link to="/schemes" onClick={() => this.setState({ active: '/schemes' })}>
+            схеми
+          </Link>
         </li>
       </ul>
     </div>

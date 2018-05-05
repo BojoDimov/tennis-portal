@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { post } from '../services/fetch';
 
 export class CreateTournamentScheme extends Component {
   constructor(props) {
@@ -22,85 +23,90 @@ export class CreateTournamentScheme extends Component {
   }
 
   render() {
-    return <div className="margin border">
-      <h4 className="margin">Добавяне на схема</h4>
-      <div className="margin">
+    return <div className="margin">
+      <h2 className="section">Добавяне на схема</h2>
+      <div className="margin input">
         <div>Име на схемата</div>
         <input
           type="text"
           value={this.state.name}
           onChange={e => this.setState({ name: e.target.value })} />
       </div>
-      <div className="margin">
+      <div className="margin input">
         <div>Допълнителна информация</div>
-        <input
+        <textarea
           type="text"
           value={this.state.info}
           onChange={e => this.setState({ info: e.target.value })} />
       </div>
-      <div className="margin">
-        <div>Двойки</div>
-        <input type="checkbox"
-          onChange={e => this.setState({ singleTeams: !this.state.singleTeams })} />
+      <div className="margin-left input">
+        <label>
+          <input type="checkbox"
+            onChange={e => this.setState({ singleTeams: !this.state.singleTeams })} />
+          Двойки</label>
       </div>
-      <div className="margin">
-        <div>Мъже</div>
-        <input type="checkbox"
-          onChange={e => this.setState({ maleTeams: !this.state.maleTeams })} />
+      <div className="margin-left input">
+        <label>
+          <input type="checkbox"
+            onChange={e => this.setState({ maleTeams: !this.state.maleTeams })} />
+          Мъже</label>
       </div>
-      <div className="margin">
-        <div>Жени</div>
-        <input type="checkbox"
-          onChange={e => this.setState({ femaleTeams: !this.state.femaleTeams })} />
+      <div className="margin-left input">
+        <label>
+          <input type="checkbox"
+            onChange={e => this.setState({ femaleTeams: !this.state.femaleTeams })} />
+          Жени</label>
       </div>
-      <div className="margin">
-        <div>Смесено</div>
-        <input type="checkbox"
-          onChange={e => this.setState({ mixedTeams: !this.state.mixedTeams })} />
+      <div className="margin-left input">
+        <label>
+          <input type="checkbox"
+            onChange={e => this.setState({ mixedTeams: !this.state.mixedTeams })} />
+          Смесено</label>
       </div>
-      <div className="margin">
+      <div className="margin input">
         <div>Възраст от</div>
         <input
           type="number" min="0"
           value={this.state.ageFrom}
           onChange={e => this.setState({ ageFrom: e.target.value })} />
       </div>
-      <div className="margin">
+      <div className="margin input">
         <div>Възраст до</div>
         <input
           type="number" min="0"
           value={this.state.ageTo}
           onChange={e => this.setState({ ageTo: e.target.value })} />
       </div>
-      <div className="margin">
+      <div className="margin input">
         <div>Брой играчи</div>
         <input
           type="number" min="4" max="128"
           value={this.state.maxPlayerCount}
           onChange={e => this.setState({ maxPlayerCount: e.target.value })} />
       </div>
-      <div className="margin">
+      <div className="margin input">
         <div>Дата на схемата</div>
         <input type="date"
           value={this.state.date}
           onChange={e => this.setState({ date: e.target.value })} />
       </div>
-      <div className="margin">
+      <div className="margin input">
         <div>Начало на регистрациите</div>
         <input type="date"
           value={this.state.registrationStart}
           onChange={e => this.setState({ registrationStart: e.target.value })} />
       </div>
-      <div className="margin">
+      <div className="margin input">
         <div>Последна дата за регистрация</div>
         <input type="date"
           value={this.state.registrationEnd}
           onChange={e => this.setState({ registrationEnd: e.target.value })} />
       </div>
-      <div className="margin">
-        <div>Включване на групова фаза</div>
-        <input type="checkbox"
-          onChange={e => this.setState({ hasGroupPhase: !this.state.hasGroupPhase })} />
+      <div className="margin input">
+        <label>
+          <input type="checkbox"
+            onChange={e => this.setState({ hasGroupPhase: !this.state.hasGroupPhase })} />
+          Включване на групова фаза</label>
       </div>
 
       {/* {this.state.hasGroupPhase ?
@@ -111,23 +117,15 @@ export class CreateTournamentScheme extends Component {
             onChange={e => this.setState({ preRegistrationDate: e.target.value })} />
         </div> : undefined
       } */}
-      <div className="margin">
-        <button onClick={() => this.create()} disabled={!this.validate()}>Готово</button>
+      <div className="margin input">
+        <span className="button" onClick={() => this.create()} disabled={!this.validate()}>Готово</span>
       </div>
     </div>;
   }
 
   create() {
-    let request = new Request('http://localhost:3100/api/tournament/edition/schemes', {
-      method: 'POST',
-      body: JSON.stringify(this.state),
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      }
-    });
-
-    fetch(request).then(res => console.log(res));
+    return post('/tournament/edition/schemes', this.state)
+      .then(res => console.log(res));
   }
 
   validate() {

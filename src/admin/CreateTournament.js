@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { post } from '../services/fetch';
 
 export class CreateTournament extends Component {
 
@@ -11,45 +12,33 @@ export class CreateTournament extends Component {
   }
 
   render() {
-    return <div className="margin border">
-      <h4 className="margin">Нов турнир</h4>
-      <div className="margin">
+    return <div className="margin">
+      <h2 className="section">Нов турнир</h2>
+      <div className="margin input">
         <div>Име</div>
         <input
           type="text"
           value={this.state.name}
           onChange={e => this.setState({ name: e.target.value })} />
       </div>
-      <div className="margin">
+      <div className="margin input">
         <div>Описание</div>
-        <input
-          type="text"
+        <textarea
           value={this.state.info}
           onChange={e => this.setState({ info: e.target.value })} />
       </div>
-      <div className="margin">
-        <button onClick={() => this.create()} disabled={!this.validate()}>Готово</button>
+      <div className="margin input">
+        <span className="button" onClick={() => this.create()} disabled={!this.validate()}>Готово</span>
       </div>
     </div>;
   }
 
   create() {
-    request('http://localhost:3100/api/tournaments', this.state)
+    return post('/tournaments', this.state)
       .then(res => console.log(res));
   }
 
   validate() {
     return true;
   }
-}
-
-function request(url, data) {
-  return fetch(url, {
-    body: JSON.stringify(data), // must match 'Content-Type' header
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    method: 'POST', // *GET, POST, PUT, DELETE, etc.
-    mode: 'cors', // no-cors, cors, *same-origin
-  }).then(response => response.json())
 }
