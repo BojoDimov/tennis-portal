@@ -16,13 +16,13 @@
 
 .input{
   display: block;
-  color: #2C4040;
+  color: #517F65;
 }
 
 .input .button {
   cursor: pointer;
   font-weight: 900;
-  border: 1px solid #2C4040;
+  border: 1px solid #517F65;
   padding: .1em 1em;
   border-radius: 5px;
   display: inline-block;
@@ -33,7 +33,7 @@
 }
 
 .section{
-  color: #2C4040;
+  color: #517F65;
   padding: .5em 0;
-  border-bottom: 1px solid #2C4040;
+  border-bottom: 1px solid #517F65;
 }
