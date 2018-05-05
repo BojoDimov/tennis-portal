@@ -16,35 +16,36 @@ const db = new Sequelize('tennis-portal-db', 'postgres', '12345678', {
 const Tournaments = db.define('Tournaments', {
   id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: Sequelize.STRING, allowNull: false },
-  info: Sequelize.TEXT
+  info: Sequelize.TEXT,
+  status: {
+    type: Sequelize.ENUM,
+    values: ['draft', 'published', 'inactive'],
+    allowNull: false
+  }
 });
 
 const TournamentEditions = db.define('TournamentEditions', {
   id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-  tournamentId: {
-    type: Sequelize.INTEGER,
-    references: {
-      model: Tournaments,
-      key: 'id'
-    },
-    allowNull: false
-  },
   name: { type: Sequelize.STRING, allowNull: false },
   info: Sequelize.TEXT,
   startDate: Sequelize.DATEONLY,
-  endDate: Sequelize.DATEONLY
-});
+  endDate: Sequelize.DATEONLY,
+  status: {
+    type: Sequelize.ENUM,
+    values: ['draft', 'published', 'inactive'],
+    allowNull: false
+  }
+}, {
+    validate: {
+      startDateEndDate() {
+        if (this.startDate > this.endDate)
+          throw new Error("Start date cannot be after end date");
+      }
+    }
+  });
 
 const TournamentSchemes = db.define('TournamentSchemes', {
   id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
-  tournamentEditionId: {
-    type: Sequelize.INTEGER,
-    references: {
-      model: TournamentEditions,
-      key: 'id'
-    },
-    allowNull: false
-  },
   name: { type: Sequelize.STRING, allowNull: false },
   info: Sequelize.TEXT,
   date: { type: Sequelize.DATEONLY, allowNull: false },
@@ -54,12 +55,53 @@ const TournamentSchemes = db.define('TournamentSchemes', {
   mixedTeams: { type: Sequelize.BOOLEAN, allowNull: false },
   ageFrom: Sequelize.INTEGER,
   ageTo: Sequelize.INTEGER,
-  maxPlayerCount: { type: Sequelize.INTEGER, allowNull: false },
+  maxPlayerCount: { type: Sequelize.INTEGER, allowNull: false, validate: { min: 4, max: 128 } },
   registrationStart: { type: Sequelize.DATEONLY, allowNull: false },
   registrationEnd: { type: Sequelize.DATEONLY, allowNull: false },
   hasGroupPhase: { type: Sequelize.BOOLEAN, allowNull: false },
-  status: Sequelize.INTEGER
+  status: {
+    type: Sequelize.ENUM,
+    values: ['draft', 'published', 'inactive'],
+    allowNull: false
+  }
+}, {
+    validate: {
+      mixedSingleTeams() {
+        if (this.singleTeams && this.mixedTeams)
+          return new Error('Cannot have mixed teams when the scheme is for single teams');
+      },
+      ageFromTo() {
+        if (this.ageFrom > this.ageTo)
+          return new Error('Age from must be <= Age to');
+      },
+      registrationStartEnd() {
+        if (this.registrationStart > this.registrationEnd)
+          return new Error('Registration start date cannot be after registration end date');
+      },
+      tournamentDate() {
+        if (this.date < this.registartionStart)
+          return new Error('Tournament start cannot be before registration start date');
+      }
+    }
+  });
+
+Tournaments.hasMany(TournamentEditions, {
+  foreignKey: {
+    name: 'tournamentId',
+    allowNull: false
+  }
+});
+TournamentEditions.hasMany(TournamentSchemes, {
+  foreignKey: {
+    name: 'tournamentEditionId',
+    allowNull: false
+  }
 });
 
 db.sync().then(() => process.exit());
-module.exports = { Tournaments, TournamentEditions, TournamentSchemes };
+module.exports = {
+  Tournaments, TournamentEditions, TournamentSchemes,
+  init: function () {
+    return db.sync().then(() => process.exit);
+  }
+};
