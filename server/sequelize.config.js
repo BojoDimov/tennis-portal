@@ -98,7 +98,6 @@ TournamentEditions.hasMany(TournamentSchemes, {
   }
 });
 
-db.sync().then(() => process.exit());
 module.exports = {
   Tournaments, TournamentEditions, TournamentSchemes,
   init: function () {

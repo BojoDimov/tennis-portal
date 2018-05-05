@@ -1,0 +1,28 @@
+li{
+  text-decoration: none;
+  list-style: none;
+}
+
+.clickable{
+  cursor: pointer;
+}
+
+.margin{
+  margin: 1em;
+}
+
+.border {
+  /* border: 1px solid darkred; */
+}
+
+svg {
+  font-family: 'Roboto', sans-serif;
+}
+
+.input-label{
+  display: block;
+}
+
+.content{
+  margin-left: 200px;
+}
