@@ -10,8 +10,16 @@
   margin-left: 1em;
 }
 
-.content{
+.content {
   margin-left: 200px;
+}
+
+.container {
+  margin: 1em;
+  border: .5px solid lightgrey;
+  display: inline-block;
+  background-color: white;
+  padding:.5em;
 }
 
 .input{
@@ -34,6 +42,6 @@
 
 .section{
   color: #517F65;
-  padding: .5em 0;
+  padding-bottom: .5em;
   border-bottom: 1px solid #517F65;
 }

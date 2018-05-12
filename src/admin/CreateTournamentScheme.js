@@ -23,7 +23,7 @@ export class CreateTournamentScheme extends Component {
   }
 
   render() {
-    return <div className="margin">
+    return <div className="margin container">
       <h2 className="section">Добавяне на схема</h2>
       <div className="margin input">
         <div>Име на схемата</div>
