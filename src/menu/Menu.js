@@ -4,6 +4,13 @@ import './Menu.css';
 import logo from './tennis-logo.svg';
 
 export class Menu extends Component {
+  links = [
+    { path: '/tournaments', name: 'Tурнири' },
+    { path: '/editions', name: 'Издания' },
+    { path: '/schemes', name: 'Схеми' },
+    { path: '/login', name: 'Вход' },
+    {path: '/register', name: 'Рег'}
+  ]
   constructor(props) {
     super(props);
     this.state = {
@@ -11,26 +18,20 @@ export class Menu extends Component {
     };
   }
 
+  getMenuElement(link) {
+    return (
+      <li className={this.GetActiveClass(link.path)}>
+        <Link to={link.path} onClick={() => this.setState({ active: link.path })}>
+          {link.name}
+        </Link>
+      </li>
+    );
+  }
+
   render() {
     return <div id='menu'>
       <img src={logo} className="logo" alt="logo" />
-      <ul>
-        <li className={this.GetActiveClass('/tournaments')}>
-          <Link to="/tournaments" onClick={() => this.setState({ active: '/tournaments' })}>
-            турнири
-          </Link>
-        </li>
-        <li className={this.GetActiveClass('/editions')}>
-          <Link to="/editions" onClick={() => this.setState({ active: '/editions' })}>
-            издания
-          </Link>
-        </li>
-        <li className={this.GetActiveClass('/schemes')}>
-          <Link to="/schemes" onClick={() => this.setState({ active: '/schemes' })}>
-            схеми
-          </Link>
-        </li>
-      </ul>
+      <ul>{this.links.map(link => this.getMenuElement(link))}</ul>
     </div>
   }
 
