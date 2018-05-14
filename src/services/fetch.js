@@ -11,8 +11,8 @@ module.exports = {
       mode: 'cors', // no-cors, cors, *same-origin
     }).then(response => response.json())
   },
-  get: function (path, queryParams) {
-    return fetch(backend + path + '?' + urlEncode(queryParams), {
+  get: function (path) {
+    return fetch(backend + path, {
       method: 'GET',
       mode: 'cors'
     }).then(response => response.json())
