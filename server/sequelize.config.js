@@ -86,12 +86,21 @@ const TournamentSchemes = db.define('TournamentSchemes', {
   });
 
 Tournaments.hasMany(TournamentEditions, {
+  as: 'TournamentEditions',
   foreignKey: {
     name: 'tournamentId',
     allowNull: false
   }
 });
-TournamentEditions.hasMany(TournamentSchemes, {
+
+TournamentEditions.belongsTo(Tournaments, {
+  foreignKey: {
+    name: 'tournamentId',
+    allowNull: false
+  }
+});
+
+TournamentSchemes.belongsTo(TournamentEditions, {
   foreignKey: {
     name: 'tournamentEditionId',
     allowNull: false

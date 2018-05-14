@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { post } from '../services/fetch';
+import { post } from '../../services/fetch';
 
 export class CreateTournament extends Component {
 
@@ -12,7 +12,7 @@ export class CreateTournament extends Component {
   }
 
   render() {
-    return <div className="margin">
+    return <div className="margin container">
       <h2 className="section">Нов турнир</h2>
       <div className="margin input">
         <div>Име</div>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
-import { CreateTournament } from './CreateTournament';
+import { Tournaments } from './tournament/Tournaments';
 import { CreateTournamentEdition } from './CreateTournamentEdition';
 import { CreateTournamentScheme } from './CreateTournamentScheme';
 import { CreateUser } from '../user/CreateUser';
@@ -13,7 +13,7 @@ export class Admin extends Component {
         <Route exact path="/">
           <Redirect to="/tournaments" />
         </Route>
-        <Route path="/tournaments" component={CreateTournament} />
+        <Route path="/tournaments" component={Tournaments} />
         <Route path="/editions" component={CreateTournamentEdition} />
         <Route path="/schemes" component={CreateTournamentScheme} />
         <Route path="/login" component={LoginUser} />

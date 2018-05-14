@@ -13,7 +13,7 @@ export class CreateTournamentEdition extends Component {
   }
 
   render() {
-    return <div className="margin">
+    return <div className="margin container">
       <h2 className="section">Ново издание</h2>
       <div className="margin input">
         <div>Име</div>

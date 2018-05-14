@@ -15,12 +15,11 @@ app.post('/api/test', (req, res) => {
   res.send(JSON.stringify(req.body));
 });
 
-
 app.post('/api/tournaments', (req, res) => {
   let model = req.body;
   model.status = 'draft';
-  Tournaments.create(req.body);
-  res.send(null);
+  let tournament = Tournaments.create(model)
+    .then(e => res.json(e));
 });
 
 app.post('/api/tournament/editions', (req, res) => {
@@ -37,4 +36,27 @@ app.post('/api/tournament/edition/schemes', (req, res) => {
   model.status = 'draft';
   TournamentSchemes.create(model);
   res.send(null);
+});
+
+app.get('/api/tournaments', (req, res) => {
+  Tournaments
+    .findAll()
+    .then(tournaments => res.send(tournaments));
+});
+
+app.get('/api/editions', (req, res) => {
+  TournamentEditions
+    .findAll({
+      include: [
+        { model: Tournaments, required: true }
+      ]
+    })
+    .then(editions => res.send(editions));
+});
+
+app.get('/api/schemes', (req, res) => {
+  TournamentSchemes
+    .findAll()
+    .map(scheme => scheme)
+    .then(schemes => res.send(schemes));
 });

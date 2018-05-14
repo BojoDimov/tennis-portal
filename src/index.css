@@ -5,3 +5,8 @@ body {
   height: 100%;
   background-color: whitesmoke;
 }
+
+a {
+  text-decoration: none;
+  color: inherit;
+}

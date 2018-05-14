@@ -9,7 +9,7 @@ export class Menu extends Component {
     { path: '/editions', name: 'Издания' },
     { path: '/schemes', name: 'Схеми' },
     { path: '/login', name: 'Вход' },
-    {path: '/register', name: 'Рег'}
+    { path: '/register', name: 'Рег' }
   ]
   constructor(props) {
     super(props);
@@ -20,7 +20,7 @@ export class Menu extends Component {
 
   getMenuElement(link) {
     return (
-      <li className={this.GetActiveClass(link.path)}>
+      <li key={link.path} className={this.GetActiveClass(link.path)}>
         <Link to={link.path} onClick={() => this.setState({ active: link.path })}>
           {link.name}
         </Link>
