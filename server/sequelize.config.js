@@ -44,6 +44,22 @@ const TournamentEditions = db.define('TournamentEditions', {
     }
   });
 
+const Users = db.define('Users', {
+  id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
+  username: { type: Sequelize.STRING, allowNull: false },
+  email: { type: Sequelize.STRING, allowNull: false },
+  passwordHash: { type: Sequelize.STRING(40), allowNull: false },
+  passwordSalt: { type: Sequelize.STRING(16), allowNull: false },
+  fullname: { type: Sequelize.STRING, allowNull: false },
+  age: { type: Sequelize.INTEGER, allowNull: false },
+  telephone: Sequelize.STRING,
+  gender: {
+    type: Sequelize.ENUM,
+    allowNull: false,
+    values: ['male', 'female']
+  }
+});
+
 const TournamentSchemes = db.define('TournamentSchemes', {
   id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
   name: { type: Sequelize.STRING, allowNull: false },
@@ -107,8 +123,10 @@ TournamentSchemes.belongsTo(TournamentEditions, {
   }
 });
 
+
 module.exports = {
   Tournaments, TournamentEditions, TournamentSchemes,
+  Users,
   init: function () {
     return db.sync().then(() => process.exit);
   }

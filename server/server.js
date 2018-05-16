@@ -3,7 +3,8 @@ let app = express();
 let cors = require('cors');
 
 //let { Tournaments, TournamentEditions, TournamentSchemes } = require('./sequelize.config');
-let Tournaments = require('./controllers/tournament');
+let Tournaments = require('./controllers/tournaments');
+let Users = require('./controllers/users');
 
 app.use(cors());
 app.use(express.json());
@@ -11,6 +12,7 @@ app.use(express.json());
 app.listen(3100, () => console.log('Server listening...'));
 
 Tournaments.init(app);
+Users.init(app);
 
 // app.post('/api/tournament/editions', (req, res) => {
 //   let model = req.body;
