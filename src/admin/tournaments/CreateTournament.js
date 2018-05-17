@@ -12,7 +12,7 @@ export class CreateTournament extends Component {
   }
 
   render() {
-    return <div className="margin container">
+    return <div className="margin container-fluid">
       <h2 className="section">Нов турнир</h2>
       <div className="margin input">
         <div>Име</div>

@@ -7,14 +7,12 @@ export class Menu extends Component {
   links = [
     { path: '/tournaments', name: 'Tурнири' },
     { path: '/editions', name: 'Издания' },
-    { path: '/schemes', name: 'Схеми' },
-    { path: '/login', name: 'Вход' },
-    { path: '/register', name: 'Рег' }
+    { path: '/schemes', name: 'Схеми' }
   ]
   constructor(props) {
     super(props);
     this.state = {
-      active: props.defaultState
+      active: props.defaultRoute
     };
   }
 
@@ -29,7 +27,7 @@ export class Menu extends Component {
   }
 
   render() {
-    return <div id='menu'>
+    return <div id="menu" className="col-sm-1">
       <img src={logo} className="logo" alt="logo" />
       <ul>{this.links.map(link => this.getMenuElement(link))}</ul>
     </div>

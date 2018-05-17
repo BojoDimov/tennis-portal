@@ -4,10 +4,10 @@ import '../app/App.css';
 
 export const ItemList = ({ match, items, name }) => {
   return (
-    <div className="margin container">
+    <div className="margin container-fluid">
       <h2 className="marign section">{name}
         <Link to={`${match.path}/create`}>
-          <span className="margin-left button small">{'+'}</span>
+          <span className="button small"> добавяне</span>
         </Link>
       </h2>
       {items.map(item => <ItemView match={match} key={item.id} item={item} />)}
@@ -19,7 +19,12 @@ export const ItemView = ({ match, item }) => {
   return (
     <Link to={`${match.path}/view/${item.id}`}>
       <div className="list-item">
-        <div><span className="headline">{item.name}</span> <Status status={item.status} /></div>
+        <div><span className="headline">{item.name}</span> <Status status={item.status} />
+          {/* <span className="small">
+            {item.status === 'draft' ? <span className="button ">промяна</span> : null}
+            {item.status === 'draft' ? <span className="button ">публикуване</span> : null}
+          </span> */}
+        </div>
         <div className="list-item-info">{item.info}</div>
       </div>
     </Link>

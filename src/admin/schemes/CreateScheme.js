@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { post } from '../services/fetch';
+import { post } from '../../services/fetch';
 
-export class CreateTournamentScheme extends Component {
+export class CreateScheme extends Component {
   constructor(props) {
     super(props);
 
@@ -23,7 +23,7 @@ export class CreateTournamentScheme extends Component {
   }
 
   render() {
-    return <div className="margin container">
+    return <div className="margin container-fluid">
       <h2 className="section">Добавяне на схема</h2>
       <div className="margin input">
         <div>Име на схемата</div>
@@ -124,8 +124,8 @@ export class CreateTournamentScheme extends Component {
   }
 
   create() {
-    return post('/tournament/edition/schemes', this.state)
-      .then(res => console.log(res));
+    // return post('/tournament/edition/schemes', this.state)
+    //   .then(res => console.log(res));
   }
 
   validate() {

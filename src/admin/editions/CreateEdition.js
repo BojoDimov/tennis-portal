@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { post } from '../services/fetch';
+import { post } from '../../services/fetch';
 
-export class CreateTournamentEdition extends Component {
+export class CreateEdition extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -13,7 +13,7 @@ export class CreateTournamentEdition extends Component {
   }
 
   render() {
-    return <div className="margin container">
+    return <div className="margin container-fluid">
       <h2 className="section">Ново издание</h2>
       <div className="margin input">
         <div>Име</div>
@@ -47,8 +47,8 @@ export class CreateTournamentEdition extends Component {
   }
 
   create() {
-    return post('/tournaments/editions', this.state)
-      .then(res => console.log(res));
+    // return post('/tournaments/editions', this.state)
+    //   .then(res => console.log(res));
   }
 
   validate() {

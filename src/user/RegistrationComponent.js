@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-export class CreateUser extends Component {
+export class RegistrationComponent extends Component {
   constructor(props) {
     super(props);
 
@@ -23,7 +23,7 @@ export class CreateUser extends Component {
 
   render() {
     return (
-      <div className="margin container">
+      <div className="margin container-fluid">
         <h2 className="section">Създаване на акаунт</h2>
         <form>
           <div>

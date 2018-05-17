@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 
-export class LoginUser extends Component {
+export class LoginComponent extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -11,7 +11,7 @@ export class LoginUser extends Component {
   }
   render() {
     return (
-      <div className="margin container">
+      <div className="margin container-fluid">
         <h2 className="section">Вход на потребител</h2>
         <form>
           <div className="margin input">
@@ -25,7 +25,7 @@ export class LoginUser extends Component {
               onChange={e => this.setState({ password: e.target.value })} />
           </div>
           <div className="input">
-            <Link to="/register">Регистрация</Link>
+            <Link to="/registration">Регистрация</Link>
             <Link to="/user/reset">Забравена парола</Link>
           </div>
           <div className="margin input">

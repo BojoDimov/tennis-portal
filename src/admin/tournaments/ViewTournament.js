@@ -26,12 +26,12 @@ export class ViewTournament extends Component {
     else
       return (
         <Fragment>
-          <div className="margin container">
+          <div className="margin container-fluid">
             <h2 className="section"><span>{this.state.tournament.name}</span> <Status status={this.state.tournament.status} /></h2>
             <p>{this.state.tournament.info}</p>
           </div>
           <ItemList items={this.state.editions} name="Издания" match={{ path: '/editions' }} />
-          <div className="margin container">
+          <div className="margin container-fluid">
             <h2 className="section"><span>Ранглиста</span></h2>
           </div>
         </Fragment>

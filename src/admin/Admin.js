@@ -1,24 +1,26 @@
 import React, { Component } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
-import { Tournaments } from './tournament/Tournaments';
-import { CreateTournamentEdition } from './CreateTournamentEdition';
-import { CreateTournamentScheme } from './CreateTournamentScheme';
-import { CreateUser } from '../user/CreateUser';
-import { LoginUser } from '../user/LoginUser';
+import { Menu } from './menu/Menu'
+import { Tournaments } from './tournaments/Tournaments';
+import { Schemes } from './schemes/Schemes';
+import { Editions } from './editions/Editions';
 
 export class Admin extends Component {
+  defaultRoute = '/tournaments';
+
   render() {
-    return <div className="content">
-      <Switch>
-        <Route exact path="/">
-          <Redirect to="/tournaments" />
-        </Route>
-        <Route path="/tournaments" component={Tournaments} />
-        <Route path="/editions" component={CreateTournamentEdition} />
-        <Route path="/schemes" component={CreateTournamentScheme} />
-        <Route path="/login" component={LoginUser} />
-        <Route path="/register" component={CreateUser} />
-      </Switch>
-    </div>;
+    return <div>
+      <Menu defaultRoute={this.defaultRoute} />
+      <div className="content">
+        <Switch>
+          <Route exact path="/">
+            <Redirect to={this.defaultRoute} />
+          </Route>
+          <Route path="/tournaments" component={Tournaments} />
+          <Route path="/schemes" component={Schemes} />
+          <Route path="/editions" component={Editions} />
+        </Switch>
+      </div>
+    </div >;
   }
 }
