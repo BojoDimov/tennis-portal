@@ -27,10 +27,15 @@ const createTournament = (req, res) => {
     .then(e => res.json(e));
 };
 
+const editTournament = (req, res) => {
+
+};
+
 module.exports = {
   init: (app) => {
     app.get('/api/tournaments', getAll);
     app.get('/api/tournaments/:id', getTournament);
     app.post('/api/tournaments', createTournament);
+    app.post('/api/tournaments/edit/:id', editTournament);
   }
 };

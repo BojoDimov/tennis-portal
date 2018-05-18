@@ -116,6 +116,14 @@ TournamentEditions.belongsTo(Tournaments, {
   }
 });
 
+TournamentEditions.hasMany(TournamentSchemes, {
+  as: 'TournamentSchemes',
+  foreignKey: {
+    name: 'tournamentEditionId',
+    allowNull: false
+  }
+});
+
 TournamentSchemes.belongsTo(TournamentEditions, {
   foreignKey: {
     name: 'tournamentEditionId',

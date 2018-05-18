@@ -10,8 +10,20 @@
   margin-left: 1em;
 }
 
+.margin-top {
+  margin-top: 1.3em;
+}
+
+.spacing {
+  margin-left: .3em;
+}
+
 .content {
   margin-left: 10%;
+}
+
+.color {
+color: #517F65;
 }
 
 .container-fluid {
@@ -51,6 +63,25 @@
   color: #517F65;
   padding-bottom: .5em;
   border-bottom: 1px solid #517F65;
+}
+
+.card {
+  color: #517F65;
+  margin-top: .3em;
+  font-size: 16px;
+  padding-left: 1em;
+}
+
+.card-heading{
+  color: #517F65;
+  font-weight: 700;
+  display: inline-block;
+  width: 8em;
+}
+
+.card-link {
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 .list-item {

@@ -9,18 +9,20 @@ export class Admin extends Component {
   defaultRoute = '/tournaments';
 
   render() {
-    return <div>
-      <Menu defaultRoute={this.defaultRoute} />
-      <div className="content">
-        <Switch>
-          <Route exact path="/">
-            <Redirect to={this.defaultRoute} />
-          </Route>
-          <Route path="/tournaments" component={Tournaments} />
-          <Route path="/schemes" component={Schemes} />
-          <Route path="/editions" component={Editions} />
-        </Switch>
-      </div>
-    </div >;
+    return (
+      <div>
+        <Menu defaultRoute={this.defaultRoute} />
+        <div className="content">
+          <Switch>
+            <Route exact path="/">
+              <Redirect to={this.defaultRoute} />
+            </Route>
+            <Route path="/tournaments" component={Tournaments} timestamp={new Date().toString()} />
+            <Route path="/schemes" component={Schemes} />
+            <Route path="/editions" component={Editions} />
+          </Switch>
+        </div>
+      </div >
+    );
   }
 }

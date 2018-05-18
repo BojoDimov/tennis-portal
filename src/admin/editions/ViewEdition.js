@@ -13,12 +13,12 @@ export class ViewEdition extends Component {
     };
   }
   componentDidMount() {
-    // get(`/editions/${this.props.match.params.id}`)
-    //   .then(res => {
-    //     console.log(res);
-    //     res.loading = false;
-    //     this.setState(res);
-    //   });
+    get(`/editions/${this.props.match.params.id}`)
+      .then(res => {
+        console.log(res);
+        res.loading = false;
+        this.setState(res);
+      });
   }
 
   render() {

@@ -17,8 +17,8 @@ export class Schemes extends Component {
   }
 
   componentDidMount() {
-    // get('/schemes')
-    //   .then(schemes => this.setState({ schemes: schemes }));
+    get('/schemes')
+      .then(schemes => this.setState({ schemes: schemes }));
   }
 
   render() {

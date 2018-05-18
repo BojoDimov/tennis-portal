@@ -17,8 +17,8 @@ export class Editions extends Component {
   }
 
   componentDidMount() {
-    // get('/editions')
-    //   .then(editions => this.setState({ editions: editions }));
+    get('/editions')
+      .then(editions => this.setState({ editions: editions }));
   }
 
   render() {

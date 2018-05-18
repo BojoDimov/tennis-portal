@@ -15,9 +15,17 @@ export class Tournaments extends Component {
     };
   }
 
-  componentDidMount() {
-    get('/tournaments')
+  getData() {
+    return get('/tournaments')
       .then(tournaments => this.setState({ tournaments: tournaments }));
+  }
+
+  componentDidUpdate() {
+    return this.getData();
+  }
+
+  componentDidMount() {
+    return this.getData();
   }
 
   render() {

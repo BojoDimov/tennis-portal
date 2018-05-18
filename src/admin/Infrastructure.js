@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Route } from 'react-router-dom';
 import '../app/App.css';
 
 export const ItemList = ({ match, items, name }) => {
@@ -10,6 +10,7 @@ export const ItemList = ({ match, items, name }) => {
           <span className="button small"> добавяне</span>
         </Link>
       </h2>
+      {items.length == 0 ? <i className="list-item-info">Няма намерени резултати</i> : null}
       {items.map(item => <ItemView match={match} key={item.id} item={item} />)}
     </div>
   )
@@ -41,3 +42,26 @@ export const Status = ({ status }) => {
     <span className={'status-' + status}>{statusNames[status]}</span>
   );
 };
+
+export class ActionButton extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <Route render={({ history }) => {
+        return (
+          <div className={this.props.className}>
+            <span className="button" onClick={() => this.click(history)}>{this.props.children}</span>
+          </div>
+        );
+      }} />
+    );
+  }
+
+  click(history) {
+    this.props.onClick()
+      .then(() => history.push(this.props.onSuccess));
+  }
+}
