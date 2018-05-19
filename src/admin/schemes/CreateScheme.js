@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ActionButton } from '../Infrastructure';
+import { ActionButton, Select } from '../Infrastructure';
 import { post } from '../../services/fetch';
 
 export class CreateScheme extends Component {
@@ -9,18 +9,34 @@ export class CreateScheme extends Component {
     this.state = {
       name: '',
       info: '',
-      date: null,
+      tournamentEditionId: 0,
+      date: undefined,
       singleTeams: true,
       maleTeams: false,
       femaleTeams: false,
       mixedTeams: false,
-      ageFrom: null,
-      ageTo: null,
+      ageFrom: undefined,
+      ageTo: undefined,
       maxPlayerCount: 32,
-      registrationStart: null,
-      registrationEnd: null,
+      registrationStart: undefined,
+      registrationEnd: undefined,
       hasGroupPhase: false,
+      errors: {}
     };
+  }
+
+  create() {
+    this.setState({ errors: {} });
+    return post('/schemes', this.state)
+      .then(({ id }) => {
+        this.setState({ id: id });
+        this.props.onChange();
+      })
+      .catch(err => {
+        console.log(err);
+        this.setState({ errors: err });
+        throw err;
+      });
   }
 
   render() {
@@ -32,6 +48,7 @@ export class CreateScheme extends Component {
           type="text"
           value={this.state.name}
           onChange={e => this.setState({ name: e.target.value })} />
+        <div className="error">{this.state.errors.name ? '*Задължително поле' : null}</div>
       </div>
       <div className="margin input">
         <div>Допълнителна информация</div>
@@ -39,6 +56,11 @@ export class CreateScheme extends Component {
           type="text"
           value={this.state.info}
           onChange={e => this.setState({ info: e.target.value })} />
+      </div>
+      <div className="margin input">
+        <div>Издание</div>
+        <Select url="/editions" onChange={id => this.setState({ tournamentEditionId: id })} />
+        <div className="error">{this.state.errors.tournamentEditionId ? '*Задължително поле' : null}</div>
       </div>
       <div className="margin-left input">
         <label>
@@ -63,20 +85,24 @@ export class CreateScheme extends Component {
           <input type="checkbox"
             onChange={e => this.setState({ mixedTeams: !this.state.mixedTeams })} />
           Смесено</label>
+        <div className="error">{this.state.errors.mixedSingleTeams ? '*Схемата е за единични отбори' : null}</div>
+        <div className="error">{this.state.errors.schemeType ? '*Поне едно от "Мъже", "Жени", "Смесено" трябва да бъде избрано' : null}</div>
       </div>
       <div className="margin input">
         <div>Възраст от</div>
         <input
           type="number" min="0"
-          value={this.state.ageFrom}
           onChange={e => this.setState({ ageFrom: e.target.value })} />
+        <div className="error">{this.state.errors.ageFromTo ? '*Неправилен интервал' : null}</div>
+        <div className="error">{this.state.errors.ageFrom ? '*Невалидна стойност' : null}</div>
       </div>
       <div className="margin input">
         <div>Възраст до</div>
         <input
           type="number" min="0"
-          value={this.state.ageTo}
           onChange={e => this.setState({ ageTo: e.target.value })} />
+        <div className="error">{this.state.errors.ageFromTo ? '*Неправилен интервал' : null}</div>
+        <div className="error">{this.state.errors.ageTo ? '*Невалидна стойност' : null}</div>
       </div>
       <div className="margin input">
         <div>Брой играчи</div>
@@ -84,24 +110,28 @@ export class CreateScheme extends Component {
           type="number" min="4" max="128"
           value={this.state.maxPlayerCount}
           onChange={e => this.setState({ maxPlayerCount: e.target.value })} />
+        <div className="error">{this.state.errors.maxPlayerCount ? '*Невалидна стойност' : null}</div>
       </div>
       <div className="margin input">
         <div>Дата на схемата</div>
         <input type="date"
-          value={this.state.date}
           onChange={e => this.setState({ date: e.target.value })} />
+        <div className="error">{this.state.errors.tournamentDate ? '*Датата е преди дата за регистрация' : null}</div>
+        <div className="error">{this.state.errors.date ? '*Задължително поле' : null}</div>
       </div>
       <div className="margin input">
         <div>Начало на регистрациите</div>
         <input type="date"
-          value={this.state.registrationStart}
           onChange={e => this.setState({ registrationStart: e.target.value })} />
+        <div className="error">{this.state.errors.registrationStartEnd ? '*Неправилен интервал' : null}</div>
+        <div className="error">{this.state.errors.registrationStart ? '*Задължително поле' : null}</div>
       </div>
       <div className="margin input">
         <div>Последна дата за регистрация</div>
         <input type="date"
-          value={this.state.registrationEnd}
           onChange={e => this.setState({ registrationEnd: e.target.value })} />
+        <div className="error">{this.state.errors.registrationStartEnd ? '*Неправилен интервал' : null}</div>
+        <div className="error">{this.state.errors.registrationEnd ? '*Задължително поле' : null}</div>
       </div>
       <div className="margin input">
         <label>
@@ -110,17 +140,8 @@ export class CreateScheme extends Component {
           Включване на групова фаза</label>
       </div>
       <ActionButton className="margin input"
-        onSuccess='/schemes'
+        onSuccess={`/schemes/view/${this.state.id}`}
         onClick={() => this.create()}>Готово</ActionButton>
     </div>;
-  }
-
-  create() {
-    return post('/tournament/edition/schemes', this.state)
-      .then(res => console.log(res));
-  }
-
-  validate() {
-    return true;
   }
 }

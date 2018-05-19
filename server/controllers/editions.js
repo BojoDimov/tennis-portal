@@ -37,11 +37,30 @@ const editEdition = (req, res) => {
 
 };
 
+const publish = (req, res) => {
+  setStatus(req.params.id, 'published')
+    .then(() => res.json({}));
+}
+
+const draft = (req, res) => {
+  setStatus(req.params.id, 'draft')
+    .then(() => res.json({}));
+}
+
+function setStatus(id, status) {
+  return TournamentEditions
+    .findById(id)
+    .then(edition => edition.update({ status: status }));
+}
+
 module.exports = {
   init: (app) => {
     app.get('/api/editions', getAll);
     app.get('/api/editions/:id', getEditions);
     app.post('/api/editions', createEdition);
     app.post('/api/editions/edit/:id', editEdition);
+    app.get('/api/editions/:id/publish', publish);
+    app.get('/api/editions/:id/draft', draft);
   }
 };
+

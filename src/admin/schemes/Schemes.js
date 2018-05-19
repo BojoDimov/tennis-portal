@@ -17,7 +17,11 @@ export class Schemes extends Component {
   }
 
   componentDidMount() {
-    get('/schemes')
+    this.getData();
+  }
+
+  getData() {
+    return get('/schemes')
       .then(schemes => this.setState({ schemes: schemes }));
   }
 
@@ -26,7 +30,11 @@ export class Schemes extends Component {
       <Fragment>
         <Switch>
           <Route path={`${this.props.match.path}/view/:id`} component={ViewScheme} />
-          <Route path={`${this.props.match.path}/create`} component={CreateScheme} />
+          <Route path={`${this.props.match.path}/create`} render={() => {
+            return (
+              <CreateScheme onChange={() => this.getData()} />
+            );
+          }} />
           <Route path={`${this.props.match.path}/edit/:id`} component={EditScheme} />
           <Route exact path={`${this.props.match.path}`} render={() => {
             return (

@@ -12,12 +12,27 @@ export class ViewTournament extends Component {
       loading: true
     };
   }
+
   componentDidMount() {
-    get(`/tournaments/${this.props.match.params.id}`)
+    return this.getData();
+  }
+
+  getData() {
+    return get(`/tournaments/${this.props.match.params.id}`)
       .then(res => {
         res.loading = false;
         this.setState(res);
       });
+  }
+
+  publish() {
+    get(`/tournaments/${this.state.tournament.id}/publish`)
+      .then(() => this.getData());
+  }
+
+  draft() {
+    get(`/tournaments/${this.state.tournament.id}/draft`)
+      .then(() => this.getData());
   }
 
   render() {
@@ -47,9 +62,8 @@ export class ViewTournament extends Component {
   buttons() {
     return (
       <div className="color margin-top">
-        {this.state.tournament.status === 'draft' ? <Link to={`/tournaments/edit/${this.state.tournament.id}`}><span className="button">Промяна</span></Link> : null}
-        {this.state.tournament.status === 'draft' ? <span className="button spacing" onClick={() => this.publish()}>Публикуване</span> : null}
-        {this.state.tournament.status === 'published' ? <span className="button spacing" onClick={() => this.draft()}>Връщане в чернова</span> : null}
+        {this.state.tournament.status === 'draft' ? <span className="button" onClick={() => this.publish()}>Публикуване</span> : null}
+        {this.state.tournament.status === 'draft' ? <Link to={`/tournaments/edit/${this.state.tournament.id}`}><span className="button spacing">Промяна</span></Link> : null}
       </div>
     );
   }

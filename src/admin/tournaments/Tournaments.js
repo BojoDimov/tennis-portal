@@ -32,7 +32,7 @@ export class Tournaments extends Component {
         <Switch>
           <Route path={`${this.props.match.path}/create`} render={() => {
             return (
-              <CreateTournament tournamentsHandle={this.updateTournamentsHandle} />
+              <CreateTournament onChange={() => this.getData()} />
             );
           }} />
           <Route path={`${this.props.match.path}/view/:id`} component={ViewTournament} />

@@ -3,7 +3,7 @@ const Sequelize = require('sequelize');
 const db = new Sequelize('tennis-portal-db', 'postgres', '12345678', {
   host: 'localhost',
   dialect: 'postgres',
-
+  logging: false,
   pool: {
     max: 5,
     min: 0,
@@ -75,7 +75,13 @@ const Users = db.define('Users', {
   passwordHash: { type: Sequelize.STRING(40), allowNull: false },
   passwordSalt: { type: Sequelize.STRING(16), allowNull: false },
   fullname: { type: Sequelize.STRING, allowNull: false },
-  age: { type: Sequelize.INTEGER, allowNull: false },
+  age: {
+    type: Sequelize.INTEGER,
+    allowNull: false,
+    validate: {
+      min: 0
+    }
+  },
   telephone: Sequelize.STRING,
   gender: {
     type: Sequelize.ENUM,
@@ -99,8 +105,18 @@ const TournamentSchemes = db.define('TournamentSchemes', {
   maleTeams: { type: Sequelize.BOOLEAN, allowNull: false },
   femaleTeams: { type: Sequelize.BOOLEAN, allowNull: false },
   mixedTeams: { type: Sequelize.BOOLEAN, allowNull: false },
-  ageFrom: Sequelize.INTEGER,
-  ageTo: Sequelize.INTEGER,
+  ageFrom: {
+    type: Sequelize.INTEGER,
+    validate: {
+      min: 0
+    }
+  },
+  ageTo: {
+    type: Sequelize.INTEGER,
+    validate: {
+      min: 0
+    }
+  },
   maxPlayerCount: { type: Sequelize.INTEGER, allowNull: false, validate: { min: 4, max: 128 } },
   registrationStart: { type: Sequelize.DATEONLY, allowNull: false },
   registrationEnd: { type: Sequelize.DATEONLY, allowNull: false },
@@ -114,19 +130,23 @@ const TournamentSchemes = db.define('TournamentSchemes', {
     validate: {
       mixedSingleTeams() {
         if (this.singleTeams && this.mixedTeams)
-          return new Error('Cannot have mixed teams when the scheme is for single teams');
+          throw new Error('Cannot have mixed teams when the scheme is for single teams');
       },
       ageFromTo() {
         if (this.ageFrom > this.ageTo)
-          return new Error('Age from must be <= Age to');
+          throw new Error('Age from must be <= Age to');
       },
       registrationStartEnd() {
         if (this.registrationStart > this.registrationEnd)
-          return new Error('Registration start date cannot be after registration end date');
+          throw new Error('Registration start date cannot be after registration end date');
       },
       tournamentDate() {
-        if (this.date < this.registartionStart)
-          return new Error('Tournament start cannot be before registration start date');
+        if (this.date < this.registrationStart)
+          throw new Error('Tournament start cannot be before registration start date');
+      },
+      schemeType() {
+        if (!this.maleTeams && !this.femaleTeams && !this.mixedTeams)
+          throw new Error('');
       }
     }
   });

@@ -9,8 +9,19 @@ export class CreateTournament extends Component {
     this.state = {
       name: '',
       info: '',
-      id: 0
+      errors: {}
     };
+  }
+  create() {
+    return post('/tournaments', this.state)
+      .then(({ id }) => {
+        this.setState({ id: id });
+        this.props.onChange()
+      })
+      .catch(err => {
+        this.setState({ errors: err });
+        throw err;
+      });
   }
 
   render() {
@@ -23,6 +34,7 @@ export class CreateTournament extends Component {
             type="text"
             value={this.state.name}
             onChange={e => this.setState({ name: e.target.value })} />
+          <div className="error">{this.state.errors.name ? '*Задължително поле' : null}</div>
         </div>
         <div className="margin input">
           <div>Описание</div>
@@ -35,17 +47,5 @@ export class CreateTournament extends Component {
           onClick={() => this.create()}>Готово</ActionButton>
       </div>
     );
-  }
-
-  create() {
-    return post('/tournaments', this.state)
-      .then(({ id }) => {
-        this.setState({ id: id });
-        this.props.tournamentsHandle()
-      });
-  }
-
-  validate() {
-    return true;
   }
 }

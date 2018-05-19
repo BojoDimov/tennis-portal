@@ -74,9 +74,8 @@ export class ViewEdition extends Component {
   buttons() {
     return (
       <div className="color margin-top">
-        {this.state.edition.status === 'draft' ? <Link to={`/editions/edit/${this.state.edition.id}`}><span className="button">Промяна</span></Link> : null}
-        {this.state.edition.status === 'draft' ? <span className="button spacing" onClick={() => this.publish()}>Публикуване</span> : null}
-        {this.state.edition.status === 'published' ? <span className="button spacing" onClick={() => this.draft()}>Връщане в чернова</span> : null}
+        {this.state.edition.status === 'draft' ? <span className="button" onClick={() => this.publish()}>Публикуване</span> : null}
+        {this.state.edition.status === 'draft' ? <Link to={`/editions/edit/${this.state.edition.id}`}><span className="button spacing">Промяна</span></Link> : null}
       </div>
     );
   }

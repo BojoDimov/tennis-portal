@@ -28,11 +28,12 @@ const getScheme = (req, res) => {
     });
 };
 
-const createScheme = (req, res) => {
+const createScheme = (req, res, next) => {
   let model = req.body;
   model.status = 'draft';
-  let tournament = Tournaments.create(model)
-    .then(e => res.json(e));
+  let tournament = TournamentSchemes.create(model)
+    .then(e => res.json(e))
+    .catch(err => next(err, req, res, null));
 };
 
 const editScheme = (req, res) => {
@@ -49,39 +50,19 @@ const draft = (req, res) => {
     .then(() => res.json({}));
 }
 
+function setStatus(id, status) {
+  return TournamentSchemes
+    .findById(id)
+    .then(edition => edition.update({ status: status }));
+}
+
 module.exports = {
   init: (app) => {
     app.get('/api/schemes', getAll);
     app.get('/api/schemes/:id', getScheme);
     app.post('/api/schemes', createScheme);
     app.post('/api/schemes/edit/:id', editScheme);
-    app.get('/api/schemes/:id/publish', publish)
-    app.get('/api/schemes/:id/draft', draft)
+    app.get('/api/schemes/:id/publish', publish);
+    app.get('/api/schemes/:id/draft', draft);
   }
 };
-
-function setStatus(id, status) {
-  return TournamentSchemes
-    .findById(id, {
-      include: [
-        {
-          model: TournamentEditions,
-          required: true,
-          include: [
-            { model: Tournaments, required: true }
-          ]
-        }
-      ]
-    })
-    .then(scheme => {
-      return scheme.update({
-        status: status,
-        TournamentEdition: {
-          status: status,
-          Tournament: {
-            status: status
-          }
-        }
-      });
-    });
-}

@@ -31,11 +31,29 @@ const editTournament = (req, res) => {
 
 };
 
+const publish = (req, res) => {
+  setStatus(req.params.id, 'published')
+    .then(() => res.json({}));
+}
+
+const draft = (req, res) => {
+  setStatus(req.params.id, 'draft')
+    .then(() => res.json({}));
+}
+
+function setStatus(id, status) {
+  return Tournaments
+    .findById(id)
+    .then(edition => edition.update({ status: status }));
+}
+
 module.exports = {
   init: (app) => {
     app.get('/api/tournaments', getAll);
     app.get('/api/tournaments/:id', getTournament);
     app.post('/api/tournaments', createTournament);
     app.post('/api/tournaments/edit/:id', editTournament);
+    app.get('/api/tournaments/:id/publish', publish);
+    app.get('/api/tournaments/:id/draft', draft);
   }
 };

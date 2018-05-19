@@ -100,7 +100,7 @@ export class ViewScheme extends Component {
       limitations.push('женски отбори');
     if (this.state.scheme.mixedTeams)
       limitations.push('смесени двойки');
-    if (this.state.scheme.ageFrom & this.state.scheme.ageTo)
+    if (this.state.scheme.ageFrom && this.state.scheme.ageTo)
       limitations.push('от ' + this.state.scheme.ageFrom + ' до ' + this.state.scheme.ageTo + ' години');
     else if (this.state.scheme.ageFrom)
       limitations.push('от ' + this.state.scheme.ageFrom + ' години');
@@ -113,10 +113,9 @@ export class ViewScheme extends Component {
   buttons() {
     return (
       <div className="color margin-top">
-        {this.state.scheme.status === 'draft' ? <Link to={`/schemes/edit/${this.state.scheme.id}`}><span className="button">Промяна</span></Link> : null}
-        {this.state.scheme.status === 'draft' ? <span className="button spacing" onClick={() => this.publish()}>Публикуване</span> : null}
+        {this.state.scheme.status === 'draft' ? <span className="button" onClick={() => this.publish()}>Публикуване</span> : null}
+        {this.state.scheme.status === 'draft' ? <Link to={`/schemes/edit/${this.state.scheme.id}`}><span className="button spacing">Промяна</span></Link> : null}
         {this.state.scheme.status === 'published' ? <span className="button spacing" onClick={() => this.draft()}>Връщане в чернова</span> : null}
-        {this.state.scheme.status === 'published' ? <span className="button spacing">Записване</span> : null}
       </div>
     );
   }

@@ -12,7 +12,8 @@ module.exports = {
     })
       .then(res => {
         if (res.status === 422)
-          return res.json().then(err => { throw err; })
+          return res.json().then(err => { throw err; });
+        else return res;
       })
       .then(response => response.json());
 

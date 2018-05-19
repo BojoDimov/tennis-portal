@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, Route } from 'react-router-dom';
+import { get } from '../services/fetch';
 import '../app/App.css';
 
 export class ItemList extends React.Component {
@@ -56,9 +57,30 @@ export class ActionButton extends React.Component {
 
   click(history) {
     this.props.onClick()
-      .then(({ error }) => {
-        if (!error)
-          history.push(this.props.onSuccess)
-      });
+      .then(() => {
+        debugger;
+        history.push(this.props.onSuccess)
+      })
+      .catch(() => { });
+  }
+}
+
+export class Select extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { items: [] };
+  }
+
+  componentDidMount() {
+    get(this.props.url).then(items => this.setState({ items }));
+  }
+
+  render() {
+    return (
+      <select onChange={(e) => this.props.onChange(e.target.value)}>
+        <option selected disabled>-Избор-</option>
+        {this.state.items.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}
+      </select >
+    );
   }
 }

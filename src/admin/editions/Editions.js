@@ -17,7 +17,11 @@ export class Editions extends Component {
   }
 
   componentDidMount() {
-    get('/editions')
+    return this.getData();
+  }
+
+  getData() {
+    return get('/editions')
       .then(editions => this.setState({ editions: editions }));
   }
 
@@ -26,7 +30,11 @@ export class Editions extends Component {
       <Fragment>
         <Switch>
           <Route path={`${this.props.match.path}/view/:id`} component={ViewEdition} />
-          <Route path={`${this.props.match.path}/create`} component={CreateEdition} />
+          <Route path={`${this.props.match.path}/create`} render={() => {
+            return (
+              <CreateEdition onChange={() => this.getData()} />
+            );
+          }} />
           <Route path={`${this.props.match.path}/edit/:id`} component={EditEdition} />
           <Route exact path={`${this.props.match.path}`} render={() => {
             return (
