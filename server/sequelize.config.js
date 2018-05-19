@@ -15,7 +15,13 @@ const db = new Sequelize('tennis-portal-db', 'postgres', '12345678', {
 
 const Tournaments = db.define('Tournaments', {
   id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-  name: { type: Sequelize.STRING, allowNull: false },
+  name: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true,
+    }
+  },
   info: Sequelize.TEXT,
   status: {
     type: Sequelize.ENUM,
@@ -26,7 +32,13 @@ const Tournaments = db.define('Tournaments', {
 
 const TournamentEditions = db.define('TournamentEditions', {
   id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-  name: { type: Sequelize.STRING, allowNull: false },
+  name: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true,
+    }
+  },
   info: Sequelize.TEXT,
   startDate: Sequelize.DATEONLY,
   endDate: Sequelize.DATEONLY,
@@ -46,8 +58,20 @@ const TournamentEditions = db.define('TournamentEditions', {
 
 const Users = db.define('Users', {
   id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
-  username: { type: Sequelize.STRING, allowNull: false },
-  email: { type: Sequelize.STRING, allowNull: false },
+  username: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true,
+    }
+  },
+  email: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true,
+    }
+  },
   passwordHash: { type: Sequelize.STRING(40), allowNull: false },
   passwordSalt: { type: Sequelize.STRING(16), allowNull: false },
   fullname: { type: Sequelize.STRING, allowNull: false },
@@ -62,7 +86,13 @@ const Users = db.define('Users', {
 
 const TournamentSchemes = db.define('TournamentSchemes', {
   id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
-  name: { type: Sequelize.STRING, allowNull: false },
+  name: {
+    type: Sequelize.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true,
+    }
+  },
   info: Sequelize.TEXT,
   date: { type: Sequelize.DATEONLY, allowNull: false },
   singleTeams: { type: Sequelize.BOOLEAN, allowNull: false },

@@ -18,7 +18,6 @@ export class RegistrationComponent extends Component {
   }
 
   create() {
-    console.log(this.state);
   }
 
   render() {

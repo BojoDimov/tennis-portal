@@ -17,35 +17,11 @@ Editions.init(app);
 Schemes.init(app);
 Users.init(app);
 
-// app.post('/api/tournament/editions', (req, res) => {
-//   let model = req.body;
-//   model.tournamentId = 1;
-//   model.status = 'draft';
-//   TournamentEditions.create(model);
-//   res.send(null);
-// });
-
-// app.post('/api/tournament/edition/schemes', (req, res) => {
-//   let model = req.body;
-//   model.tournamentEditionId = 1;
-//   model.status = 'draft';
-//   TournamentSchemes.create(model);
-//   res.send(null);
-// });
-
-// app.get('/api/editions', (req, res) => {
-//   TournamentEditions
-//     .findAll({
-//       include: [
-//         { model: Tournaments, required: true }
-//       ]
-//     })
-//     .then(editions => res.send(editions));
-// });
-
-// app.get('/api/schemes', (req, res) => {
-//   TournamentSchemes
-//     .findAll()
-//     .map(scheme => scheme)
-//     .then(schemes => res.send(schemes));
-// });
+app.use((err, req, res, next) => {
+  if (err.name === 'SequelizeValidationError') {
+    const result = {}
+    err.errors.forEach(e => result[e.path] = e.message);
+    res.status(422).send(result);
+  }
+  else res.status(500).end();
+});

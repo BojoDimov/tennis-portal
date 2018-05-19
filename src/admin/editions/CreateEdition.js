@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { ActionButton } from '../Infrastructure';
 import { post } from '../../services/fetch';
 
 export class CreateEdition extends Component {
@@ -8,7 +9,8 @@ export class CreateEdition extends Component {
       name: '',
       info: '',
       startDate: new Date(),
-      endDate: new Date()
+      endDate: new Date(),
+      errors: {}
     };
   }
 
@@ -21,6 +23,7 @@ export class CreateEdition extends Component {
           type="text"
           value={this.state.name}
           onChange={e => this.setState({ name: e.target.value })} />
+        <div className="error">{this.state.errors.name ? '*Задължително поле' : null}</div>
       </div>
       <div className="margin input">
         <div>Допълнителна иформация</div>
@@ -33,22 +36,27 @@ export class CreateEdition extends Component {
         <input type="date"
           value={this.state.startDate}
           onChange={e => this.setState({ startDate: e.target.value })} />
+        <div className="error">{this.state.errors.startDateEndDate ? '*Началната дата трябва да бъде преди крайната дата' : null}</div>
       </div>
       <div className="margin input">
         <div>Край на турнира</div>
         <input type="date"
           value={this.state.endDate}
           onChange={e => this.setState({ endDate: e.target.value })} />
+        <div className="error">{this.state.errors.startDateEndDate ? '*Началната дата трябва да бъде преди крайната дата' : null}</div>
       </div>
-      <div className="margin input">
-        <span className="button" onClick={() => this.create()} disabled={!this.validate()}>Готово</span>
-      </div>
+      <ActionButton className="margin input"
+        onSuccess='/editions'
+        onClick={() => this.create()}>Готово</ActionButton>
     </div>;
   }
 
   create() {
-    // return post('/tournaments/editions', this.state)
-    //   .then(res => console.log(res));
+    return post('/editions', this.state)
+      .catch(err => {
+        this.setState({ errors: err });
+        return { error: true };
+      });
   }
 
   validate() {

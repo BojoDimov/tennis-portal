@@ -26,6 +26,12 @@
 color: #517F65;
 }
 
+.error {
+  color: lightcoral;
+  font-size: 12px;
+  margin-top: .3em;
+}
+
 .container-fluid {
   margin: 1em;
   border: .5px solid lightgrey;
@@ -76,7 +82,7 @@ color: #517F65;
   color: #517F65;
   font-weight: 700;
   display: inline-block;
-  width: 8em;
+  width: 12em;
 }
 
 .card-link {

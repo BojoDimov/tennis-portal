@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { get } from '../../services/fetch';
-import { Status, ItemList } from '../Infrastructure';
+import { Status } from '../Infrastructure';
 
 export class ViewScheme extends Component {
   constructor(props) {
@@ -21,7 +21,6 @@ export class ViewScheme extends Component {
   getData() {
     get(`/schemes/${this.props.match.params.id}`)
       .then(res => {
-        console.log(res);
         res.loading = false;
         this.setState(res);
       });
@@ -84,9 +83,6 @@ export class ViewScheme extends Component {
               </div>
             </div>
             {this.buttons()}
-          </div>
-          <div className="margin container-fluid">
-            <h2 className="section"><span>Ранглиста</span></h2>
           </div>
         </Fragment>
       );

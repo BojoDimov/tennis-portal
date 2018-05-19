@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Redirect, Route } from 'react-router-dom';
 import { ActionButton } from '../Infrastructure';
 import { post } from '../../services/fetch';
 
@@ -10,7 +9,7 @@ export class CreateTournament extends Component {
     this.state = {
       name: '',
       info: '',
-      redirect: false
+      id: 0
     };
   }
 
@@ -32,14 +31,18 @@ export class CreateTournament extends Component {
             onChange={e => this.setState({ info: e.target.value })} />
         </div>
         <ActionButton className="margin input"
-          onSuccess='/tournaments'
+          onSuccess={`/tournaments/view/${this.state.id}`}
           onClick={() => this.create()}>Готово</ActionButton>
       </div>
     );
   }
 
   create() {
-    return post('/tournaments', this.state);
+    return post('/tournaments', this.state)
+      .then(({ id }) => {
+        this.setState({ id: id });
+        this.props.tournamentsHandle()
+      });
   }
 
   validate() {

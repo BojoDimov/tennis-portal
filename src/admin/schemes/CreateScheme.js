@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { ActionButton } from '../Infrastructure';
 import { post } from '../../services/fetch';
 
 export class CreateScheme extends Component {
@@ -108,24 +109,15 @@ export class CreateScheme extends Component {
             onChange={e => this.setState({ hasGroupPhase: !this.state.hasGroupPhase })} />
           Включване на групова фаза</label>
       </div>
-
-      {/* {this.state.hasGroupPhase ?
-        <div>
-          <div>Предварителна регистрация за групова фаза</div>
-          <input type="date"
-            value={this.state.preRegistrationDate}
-            onChange={e => this.setState({ preRegistrationDate: e.target.value })} />
-        </div> : undefined
-      } */}
-      <div className="margin input">
-        <span className="button" onClick={() => this.create()} disabled={!this.validate()}>Готово</span>
-      </div>
+      <ActionButton className="margin input"
+        onSuccess='/schemes'
+        onClick={() => this.create()}>Готово</ActionButton>
     </div>;
   }
 
   create() {
-    // return post('/tournament/edition/schemes', this.state)
-    //   .then(res => console.log(res));
+    return post('/tournament/edition/schemes', this.state)
+      .then(res => console.log(res));
   }
 
   validate() {

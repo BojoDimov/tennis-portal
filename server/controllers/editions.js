@@ -25,11 +25,12 @@ const getEditions = (req, res) => {
     });
 };
 
-const createEdition = (req, res) => {
+const createEdition = (req, res, next) => {
   let model = req.body;
   model.status = 'draft';
   let edition = TournamentEditions.create(model)
-    .then(e => res.json(e));
+    .then(e => res.json(e))
+    .catch(err => next(err, req, res, null));
 };
 
 const editEdition = (req, res) => {

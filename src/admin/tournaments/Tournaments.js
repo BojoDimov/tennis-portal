@@ -13,15 +13,13 @@ export class Tournaments extends Component {
     this.state = {
       tournaments: []
     };
+
+    this.updateTournamentsHandle = this.getData.bind(this);
   }
 
   getData() {
     return get('/tournaments')
       .then(tournaments => this.setState({ tournaments: tournaments }));
-  }
-
-  componentDidUpdate() {
-    return this.getData();
   }
 
   componentDidMount() {
@@ -32,7 +30,11 @@ export class Tournaments extends Component {
     return (
       <Fragment>
         <Switch>
-          <Route path={`${this.props.match.path}/create`} component={CreateTournament} />
+          <Route path={`${this.props.match.path}/create`} render={() => {
+            return (
+              <CreateTournament tournamentsHandle={this.updateTournamentsHandle} />
+            );
+          }} />
           <Route path={`${this.props.match.path}/view/:id`} component={ViewTournament} />
           <Route exact path={`${this.props.match.path}`} render={() => {
             return (
@@ -40,7 +42,7 @@ export class Tournaments extends Component {
             )
           }} />
         </Switch>
-      </Fragment >
+      </Fragment>
     );
   }
 }

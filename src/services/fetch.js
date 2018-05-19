@@ -9,7 +9,13 @@ module.exports = {
       },
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
       mode: 'cors', // no-cors, cors, *same-origin
-    }).then(response => response.json())
+    })
+      .then(res => {
+        if (res.status === 422)
+          return res.json().then(err => { throw err; })
+      })
+      .then(response => response.json());
+
   },
   get: function (path) {
     return fetch(backend + path, {

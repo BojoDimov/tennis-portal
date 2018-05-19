@@ -27,7 +27,7 @@ export class Menu extends Component {
   }
 
   render() {
-    return <div id="menu" className="col-sm-1">
+    return <div id="menu">
       <img src={logo} className="logo" alt="logo" />
       <ul>{this.links.map(link => this.getMenuElement(link))}</ul>
     </div>

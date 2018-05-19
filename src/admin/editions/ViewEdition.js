@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+import { Link } from 'react-router-dom';
 import { get } from '../../services/fetch';
 import { Status, ItemList } from '../Infrastructure';
 
@@ -12,13 +13,27 @@ export class ViewEdition extends Component {
       loading: true
     };
   }
+
   componentDidMount() {
-    get(`/editions/${this.props.match.params.id}`)
+    this.getData();
+  }
+
+  getData() {
+    return get(`/editions/${this.props.match.params.id}`)
       .then(res => {
-        console.log(res);
         res.loading = false;
         this.setState(res);
       });
+  }
+
+  publish() {
+    get(`/editions/${this.state.edition.id}/publish`)
+      .then(() => this.getData());
+  }
+
+  draft() {
+    get(`/editions/${this.state.edition.id}/draft`)
+      .then(() => this.getData());
   }
 
   render() {
@@ -29,13 +44,45 @@ export class ViewEdition extends Component {
         <Fragment>
           <div className="margin container-fluid">
             <h2 className="section"><span>{this.state.edition.name}</span> <Status status={this.state.edition.status} /></h2>
-            <p>{this.state.edition.info}</p>
+            <div className="margin-left">
+              <div className="card">
+                <span className="card-heading">Турнир: </span>
+                <Link to={`/tournaments/view/${this.state.tournament.id}`}>
+                  <span className="card-link">{this.state.tournament.name}</span>
+                </Link>
+              </div>
+              <div className="card">
+                <span className="card-heading">Информация: </span>
+                <span>{this.state.edition.info}</span>
+              </div>
+              <div className="card">
+                <span className="card-heading">Начало на турнира: </span>
+                <span>{dateString(this.state.edition.startDate)}</span>
+              </div>
+              <div className="card">
+                <span className="card-heading">Край на турнира: </span>
+                <span>{dateString(this.state.edition.endDate)}</span>
+              </div>
+            </div>
+            {this.buttons()}
           </div>
-          <ItemList items={this.state.schemes} name="Схеми" match={{ path: '/schemes' }} />
-          <div className="margin container-fluid">
-            <h2 className="section"><span>Ранглиста</span></h2>
-          </div>
+          <ItemList name="Схеми" items={this.state.schemes} match={{ path: '/schemes' }} rootQuery={`editionId=${this.state.edition.id}`} />
         </Fragment>
       );
   }
+
+  buttons() {
+    return (
+      <div className="color margin-top">
+        {this.state.edition.status === 'draft' ? <Link to={`/editions/edit/${this.state.edition.id}`}><span className="button">Промяна</span></Link> : null}
+        {this.state.edition.status === 'draft' ? <span className="button spacing" onClick={() => this.publish()}>Публикуване</span> : null}
+        {this.state.edition.status === 'published' ? <span className="button spacing" onClick={() => this.draft()}>Връщане в чернова</span> : null}
+      </div>
+    );
+  }
+}
+
+function dateString(str) {
+  let date = new Date(str);
+  return date.toLocaleDateString();
 }
