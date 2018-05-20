@@ -1,26 +1,31 @@
-const { Users } = require('../sequelize.config');
 const crypto = require('crypto');
+const { Users } = require('../sequelize.config');
 
-const registerUser = (req, res) => {
+const registerUser = (req, res, next) => {
   let model = req.body;
-  let hasher = crypto.createHash('sha256');
-  model.passwordSalt = crypto.randomBytes(16).toString('utf8');
-  hasher.update(model.passwordSalt + req.body.password);
-  model.passwordHash = hasher.digest('hex');
+  let hash = crypto.createHash('sha256');
+  model.passwordSalt = crypto.randomBytes(16).toString('utf8', 0, 16);
+  hash.update(model.passwordSalt + req.body.password);
+  model.passwordHash = hash.digest('hex').slice(40);
 
-  Users.create(model).then(() => res.json({}));
+  Users.create(model)
+    .then(user => res.json({}))
+    .catch(err => next(err, req, res, null));
 };
 
 const authenticateUser = (req, res) => {
   let password = req.body.password;
-  Users.findOne()
-    .then(user => {
-      let hasher = crypto.createHash('sha256');
-      hasher.update(user.passwordSalt + password);
-      if (hasher.digest('hex') == user.passwordHash)
-        return 'authenticated';
-      else return 'invalid authentication'
-    });
+  Users.findOne({
+    where: {
+      username: req.body.username
+    }
+  }).then(user => {
+    let hash = crypto.createHash('sha256');
+    hash.update(user.passwordSalt + password);
+    if (hash.digest('hex').slice(40) === user.passwordHash)
+      res.send({ authenticated: true });
+    else res.send({ authenticated: false });
+  });
 };
 
 module.exports = {

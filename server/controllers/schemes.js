@@ -31,7 +31,7 @@ const getScheme = (req, res) => {
 const createScheme = (req, res, next) => {
   let model = req.body;
   model.status = 'draft';
-  let tournament = TournamentSchemes.create(model)
+  TournamentSchemes.create(model)
     .then(e => res.json(e))
     .catch(err => next(err, req, res, null));
 };

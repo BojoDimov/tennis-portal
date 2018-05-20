@@ -13,6 +13,21 @@ const db = new Sequelize('tennis-portal-db', 'postgres', '12345678', {
   operatorsAliases: false
 });
 
+const Logs = db.define('Logs', {
+  id: {
+    type: Sequelize.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  ip: Sequelize.STRING,
+  path: Sequelize.STRING,
+  method: Sequelize.STRING,
+  body: Sequelize.TEXT,
+  params: Sequelize.TEXT,
+  query: Sequelize.TEXT,
+  error: Sequelize.TEXT
+});
+
 const Tournaments = db.define('Tournaments', {
   id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
   name: {
@@ -181,10 +196,10 @@ TournamentSchemes.belongsTo(TournamentEditions, {
   }
 });
 
-
 module.exports = {
   Tournaments, TournamentEditions, TournamentSchemes,
   Users,
+  Logs,
   init: function () {
     return db.sync().then(() => process.exit);
   }

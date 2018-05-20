@@ -12,7 +12,7 @@ class App extends Component {
 }
 
 const LoginGuard = () => {
-  const flag = true;
+  const flag = false;
   if (flag)
     return (<Admin />);
   else
