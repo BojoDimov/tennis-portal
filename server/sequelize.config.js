@@ -105,6 +105,16 @@ const Users = db.define('Users', {
   }
 });
 
+const Tokens = db.define('Tokens', {
+  userId: {
+    type: Sequelize.INTEGER,
+    primaryKey: true
+  },
+  token: Sequelize.STRING(40),
+  expires: Sequelize.DATE,
+  issued: Sequelize.STRING
+});
+
 const TournamentSchemes = db.define('TournamentSchemes', {
   id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
   name: {
@@ -166,6 +176,13 @@ const TournamentSchemes = db.define('TournamentSchemes', {
     }
   });
 
+Users.hasOne(Tokens, {
+  foreignKey: {
+    name: 'userId',
+    allowNull: false
+  }
+});
+
 Tournaments.hasMany(TournamentEditions, {
   as: 'TournamentEditions',
   foreignKey: {
@@ -198,7 +215,7 @@ TournamentSchemes.belongsTo(TournamentEditions, {
 
 module.exports = {
   Tournaments, TournamentEditions, TournamentSchemes,
-  Users,
+  Users, Tokens,
   Logs,
   init: function () {
     return db.sync().then(() => process.exit);

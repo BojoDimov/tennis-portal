@@ -1,10 +1,10 @@
 const crypto = require('crypto');
-const { Users } = require('../sequelize.config');
+const { Users, Tokens } = require('../sequelize.config');
 
 const registerUser = (req, res, next) => {
   let model = req.body;
   let hash = crypto.createHash('sha256');
-  model.passwordSalt = crypto.randomBytes(16).toString('utf8', 0, 16);
+  model.passwordSalt = crypto.randomBytes(16).toString('hex').slice(16);
   hash.update(model.passwordSalt + req.body.password);
   model.passwordHash = hash.digest('hex').slice(40);
 
@@ -13,7 +13,7 @@ const registerUser = (req, res, next) => {
     .catch(err => next(err, req, res, null));
 };
 
-const authenticateUser = (req, res) => {
+const login = (req, res, next) => {
   let password = req.body.password;
   Users.findOne({
     where: {
@@ -22,15 +22,40 @@ const authenticateUser = (req, res) => {
   }).then(user => {
     let hash = crypto.createHash('sha256');
     hash.update(user.passwordSalt + password);
+
     if (hash.digest('hex').slice(40) === user.passwordHash)
-      res.send({ authenticated: true });
-    else res.send({ authenticated: false });
-  });
+      return issueToken(user.id, req);
+    else
+      return { authenticated: false };
+  }).then(token => res.send(token))
+    .catch(err => next(err, req, res, null));
 };
+
+const issueToken = (userId, req) => {
+  return Tokens.findOne({
+    where: {
+      userId: userId
+    }
+  }).then(token => {
+    if (token)
+      return token.update({
+        token: crypto.randomBytes(40).toString('hex').slice(40),
+        expires: new Date(),
+        issued: req.ip
+      });
+    else
+      return Tokens.create({
+        userId: userId,
+        token: crypto.randomBytes(40).toString('hex').slice(40),
+        expires: new Date(),
+        issued: req.ip
+      });
+  });
+}
 
 module.exports = {
   init: (app) => {
     app.post('/api/users', registerUser);
-    app.post('/api/login', authenticateUser);
+    app.post('/api/login', login);
   }
 }

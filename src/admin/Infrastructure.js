@@ -57,10 +57,7 @@ export class ActionButton extends React.Component {
 
   click(history) {
     this.props.onClick()
-      .then(() => {
-        debugger;
-        history.push(this.props.onSuccess)
-      })
+      .then(() => history.push(this.props.onSuccess))
       .catch(() => { });
   }
 }
