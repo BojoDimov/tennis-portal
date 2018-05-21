@@ -1,19 +1,21 @@
 import React from 'react';
 import { Link, Route } from 'react-router-dom';
 import { get } from '../services/fetch';
-import '../app/App.css';
+// import '../app/App.css';
 
 export class ItemList extends React.Component {
   render() {
     return (
-      <div className="margin container-fluid">
-        <h2 className="marign section">{this.props.name}
+      <div className="container-fluid">
+        <h2 className="headline">{this.props.name}
           <Link to={{ pathname: `${this.props.match.path}/create`, search: this.props.rootQuery }}>
-            <span className="button small"> добавяне</span>
+            <span className="button">добавяне</span>
           </Link>
         </h2>
-        {this.props.items.length === 0 ? <i className="list-item-info">Няма намерени резултати</i> : null}
-        {this.props.items.map(item => <ItemView match={this.props.match} key={item.id} item={item} />)}
+        <div className="list">
+          {this.props.items.length === 0 ? <span className="info">Няма намерени резултати</span> : null}
+          {this.props.items.map(item => <ItemView match={this.props.match} key={item.id} item={item} />)}
+        </div>
       </div>
     );
   }
@@ -21,13 +23,17 @@ export class ItemList extends React.Component {
 
 export const ItemView = ({ match, item }) => {
   return (
-    <Link to={`${match.path}/view/${item.id}`}>
-      <div className="list-item">
-        <div><span className="headline">{item.name}</span> <Status status={item.status} />
-        </div>
-        <div className="list-item-info">{item.info}</div>
+    <div className="item">
+      <div>
+        <span className="name">
+          <Link to={`${match.path}/view/${item.id}`}>
+            {item.name}
+          </Link>
+          <Status status={item.status} />
+        </span>
       </div>
-    </Link>
+      <div className="info">{item.info}</div>
+    </div>
   );
 };
 
@@ -38,7 +44,7 @@ export const Status = ({ status }) => {
     'inactive': 'неактивен'
   }
   return (
-    <span className={'status-' + status}>{statusNames[status]}</span>
+    <span className={status}>{statusNames[status]}</span>
   );
 };
 

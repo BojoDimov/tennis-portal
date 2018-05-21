@@ -29,7 +29,7 @@ export class CreateEdition extends Component {
 
   render() {
     return <div className="margin container-fluid">
-      <h2 className="section">Ново издание</h2>
+      <h2 className="headline">Ново издание</h2>
       <div className="margin input">
         <div>Име</div>
         <input

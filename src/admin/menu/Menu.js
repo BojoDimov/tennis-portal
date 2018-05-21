@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import './Menu.css';
+// import './Menu.css';
 import logo from './tennis-logo.svg';
 
 export class Menu extends Component {
@@ -27,7 +27,7 @@ export class Menu extends Component {
   }
 
   render() {
-    return <div id="menu">
+    return <div className="sidebar">
       <img src={logo} className="logo" alt="logo" />
       <ul>{this.links.map(link => this.getMenuElement(link))}</ul>
     </div>

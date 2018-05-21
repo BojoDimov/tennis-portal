@@ -12,7 +12,7 @@ export class LoginComponent extends Component {
   render() {
     return (
       <div className="margin container-fluid">
-        <h2 className="section">Вход на потребител</h2>
+        <h2 className="headline">Вход на потребител</h2>
         <form>
           <div className="margin input">
             <div>Потребителско име</div>

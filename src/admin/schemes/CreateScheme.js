@@ -41,7 +41,7 @@ export class CreateScheme extends Component {
 
   render() {
     return <div className="margin container-fluid">
-      <h2 className="section">Добавяне на схема</h2>
+      <h2 className="headline">Добавяне на схема</h2>
       <div className="margin input">
         <div>Име на схемата</div>
         <input

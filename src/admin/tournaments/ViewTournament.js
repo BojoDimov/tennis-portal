@@ -41,19 +41,24 @@ export class ViewTournament extends Component {
     else
       return (
         <Fragment>
-          <div className="margin container-fluid">
-            <h2 className="section"><span>{this.state.tournament.name}</span> <Status status={this.state.tournament.status} /></h2>
-            <div className="margin-left">
-              <div className="card">
-                <span className="card-heading">Информация: </span>
-                <span>{this.state.tournament.info}</span>
+          <div className="container-fluid">
+            <h2 className="headline">
+              <span>{this.state.tournament.name}</span>
+              <Status status={this.state.tournament.status} />
+            </h2>
+            <div className="card">
+              <div>
+                <span className="label">Информация: </span>
+                <span className="value">{this.state.tournament.info}</span>
               </div>
             </div>
             {this.buttons()}
           </div>
+
           <ItemList items={this.state.editions} name="Издания" match={{ path: '/editions' }} rootQuery={`tournamentId=${this.state.tournament.id}`} />
-          <div className="margin container-fluid">
-            <h2 className="section"><span>Ранглиста</span></h2>
+
+          <div className="container-fluid">
+            <h2 className="headline"><span>Ранглиста</span></h2>
           </div>
         </Fragment>
       );
@@ -61,9 +66,10 @@ export class ViewTournament extends Component {
 
   buttons() {
     return (
-      <div className="color margin-top">
+      <div className="button-group">
         {this.state.tournament.status === 'draft' ? <span className="button" onClick={() => this.publish()}>Публикуване</span> : null}
-        {this.state.tournament.status === 'draft' ? <Link to={`/tournaments/edit/${this.state.tournament.id}`}><span className="button spacing">Промяна</span></Link> : null}
+        {this.state.tournament.status === 'draft' ? <span className="button"><Link to={`/tournaments/edit/${this.state.tournament.id}`}>Промяна</Link></span> : null}
+        {this.state.tournament.status === 'published' ? <span className="button" onClick={() => this.draft()}>Връщане в чернова</span> : null}
       </div>
     );
   }

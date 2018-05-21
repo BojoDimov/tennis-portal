@@ -42,26 +42,31 @@ export class ViewEdition extends Component {
     else
       return (
         <Fragment>
-          <div className="margin container-fluid">
-            <h2 className="section"><span>{this.state.edition.name}</span> <Status status={this.state.edition.status} /></h2>
-            <div className="margin-left">
-              <div className="card">
-                <span className="card-heading">Турнир: </span>
-                <Link to={`/tournaments/view/${this.state.tournament.id}`}>
-                  <span className="card-link">{this.state.tournament.name}</span>
-                </Link>
+          <div className="container-fluid">
+            <h2 className="headline">
+              <span>{this.state.edition.name}</span>
+              <Status status={this.state.edition.status} />
+            </h2>
+            <div className="card">
+              <div>
+                <span className="label">Турнир: </span>
+                <span className="value link">
+                  <Link to={`/tournaments/view/${this.state.tournament.id}`}>
+                    {this.state.tournament.name}
+                  </Link>
+                </span>
               </div>
-              <div className="card">
-                <span className="card-heading">Информация: </span>
-                <span>{this.state.edition.info}</span>
+              <div className="value">
+                <span className="label">Информация: </span>
+                <span className="value">{this.state.edition.info}</span>
               </div>
-              <div className="card">
-                <span className="card-heading">Начало на турнира: </span>
-                <span>{dateString(this.state.edition.startDate)}</span>
+              <div>
+                <span className="label">Начало на турнира: </span>
+                <span className="value">{dateString(this.state.edition.startDate)}</span>
               </div>
-              <div className="card">
-                <span className="card-heading">Край на турнира: </span>
-                <span>{dateString(this.state.edition.endDate)}</span>
+              <div>
+                <span className="label">Край на турнира: </span>
+                <span className="value">{dateString(this.state.edition.endDate)}</span>
               </div>
             </div>
             {this.buttons()}
@@ -73,9 +78,10 @@ export class ViewEdition extends Component {
 
   buttons() {
     return (
-      <div className="color margin-top">
+      <div className="button-group">
         {this.state.edition.status === 'draft' ? <span className="button" onClick={() => this.publish()}>Публикуване</span> : null}
-        {this.state.edition.status === 'draft' ? <Link to={`/editions/edit/${this.state.edition.id}`}><span className="button spacing">Промяна</span></Link> : null}
+        {this.state.edition.status === 'draft' ? <span className="button"><Link to={`/editions/edit/${this.state.edition.id}`}>Промяна</Link></span> : null}
+        {this.state.edition.status === 'published' ? <span className="button" onClick={() => this.draft()}>Връщане в чернова</span> : null}
       </div>
     );
   }

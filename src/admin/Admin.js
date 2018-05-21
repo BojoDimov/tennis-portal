@@ -10,9 +10,9 @@ export class Admin extends Component {
 
   render() {
     return (
-      <div>
+      <React.Fragment>
         <Menu defaultRoute={this.defaultRoute} />
-        <div className="content">
+        <div className="main">
           <Switch>
             <Route exact path="/">
               <Redirect to={this.defaultRoute} />
@@ -22,7 +22,7 @@ export class Admin extends Component {
             <Route path="/editions" component={Editions} />
           </Switch>
         </div>
-      </div >
+      </React.Fragment >
     );
   }
 }

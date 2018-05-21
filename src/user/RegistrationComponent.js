@@ -22,7 +22,7 @@ export class RegistrationComponent extends Component {
   render() {
     return (
       <div className="margin container-fluid">
-        <h2 className="section">Създаване на акаунт</h2>
+        <h2 className="headline">Създаване на акаунт</h2>
         <form>
           <div>
             <div className="margin input">

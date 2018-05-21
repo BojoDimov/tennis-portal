@@ -3,7 +3,6 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 import { Admin } from '../admin/Admin';
 import { LoginComponent } from '../user/LoginComponent';
 import { RegistrationComponent } from '../user/RegistrationComponent';
-import './App.css';
 
 class App extends Component {
   render() {
@@ -12,7 +11,7 @@ class App extends Component {
 }
 
 const LoginGuard = () => {
-  const flag = false;
+  const flag = true;
   if (flag)
     return (<Admin />);
   else
