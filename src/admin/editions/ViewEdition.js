@@ -28,12 +28,18 @@ export class ViewEdition extends Component {
 
   publish() {
     get(`/editions/${this.state.edition.id}/publish`)
-      .then(() => this.getData());
+      .then(() => {
+        this.getData();
+        this.props.onChange();
+      });
   }
 
   draft() {
     get(`/editions/${this.state.edition.id}/draft`)
-      .then(() => this.getData());
+      .then(() => {
+        this.getData();
+        this.props.onChange();
+      });
   }
 
   render() {

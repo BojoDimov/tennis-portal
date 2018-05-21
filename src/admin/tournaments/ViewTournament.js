@@ -27,12 +27,18 @@ export class ViewTournament extends Component {
 
   publish() {
     get(`/tournaments/${this.state.tournament.id}/publish`)
-      .then(() => this.getData());
+      .then(() => {
+        this.getData();
+        this.props.onChange();
+      });
   }
 
   draft() {
     get(`/tournaments/${this.state.tournament.id}/draft`)
-      .then(() => this.getData());
+      .then(() => {
+        this.getData();
+        this.props.onChange();
+      });
   }
 
   render() {

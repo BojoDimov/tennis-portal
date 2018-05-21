@@ -29,13 +29,21 @@ export class Editions extends Component {
     return (
       <Fragment>
         <Switch>
-          <Route path={`${this.props.match.path}/view/:id`} component={ViewEdition} />
-          <Route path={`${this.props.match.path}/create`} render={() => {
+          <Route path={`${this.props.match.path}/create`} render={(props) => {
             return (
-              <CreateEdition onChange={() => this.getData()} />
+              <CreateEdition {...props} onChange={() => this.getData()} />
             );
           }} />
-          <Route path={`${this.props.match.path}/edit/:id`} component={EditEdition} />
+          <Route path={`${this.props.match.path}/view/:id`} render={(props) => {
+            return (
+              <ViewEdition {...props} onChange={() => this.getData()} />
+            );
+          }} />
+          <Route path={`${this.props.match.path}/edit/:id`} render={(props) => {
+            return (
+              <EditEdition {...props} onChange={() => this.getData()} />
+            );
+          }} />
           <Route exact path={`${this.props.match.path}`} render={() => {
             return (
               <ItemList name="Издания" items={this.state.editions} match={this.props.match} />

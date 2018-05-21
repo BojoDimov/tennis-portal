@@ -30,12 +30,16 @@ export class Tournaments extends Component {
     return (
       <Fragment>
         <Switch>
-          <Route path={`${this.props.match.path}/create`} render={() => {
+          <Route path={`${this.props.match.path}/create`} render={(props) => {
             return (
-              <CreateTournament onChange={() => this.getData()} />
+              <CreateTournament {...props} onChange={() => this.getData()} />
             );
           }} />
-          <Route path={`${this.props.match.path}/view/:id`} component={ViewTournament} />
+          <Route path={`${this.props.match.path}/view/:id`} render={(props) => {
+            return (
+              <ViewTournament {...props} onChange={() => this.getData()} />
+            );
+          }} />
           <Route exact path={`${this.props.match.path}`} render={() => {
             return (
               <ItemList name="Турнири" items={this.state.tournaments} match={this.props.match} />

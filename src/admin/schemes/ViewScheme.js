@@ -28,12 +28,18 @@ export class ViewScheme extends Component {
 
   publish() {
     get(`/schemes/${this.state.scheme.id}/publish`)
-      .then(() => this.getData());
+      .then(() => {
+        this.getData();
+        this.props.onChange();
+      });
   }
 
   draft() {
     get(`/schemes/${this.state.scheme.id}/draft`)
-      .then(() => this.getData());
+      .then(() => {
+        this.getData();
+        this.props.onChange();
+      });
   }
 
   render() {

@@ -29,13 +29,21 @@ export class Schemes extends Component {
     return (
       <Fragment>
         <Switch>
-          <Route path={`${this.props.match.path}/view/:id`} component={ViewScheme} />
-          <Route path={`${this.props.match.path}/create`} render={() => {
+          <Route path={`${this.props.match.path}/create`} render={(props) => {
             return (
-              <CreateScheme onChange={() => this.getData()} />
+              <CreateScheme {...props} onChange={() => this.getData()} />
             );
           }} />
-          <Route path={`${this.props.match.path}/edit/:id`} component={EditScheme} />
+          <Route path={`${this.props.match.path}/view/:id`} render={(props) => {
+            return (
+              <ViewScheme {...props} onChange={() => this.getData()} />
+            );
+          }} />
+          <Route path={`${this.props.match.path}/edit/:id`} render={(props) => {
+            return (
+              <EditScheme {...props} onChange={() => this.getData()} />
+            );
+          }} />
           <Route exact path={`${this.props.match.path}`} render={() => {
             return (
               <ItemList name="Схеми" items={this.state.schemes} match={this.props.match} />
