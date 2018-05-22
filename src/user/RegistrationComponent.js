@@ -21,68 +21,69 @@ export class RegistrationComponent extends Component {
 
   render() {
     return (
-      <div className="margin container-fluid">
+      <div className="container">
         <h2 className="headline">Създаване на акаунт</h2>
         <form>
-          <div>
-            <div className="margin input">
-              <div>Потребителско име</div>
-              <input
-                type="text"
-                onChange={e => this.setState({ username: e.target.value })} />
-            </div>
-            <div className="margin input">
-              <div>E-майл</div>
-              <input
-                type="email"
-                onChange={e => this.setState({ email: e.target.value })} />
-            </div>
-            <div className="margin input">
-              <div>Парола</div>
-              <input
-                type="password"
-                onChange={e => this.setState({ password: e.target.value })} />
-            </div>
-            <div className="margin input">
-              <div>Повтори парола</div>
-              <input
-                type="password"
-                onChange={e => this.setState({ confirmPassword: e.target.value })} />
-            </div>
+          <div className="input-group">
+            <div>Потребителско име</div>
+            <input
+              type="text"
+              onChange={e => this.setState({ username: e.target.value })} />
           </div>
-          <div>
-            <div className="margin input">
-              <div>Име</div>
-              <input
-                type="text"
-                onChange={e => this.setState({ fullname: e.target.value })} />
-            </div>
-            <div className="margin input">
-              <div>Възраст</div>
-              <input
-                type="number"
-                min="0"
-                max="200"
-                onChange={e => this.setState({ age: e.target.value })} />
-            </div>
-            <div className="margin input">
-              <div>Телефонен номер</div>
-              <input
-                type="text"
-                onChange={e => this.setState({ telephone: e.target.value })} />
-            </div>
-            <div className="margin input">
-              <div>Пол</div>
-              <select onChange={e => this.setState({ gender: e.target.value })} >
-                <option disabled selected >-избери-</option>
-                <option value="male">Мъж</option>
-                <option value="female">Жена</option>
-              </select>
-            </div>
-            <ActionButton className="margin input"
-              onSuccess="/login"
-              onClick={() => this.create()}>Регистрирай ме</ActionButton>
+          <div className="input-group">
+            <div>E-майл</div>
+            <input
+              type="email"
+              onChange={e => this.setState({ email: e.target.value })} />
           </div>
+          <div className="input-group">
+            <div>Парола</div>
+            <input
+              type="password"
+              onChange={e => this.setState({ password: e.target.value })} />
+          </div>
+          <div className="input-group">
+            <div>Повтори парола</div>
+            <input
+              type="password"
+              onChange={e => this.setState({ confirmPassword: e.target.value })} />
+          </div>
+
+          <div className="input-group">
+            <div>Име</div>
+            <input
+              type="text"
+              onChange={e => this.setState({ fullname: e.target.value })} />
+          </div>
+
+          <div className="input-group">
+            <div>Възраст</div>
+            <input
+              type="number"
+              min="0"
+              max="200"
+              onChange={e => this.setState({ age: e.target.value })} />
+          </div>
+
+          <div className="input-group">
+            <div>Телефонен номер</div>
+            <input
+              type="text"
+              onChange={e => this.setState({ telephone: e.target.value })} />
+          </div>
+
+          <div className="input-group">
+            <div>Пол</div>
+            <select onChange={e => this.setState({ gender: e.target.value })} >
+              <option disabled selected >-избери-</option>
+              <option value="male">Мъж</option>
+              <option value="female">Жена</option>
+            </select>
+          </div>
+
+          <ActionButton className="margin input"
+            onSuccess="/login"
+            onClick={() => this.create()}>Регистрирай ме</ActionButton>
         </form>
       </div>
     )

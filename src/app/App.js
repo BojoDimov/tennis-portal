@@ -16,14 +16,18 @@ const LoginGuard = () => {
     return (<Admin />);
   else
     return (
-      <Switch>
-        <Route exact path="/">
-          <Redirect to="/login" />
-        </Route>
-        <Route path="/login" component={LoginComponent} />
-        <Route path="/registration" component={RegistrationComponent} />
-        <Route component={LoginComponent} />
-      </Switch>
+      <div className="public">
+        <div className="left-sidebar"></div>
+        <Switch>
+          <Route exact path="/">
+            <Redirect to="/login" />
+          </Route>
+          <Route path="/login" component={LoginComponent} />
+          <Route path="/registration" component={RegistrationComponent} />
+          <Route component={LoginComponent} />
+        </Switch>
+        <div className="right-sidebar"></div>
+      </div>
     );
 }
 

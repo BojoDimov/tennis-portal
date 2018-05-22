@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-// import './Menu.css';
 import logo from './tennis-logo.svg';
 
 export class Menu extends Component {

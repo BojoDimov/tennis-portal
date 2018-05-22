@@ -16,6 +16,7 @@ a {
 #root {
   display: flex;
   height: 100vh;
+  color: $primaryColor;
 }
 
 .sidebar {
@@ -52,6 +53,7 @@ a {
   }
 
   .logo {
+    animation: logo-spin infinite 10s linear;
     margin-top: 1em;
     padding: 0 4em;
     width: 75px;
@@ -60,25 +62,80 @@ a {
 
 .main {
   flex: 8;
-  display: inline-block;
-  color: $primaryColor;
   overflow: auto;
 }
 
-.container-fluid {
-  margin: 1em;
-  padding: 0 1em;
+
+
+.box-indentation {
+  flex: 1;
+  padding-bottom: 0em;
+  margin-left: 1em;
+}
+
+.input-group {
+  margin-bottom: .5em;
+}
+
+.public {
+  margin-top: 5em;
+  display: flex;
+  align-items: flex-start;
+  width: 100%;
+
+  .left-sidebar {
+    flex: 1;
+  }
+
+  .right-sidebar {
+    flex: 1;
+  }
+
+  .container {
+    flex-basis: 35%;
+  }
+
+  form {
+    display: flex;
+    width: 100%;
+
+    .link {
+      text-decoration: underline;
+    }
+
+    .link + .link {
+      margin-left: 1em;
+    }
+
+    .button {
+      margin: 0;
+      margin-bottom: 1em;
+      align-self: flex-start;
+      text-align: center;
+      padding: .2em 2em;
+    }
+  }
+}
+
+.container {
   border: .5px solid lightgrey;
   background-color: #FFF;
+  padding: 0 1em;
   border-radius: 8px;
-  box-shadow: 2px 3px darken(lightgray, 15%);
+  overflow: auto;
+  box-shadow: 2px 3px darken(lightgray, 20%);
 
   .headline {
     padding-bottom: .5em;
     border-bottom: 1px solid $primaryColor;
     font-family: 'Poiret One', cursive;
   }
+}
 
+.container-fluid {
+  @extend .container;
+  margin: 1em;
+  
   .list {
     .item {
       margin: .5em 0;
@@ -122,31 +179,30 @@ a {
       }
     }
   }
+
+  .form-container {
+    display: flex;
+
+    .right-sidebar {
+      flex: 1;
+    }
+  }
+}
+
+.form-style {
+  padding: .3em .3em;
+  width: 100%;
+  box-sizing: border-box;
+  color: darken($primaryColor, 10%);
+  border-radius: 5px;
+  border: 1px solid lighten($primaryColor, 30%);
+  outline: none;
 }
 
 form {
-  display: flex;
+  display: inline-flex;
+  flex-basis: 30%;
   flex-direction: column;
-
-  .form-style {
-    padding: .3em .3em;
-    width: 100%;
-    box-sizing: border-box;
-    color: darken($primaryColor, 10%);
-    border-radius: 5px;
-    border: 1px solid lighten($primaryColor, 30%);
-    outline: none;
-  }
-
-  .box-indentation {
-    flex: 1;
-    padding-bottom: 2em;
-    margin-left: 1em;
-  }
-
-  .input-group {
-    margin-bottom: .5em;
-  }
 
   input {
     @extend .form-style;
@@ -166,17 +222,8 @@ form {
     @extend .form-style;
   }
 
-  .section {
-    @extend .box-indentation;
-  }
-
-  .section + .section {
-    border-top: .5px solid lighten($primaryColor, 35%);
-    padding: 2em 0;
-  }
-
   .button {
-    margin: 0 1em 1em 1em;
+    margin: 0 1em 1em 0em;
   }
 }
 
@@ -232,4 +279,9 @@ span%status {
 .error {
   color: $error;
   font-size: 12px;
+}
+
+@keyframes logo-spin {
+  from { transform: rotateY(0deg); }
+  to { transform: rotateY(360deg); }
 }

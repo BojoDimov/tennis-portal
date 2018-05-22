@@ -11,26 +11,24 @@ export class LoginComponent extends Component {
   }
   render() {
     return (
-      <div className="margin container-fluid">
+      <div className="container">
         <h2 className="headline">Вход на потребител</h2>
         <form>
-          <div className="margin input">
+          <div className="input-group">
             <div>Потребителско име</div>
             <input type="text" value={this.state.username}
               onChange={e => this.setState({ username: e.target.value })} />
           </div>
-          <div className="margin input">
+          <div className="input-group">
             <div>Парола</div>
             <input type="password" value={this.state.password}
               onChange={e => this.setState({ password: e.target.value })} />
           </div>
-          <div className="input">
-            <Link to="/registration">Регистрация</Link>
-            <Link to="/user/reset">Забравена парола</Link>
+          <div className="input-group">
+            <span className="link"><Link to="/registration">Регистрация</Link></span>
+            <span className="link"><Link to="/user/reset">Забравена парола</Link></span>
           </div>
-          <div className="margin input">
-            <span className="button" >Вход</span>
-          </div>
+          <span className="button">Вход</span>
         </form>
       </div>
     )

@@ -38,9 +38,8 @@ export class CreateScheme extends Component {
   render() {
     return <div className="container-fluid">
       <h2 className="headline">Добавяне на схема</h2>
-      <form>
-
-        <div className="section">
+      <div className="form-container">
+        <form>
           <div className="input-group">
             <div>Издание</div>
             <Select url="/editions" onChange={id => this.setState({ tournamentEditionId: id })} value={this.state.tournamentEditionId} />
@@ -63,9 +62,7 @@ export class CreateScheme extends Component {
               value={this.state.info}
               onChange={e => this.setState({ info: e.target.value })} />
           </div>
-        </div>
 
-        <div className="section">
           <div className="input-group">
             <div>
               <label>
@@ -89,10 +86,10 @@ export class CreateScheme extends Component {
               <label>
                 <input type="checkbox"
                   onChange={e => this.setState({ mixedTeams: !this.state.mixedTeams })} />
-                Смесено</label>
+                Микс</label>
             </div>
             <div className="error">{this.state.errors.mixedSingleTeams ? '*Схемата е за единични отбори' : null}</div>
-            <div className="error">{this.state.errors.schemeType ? '*Поне едно от "Мъже", "Жени", "Смесено" трябва да бъде избрано' : null}</div>
+            <div className="error">{this.state.errors.schemeType ? '*Поне едно от "Мъже", "Жени", "Микс" трябва да бъде избрано' : null}</div>
           </div>
 
           <div className="input-group">
@@ -122,9 +119,7 @@ export class CreateScheme extends Component {
               onChange={e => this.setState({ maxPlayerCount: e.target.value })} />
             <div className="error">{this.state.errors.maxPlayerCount ? '*Невалидна стойност' : null}</div>
           </div>
-        </div>
 
-        <div className="section">
           <div className="input-group">
             <div>Дата на схемата</div>
             <input type="date"
@@ -155,13 +150,14 @@ export class CreateScheme extends Component {
                 onChange={e => this.setState({ hasGroupPhase: !this.state.hasGroupPhase })} />
               Включване на групова фаза</label>
           </div>
-        </div>
 
-        <ActionButton onSuccess={`/schemes/view/${this.state.id}`} onClick={() => this.create()}>
-          Готово
-        </ActionButton>
+          <ActionButton onSuccess={`/schemes/view/${this.state.id}`} onClick={() => this.create()}>
+            Готово
+          </ActionButton>
 
-      </form>
-    </div>;
+        </form>
+        <div className="right-sidebar"></div>
+      </div>
+    </div >;
   }
 }
