@@ -3,7 +3,9 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Roboto', sans-serif;
+  // font-family: 'Roboto', sans-serif;
+  // font-family: 'Poiret One', cursive;
+  font-family: 'Open Sans', sans-serif;
 }
 
 a {
@@ -26,6 +28,7 @@ a {
     padding: 0;
     margin: 0;
     margin-top: 1em;
+    flex: 1;
   }
 
   li {
@@ -34,15 +37,14 @@ a {
     padding: .2em 0;
     
     a {
-      font-size: 1em;
-      letter-spacing: 1.5px;
-      font-weight: 300;
-      word-wrap: break-word;
+      font-size: 1.5em;
+      letter-spacing: 1.8px;
+      padding: 0em 2em;
     }
   }
 
   li:not(.active) :hover {
-    opacity: .8;
+    opacity: .7;
   }
 
   .active {
@@ -51,6 +53,7 @@ a {
 
   .logo {
     margin-top: 1em;
+    padding: 0 4em;
     width: 75px;
   }
 }
@@ -59,6 +62,7 @@ a {
   flex: 8;
   display: inline-block;
   color: $primaryColor;
+  overflow: auto;
 }
 
 .container-fluid {
@@ -72,6 +76,7 @@ a {
   .headline {
     padding-bottom: .5em;
     border-bottom: 1px solid $primaryColor;
+    font-family: 'Poiret One', cursive;
   }
 
   .list {
@@ -116,6 +121,62 @@ a {
         text-decoration: underline;
       }
     }
+  }
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+
+  .form-style {
+    padding: .3em .3em;
+    width: 100%;
+    box-sizing: border-box;
+    color: darken($primaryColor, 10%);
+    border-radius: 5px;
+    border: 1px solid lighten($primaryColor, 30%);
+    outline: none;
+  }
+
+  .box-indentation {
+    flex: 1;
+    padding-bottom: 2em;
+    margin-left: 1em;
+  }
+
+  .input-group {
+    margin-bottom: .5em;
+  }
+
+  input {
+    @extend .form-style;
+  }
+
+  input[type="checkbox"] {
+    width: initial;
+    margin-right: .3em;
+  }
+
+  textarea {
+    @extend .form-style;
+    height: 5em;
+  }
+
+  select {
+    @extend .form-style;
+  }
+
+  .section {
+    @extend .box-indentation;
+  }
+
+  .section + .section {
+    border-top: .5px solid lighten($primaryColor, 35%);
+    padding: 2em 0;
+  }
+
+  .button {
+    margin: 0 1em 1em 1em;
   }
 }
 
@@ -171,5 +232,4 @@ span%status {
 .error {
   color: $error;
   font-size: 12px;
-  margin-top: .3em;
 }

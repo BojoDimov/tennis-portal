@@ -1,7 +1,7 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Roboto', sans-serif;
+  font-family: 'Open Sans', sans-serif;
 }
 
 a {
@@ -25,6 +25,7 @@ a {
   padding: 0;
   margin: 0;
   margin-top: 1em;
+  flex: 1;
 }
 
 .sidebar li {
@@ -34,14 +35,13 @@ a {
 }
 
 .sidebar li a {
-  font-size: 1em;
-  letter-spacing: 1.5px;
-  font-weight: 300;
-  word-wrap: break-word;
+  font-size: 1.5em;
+  letter-spacing: 1.8px;
+  padding: 0em 2em;
 }
 
 .sidebar li:not(.active) :hover {
-  opacity: .8;
+  opacity: .7;
 }
 
 .sidebar .active {
@@ -50,6 +50,7 @@ a {
 
 .sidebar .logo {
   margin-top: 1em;
+  padding: 0 4em;
   width: 75px;
 }
 
@@ -57,6 +58,7 @@ a {
   flex: 8;
   display: inline-block;
   color: #517F65;
+  overflow: auto;
 }
 
 .container-fluid {
@@ -71,6 +73,7 @@ a {
 .container-fluid .headline {
   padding-bottom: .5em;
   border-bottom: 1px solid #517F65;
+  font-family: 'Poiret One', cursive;
 }
 
 .container-fluid .list .item {
@@ -113,6 +116,49 @@ a {
 
 .container-fluid .card div .link {
   text-decoration: underline;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+form .form-style, form input, form textarea, form select {
+  padding: .3em .3em;
+  width: 100%;
+  box-sizing: border-box;
+  color: #3d604c;
+  border-radius: 5px;
+  border: 1px solid #a4c5b2;
+  outline: none;
+}
+
+form .box-indentation, form .section {
+  flex: 1;
+  padding-bottom: 2em;
+  margin-left: 1em;
+}
+
+form .input-group {
+  margin-bottom: .5em;
+}
+
+form input[type="checkbox"] {
+  width: initial;
+  margin-right: .3em;
+}
+
+form textarea {
+  height: 5em;
+}
+
+form .section + .section {
+  border-top: 0.5px solid #b4cfbf;
+  padding: 2em 0;
+}
+
+form .button {
+  margin: 0 1em 1em 1em;
 }
 
 .button {
@@ -162,5 +208,4 @@ span.draft, span.published, span.inactive {
 .error {
   color: lightcoral;
   font-size: 12px;
-  margin-top: .3em;
 }

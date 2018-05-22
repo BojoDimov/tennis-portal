@@ -80,7 +80,7 @@ export class Select extends React.Component {
 
   render() {
     return (
-      <select onChange={(e) => this.props.onChange(e.target.value)}>
+      <select onChange={(e) => this.props.onChange(e.target.value)} value={this.props.value}>
         <option selected disabled>-Избор-</option>
         {this.state.items.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}
       </select >
