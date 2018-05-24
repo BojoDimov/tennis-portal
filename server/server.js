@@ -27,23 +27,19 @@ let Editions = require('./controllers/editions');
 let Schemes = require('./controllers/schemes');
 let Users = require('./controllers/users');
 
-//define plugins
+app.listen(3100, () => console.log('Server listening...'));
+
+//wire controllers, order of middleware is super important
 app.use(cors());
 app.use(express.json());
 
-app.listen(3100, () => console.log('Server listening...'));
+Users.init(app);
 
-//wire controllers
+app.use(passport.authenticate('bearer', { session: false }));
+
 Tournaments.init(app);
 Editions.init(app);
 Schemes.init(app);
-Users.init(app);
-
-app.get('/test',
-  passport.authenticate('bearer', { session: false }),
-  (req, res) => {
-    res.json({ authenticated: true });
-  });
 
 //error handling middleware
 app.use((err, req, res, next) => {

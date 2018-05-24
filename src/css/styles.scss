@@ -65,8 +65,6 @@ a {
   overflow: auto;
 }
 
-
-
 .box-indentation {
   flex: 1;
   padding-bottom: 0em;
@@ -108,8 +106,7 @@ a {
     }
 
     .button {
-      margin: 0;
-      margin-bottom: 1em;
+      margin: 1em 0;
       align-self: flex-start;
       text-align: center;
       padding: .2em 2em;

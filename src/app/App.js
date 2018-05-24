@@ -6,12 +6,14 @@ import { RegistrationComponent } from '../user/RegistrationComponent';
 
 class App extends Component {
   render() {
-    return (<LoginGuard />);
+    return (<LoginGuard token={window.localStorage.getItem('token')} />);
   }
 }
 
-const LoginGuard = () => {
-  const flag = true;
+const LoginGuard = ({ token }) => {
+  console.log(token);
+  const flag = !!token;
+
   if (flag)
     return (<Admin />);
   else

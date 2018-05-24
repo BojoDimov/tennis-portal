@@ -7,6 +7,7 @@ export class CreateScheme extends Component {
     super(props);
 
     this.state = {
+      tournamentEditionId: 0,
       singleTeams: true,
       maleTeams: false,
       femaleTeams: false,
