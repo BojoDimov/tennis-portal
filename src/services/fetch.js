@@ -2,29 +2,37 @@ const backend = 'http://localhost:3100/api';
 
 module.exports = {
   post: function (path, data) {
-    let tokenInfo = JSON.parse(window.localStorage.getItem('token'));
-    return fetch(backend + path, {
+    let options = {
       body: JSON.stringify(data), // must match 'Content-Type' header
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + (tokenInfo ? tokenInfo.token : '')
+        'Content-Type': 'application/json'
       },
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
       mode: 'cors', // no-cors, cors, *same-origin
-    }).then(res => error_handler(res))
+    };
+
+    let tokenInfo = JSON.parse(window.localStorage.getItem('token'));
+    if (tokenInfo)
+      options.headers['Authorization'] = 'Bearer ' + tokenInfo.token;
+
+    return fetch(backend + path, options)
+      .then(res => error_handler(res))
       .then(res => res.json());
 
   },
   get: function (path) {
-    let tokenInfo = JSON.parse(window.localStorage.getItem('token'));
     let options = {
       method: 'GET',
       mode: 'cors',
       headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + (tokenInfo ? tokenInfo.token : '')
+        'Content-Type': 'application/json'
       }
     }
+
+    let tokenInfo = JSON.parse(window.localStorage.getItem('token'));
+    if (tokenInfo)
+      options.headers['Authorization'] = 'Bearer ' + tokenInfo.token;
+
     return fetch(backend + path, options).then(res => error_handler(res))
       .then(res => res.json());
   }

@@ -20,6 +20,7 @@ a {
   display: flex;
   flex-direction: column;
   background-color: #222222;
+  color: #9EE5E5;
 }
 
 .sidebar ul {
@@ -29,9 +30,19 @@ a {
   flex: 1;
 }
 
+.sidebar .logout {
+  cursor: pointer;
+  position: absolute;
+  bottom: 0;
+  text-decoration: underline;
+}
+
+.sidebar .logout:hover {
+  opacity: .7;
+}
+
 .sidebar li {
   list-style: none;
-  color: #9EE5E5;
   padding: .2em 0;
 }
 

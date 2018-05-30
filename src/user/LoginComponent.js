@@ -6,13 +6,10 @@ import { post } from '../services/fetch';
 export class LoginComponent extends Component {
   login() {
     return post('/login', this.state)
-      .then(res => window.localStorage.setItem('token', JSON.stringify(res)));
-    // {
-    //   debugger;
-    //   console.log(res);
-    //   let tokenInfo = JSON.stringify(res);
-    //   window.localStorage.setItem('token', JSON.stringify(res))
-    // });
+      .then(res => {
+        window.localStorage.setItem('token', JSON.stringify(res));
+        return this.props.onChange();
+      });
   }
 
   render() {

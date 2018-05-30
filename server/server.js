@@ -13,7 +13,7 @@ passport.use(new HttpBearerStrategy((token, next) => {
       token: token
     }
   }).then(token => {
-    if (token) next(null, true);
+    if (token && token.expires > new Date()) next(null, true);
     else next(null, false);
   }).catch(err => next(err));
 }));

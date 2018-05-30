@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
+import { AuthenticatedUser } from '../../app/AuthenticatedUser';
 import logo from './tennis-logo.svg';
 
 export class Menu extends Component {
@@ -25,11 +26,21 @@ export class Menu extends Component {
     );
   }
 
+  logout(user) {
+    localStorage.setItem('token', null);
+    user.change();
+    //window.location.pathname = '/login';
+  }
+
   render() {
     return <div className="sidebar">
       <img src={logo} className="logo" alt="logo" />
       <ul>{this.links.map(link => this.getMenuElement(link))}</ul>
-    </div>
+      <AuthenticatedUser>
+        {user => <span className="logout" onClick={() => this.logout(user)}>Изход</span>}
+      </AuthenticatedUser>
+
+    </div >
   }
 
   GetActiveClass(path) {

@@ -37,17 +37,20 @@ const issueToken = (userId, req) => {
       userId: userId
     }
   }).then(token => {
+    const expires = new Date();
+    expires.setHours(expires.getHours() + 24);
+
     if (token)
       return token.update({
         token: crypto.randomBytes(40).toString('hex').slice(40),
-        expires: new Date(),
+        expires: expires,
         issued: req.ip
       });
     else
       return Tokens.create({
         userId: userId,
         token: crypto.randomBytes(40).toString('hex').slice(40),
-        expires: new Date(),
+        expires: expires,
         issued: req.ip
       });
   });
