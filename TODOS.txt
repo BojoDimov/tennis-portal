@@ -1,0 +1,6 @@
+1. Create some form of confirmation on sensitive operations (modal?)
+2. Remove Sid-Nav because we dont need Editions & Schemes to be navigable from menu
+3. Breadcrumb
+4. Create scheme -> select scheme type from {singles, doubles}
+5. Registration start/end to be timestamp
+6. Scheme preparation view | select seed size -> create bracket
