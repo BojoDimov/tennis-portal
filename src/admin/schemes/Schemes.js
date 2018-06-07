@@ -3,7 +3,7 @@ import { get } from '../../services/fetch';
 import {
   Route, Switch, Link
 } from 'react-router-dom';
-import { ItemList, Status } from '../Infrastructure';
+import { Status } from '../Infrastructure';
 import { CreateScheme } from './CreateScheme';
 import { ViewScheme } from './ViewScheme';
 import { EditScheme } from './EditScheme';

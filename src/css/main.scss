@@ -5,6 +5,7 @@ body {
   padding: 0;
   font-family: $primaryFont;
   background-color: #F9F9F9;
+  color: $primary;
 }
 
 a {
@@ -34,7 +35,7 @@ a:hover{
 
 .content {
   width: 60%;
-  margin: 1em auto;
+  margin: 2em auto;
   padding:1em;
 }
 

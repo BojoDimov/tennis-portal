@@ -3,7 +3,7 @@ import { get } from '../../services/fetch';
 import {
   Route, Switch, Link
 } from 'react-router-dom';
-import { ItemList, Status } from '../Infrastructure';
+import { Status } from '../Infrastructure';
 import { CreateEdition } from './CreateEdition';
 import { ViewEdition } from './ViewEdition';
 import { EditEdition } from './EditEdition';

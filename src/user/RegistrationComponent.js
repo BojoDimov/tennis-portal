@@ -21,8 +21,8 @@ export class RegistrationComponent extends Component {
 
   render() {
     return (
-      <div className="container">
-        <h2 className="headline">Създаване на акаунт</h2>
+      <div className="container-fluid">
+        <h2>Регистрация</h2>
         <form>
           <div className="input-group">
             <div>Потребителско име</div>
@@ -81,7 +81,7 @@ export class RegistrationComponent extends Component {
             </select>
           </div>
 
-          <ActionButton className="margin input"
+          <ActionButton
             onSuccess="/login"
             onClick={() => this.create()}>Регистрирай ме</ActionButton>
         </form>

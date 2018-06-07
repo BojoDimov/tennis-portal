@@ -5,7 +5,7 @@ import { get } from '../../services/fetch';
 import {
   Route, Switch, Link
 } from 'react-router-dom';
-import { ItemList, Status } from '../Infrastructure';
+import { Status } from '../Infrastructure';
 
 export class Tournaments extends Component {
   constructor(props) {

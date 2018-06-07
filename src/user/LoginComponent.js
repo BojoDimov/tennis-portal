@@ -15,7 +15,7 @@ export class LoginComponent extends Component {
   render() {
     return (
       <div className="container">
-        <h2 className="headline">Вход на потребител</h2>
+        <h2 className="headline">Вход в системата</h2>
         <form>
           <div className="input-group">
             <div>Потребителско име</div>

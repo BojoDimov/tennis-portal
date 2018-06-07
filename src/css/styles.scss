@@ -2,73 +2,27 @@
 @import 'main';
 @import 'tournaments';
 
-#root {
+#menu {
+  position: absolute;
   display: flex;
-  height: 100vh;
-  color: $primaryColor;
-}
+  align-items: center;
+  justify-content: space-between;
+  background: $click;
+  color: white;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2rem;
+  font-size: 1.3em;
 
-.sidebar {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  background-color: $menuBackground;
-  color: $menuColor;
-
-  ul {
-    padding: 0;
-    margin: 0;
-    margin-top: 1em;
-    flex: 1;
-  }
-
-  .logout {
+  svg {
     cursor: pointer;
-    position: absolute;
-    bottom: 0;
-    text-decoration: underline;
+    margin: 0 1rem;
   }
 
-  .logout:hover {
-    opacity: .7;
+  a svg, a:hover svg {
+    color: white;
   }
-
-  li {
-    list-style: none;
-    padding: .2em 0;
-    
-    a {
-      font-size: 1.5em;
-      letter-spacing: 1.8px;
-      padding: 0em 2em;
-    }
-  }
-
-  li:not(.active) :hover {
-    opacity: .7;
-  }
-
-  .active {
-    background-color: lighten($menuBackground, 15%);
-  }
-
-  .logo {
-    animation: logo-spin infinite 10s linear;
-    margin-top: 1em;
-    padding: 0 4em;
-    width: 75px;
-  }
-}
-
-.main {
-  flex: 8;
-  overflow: auto;
-}
-
-.box-indentation {
-  flex: 1;
-  padding-bottom: 0em;
-  margin-left: 1em;
 }
 
 .input-group {
@@ -120,50 +74,6 @@
 .container-fluid {
   @extend .container;
   margin: 1em;
-  
-  .list {
-    .item {
-      margin: .5em 0;
-
-      .name {
-        font-size: 1.3em;
-      }
-
-      .info {
-        padding-left: 1em;
-      }
-    }
-
-    .info {
-      font-style: italic;
-      font-size: 1em;
-      color: darkgrey;
-    }
-  }
-
-  .card {
-    padding-bottom: 1em;
-    display: flex;
-    flex-direction: column;
-
-    div {
-      display: flex;
-      margin-bottom: .1em;
-      
-      .label {
-        flex: 1;
-        font-weight: 700;
-      }
-
-      .value {
-        flex: 4;
-      }
-
-      .link {
-        text-decoration: underline;
-      }
-    }
-  }
 
   .form-container {
     display: flex;

@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { get } from '../../services/fetch';
-import { Status, ItemList } from '../Infrastructure';
+import { Status } from '../Infrastructure';
 import { SchemesTable } from '../schemes/Schemes';
 
 export class ViewEdition extends Component {

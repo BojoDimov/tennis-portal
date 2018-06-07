@@ -1,25 +1,6 @@
 import React from 'react';
 import { Link, Route } from 'react-router-dom';
 import { get } from '../services/fetch';
-// import '../app/App.css';
-
-export class ItemList extends React.Component {
-  render() {
-    return (
-      <div className="container-fluid">
-        <h2 className="headline">{this.props.name}
-          <Link to={{ pathname: `${this.props.match.path}/create`, search: this.props.rootQuery }}>
-            <span className="button">добавяне</span>
-          </Link>
-        </h2>
-        <div className="list">
-          {this.props.items.length === 0 ? <span className="info">Няма намерени резултати</span> : null}
-          {this.props.items.map(item => <ItemView match={this.props.match} key={item.id} item={item} />)}
-        </div>
-      </div>
-    );
-  }
-}
 
 export const ItemView = ({ match, item }) => {
   return (

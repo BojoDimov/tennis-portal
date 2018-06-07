@@ -3,6 +3,7 @@ body {
   padding: 0;
   font-family: "Open Sans", sans-serif;
   background-color: #F9F9F9;
+  color: #505050;
 }
 
 a {
@@ -30,7 +31,7 @@ a:hover {
 
 .content {
   width: 60%;
-  margin: 1em auto;
+  margin: 2em auto;
   padding: 1em;
 }
 
@@ -105,73 +106,27 @@ a:hover {
   font-weight: 700;
 }
 
-#root {
-  display: flex;
-  height: 100vh;
-  color: #505050;
-}
-
-.sidebar {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  background-color: #222222;
-  color: #9EE5E5;
-}
-
-.sidebar ul {
-  padding: 0;
-  margin: 0;
-  margin-top: 1em;
-  flex: 1;
-}
-
-.sidebar .logout {
-  cursor: pointer;
+#menu {
   position: absolute;
-  bottom: 0;
-  text-decoration: underline;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #0074B2;
+  color: white;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2rem;
+  font-size: 1.3em;
 }
 
-.sidebar .logout:hover {
-  opacity: .7;
+#menu svg {
+  cursor: pointer;
+  margin: 0 1rem;
 }
 
-.sidebar li {
-  list-style: none;
-  padding: .2em 0;
-}
-
-.sidebar li a {
-  font-size: 1.5em;
-  letter-spacing: 1.8px;
-  padding: 0em 2em;
-}
-
-.sidebar li:not(.active) :hover {
-  opacity: .7;
-}
-
-.sidebar .active {
-  background-color: #484848;
-}
-
-.sidebar .logo {
-  animation: logo-spin infinite 10s linear;
-  margin-top: 1em;
-  padding: 0 4em;
-  width: 75px;
-}
-
-.main {
-  flex: 8;
-  overflow: auto;
-}
-
-.box-indentation {
-  flex: 1;
-  padding-bottom: 0em;
-  margin-left: 1em;
+#menu a svg, #menu a:hover svg {
+  color: white;
 }
 
 .input-group {
@@ -219,48 +174,6 @@ a:hover {
 
 .container-fluid {
   margin: 1em;
-}
-
-.container-fluid .list .item {
-  margin: .5em 0;
-}
-
-.container-fluid .list .item .name {
-  font-size: 1.3em;
-}
-
-.container-fluid .list .item .info {
-  padding-left: 1em;
-}
-
-.container-fluid .list .info {
-  font-style: italic;
-  font-size: 1em;
-  color: darkgrey;
-}
-
-.container-fluid .card {
-  padding-bottom: 1em;
-  display: flex;
-  flex-direction: column;
-}
-
-.container-fluid .card div {
-  display: flex;
-  margin-bottom: .1em;
-}
-
-.container-fluid .card div .label {
-  flex: 1;
-  font-weight: 700;
-}
-
-.container-fluid .card div .value {
-  flex: 4;
-}
-
-.container-fluid .card div .link {
-  text-decoration: underline;
 }
 
 .container-fluid .form-container {
