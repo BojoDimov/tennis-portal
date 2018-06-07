@@ -15,7 +15,8 @@ export class ViewTournament extends Component {
   }
 
   componentDidMount() {
-    return this.getData();
+    return this.getData()
+      .then(({ tournament }) => this.updatePath(tournament));
   }
 
   getData() {
@@ -23,7 +24,16 @@ export class ViewTournament extends Component {
       .then(res => {
         res.loading = false;
         this.setState(res);
+        return res;
       });
+  }
+
+  updatePath(tournament) {
+    this.props.onInit({
+      name: tournament.name,
+      link: `/tournaments/view/${tournament.id}`
+    });
+    return true;
   }
 
   publish() {

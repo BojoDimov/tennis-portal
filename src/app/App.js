@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Admin } from '../admin/Admin';
 import { Public } from '../public/Public';
 import { Menu } from '../public/Menu';
+import { Breadcrumb, ProvideBreadcrumbPath } from '../public/Breadcrumb';
 import { ProvideAuthenticatedUser, AuthenticatedUser } from './AuthenticatedUser';
 
 const LoginGuard = ({ isLogged }) => {
@@ -18,6 +19,10 @@ export class App extends Component {
       authenticatedUser: {
         isLogged: JSON.parse(localStorage.getItem('token')) != null,
         change: this.initAuthenticatedUser.bind(this)
+      },
+      breadcrumb: {
+        path: [],
+        updatePath: this.updateBreadcrumb.bind(this)
       }
     }
   }
@@ -32,11 +37,35 @@ export class App extends Component {
     });
   }
 
+  updateBreadcrumb(part) {
+    //debugger;
+    let path = this.state.breadcrumb.path;
+    let newPath = [];
+    let end = false;
+    for (let i = 0; i < path.length && !end; i++) {
+      if (part.category == path[i].category)
+        end = true;
+      else
+        newPath.push(path[i]);
+    }
+    newPath.push(part)
+
+    this.setState({
+      breadcrumb: {
+        path: newPath,
+        updatePath: this.updateBreadcrumb.bind(this)
+      }
+    })
+  }
+
   render() {
     return (
       <ProvideAuthenticatedUser value={this.state.authenticatedUser}>
-        <Menu />
-        <LoginGuard isLogged={this.state.authenticatedUser.isLogged} />
+        <ProvideBreadcrumbPath value={this.state.breadcrumb}>
+          <Menu />
+          <Breadcrumb path={this.state.breadcrumb.path} />
+          <LoginGuard isLogged={this.state.authenticatedUser.isLogged} />
+        </ProvideBreadcrumbPath>
       </ProvideAuthenticatedUser>
     );
   }

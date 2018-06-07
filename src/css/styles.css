@@ -31,8 +31,13 @@ a:hover {
 
 .content {
   width: 60%;
-  margin: 2em auto;
-  padding: 1em;
+  margin: 0 auto;
+}
+
+.breadcrumb {
+  width: 60%;
+  margin: 2.3em auto;
+  margin-bottom: 0;
 }
 
 .button {
