@@ -47,56 +47,69 @@ export class ViewScheme extends Component {
       return (<div>Loading...</div>);
     else
       return (
-        <Fragment>
-          <div className="container-fluid">
-            <h2 className="headline"><span>{this.state.scheme.name}</span> <Status status={this.state.scheme.status} /></h2>
-            <div className="card">
-              <div>
-                <span className="label">Турнир: </span>
-                <span className="value link">
-                  <Link to={`/tournaments/view/${this.state.tournament.id}`}>
-                    {this.state.tournament.name}
-                  </Link>
-                </span>
-              </div>
-              <div>
-                <span className="label">Издание: </span>
-                <span className="value link">
-                  <Link to={`/editions/view/${this.state.edition.id}`}>
-                    {this.state.edition.name}
-                  </Link>
-                </span>
-              </div>
-              <div>
-                <span className="label">Информация: </span>
-                <span className="value">{this.state.scheme.info}</span>
-              </div>
-              <div >
-                <span className="label">Дата: </span>
-                <span className="value">{dateString(this.state.scheme.date)}</span>
-              </div>
-              <div >
-                <span className="label">Ограничения: </span>
-                <span className="value">{this.getSchemeLimitations()}</span>
-              </div>
-              <div >
-                <span className="label">Брой играчи: </span>
-                <span className="value">{this.state.scheme.maxPlayerCount}</span>
-              </div>
-              <div >
-                <span className="label">Записване: </span>
-                <span className="value">от {dateString(this.state.scheme.registrationStart)} до {dateString(this.state.scheme.registrationEnd)}</span>
-              </div>
-              <div >
-                <span className="label">Групова фаза: </span>
-                <span className="value">
-                  {this.state.scheme.hasGroupPhase ? 'има групова фаза' : 'няма групова фаза'}
-                </span>
-              </div>
-            </div>
-            {this.buttons()}
-          </div>
-        </Fragment>
+        <div className="container-fluid">
+          <table className="list-table">
+            <thead>
+              <tr>
+                <th>
+                  <span>{this.state.scheme.name}</span>
+                  <Status status={this.state.scheme.status} />
+                  {this.buttons()}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <table className="info-table">
+                    <tbody>
+                      <tr>
+                        <td className="labels"><b>Турнир</b></td>
+                        <td>
+                          <Link to={`/tournaments/view/${this.state.tournament.id}`}>
+                            {this.state.tournament.name}
+                          </Link>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><b>Издание</b></td>
+                        <td>
+                          <Link to={`/editions/view/${this.state.edition.id}`}>
+                            {this.state.edition.name}
+                          </Link>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><b>Информация</b></td><td>{this.state.scheme.info}</td>
+                      </tr>
+                      <tr>
+                        <td><b>Дата</b></td><td>{dateString(this.state.scheme.date)}</td>
+                      </tr>
+                      <tr>
+                        <td><b>Ограничения</b></td><td>{this.getSchemeLimitations()}</td>
+                      </tr>
+                      <tr>
+                        <td><b>Брой играчи</b></td><td>{this.state.scheme.maxPlayerCount}</td>
+                      </tr>
+                      <tr>
+                        <td><b>Записване</b></td>
+                        <td>
+                          от {dateString(this.state.scheme.registrationStart)} до {dateString(this.state.scheme.registrationEnd)}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><b>Групова фаза</b></td>
+                        <td>
+                          {this.state.scheme.hasGroupPhase ? 'има групова фаза' : 'няма групова фаза'}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       );
   }
 
@@ -124,11 +137,11 @@ export class ViewScheme extends Component {
 
   buttons() {
     return (
-      <div className="button-group">
+      <span className="button-group">
         {this.state.scheme.status === 'draft' ? <span className="button" onClick={() => this.publish()}>Публикуване</span> : null}
         {this.state.scheme.status === 'draft' ? <span className="button"><Link to={`/schemes/edit/${this.state.scheme.id}`}>Промяна</Link></span> : null}
         {this.state.scheme.status === 'published' ? <span className="button" onClick={() => this.draft()}>Връщане в чернова</span> : null}
-      </div>
+      </span>
     );
   }
 }

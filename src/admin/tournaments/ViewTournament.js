@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { get } from '../../services/fetch';
 import { Status, ItemList } from '../Infrastructure';
+import { EditionsTable } from '../editions/Editions';
 
 export class ViewTournament extends Component {
   constructor(props) {
@@ -48,20 +49,33 @@ export class ViewTournament extends Component {
       return (
         <Fragment>
           <div className="container-fluid">
-            <h2 className="headline">
-              <span>{this.state.tournament.name}</span>
-              <Status status={this.state.tournament.status} />
-            </h2>
-            <div className="card">
-              <div>
-                <span className="label">Информация: </span>
-                <span className="value">{this.state.tournament.info}</span>
-              </div>
-            </div>
-            {this.buttons()}
+            <table className="list-table">
+              <thead>
+                <tr>
+                  <th>
+                    <span>{this.state.tournament.name}</span>
+                    <Status status={this.state.tournament.status} />
+                    {this.buttons()}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <table className="info-table">
+                      <tbody>
+                        <tr>
+                          <td className="labels"><b>Информация</b></td><td>{this.state.tournament.info}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
-          <ItemList items={this.state.editions} name="Издания" match={{ path: '/editions' }} rootQuery={`tournamentId=${this.state.tournament.id}`} />
+          <EditionsTable editions={this.state.editions} />
 
           <div className="container-fluid">
             <h2 className="headline"><span>Ранглиста</span></h2>
@@ -72,11 +86,11 @@ export class ViewTournament extends Component {
 
   buttons() {
     return (
-      <div className="button-group">
+      <span className="button-group">
         {this.state.tournament.status === 'draft' ? <span className="button" onClick={() => this.publish()}>Публикуване</span> : null}
         {this.state.tournament.status === 'draft' ? <span className="button"><Link to={`/tournaments/edit/${this.state.tournament.id}`}>Промяна</Link></span> : null}
         {this.state.tournament.status === 'published' ? <span className="button" onClick={() => this.draft()}>Връщане в чернова</span> : null}
-      </div>
+      </span>
     );
   }
 }

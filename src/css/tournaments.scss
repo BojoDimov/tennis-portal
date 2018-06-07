@@ -1,0 +1,38 @@
+@import 'variables';
+
+.info-table {
+  table-layout: fixed;
+}
+
+.info-table .labels {
+  width: 10em;
+}
+
+.info-table > tbody > tr > td {
+  vertical-align: top;
+}
+
+.list-table {
+  table-layout: fixed;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.list-table > tbody > tr > td + td {
+  border-left: 1px solid lighten($border, 30%);
+}
+
+.list-table > tbody > tr > td {
+  text-align: left;
+  padding: .5em 0em;
+  border-bottom: 1px solid lighten($border, 30%);
+}
+
+.list-table th {
+  text-align: left;
+  padding: .5em 0em;
+  font-size: 1.5em;
+  font-family: $secondaryFont;
+  border-bottom: 1px solid $border;
+  font-weight: 700;
+}

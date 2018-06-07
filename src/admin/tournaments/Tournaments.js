@@ -3,9 +3,9 @@ import { CreateTournament } from './CreateTournament';
 import { ViewTournament } from './ViewTournament';
 import { get } from '../../services/fetch';
 import {
-  Route, Switch
+  Route, Switch, Link
 } from 'react-router-dom';
-import { ItemList } from '../Infrastructure';
+import { ItemList, Status } from '../Infrastructure';
 
 export class Tournaments extends Component {
   constructor(props) {
@@ -40,13 +40,44 @@ export class Tournaments extends Component {
               <ViewTournament {...props} onChange={() => this.getData()} />
             );
           }} />
-          <Route exact path={`${this.props.match.path}`} render={() => {
-            return (
-              <ItemList name="Турнири" items={this.state.tournaments} match={this.props.match} />
-            )
-          }} />
+          <Route exact path={`${this.props.match.path}`} render={() => <TournamentsTable tournaments={this.state.tournaments} />} />
         </Switch>
       </Fragment>
+    );
+  }
+}
+
+export class TournamentsTable extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <div className="container-fluid">
+        <table className="list-table">
+          <thead>
+            <tr>
+              <th>
+                <span>Турнири</span>
+                <Link to={`/tournaments/create`}>
+                  <span className="button">добавяне</span>
+                </Link>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.props.tournaments.map(t => (
+              <tr>
+                <td>
+                  <Link to={`/tournaments/view/${t.id}`} >{t.name}</Link>
+                  <Status status={t.status} />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     );
   }
 }

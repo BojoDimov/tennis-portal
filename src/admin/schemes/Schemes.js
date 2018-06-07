@@ -1,9 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import { get } from '../../services/fetch';
 import {
-  Route, Switch
+  Route, Switch, Link
 } from 'react-router-dom';
-import { ItemList } from '../Infrastructure';
+import { ItemList, Status } from '../Infrastructure';
 import { CreateScheme } from './CreateScheme';
 import { ViewScheme } from './ViewScheme';
 import { EditScheme } from './EditScheme';
@@ -44,13 +44,43 @@ export class Schemes extends Component {
               <EditScheme {...props} onChange={() => this.getData()} />
             );
           }} />
-          <Route exact path={`${this.props.match.path}`} render={() => {
-            return (
-              <ItemList name="Схеми" items={this.state.schemes} match={this.props.match} />
-            )
-          }} />
         </Switch>
       </Fragment >
+    );
+  }
+}
+
+export class SchemesTable extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+
+  render() {
+    return (
+      <div className="container-fluid">
+        <table className="list-table">
+          <thead>
+            <tr>
+              <th>
+                <span>Схеми</span>
+                <Link to={`/schemes/create`}>
+                  <span className="button">добавяне</span>
+                </Link>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.props.schemes.map(t => (
+              <tr>
+                <td>
+                  <Link to={`/schemes/view/${t.id}`} >{t.name}</Link>
+                  <Status status={t.status} />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     );
   }
 }

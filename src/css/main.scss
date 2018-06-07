@@ -1,0 +1,76 @@
+@import 'variables';
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: $primaryFont;
+  background-color: #F9F9F9;
+}
+
+a {
+  text-decoration: none;
+  color: $click;
+  font-weight: 700;
+}
+
+a:hover{
+  color: $clickHover;
+  cursor: pointer;
+}
+
+.shadow {
+  box-shadow: 2px 3px darken(lightgray, 20%);
+}
+
+.container {
+  @extend .shadow;
+
+  background-color: white;
+  border: .5px solid lightgrey;
+  padding: 1em;
+  border-radius: 8px;
+  overflow: auto;
+}
+
+.content {
+  width: 60%;
+  margin: 1em auto;
+  padding:1em;
+}
+
+.button {
+  cursor: pointer;
+  font-weight: 700;
+  font-size: 14px;
+  font-family: $primaryFont;
+  border: 1px solid $click;
+  color: $click;
+  border-radius: 5px;
+  display: inline-block;
+  margin-left:1em;
+  padding: .2em .5em; 
+}
+
+.button:hover {
+  background-color: $click;
+  color: white;
+
+  a, a:hover {
+    color: white;
+  }
+}
+
+.button-group {
+  .button + .button {
+    margin-left: .3em;
+  }
+}
+
+.info {
+  font-style: italic;
+  font-size: .8em;
+  color: lighten($primary, 10%);
+  margin-left: .5em;
+  font-weight: 500;
+}
+

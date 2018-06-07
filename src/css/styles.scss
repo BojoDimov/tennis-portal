@@ -1,17 +1,6 @@
-@import 'colors';
-
-body {
-  margin: 0;
-  padding: 0;
-  // font-family: 'Roboto', sans-serif;
-  // font-family: 'Poiret One', cursive;
-  font-family: 'Open Sans', sans-serif;
-}
-
-a {
-  text-decoration: none ;
-  color: inherit;
-}
+@import 'variables';
+@import 'main';
+@import 'tournaments';
 
 #root {
   display: flex;
@@ -104,6 +93,7 @@ a {
     flex-basis: 35%;
   }
 
+  
   form {
     display: flex;
     width: 100%;
@@ -116,6 +106,7 @@ a {
       margin-left: 1em;
     }
 
+
     .button {
       margin: 1em 0;
       align-self: flex-start;
@@ -125,20 +116,6 @@ a {
   }
 }
 
-.container {
-  border: .5px solid lightgrey;
-  background-color: #FFF;
-  padding: 0 1em;
-  border-radius: 8px;
-  overflow: auto;
-  box-shadow: 2px 3px darken(lightgray, 20%);
-
-  .headline {
-    padding-bottom: .5em;
-    border-bottom: 1px solid $primaryColor;
-    font-family: 'Poiret One', cursive;
-  }
-}
 
 .container-fluid {
   @extend .container;
@@ -233,32 +210,6 @@ form {
   .button {
     margin: 0 1em 1em 0em;
   }
-}
-
-.button {
-  cursor: pointer;
-  font-weight: 700;
-  font-size: 14px;
-  border: 1px solid $primaryColor;
-  border-radius: 5px;
-  display: inline-block;
-  margin: 0 .3em;
-  padding: .2em .5em; 
-}
-
-.button-group {
-  .button{
-    margin: 0;
-    margin-bottom: 1em;
-  }
-
-  .button + .button {
-    margin-left: .3em;
-  }
-}
-
-.button:hover {
-  opacity: .7;
 }
 
 span%status {

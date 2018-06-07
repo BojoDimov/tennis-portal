@@ -44,7 +44,8 @@ export const Status = ({ status }) => {
     'inactive': 'неактивен'
   }
   return (
-    <span className={status}>{statusNames[status]}</span>
+    // <span className={status}>{statusNames[status]}</span>
+    <span className="info">{status === 'draft' ? '(' + (statusNames[status]) + ')' : null}</span>
   );
 };
 

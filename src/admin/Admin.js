@@ -1,28 +1,26 @@
 import React, { Component } from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
-import { Menu } from './menu/Menu'
 import { Tournaments } from './tournaments/Tournaments';
-import { Schemes } from './schemes/Schemes';
 import { Editions } from './editions/Editions';
+import { Schemes } from './schemes/Schemes';
+import './Admin.css';
 
 export class Admin extends Component {
   defaultRoute = '/tournaments';
 
   render() {
     return (
-      <React.Fragment>
-        <Menu defaultRoute={this.defaultRoute} />
-        <div className="main">
-          <Switch>
-            <Route exact path="/">
-              <Redirect to={this.defaultRoute} />
-            </Route>
-            <Route path="/tournaments" component={Tournaments} />
-            <Route path="/schemes" component={Schemes} />
-            <Route path="/editions" component={Editions} />
-          </Switch>
-        </div>
-      </React.Fragment >
+      <div className="content">
+        <Switch>
+          <Route exact path="/">
+            <Redirect to="/tournaments" />
+          </Route>
+          <Route path="/tournaments" component={Tournaments} />
+          <Route path="/editions" component={Editions} />
+          <Route path="/schemes" component={Schemes} />
+          <Route render={() => <h1>404 Not Found.</h1>} />
+        </Switch>
+      </div>
     );
   }
 }

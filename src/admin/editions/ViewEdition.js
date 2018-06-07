@@ -2,6 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { get } from '../../services/fetch';
 import { Status, ItemList } from '../Infrastructure';
+import { SchemesTable } from '../schemes/Schemes';
 
 export class ViewEdition extends Component {
   constructor(props) {
@@ -49,46 +50,58 @@ export class ViewEdition extends Component {
       return (
         <Fragment>
           <div className="container-fluid">
-            <h2 className="headline">
-              <span>{this.state.edition.name}</span>
-              <Status status={this.state.edition.status} />
-            </h2>
-            <div className="card">
-              <div>
-                <span className="label">Турнир: </span>
-                <span className="value link">
-                  <Link to={`/tournaments/view/${this.state.tournament.id}`}>
-                    {this.state.tournament.name}
-                  </Link>
-                </span>
-              </div>
-              <div className="value">
-                <span className="label">Информация: </span>
-                <span className="value">{this.state.edition.info}</span>
-              </div>
-              <div>
-                <span className="label">Начало на турнира: </span>
-                <span className="value">{dateString(this.state.edition.startDate)}</span>
-              </div>
-              <div>
-                <span className="label">Край на турнира: </span>
-                <span className="value">{dateString(this.state.edition.endDate)}</span>
-              </div>
-            </div>
-            {this.buttons()}
+            <table className="list-table">
+              <thead>
+                <tr>
+                  <th>
+                    <span>{this.state.edition.name}</span>
+                    <Status status={this.state.edition.status} />
+                    {this.buttons()}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <table className="info-table">
+                      <tbody>
+                        <tr>
+                          <td className="labels"><b>Турнир</b></td>
+                          <td>
+                            <Link to={`/tournaments/view/${this.state.tournament.id}`}>
+                              {this.state.tournament.name}
+                            </Link>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td><b>Информация</b></td><td>{this.state.edition.info}</td>
+                        </tr>
+                        <tr>
+                          <td><b>Начало</b></td><td>{dateString(this.state.edition.startDate)}</td>
+                        </tr>
+                        <tr>
+                          <td><b>Край</b></td><td>{dateString(this.state.edition.endDate)}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
-          <ItemList name="Схеми" items={this.state.schemes} match={{ path: '/schemes' }} rootQuery={`editionId=${this.state.edition.id}`} />
+
+          <SchemesTable schemes={this.state.schemes} />
         </Fragment>
       );
   }
 
   buttons() {
     return (
-      <div className="button-group">
+      <span className="button-group">
         {this.state.edition.status === 'draft' ? <span className="button" onClick={() => this.publish()}>Публикуване</span> : null}
         {this.state.edition.status === 'draft' ? <span className="button"><Link to={`/editions/edit/${this.state.edition.id}`}>Промяна</Link></span> : null}
         {this.state.edition.status === 'published' ? <span className="button" onClick={() => this.draft()}>Връщане в чернова</span> : null}
-      </div>
+      </span>
     );
   }
 }
