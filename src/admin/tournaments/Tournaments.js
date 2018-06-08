@@ -57,7 +57,7 @@ export class TournamentsTable extends React.Component {
 
   render() {
     return (
-      <div className="container-fluid">
+      <div className="container test">
         <table className="list-table">
           <thead>
             <tr>

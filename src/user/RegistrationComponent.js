@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { post } from '../services/fetch';
 import { ActionButton } from '../admin/Infrastructure';
+import './Test.css'
 
 export class RegistrationComponent extends Component {
   constructor(props) {
@@ -21,9 +22,9 @@ export class RegistrationComponent extends Component {
 
   render() {
     return (
-      <div className="container-fluid">
-        <h2>Регистрация</h2>
-        <form>
+      <div className="container">
+        <h2 className="form-box">Регистрация</h2>
+        <form className="form-box">
           <div className="input-group">
             <div>Потребителско име</div>
             <input

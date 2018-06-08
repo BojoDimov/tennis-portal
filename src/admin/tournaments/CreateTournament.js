@@ -26,7 +26,7 @@ export class CreateTournament extends Component {
 
   render() {
     return (
-      <div className="container-fluid">
+      <div className="container test">
         <h2 className="headline">Нов турнир</h2>
         <div className="form-container">
           <form>

@@ -58,7 +58,7 @@ export class ViewTournament extends Component {
     else
       return (
         <Fragment>
-          <div className="container-fluid">
+          <div className="container test">
             <table className="list-table">
               <thead>
                 <tr>
@@ -87,7 +87,7 @@ export class ViewTournament extends Component {
 
           <EditionsTable editions={this.state.editions} />
 
-          <div className="container-fluid">
+          <div className="container test">
             <h2 className="headline"><span>Ранглиста</span></h2>
           </div>
         </Fragment>

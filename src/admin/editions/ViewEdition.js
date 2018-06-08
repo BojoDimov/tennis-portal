@@ -49,7 +49,7 @@ export class ViewEdition extends Component {
     else
       return (
         <Fragment>
-          <div className="container-fluid">
+          <div className="container test">
             <table className="list-table">
               <thead>
                 <tr>

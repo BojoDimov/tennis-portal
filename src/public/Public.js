@@ -8,7 +8,6 @@ export class Public extends React.Component {
   render() {
     return (
       <div className="public">
-        <div className="left-sidebar"></div>
         <Switch>
           <Route exact path="/">
             <Redirect to="/login" />
@@ -23,7 +22,6 @@ export class Public extends React.Component {
               {({ change }) => <LoginComponent onChange={change} />}
             </AuthenticatedUser>} />
         </Switch>
-        <div className="right-sidebar"></div>
       </div>
     );
   }

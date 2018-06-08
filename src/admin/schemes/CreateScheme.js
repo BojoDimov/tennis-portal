@@ -37,7 +37,7 @@ export class CreateScheme extends Component {
   }
 
   render() {
-    return <div className="container-fluid">
+    return <div className="container test">
       <h2 className="headline">Добавяне на схема</h2>
       <div className="form-container">
         <form>

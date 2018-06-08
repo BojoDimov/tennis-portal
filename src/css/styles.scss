@@ -1,6 +1,7 @@
 @import 'variables';
 @import 'main';
 @import 'tournaments';
+@import 'forms';
 
 #menu {
   position: absolute;
@@ -25,102 +26,54 @@
   }
 }
 
-.input-group {
-  margin-bottom: .5em;
-}
-
-.public {
-  margin-top: 5em;
-  display: flex;
-  align-items: flex-start;
-  width: 100%;
-
-  .left-sidebar {
-    flex: 1;
-  }
-
-  .right-sidebar {
-    flex: 1;
-  }
-
-  .container {
-    flex-basis: 35%;
-  }
-
-  
-  form {
-    display: flex;
-    width: 100%;
-
-    .link {
-      text-decoration: underline;
-    }
-
-    .link + .link {
-      margin-left: 1em;
-    }
-
-
-    .button {
-      margin: 1em 0;
-      align-self: flex-start;
-      text-align: center;
-      padding: .2em 2em;
-    }
-  }
+.center {
+  text-align: center;
 }
 
 
-.container-fluid {
-  @extend .container;
-  margin: 1em;
 
-  .form-container {
-    display: flex;
+// .container test {
+//   @extend .container;
+//   margin: 1em;
 
-    .right-sidebar {
-      flex: 1;
-    }
-  }
-}
+//   .form-container {
+//     display: flex;
 
-.form-style {
-  padding: .3em .3em;
-  width: 100%;
-  box-sizing: border-box;
-  color: darken($primaryColor, 10%);
-  border-radius: 5px;
-  border: 1px solid lighten($primaryColor, 30%);
-  outline: none;
-}
+//     .right-sidebar {
+//       flex: 1;
+//     }
+//   }
+// }
 
-form {
-  display: inline-flex;
-  flex-basis: 30%;
-  flex-direction: column;
 
-  input {
-    @extend .form-style;
-  }
 
-  input[type="checkbox"] {
-    width: initial;
-    margin-right: .3em;
-  }
+// form {
+//   display: inline-flex;
+//   flex-basis: 30%;
+//   flex-direction: column;
 
-  textarea {
-    @extend .form-style;
-    height: 5em;
-  }
+//   input {
+//     @extend .form-style;
+//   }
 
-  select {
-    @extend .form-style;
-  }
+//   input[type="checkbox"] {
+//     width: initial;
+//     margin-right: .3em;
+//   }
 
-  .button {
-    margin: 0 1em 1em 0em;
-  }
-}
+//   textarea {
+//     @extend .form-style;
+//     height: 5em;
+//   }
+
+//   select {
+//     @extend .form-style;
+//   }
+
+//   .button {
+//     margin: 0 1em 1em 0em;
+//   }
+// }
 
 span%status {
   border-radius: 3px;
@@ -134,6 +87,7 @@ span%status {
   @extend %status;
   background-color: $draft;
 }
+
 
 .published {
   @extend %status;

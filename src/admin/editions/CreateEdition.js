@@ -28,7 +28,7 @@ export class CreateEdition extends Component {
   }
 
   render() {
-    return <div className="container-fluid">
+    return <div className="container test">
       <h2 className="headline">Ново издание</h2>
       <div className="form-container">
         <form>

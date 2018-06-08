@@ -47,7 +47,7 @@ export class ViewScheme extends Component {
       return (<div>Loading...</div>);
     else
       return (
-        <div className="container-fluid">
+        <div className="container test">
           <table className="list-table">
             <thead>
               <tr>
