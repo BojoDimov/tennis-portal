@@ -30,6 +30,8 @@ a:hover {
 .container, .form-container {
   background-color: white;
   border: .5px solid lightgrey;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
   padding: 1em;
   border-radius: 8px;
   overflow: auto;
@@ -64,6 +66,10 @@ a:hover {
   margin-bottom: 0;
 }
 
+.button-inline .button {
+  display: inline-block;
+}
+
 .button {
   cursor: pointer;
   font-weight: 700;
@@ -72,7 +78,6 @@ a:hover {
   border: 1px solid #0074B2;
   color: #0074B2;
   border-radius: 5px;
-  display: inline-block;
   padding: .2em .5em;
 }
 
@@ -83,6 +88,10 @@ a:hover {
 
 .button:hover a, .button:hover a:hover {
   color: white;
+}
+
+.button-group {
+  margin-left: .5em;
 }
 
 .button-group .button + .button {
@@ -166,6 +175,8 @@ a:hover {
 .container, .form-container {
   background-color: white;
   border: .5px solid lightgrey;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
   padding: 1em;
   border-radius: 8px;
   overflow: auto;
@@ -200,6 +211,10 @@ a:hover {
   margin-bottom: 0;
 }
 
+.button-inline .button {
+  display: inline-block;
+}
+
 .button {
   cursor: pointer;
   font-weight: 700;
@@ -208,7 +223,6 @@ a:hover {
   border: 1px solid #0074B2;
   color: #0074B2;
   border-radius: 5px;
-  display: inline-block;
   padding: .2em .5em;
 }
 
@@ -219,6 +233,10 @@ a:hover {
 
 .button:hover a, .button:hover a:hover {
   color: white;
+}
+
+.button-group {
+  margin-left: .5em;
 }
 
 .button-group .button + .button {
@@ -233,7 +251,7 @@ a:hover {
   font-weight: 500;
 }
 
-.form-style, .form-box input, .form-box select {
+.form-style, .form-box input, .form-box select, .form-box textarea {
   padding: .3em .3em;
   width: 100%;
   box-sizing: border-box;
@@ -258,6 +276,11 @@ a:hover {
   .form-box {
     width: 100%;
   }
+}
+
+.form-box input[type="checkbox"] {
+  width: initial;
+  margin-right: .3em;
 }
 
 .form-box .input-group {

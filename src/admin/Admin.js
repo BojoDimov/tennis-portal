@@ -7,7 +7,7 @@ import { Schemes } from './schemes/Schemes';
 export class Admin extends React.Component {
   render() {
     return (
-      <div className="content">
+      <div className="public">
         <Switch>
           <Route exact path="/">
             <Redirect to="/tournaments" />

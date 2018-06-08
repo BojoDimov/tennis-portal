@@ -22,7 +22,7 @@ export class RegistrationComponent extends Component {
 
   render() {
     return (
-      <div className="container">
+      <div className="form-container">
         <h2 className="form-box">Регистрация</h2>
         <form className="form-box">
           <div className="input-group">
@@ -82,7 +82,7 @@ export class RegistrationComponent extends Component {
             </select>
           </div>
 
-          <ActionButton
+          <ActionButton className="center"
             onSuccess="/login"
             onClick={() => this.create()}>Регистрирай ме</ActionButton>
         </form>

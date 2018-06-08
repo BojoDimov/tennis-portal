@@ -27,8 +27,13 @@
     width: 100%;
   }
 
-  input, select {
+  input, select, textarea {
     @extend .form-style;
+  }
+
+  input[type="checkbox"] {
+    width: initial;
+    margin-right: .3em;
   }
 
   .input-group {

@@ -57,14 +57,16 @@ export class SchemesTable extends React.Component {
 
   render() {
     return (
-      <div className="container test">
+      <div className="container">
         <table className="list-table">
           <thead>
             <tr>
               <th>
                 <span>Схеми</span>
                 <Link to={`/schemes/create`}>
-                  <span className="button">добавяне</span>
+                  <span className="button-group">
+                    <span className="button">добавяне</span>
+                  </span>
                 </Link>
               </th>
             </tr>

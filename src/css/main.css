@@ -1,35 +1,33 @@
-@import 'variables';
-
 body {
   margin: 0;
   padding: 0;
-  font-family: $primaryFont;
+  font-family: "Open Sans", sans-serif;
   background-color: #F9F9F9;
-  color: $primary;
+  color: #505050;
 }
 
 a {
   text-decoration: none;
-  color: $click;
+  color: #0074B2;
   font-weight: 700;
 }
 
-a:hover{
-  color: $clickHover;
+a:hover {
+  color: #505050;
   cursor: pointer;
 }
 
-.shadow {
-  box-shadow: 2px 3px darken(lightgray, 20%);
+.shadow, .container {
+  box-shadow: 2px 3px #a0a0a0;
+}
 
-  @media screen and (max-width: 580px) {
+@media screen and (max-width: 580px) {
+  .shadow, .container {
     box-shadow: none;
   }
 }
 
 .container {
-  @extend .shadow;
-
   background-color: white;
   border: .5px solid lightgrey;
   margin-top: 1rem;
@@ -39,27 +37,31 @@ a:hover{
   overflow: auto;
 }
 
-.public {
+.public, .breadcrumb {
   width: 50%;
   margin: 0 auto;
   box-sizing: border-box;
+}
 
-  @media screen and (max-width: 1280px) {
+@media screen and (max-width: 1280px) {
+  .public, .breadcrumb {
     width: 60%;
   }
+}
 
-  @media screen and (max-width: 990px) {
+@media screen and (max-width: 990px) {
+  .public, .breadcrumb {
     width: 70%;
   }
+}
 
-  @media screen and (max-width: 580px) {
+@media screen and (max-width: 580px) {
+  .public, .breadcrumb {
     width: 100%;
   }
 }
 
-.breadcrumb{
-  @extend .public;
-
+.breadcrumb {
   margin: 2.3em auto;
   margin-bottom: 0;
 }
@@ -72,34 +74,34 @@ a:hover{
   cursor: pointer;
   font-weight: 700;
   font-size: 14px;
-  font-family: $primaryFont;
-  border: 1px solid $click;
-  color: $click;
+  font-family: "Open Sans", sans-serif;
+  border: 1px solid #0074B2;
+  color: #0074B2;
   border-radius: 5px;
-  padding: .2em .5em; 
+  padding: .2em .5em;
 }
 
 .button:hover {
-  background-color: $click;
+  background-color: #0074B2;
   color: white;
+}
 
-  a, a:hover {
-    color: white;
-  }
+.button:hover a, .button:hover a:hover {
+  color: white;
 }
 
 .button-group {
   margin-left: .5em;
-  .button + .button {
-    margin-left: .3em;
-  }
+}
+
+.button-group .button + .button {
+  margin-left: .3em;
 }
 
 .info {
   font-style: italic;
   font-size: .8em;
-  color: lighten($primary, 10%);
+  color: #6a6a6a;
   margin-left: .5em;
   font-weight: 500;
 }
-

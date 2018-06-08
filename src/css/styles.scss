@@ -30,51 +30,6 @@
   text-align: center;
 }
 
-
-
-// .container test {
-//   @extend .container;
-//   margin: 1em;
-
-//   .form-container {
-//     display: flex;
-
-//     .right-sidebar {
-//       flex: 1;
-//     }
-//   }
-// }
-
-
-
-// form {
-//   display: inline-flex;
-//   flex-basis: 30%;
-//   flex-direction: column;
-
-//   input {
-//     @extend .form-style;
-//   }
-
-//   input[type="checkbox"] {
-//     width: initial;
-//     margin-right: .3em;
-//   }
-
-//   textarea {
-//     @extend .form-style;
-//     height: 5em;
-//   }
-
-//   select {
-//     @extend .form-style;
-//   }
-
-//   .button {
-//     margin: 0 1em 1em 0em;
-//   }
-// }
-
 span%status {
   border-radius: 3px;
   padding: 0em .3em;
@@ -88,7 +43,6 @@ span%status {
   background-color: $draft;
 }
 
-
 .published {
   @extend %status;
   background-color: $published;
@@ -98,6 +52,7 @@ span%status {
   @extend %status;
   background-color: $inactive;
 }
+
 
 .error {
   color: $error;

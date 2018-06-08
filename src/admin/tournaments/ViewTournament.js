@@ -58,7 +58,7 @@ export class ViewTournament extends Component {
     else
       return (
         <Fragment>
-          <div className="container test">
+          <div className="container">
             <table className="list-table">
               <thead>
                 <tr>

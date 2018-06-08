@@ -27,10 +27,11 @@ export class LoginComponent extends Component {
             <div>Парола</div>
             <input type="password" onChange={e => this.setState({ password: e.target.value })} />
           </div>
-          {/* <ActionButton onSuccess={`/tournaments`} onClick={() => this.login()} className="form-box center">
+          <ActionButton onSuccess={`/tournaments`}
+            onClick={() => this.login()}
+            className="input-group form-box center">
             Вход
-          </ActionButton> */}
-          <div className="input-group form-box center button">Вход</div>
+          </ActionButton>
           <div className="input-group link-box">
             <Link to="/user/reset">Забравена парола</Link>
             <Link to="/registration">Регистрация</Link>
