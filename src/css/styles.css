@@ -1,3 +1,36 @@
+@keyframes button-transition {
+  0% {
+    background-color: white;
+    color: #0074B2;
+  }
+  100% {
+    background-color: #0074B2;
+    color: white;
+  }
+}
+
+@keyframes link-transition {
+  0% {
+    color: #0074B2;
+  }
+  100% {
+    color: #505050;
+  }
+}
+
+@keyframes init {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in, .container, .form-container {
+  animation: .5s ease-out init;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -13,6 +46,7 @@ a {
 }
 
 a:hover {
+  animation: 0.2s ease-in link-transition;
   color: #505050;
   cursor: pointer;
 }
@@ -82,11 +116,13 @@ a:hover {
 }
 
 .button:hover {
+  animation: 0.2s ease-in button-transition;
   background-color: #0074B2;
   color: white;
 }
 
 .button:hover a, .button:hover a:hover {
+  animation: none;
   color: white;
 }
 
@@ -143,6 +179,39 @@ a:hover {
   font-weight: 700;
 }
 
+@keyframes button-transition {
+  0% {
+    background-color: white;
+    color: #0074B2;
+  }
+  100% {
+    background-color: #0074B2;
+    color: white;
+  }
+}
+
+@keyframes link-transition {
+  0% {
+    color: #0074B2;
+  }
+  100% {
+    color: #505050;
+  }
+}
+
+@keyframes init {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in, .container, .form-container {
+  animation: .5s ease-out init;
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -158,6 +227,7 @@ a {
 }
 
 a:hover {
+  animation: 0.2s ease-in link-transition;
   color: #505050;
   cursor: pointer;
 }
@@ -227,11 +297,13 @@ a:hover {
 }
 
 .button:hover {
+  animation: 0.2s ease-in button-transition;
   background-color: #0074B2;
   color: white;
 }
 
 .button:hover a, .button:hover a:hover {
+  animation: none;
   color: white;
 }
 

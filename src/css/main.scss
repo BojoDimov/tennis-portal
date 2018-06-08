@@ -1,4 +1,5 @@
 @import 'variables';
+@import 'animations';
 
 body {
   margin: 0;
@@ -15,6 +16,8 @@ a {
 }
 
 a:hover{
+  @include colorize(link-transition);
+
   color: $clickHover;
   cursor: pointer;
 }
@@ -29,7 +32,8 @@ a:hover{
 
 .container {
   @extend .shadow;
-
+  @extend .fade-in;
+  
   background-color: white;
   border: .5px solid lightgrey;
   margin-top: 1rem;
@@ -80,10 +84,12 @@ a:hover{
 }
 
 .button:hover {
+  @include colorize(button-transition);
   background-color: $click;
   color: white;
 
   a, a:hover {
+    animation: none;
     color: white;
   }
 }
