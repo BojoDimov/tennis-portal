@@ -25,7 +25,7 @@ export class LoginComponent extends Component {
           </div>
           <div className="input-group">
             <div>Парола</div>
-            <input type="password" onChange={e => this.setState({ password: e.target.value })} />
+            <input type="password" onChange={e => this.setState({ password: e.target.value })} onKeyPress={(e) => e.key == 'Enter' ? this.login() : null} />
           </div>
           <ActionButton onSuccess={`/tournaments`}
             onClick={() => this.login()}

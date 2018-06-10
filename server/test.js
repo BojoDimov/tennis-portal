@@ -1,7 +1,8 @@
-var crypto = require('crypto');
-var hasher = crypto.createHash('sha256');
+let first = ['Петър', 'Мирослав', 'Божидар', 'Даниел', 'Георги', 'Дилян', 'Борислав', 'Виктор', 'Крум', 'Мартин', 'Милен', 'Димитър', 'Симеон', 'Светослав', 'Веселин', 'Калин', 'Кристиан', 'Мариан', 'Богомил', 'Самуил', 'Тодор'];
+let last = ['Димитров', 'Чучуров', 'Гусарев', 'Карпузов', 'Георгиев', 'Измирлиев', 'Петров', 'Савов', 'Сомов', 'Томов', 'Тодоров', 'Тонев', 'Пашов', 'Конедарев', 'Молеров', 'Чакалов', 'Бакалов', 'Събев', 'Тоцев', 'Пърлев'];
 
-let salt = crypto.randomBytes(16);
-hasher.update(salt.toString('utf8') + "levski1914");
-let hash = hasher.digest('hex');
-console.log(hash);
+for (let i = 0; i < 100; i++) {
+  let i = Math.ceil((Math.random() * 10000000)) % first.length;
+  let j = Math.ceil((Math.random() * 10000000)) % last.length;
+  console.log(first[i] + ' ' + last[j]);
+}
