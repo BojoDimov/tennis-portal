@@ -26,12 +26,6 @@ export class RegistrationComponent extends Component {
         <h2 className="form-box">Регистрация</h2>
         <form className="form-box">
           <div className="input-group">
-            <div>Потребителско име</div>
-            <input
-              type="text"
-              onChange={e => this.setState({ username: e.target.value })} />
-          </div>
-          <div className="input-group">
             <div>E-майл</div>
             <input
               type="email"
