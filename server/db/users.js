@@ -4,6 +4,7 @@ module.exports = (db, Sequelize) => {
     email: {
       type: Sequelize.STRING,
       allowNull: false,
+      unique: true,
       validate: {
         notEmpty: true,
       },
