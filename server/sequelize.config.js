@@ -28,7 +28,7 @@ Users.hasOne(Tokens, {
 });
 
 Tournaments.hasMany(TournamentEditions, {
-  as: 'TournamentEditions',
+  as: 'editions',
   foreignKey: {
     name: 'tournamentId',
     allowNull: false
@@ -43,7 +43,7 @@ TournamentEditions.belongsTo(Tournaments, {
 });
 
 TournamentEditions.hasMany(TournamentSchemes, {
-  as: 'TournamentSchemes',
+  as: 'schemes',
   foreignKey: {
     name: 'tournamentEditionId',
     allowNull: false
@@ -57,10 +57,48 @@ TournamentSchemes.belongsTo(TournamentEditions, {
   }
 });
 
+const SchemeEnrollments = db.define("SchemeEnrollments", {
+  id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true }
+});
+
+SchemeEnrollments.belongsTo(Users, {
+  foreignKey: {
+    name: 'userId',
+    allowNull: false
+  }
+});
+
+SchemeEnrollments.belongsTo(TournamentSchemes, {
+  foreignKey: {
+    name: 'schemeId',
+    allowNull: false
+  }
+});
+
+const Rankings = db.define("Rankings", {
+  id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+  points: Sequelize.INTEGER
+})
+
+Rankings.belongsTo(Users, {
+  foreignKey: {
+    name: 'userId',
+    allowNull: false
+  }
+});
+
+Rankings.belongsTo(Tournaments, {
+  foreignKey: {
+    name: 'tournamentId',
+    allowNull: false
+  }
+});
+
 module.exports = {
   Tournaments, TournamentEditions, TournamentSchemes,
-  Users, Tokens,
+  Users, Tokens, SchemeEnrollments, Rankings,
   Logs,
+  db,
   init: function () {
     return db.sync().then(() => process.exit());
   }

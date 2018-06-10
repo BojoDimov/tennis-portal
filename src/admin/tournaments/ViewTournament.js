@@ -8,15 +8,13 @@ export class ViewTournament extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      tournament: {},
-      editions: [],
-      loading: true
+      editions: []
     };
   }
 
   componentDidMount() {
     return this.getData()
-      .then(({ tournament }) => this.updatePath(tournament));
+      .then((tournament) => this.updatePath(tournament));
   }
 
   getData() {
@@ -37,7 +35,7 @@ export class ViewTournament extends Component {
   }
 
   publish() {
-    get(`/tournaments/${this.state.tournament.id}/publish`)
+    get(`/tournaments/${this.state.id}/publish`)
       .then(() => {
         this.getData();
         this.props.onChange();
@@ -45,7 +43,7 @@ export class ViewTournament extends Component {
   }
 
   draft() {
-    get(`/tournaments/${this.state.tournament.id}/draft`)
+    get(`/tournaments/${this.state.id}/draft`)
       .then(() => {
         this.getData();
         this.props.onChange();
@@ -53,53 +51,50 @@ export class ViewTournament extends Component {
   }
 
   render() {
-    if (this.loading)
-      return (<div>Loading...</div>);
-    else
-      return (
-        <Fragment>
-          <div className="container">
-            <table className="list-table">
-              <thead>
-                <tr>
-                  <th>
-                    <span>{this.state.tournament.name}</span>
-                    <Status status={this.state.tournament.status} />
-                    {this.buttons()}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>
-                    <table className="info-table">
-                      <tbody>
-                        <tr>
-                          <td className="labels"><b>Информация</b></td><td>{this.state.tournament.info}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+    return (
+      <Fragment>
+        <div className="container">
+          <table className="list-table">
+            <thead>
+              <tr>
+                <th>
+                  <span>{this.state.name}</span>
+                  <Status status={this.state.status} />
+                  {this.buttons()}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <table className="info-table">
+                    <tbody>
+                      <tr>
+                        <td className="labels"><b>Информация</b></td><td>{this.state.info}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
 
-          <EditionsTable editions={this.state.editions} />
+        <EditionsTable editions={this.state.editions} />
 
-          <div className="container test">
-            <h2 className="headline"><span>Ранглиста</span></h2>
-          </div>
-        </Fragment>
-      );
+        <div className="container test">
+          <h2 className="headline"><span>Ранглиста</span></h2>
+        </div>
+      </Fragment>
+    );
   }
 
   buttons() {
     return (
       <span className="button-group">
-        {this.state.tournament.status === 'draft' ? <span className="button" onClick={() => this.publish()}>Публикуване</span> : null}
-        {this.state.tournament.status === 'draft' ? <span className="button"><Link to={`/tournaments/edit/${this.state.tournament.id}`}>Промяна</Link></span> : null}
-        {this.state.tournament.status === 'published' ? <span className="button" onClick={() => this.draft()}>Връщане в чернова</span> : null}
+        {this.state.status === 'draft' ? <span className="button" onClick={() => this.publish()}>Публикуване</span> : null}
+        {this.state.status === 'draft' ? <span className="button"><Link to={`/tournaments/edit/${this.state.id}`}>Промяна</Link></span> : null}
+        {this.state.status === 'published' ? <span className="button" onClick={() => this.draft()}>Връщане в чернова</span> : null}
       </span>
     );
   }

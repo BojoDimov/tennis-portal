@@ -7,25 +7,16 @@ const getAll = (req, res) => {
 };
 
 const getScheme = (req, res) => {
-  const result = {};
-  TournamentSchemes
+  return TournamentSchemes
     .findById(req.params.id, {
       include: [
         {
           model: TournamentEditions,
-          required: true,
           include: [
-            { model: Tournaments, required: true }
-          ]
+            { model: Tournaments }]
         }
       ]
-    })
-    .then(s => {
-      result.scheme = s;
-      result.edition = s.TournamentEdition;
-      result.tournament = s.TournamentEdition.Tournament;
-      res.json(result);
-    });
+    }).then(e => res.json(e))
 };
 
 const createScheme = (req, res, next) => {

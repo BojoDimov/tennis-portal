@@ -20,8 +20,8 @@ export class LoginComponent extends Component {
         <h2 className="form-box">Вход в системата</h2>
         <form className="form-box">
           <div className="input-group">
-            <div>Потребителско име</div>
-            <input type="text" onChange={e => this.setState({ username: e.target.value })} />
+            <div>Е-майл</div>
+            <input type="text" onChange={e => this.setState({ email: e.target.value })} />
           </div>
           <div className="input-group">
             <div>Парола</div>

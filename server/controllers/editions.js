@@ -7,22 +7,14 @@ const getAll = (req, res) => {
 };
 
 const getEditions = (req, res) => {
-  const result = {};
-  TournamentEditions
+  return TournamentEditions
     .findById(req.params.id, {
       include: [
-        { model: Tournaments, required: true }
+        { model: TournamentSchemes, as: 'schemes' },
+        { model: Tournaments }
       ]
     })
-    .then(e => {
-      result.edition = e;
-      result.tournament = e.Tournament;
-      return e.getTournamentSchemes();
-    })
-    .then(schemes => {
-      result.schemes = schemes;
-      res.json(result);
-    });
+    .then(e => res.json(e));
 };
 
 const createEdition = (req, res, next) => {

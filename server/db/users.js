@@ -1,19 +1,13 @@
 module.exports = (db, Sequelize) => {
   return db.define('Users', {
     id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
-    username: {
-      type: Sequelize.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
-      }
-    },
     email: {
       type: Sequelize.STRING,
       allowNull: false,
       validate: {
         notEmpty: true,
-      }
+      },
+      unique: true
     },
     passwordHash: { type: Sequelize.STRING(40), allowNull: false },
     passwordSalt: { type: Sequelize.STRING(16), allowNull: false },

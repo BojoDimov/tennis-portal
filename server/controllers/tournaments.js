@@ -1,4 +1,4 @@
-const { Tournaments, TournamentEditions, TournamentSchemes } = require('../sequelize.config');
+const { Tournaments, TournamentEditions, TournamentSchemes, Rankings, Users } = require('../sequelize.config');
 
 const getAll = (req, res) => {
   Tournaments
@@ -7,17 +7,12 @@ const getAll = (req, res) => {
 };
 
 const getTournament = (req, res) => {
-  const result = {};
-  Tournaments
-    .findById(req.params.id)
-    .then(t => {
-      result.tournament = t;
-      return t.getTournamentEditions();
-    })
-    .then(editions => {
-      result.editions = editions;
-      res.json(result);
-    });
+  return Tournaments
+    .findById(req.params.id, {
+      include: [
+        { model: TournamentEditions, as: 'editions' }
+      ]
+    }).then(t => res.json(t))
 };
 
 const createTournament = (req, res) => {
@@ -44,7 +39,29 @@ const draft = (req, res) => {
 function setStatus(id, status) {
   return Tournaments
     .findById(id)
-    .then(edition => edition.update({ status: status }));
+    .then(t => t.update({ status: status }));
+}
+
+// const getRankings = (req, res) => {
+//   return Rankings.findAll({
+//     where: {
+//       Tournament
+//     }
+//   })
+// }
+
+const getAllRankings = (req, res) => {
+  return Rankings.findAll({
+    include: [
+      {
+        model: Users,
+        attributes: ['id', 'fullname']
+      },
+      {
+        model: Tournaments
+      }]
+  })
+    .then(rankings => res.json(rankings));
 }
 
 module.exports = {
@@ -55,5 +72,6 @@ module.exports = {
     app.post('/api/tournaments/edit/:id', editTournament);
     app.get('/api/tournaments/:id/publish', publish);
     app.get('/api/tournaments/:id/draft', draft);
+    app.get('/api/rankings', getAllRankings);
   }
 };

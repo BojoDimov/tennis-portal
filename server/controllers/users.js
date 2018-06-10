@@ -17,7 +17,7 @@ const login = (req, res, next) => {
   let password = req.body.password;
   Users.findOne({
     where: {
-      username: req.body.username
+      email: req.body.email
     }
   }).then(user => {
     let hash = crypto.createHash('sha256');

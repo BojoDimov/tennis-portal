@@ -7,10 +7,9 @@ export class ViewScheme extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      tournament: {},
-      edition: {},
-      scheme: {},
-      loading: true
+      TournamentEdition: {
+        Tournament: {}
+      }
     };
   }
 
@@ -20,14 +19,11 @@ export class ViewScheme extends Component {
 
   getData() {
     get(`/schemes/${this.props.match.params.id}`)
-      .then(res => {
-        res.loading = false;
-        this.setState(res);
-      });
+      .then(res => this.setState(res));
   }
 
   publish() {
-    get(`/schemes/${this.state.scheme.id}/publish`)
+    get(`/schemes/${this.state.id}/publish`)
       .then(() => {
         this.getData();
         this.props.onChange();
@@ -35,7 +31,7 @@ export class ViewScheme extends Component {
   }
 
   draft() {
-    get(`/schemes/${this.state.scheme.id}/draft`)
+    get(`/schemes/${this.state.id}/draft`)
       .then(() => {
         this.getData();
         this.props.onChange();
@@ -43,94 +39,91 @@ export class ViewScheme extends Component {
   }
 
   render() {
-    if (this.loading)
-      return (<div>Loading...</div>);
-    else
-      return (
-        <div className="container test">
-          <table className="list-table">
-            <thead>
-              <tr>
-                <th>
-                  <span>{this.state.scheme.name}</span>
-                  <Status status={this.state.scheme.status} />
-                  {this.buttons()}
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <table className="info-table">
-                    <tbody>
-                      <tr>
-                        <td className="labels"><b>Турнир</b></td>
-                        <td>
-                          <Link to={`/tournaments/view/${this.state.tournament.id}`}>
-                            {this.state.tournament.name}
-                          </Link>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td><b>Издание</b></td>
-                        <td>
-                          <Link to={`/editions/view/${this.state.edition.id}`}>
-                            {this.state.edition.name}
-                          </Link>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td><b>Информация</b></td><td>{this.state.scheme.info}</td>
-                      </tr>
-                      <tr>
-                        <td><b>Дата</b></td><td>{dateString(this.state.scheme.date)}</td>
-                      </tr>
-                      <tr>
-                        <td><b>Ограничения</b></td><td>{this.getSchemeLimitations()}</td>
-                      </tr>
-                      <tr>
-                        <td><b>Брой играчи</b></td><td>{this.state.scheme.maxPlayerCount}</td>
-                      </tr>
-                      <tr>
-                        <td><b>Записване</b></td>
-                        <td>
-                          от {dateString(this.state.scheme.registrationStart)} до {dateString(this.state.scheme.registrationEnd)}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td><b>Групова фаза</b></td>
-                        <td>
-                          {this.state.scheme.hasGroupPhase ? 'има групова фаза' : 'няма групова фаза'}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      );
+    return (
+      <div className="container test">
+        <table className="list-table">
+          <thead>
+            <tr>
+              <th>
+                <span>{this.state.name}</span>
+                <Status status={this.state.status} />
+                {this.buttons()}
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <table className="info-table">
+                  <tbody>
+                    <tr>
+                      <td className="labels"><b>Турнир</b></td>
+                      <td>
+                        <Link to={`/tournaments/view/${this.state.TournamentEdition.Tournament.id}`}>
+                          {this.state.TournamentEdition.Tournament.name}
+                        </Link>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><b>Издание</b></td>
+                      <td>
+                        <Link to={`/editions/view/${this.state.TournamentEdition.id}`}>
+                          {this.state.TournamentEdition.name}
+                        </Link>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><b>Информация</b></td><td>{this.state.info}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Дата</b></td><td>{dateString(this.state.date)}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Ограничения</b></td><td>{this.getSchemeLimitations()}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Брой играчи</b></td><td>{this.state.maxPlayerCount}</td>
+                    </tr>
+                    <tr>
+                      <td><b>Записване</b></td>
+                      <td>
+                        от {dateString(this.state.registrationStart)} до {dateString(this.state.registrationEnd)}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td><b>Групова фаза</b></td>
+                      <td>
+                        {this.state.hasGroupPhase ? 'има групова фаза' : 'няма групова фаза'}
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    );
   }
 
   getSchemeLimitations() {
     const limitations = [];
-    if (this.state.scheme.singleTeams)
+    if (this.state.singleTeams)
       limitations.push('единични отбори');
     else
       limitations.push('двойки');
-    if (this.state.scheme.maleTeams)
+    if (this.state.maleTeams)
       limitations.push('мъжки отбори');
-    if (this.state.scheme.femaleTeams)
+    if (this.state.femaleTeams)
       limitations.push('женски отбори');
-    if (this.state.scheme.mixedTeams)
+    if (this.state.mixedTeams)
       limitations.push('смесени двойки');
-    if (this.state.scheme.ageFrom && this.state.scheme.ageTo)
-      limitations.push('от ' + this.state.scheme.ageFrom + ' до ' + this.state.scheme.ageTo + ' години');
-    else if (this.state.scheme.ageFrom)
-      limitations.push('от ' + this.state.scheme.ageFrom + ' години');
-    else if (this.state.scheme.ageTo)
-      limitations.push('до ' + this.state.scheme.ageTo + ' години');
+    if (this.state.ageFrom && this.state.ageTo)
+      limitations.push('от ' + this.state.ageFrom + ' до ' + this.state.ageTo + ' години');
+    else if (this.state.ageFrom)
+      limitations.push('от ' + this.state.ageFrom + ' години');
+    else if (this.state.ageTo)
+      limitations.push('до ' + this.state.ageTo + ' години');
 
     return limitations.join(', ');
   }
@@ -138,9 +131,9 @@ export class ViewScheme extends Component {
   buttons() {
     return (
       <span className="button-group">
-        {this.state.scheme.status === 'draft' ? <span className="button" onClick={() => this.publish()}>Публикуване</span> : null}
-        {this.state.scheme.status === 'draft' ? <span className="button"><Link to={`/schemes/edit/${this.state.scheme.id}`}>Промяна</Link></span> : null}
-        {this.state.scheme.status === 'published' ? <span className="button" onClick={() => this.draft()}>Връщане в чернова</span> : null}
+        {this.state.status === 'draft' ? <span className="button" onClick={() => this.publish()}>Публикуване</span> : null}
+        {this.state.status === 'draft' ? <span className="button"><Link to={`/schemes/edit/${this.state.id}`}>Промяна</Link></span> : null}
+        {this.state.status === 'published' ? <span className="button" onClick={() => this.draft()}>Връщане в чернова</span> : null}
       </span>
     );
   }
