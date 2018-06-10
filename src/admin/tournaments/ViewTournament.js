@@ -8,7 +8,8 @@ export class ViewTournament extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      editions: []
+      editions: [],
+      ranking: []
     };
   }
 
@@ -82,9 +83,8 @@ export class ViewTournament extends Component {
 
         <EditionsTable editions={this.state.editions} />
 
-        <div className="container test">
-          <h2 className="headline"><span>Ранглиста</span></h2>
-        </div>
+        <RankList ranking={this.state.ranking} />
+
       </Fragment>
     );
   }
@@ -96,6 +96,39 @@ export class ViewTournament extends Component {
         {this.state.status === 'draft' ? <span className="button"><Link to={`/tournaments/edit/${this.state.id}`}>Промяна</Link></span> : null}
         {this.state.status === 'published' ? <span className="button" onClick={() => this.draft()}>Връщане в чернова</span> : null}
       </span>
+    );
+  }
+}
+
+export class RankList extends React.Component {
+  render() {
+    return (
+      <div className="container">
+        <table className="list-table">
+          <thead>
+            <tr>
+              <th>
+                <span>Ранглиста</span>
+              </th>
+              <th className="text-right">
+                Точки
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.props.ranking.map(e => (
+              <tr key={e.id}>
+                <td>
+                  <Link to={`/editions/view/${e.id}`} >{e.User.fullname}</Link>
+                </td>
+                <td className="text-right">
+                  {e.points}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     );
   }
 }

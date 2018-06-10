@@ -74,7 +74,7 @@ export class TournamentsTable extends React.Component {
           </thead>
           <tbody>
             {this.props.tournaments.map(t => (
-              <tr>
+              <tr key={t.id}>
                 <td>
                   <Link to={`/tournaments/view/${t.id}`} >{t.name}</Link>
                   <Status status={t.status} />

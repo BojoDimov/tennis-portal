@@ -1,4 +1,5 @@
-const { Tournaments, TournamentEditions, TournamentSchemes } = require('../sequelize.config');
+const { Tournaments, TournamentEditions, TournamentSchemes, db } = require('../sequelize.config');
+const { getEnrollments } = require('../db/enrollments.js');
 
 const getAll = (req, res) => {
   TournamentSchemes
@@ -18,6 +19,16 @@ const getScheme = (req, res) => {
       ]
     }).then(e => res.json(e))
 };
+
+const getSchemeEnrollments = (req, res) => {
+  return TournamentSchemes
+    .findById(req.params.id)
+    .then(e => getEnrollments(db, e.id, e.maxPlayerCount))
+    .then(e => {
+      console.log(e);
+      return res.json(e);
+    });
+}
 
 const createScheme = (req, res, next) => {
   let model = req.body;
@@ -55,5 +66,6 @@ module.exports = {
     app.post('/api/schemes/edit/:id', editScheme);
     app.get('/api/schemes/:id/publish', publish);
     app.get('/api/schemes/:id/draft', draft);
+    app.get('/api/schemes/:id/enrollments', getSchemeEnrollments);
   }
 };

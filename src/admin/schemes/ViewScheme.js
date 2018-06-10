@@ -9,7 +9,8 @@ export class ViewScheme extends Component {
     this.state = {
       TournamentEdition: {
         Tournament: {}
-      }
+      },
+      enrollments: []
     };
   }
 
@@ -18,8 +19,13 @@ export class ViewScheme extends Component {
   }
 
   getData() {
-    get(`/schemes/${this.props.match.params.id}`)
-      .then(res => this.setState(res));
+    Promise.all([
+      get(`/schemes/${this.props.match.params.id}`),
+      get(`/schemes/${this.props.match.params.id}/enrollments`)
+    ]).then(([scheme, enrollments]) => {
+      scheme.enrollments = enrollments;
+      return this.setState(scheme);
+    });
   }
 
   publish() {
@@ -40,69 +46,73 @@ export class ViewScheme extends Component {
 
   render() {
     return (
-      <div className="container test">
-        <table className="list-table">
-          <thead>
-            <tr>
-              <th>
-                <span>{this.state.name}</span>
-                <Status status={this.state.status} />
-                {this.buttons()}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                <table className="info-table">
-                  <tbody>
-                    <tr>
-                      <td className="labels"><b>Турнир</b></td>
-                      <td>
-                        <Link to={`/tournaments/view/${this.state.TournamentEdition.Tournament.id}`}>
-                          {this.state.TournamentEdition.Tournament.name}
-                        </Link>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><b>Издание</b></td>
-                      <td>
-                        <Link to={`/editions/view/${this.state.TournamentEdition.id}`}>
-                          {this.state.TournamentEdition.name}
-                        </Link>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><b>Информация</b></td><td>{this.state.info}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Дата</b></td><td>{dateString(this.state.date)}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Ограничения</b></td><td>{this.getSchemeLimitations()}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Брой играчи</b></td><td>{this.state.maxPlayerCount}</td>
-                    </tr>
-                    <tr>
-                      <td><b>Записване</b></td>
-                      <td>
-                        от {dateString(this.state.registrationStart)} до {dateString(this.state.registrationEnd)}
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><b>Групова фаза</b></td>
-                      <td>
-                        {this.state.hasGroupPhase ? 'има групова фаза' : 'няма групова фаза'}
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <React.Fragment>
+        <div className="container">
+          <table className="list-table">
+            <thead>
+              <tr>
+                <th>
+                  <span>{this.state.name}</span>
+                  <Status status={this.state.status} />
+                  {this.buttons()}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  <table className="info-table">
+                    <tbody>
+                      <tr>
+                        <td className="labels"><b>Турнир</b></td>
+                        <td>
+                          <Link to={`/tournaments/view/${this.state.TournamentEdition.Tournament.id}`}>
+                            {this.state.TournamentEdition.Tournament.name}
+                          </Link>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><b>Издание</b></td>
+                        <td>
+                          <Link to={`/editions/view/${this.state.TournamentEdition.id}`}>
+                            {this.state.TournamentEdition.name}
+                          </Link>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><b>Информация</b></td><td>{this.state.info}</td>
+                      </tr>
+                      <tr>
+                        <td><b>Дата</b></td><td>{dateString(this.state.date)}</td>
+                      </tr>
+                      <tr>
+                        <td><b>Ограничения</b></td><td>{this.getSchemeLimitations()}</td>
+                      </tr>
+                      <tr>
+                        <td><b>Брой играчи</b></td><td>{this.state.maxPlayerCount}</td>
+                      </tr>
+                      <tr>
+                        <td><b>Записване</b></td>
+                        <td>
+                          от {dateString(this.state.registrationStart)} до {dateString(this.state.registrationEnd)}
+                        </td>
+                      </tr>
+                      <tr>
+                        <td><b>Групова фаза</b></td>
+                        <td>
+                          {this.state.hasGroupPhase ? 'има групова фаза' : 'няма групова фаза'}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <Enrollments enrollments={this.state.enrollments} />
+      </React.Fragment>
     );
   }
 
@@ -142,4 +152,37 @@ export class ViewScheme extends Component {
 function dateString(str) {
   let date = new Date(str);
   return date.toLocaleDateString();
+}
+
+export class Enrollments extends React.Component {
+  render() {
+    return (
+      <div className="container">
+        <table className="list-table">
+          <thead>
+            <tr>
+              <th>
+                <span>Записани играчи</span>
+              </th>
+              <th className="text-right">
+                Точки
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.props.enrollments.map((e, i) => (
+              <tr key={e.id}>
+                <td>
+                  <span>{(i + 1) + '.'}</span><Link to={`/editions/view/${e.id}`} >{e.name}</Link>
+                </td>
+                <td className="text-right">
+                  {e.points}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  }
 }

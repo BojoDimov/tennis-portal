@@ -10,7 +10,20 @@ const getTournament = (req, res) => {
   return Tournaments
     .findById(req.params.id, {
       include: [
-        { model: TournamentEditions, as: 'editions' }
+        { model: TournamentEditions, as: 'editions' },
+        {
+          model: Rankings,
+          as: 'ranking',
+          include: [
+            {
+              model: Users,
+              attributes: ['id', 'fullname']
+            }
+          ]
+        }
+      ],
+      order: [
+        [{ model: Rankings, as: 'ranking' }, 'points', 'desc']
       ]
     }).then(t => res.json(t))
 };

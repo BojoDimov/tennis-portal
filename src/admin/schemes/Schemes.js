@@ -73,7 +73,7 @@ export class SchemesTable extends React.Component {
           </thead>
           <tbody>
             {this.props.schemes.map(t => (
-              <tr>
+              <tr key={t.id}>
                 <td>
                   <Link to={`/schemes/view/${t.id}`} >{t.name}</Link>
                   <Status status={t.status} />

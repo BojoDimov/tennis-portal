@@ -73,7 +73,7 @@ export class EditionsTable extends React.Component {
           </thead>
           <tbody>
             {this.props.editions.map(t => (
-              <tr>
+              <tr key={t.id}>
                 <td>
                   <Link to={`/editions/view/${t.id}`} >{t.name}</Link>
                   <Status status={t.status} />

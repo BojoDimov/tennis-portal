@@ -75,10 +75,34 @@ SchemeEnrollments.belongsTo(TournamentSchemes, {
   }
 });
 
+TournamentSchemes.hasMany(SchemeEnrollments, {
+  as: 'enrollments',
+  foreignKey: {
+    name: 'schemeId',
+    allowNull: false
+  }
+});
+
 const Rankings = db.define("Rankings", {
   id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
   points: Sequelize.INTEGER
 })
+
+Tournaments.hasMany(Rankings, {
+  as: 'ranking',
+  foreignKey: {
+    name: 'tournamentId',
+    allowNull: false
+  }
+});
+
+Users.hasMany(Rankings, {
+  as: 'ranking',
+  foreignKey: {
+    name: 'userId',
+    allowNull: false
+  }
+});
 
 Rankings.belongsTo(Users, {
   foreignKey: {
