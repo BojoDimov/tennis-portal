@@ -144,6 +144,22 @@ export class ViewScheme extends Component {
         {this.state.status === 'draft' ? <span className="button" onClick={() => this.publish()}>Публикуване</span> : null}
         {this.state.status === 'draft' ? <span className="button"><Link to={`/schemes/edit/${this.state.id}`}>Промяна</Link></span> : null}
         {this.state.status === 'published' ? <span className="button" onClick={() => this.draft()}>Връщане в чернова</span> : null}
+        <Link to={`/schemes/draw/${this.state.id}`} ><span className="button-group button">Изтегляне на схема</span></Link>
+
+        {/* {
+          <div className="dropdown">
+            <span className="button" onClick={() => this.setState({ showDrawScheme: !this.state.showDrawScheme })}>Изтегляне на схема</span>
+            {this.state.showDrawScheme ?
+              <div className="dropdown-content">
+                <div className="input-group">
+                  <div style={{ "width": "100%" }}>Позиционирани играчи</div>
+                  <input type="number" onChange={(e) => this.setState({ seed: e.target.value })} />
+                </div>
+                <div className="button center" onClick={() => null}>Изтегли</div>
+              </div>
+              : null}
+          </div>
+        } */}
       </span>
     );
   }

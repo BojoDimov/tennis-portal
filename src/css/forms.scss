@@ -12,6 +12,14 @@
   outline: none;
 }
 
+.input-group {
+  margin-bottom: .5em;
+}
+
+input, select, textarea {
+  @extend .form-style;
+}
+
 .form-container {
   @extend .container;
   display: flex;
@@ -27,17 +35,9 @@
     width: 100%;
   }
 
-  input, select, textarea {
-    @extend .form-style;
-  }
-
   input[type="checkbox"] {
     width: initial;
     margin-right: .3em;
-  }
-
-  .input-group {
-    margin-bottom: .5em;
   }
 
   a + a {

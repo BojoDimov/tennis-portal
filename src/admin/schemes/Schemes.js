@@ -7,6 +7,7 @@ import { Status } from '../Infrastructure';
 import { CreateScheme } from './CreateScheme';
 import { ViewScheme } from './ViewScheme';
 import { EditScheme } from './EditScheme';
+import { DrawScheme } from './DrawScheme';
 
 export class Schemes extends Component {
   constructor(props) {
@@ -42,6 +43,12 @@ export class Schemes extends Component {
           <Route path={`${this.props.match.path}/edit/:id`} render={(props) => {
             return (
               <EditScheme {...props} onChange={() => this.getData()} />
+            );
+          }} />
+
+          <Route path={`${this.props.match.path}/draw/:id`} render={(props) => {
+            return (
+              <DrawScheme {...props} />
             );
           }} />
         </Switch>

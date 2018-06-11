@@ -30,6 +30,23 @@
   text-align: center;
 }
 
+.dropdown {
+  margin-left: .3em;
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  @extend .container;
+  animation: none;
+  font-family: $primaryFont;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-top: .2em;
+  display: block;
+  position: absolute;
+  z-index: 1;
+}
 
 span%status {
   border-radius: 3px;

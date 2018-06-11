@@ -1,5 +1,6 @@
 const { Tournaments, TournamentEditions, TournamentSchemes, db } = require('../sequelize.config');
 const { getEnrollments } = require('../db/enrollments.js');
+const { drawScheme } = require('../logic/drawScheme');
 
 const getAll = (req, res) => {
   TournamentSchemes
@@ -27,6 +28,19 @@ const getSchemeEnrollments = (req, res) => {
     .then(e => {
       console.log(e);
       return res.json(e);
+    });
+}
+
+const testDraw = (req, res) => {
+  let scheme = null;
+  return TournamentSchemes
+    .findById(req.params.id)
+    .then(e => {
+      scheme = e;
+      return getEnrollments(db, e.id, e.maxPlayerCount)
+    })
+    .then(e => {
+      return res.json(drawScheme(scheme, 8, e));
     });
 }
 
@@ -67,5 +81,6 @@ module.exports = {
     app.get('/api/schemes/:id/publish', publish);
     app.get('/api/schemes/:id/draft', draft);
     app.get('/api/schemes/:id/enrollments', getSchemeEnrollments);
+    app.get('/api/schemes/:id/testDraw', testDraw);
   }
 };

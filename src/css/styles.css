@@ -27,7 +27,7 @@
   }
 }
 
-.fade-in, .container, .form-container {
+.fade-in, .container, .form-container, .dropdown-content {
   animation: .5s ease-out init;
 }
 
@@ -51,17 +51,17 @@ a:hover {
   cursor: pointer;
 }
 
-.shadow, .container, .form-container {
+.shadow, .container, .form-container, .dropdown-content {
   box-shadow: 2px 3px #a0a0a0;
 }
 
 @media screen and (max-width: 580px) {
-  .shadow, .container, .form-container {
+  .shadow, .container, .form-container, .dropdown-content {
     box-shadow: none;
   }
 }
 
-.container, .form-container {
+.container, .form-container, .dropdown-content {
   background-color: white;
   border: .5px solid lightgrey;
   margin-top: 1rem;
@@ -212,7 +212,7 @@ a:hover {
   }
 }
 
-.fade-in, .container, .form-container {
+.fade-in, .container, .form-container, .dropdown-content {
   animation: .5s ease-out init;
 }
 
@@ -236,17 +236,17 @@ a:hover {
   cursor: pointer;
 }
 
-.shadow, .container, .form-container {
+.shadow, .container, .form-container, .dropdown-content {
   box-shadow: 2px 3px #a0a0a0;
 }
 
 @media screen and (max-width: 580px) {
-  .shadow, .container, .form-container {
+  .shadow, .container, .form-container, .dropdown-content {
     box-shadow: none;
   }
 }
 
-.container, .form-container {
+.container, .form-container, .dropdown-content {
   background-color: white;
   border: .5px solid lightgrey;
   margin-top: 1rem;
@@ -327,7 +327,7 @@ a:hover {
   font-weight: 500;
 }
 
-.form-style, .form-box input, .form-box select, .form-box textarea {
+.form-style, input, select, textarea {
   padding: .3em .3em;
   width: 100%;
   box-sizing: border-box;
@@ -335,6 +335,10 @@ a:hover {
   border-radius: 5px;
   border: 1px solid #9d9d9d;
   outline: none;
+}
+
+.input-group {
+  margin-bottom: .5em;
 }
 
 .form-container {
@@ -357,10 +361,6 @@ a:hover {
 .form-box input[type="checkbox"] {
   width: initial;
   margin-right: .3em;
-}
-
-.form-box .input-group {
-  margin-bottom: .5em;
 }
 
 .form-box a + a {
@@ -392,6 +392,23 @@ a:hover {
 
 .center {
   text-align: center;
+}
+
+.dropdown {
+  margin-left: .3em;
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  animation: none;
+  font-family: "Open Sans", sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-top: .2em;
+  display: block;
+  position: absolute;
+  z-index: 1;
 }
 
 span.draft, span.published, span.inactive {
