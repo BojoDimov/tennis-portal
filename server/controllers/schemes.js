@@ -1,4 +1,4 @@
-const { Tournaments, TournamentEditions, TournamentSchemes, db } = require('../sequelize.config');
+const { Tournaments, TournamentEditions, TournamentSchemes, db, Matches, Users } = require('../sequelize.config');
 const { getEnrollments } = require('../db/enrollments.js');
 const { drawScheme } = require('../logic/drawScheme');
 
@@ -31,7 +31,7 @@ const getSchemeEnrollments = (req, res) => {
     });
 }
 
-const testDraw = (req, res) => {
+const createSchemeMatches = (req, res) => {
   let scheme = null;
   return TournamentSchemes
     .findById(req.params.id)
@@ -40,8 +40,32 @@ const testDraw = (req, res) => {
       return getEnrollments(db, e.id, e.maxPlayerCount)
     })
     .then(e => {
-      return res.json(drawScheme(scheme, 8, e));
-    });
+      let matches = drawScheme(scheme, 8, e)
+      return Matches.bulkCreate(matches);
+    })
+    .then((matches) => Matches.findAll({
+      where: {
+        schemeId: scheme.id
+      },
+      include: [
+        { model: Users, as: 'team1' },
+        { model: Users, as: 'team2' }
+      ]
+    }))
+    .then(matches => res.json(matches));
+}
+
+const getSchemeMatches = (req, res) => {
+  return Matches.findAll({
+    where: {
+      schemeId: scheme.id
+    },
+    include: [
+      { model: Users, as: 'team1' },
+      { model: Users, as: 'team2' }
+    ]
+  })
+    .then(matches => res.json(matches));
 }
 
 const createScheme = (req, res, next) => {
@@ -81,6 +105,7 @@ module.exports = {
     app.get('/api/schemes/:id/publish', publish);
     app.get('/api/schemes/:id/draft', draft);
     app.get('/api/schemes/:id/enrollments', getSchemeEnrollments);
-    app.get('/api/schemes/:id/testDraw', testDraw);
+    app.get('/api/schemes/:id/draw', createSchemeMatches);
+    app.get('/api/schemes/:id/getDraw', getSchemeMatches);
   }
 };

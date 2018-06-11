@@ -19,6 +19,9 @@ const Tokens = db.import(__dirname + '/db/tokens.js');
 const Tournaments = db.import(__dirname + '/db/tournaments.js');
 const TournamentEditions = db.import(__dirname + '/db/tournamentEditions.js');
 const TournamentSchemes = db.import(__dirname + '/db/tournamentSchemes.js');
+const SchemeEnrollments = db.import(__dirname + '/db/schemeEnrollments.js');
+const Rankings = db.import(__dirname + '/db/rankings.js');
+const Matches = db.import(__dirname + '/db/matches.js');
 
 Users.hasOne(Tokens, {
   foreignKey: {
@@ -27,8 +30,38 @@ Users.hasOne(Tokens, {
   }
 });
 
+Users.hasMany(Rankings, {
+  as: 'ranking',
+  foreignKey: {
+    name: 'userId',
+    allowNull: false
+  }
+});
+
 Tournaments.hasMany(TournamentEditions, {
   as: 'editions',
+  foreignKey: {
+    name: 'tournamentId',
+    allowNull: false
+  }
+});
+
+Tournaments.hasMany(Rankings, {
+  as: 'ranking',
+  foreignKey: {
+    name: 'tournamentId',
+    allowNull: false
+  }
+});
+
+Rankings.belongsTo(Users, {
+  foreignKey: {
+    name: 'userId',
+    allowNull: false
+  }
+});
+
+Rankings.belongsTo(Tournaments, {
   foreignKey: {
     name: 'tournamentId',
     allowNull: false
@@ -57,8 +90,12 @@ TournamentSchemes.belongsTo(TournamentEditions, {
   }
 });
 
-const SchemeEnrollments = db.define("SchemeEnrollments", {
-  id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true }
+TournamentSchemes.hasMany(SchemeEnrollments, {
+  as: 'enrollments',
+  foreignKey: {
+    name: 'schemeId',
+    allowNull: false
+  }
 });
 
 SchemeEnrollments.belongsTo(Users, {
@@ -75,52 +112,32 @@ SchemeEnrollments.belongsTo(TournamentSchemes, {
   }
 });
 
-TournamentSchemes.hasMany(SchemeEnrollments, {
-  as: 'enrollments',
+Matches.belongsTo(Users, {
+  as: 'team1',
+  foreignKey: {
+    name: 'team1Id',
+    allowNull: true
+  }
+});
+
+Matches.belongsTo(Users, {
+  as: 'team2',
+  foreignKey: {
+    name: 'team2Id',
+    allowNull: true
+  }
+});
+
+TournamentSchemes.hasMany(Matches, {
   foreignKey: {
     name: 'schemeId',
     allowNull: false
   }
 });
 
-const Rankings = db.define("Rankings", {
-  id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-  points: Sequelize.INTEGER
-})
-
-Tournaments.hasMany(Rankings, {
-  as: 'ranking',
-  foreignKey: {
-    name: 'tournamentId',
-    allowNull: false
-  }
-});
-
-Users.hasMany(Rankings, {
-  as: 'ranking',
-  foreignKey: {
-    name: 'userId',
-    allowNull: false
-  }
-});
-
-Rankings.belongsTo(Users, {
-  foreignKey: {
-    name: 'userId',
-    allowNull: false
-  }
-});
-
-Rankings.belongsTo(Tournaments, {
-  foreignKey: {
-    name: 'tournamentId',
-    allowNull: false
-  }
-});
-
 module.exports = {
   Tournaments, TournamentEditions, TournamentSchemes,
-  Users, Tokens, SchemeEnrollments, Rankings,
+  Users, Tokens, SchemeEnrollments, Rankings, Matches,
   Logs,
   db,
   init: function () {

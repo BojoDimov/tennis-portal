@@ -36,7 +36,7 @@ function drawScheme(scheme, seed, enrollments) {
       match.team2Id = enrollments[seed + i].id;
   });
 
-  return matches;
+  return matches.slice(1);
 }
 
 function get_order(positioned, count, max_count) {
