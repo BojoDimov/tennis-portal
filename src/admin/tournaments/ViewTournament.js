@@ -81,7 +81,7 @@ export class ViewTournament extends Component {
           </table>
         </div>
 
-        <EditionsTable editions={this.state.editions} />
+        <EditionsTable editions={this.state.editions} tournamentId={this.state.id} />
 
         <RankList ranking={this.state.ranking} />
 

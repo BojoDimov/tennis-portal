@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { ActionButton, Select } from '../Infrastructure';
-import { post } from '../../services/fetch';
+import { get, post } from '../../services/fetch';
 
 export class CreateEdition extends Component {
   constructor(props) {
@@ -8,11 +9,19 @@ export class CreateEdition extends Component {
     this.state = {
       name: '',
       info: '',
-      tournamentId: undefined,
       startDate: new Date(),
       endDate: new Date(),
       errors: {}
     };
+  }
+
+  componentDidMount() {
+    let tournamentId = new URLSearchParams(this.props.location.search).get('tournamentId');
+    get(`/tournaments/${tournamentId}`)
+      .then(t => this.setState({
+        tournamentName: t.name,
+        tournamentId: tournamentId
+      }));
   }
 
   create() {
@@ -32,6 +41,13 @@ export class CreateEdition extends Component {
       <h2 className="form-box">Ново издание</h2>
       <form className="form-box">
         <div className="input-group">
+          {/* <div>Турнир</div>
+          <Select url="/tournaments" onChange={id => this.setState({ tournamentId: id })} /> */}
+          <Link to={`/tournaments/view/${this.state.tournamentId}`}>
+            {this.state.tournamentName}
+          </Link>
+        </div>
+        <div className="input-group">
           <div>Име</div>
           <input
             type="text"
@@ -44,10 +60,6 @@ export class CreateEdition extends Component {
           <textarea
             value={this.state.info}
             onChange={e => this.setState({ info: e.target.value })} />
-        </div>
-        <div className="input-group">
-          <div>Турнир</div>
-          <Select url="/tournaments" onChange={id => this.setState({ tournamentId: id })} />
         </div>
         <div className="input-group">
           <div>Начало на турнира</div>

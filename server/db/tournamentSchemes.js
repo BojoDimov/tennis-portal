@@ -27,8 +27,8 @@ module.exports = (db, Sequelize) => {
       }
     },
     maxPlayerCount: { type: Sequelize.INTEGER, allowNull: false, validate: { min: 4, max: 128 } },
-    registrationStart: { type: Sequelize.DATEONLY, allowNull: false },
-    registrationEnd: { type: Sequelize.DATEONLY, allowNull: false },
+    registrationStart: { type: Sequelize.DATE, allowNull: false },
+    registrationEnd: { type: Sequelize.DATE, allowNull: false },
     hasGroupPhase: { type: Sequelize.BOOLEAN, allowNull: false },
     status: {
       type: Sequelize.ENUM,

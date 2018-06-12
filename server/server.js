@@ -48,6 +48,9 @@ app.use((err, req, res, next) => {
     err.errors.forEach(e => result[e.path] = e.message);
     res.status(422).send(result);
   }
+  else if (err.name === 'DomainActionError') {
+    res.status(422).send(err);
+  }
   else Logs.create({
     ip: req.ip,
     path: req.path,

@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { ActionButton, Select } from '../Infrastructure';
-import { post } from '../../services/fetch';
+import { get, post } from '../../services/fetch';
 
 export class CreateScheme extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      tournamentEditionId: 0,
       singleTeams: true,
       maleTeams: false,
       femaleTeams: false,
@@ -18,8 +18,12 @@ export class CreateScheme extends Component {
   }
 
   componentDidMount() {
-    let queryParams = new URLSearchParams(this.props.location.search);
-    this.setState({ tournamentEditionId: queryParams.get('editionId') });
+    let tournamentEditionId = new URLSearchParams(this.props.location.search).get('editionId');
+    get(`/editions/${tournamentEditionId}`)
+      .then(edition => this.setState({
+        tournamentEditionName: edition.name,
+        tournamentEditionId: tournamentEditionId
+      }));
   }
 
   create() {
@@ -41,9 +45,12 @@ export class CreateScheme extends Component {
       <h2 className="form-box">Добавяне на схема</h2>
       <form className="form-box">
         <div className="input-group">
-          <div>Издание</div>
+          {/* <div>Издание</div>
           <Select url="/editions" onChange={id => this.setState({ tournamentEditionId: id })} value={this.state.tournamentEditionId} />
-          <div className="error">{this.state.errors.tournamentEditionId ? '*Задължително поле' : null}</div>
+          <div className="error">{this.state.errors.tournamentEditionId ? '*Задължително поле' : null}</div> */}
+          <Link to={`/editions/view/${this.state.tournamentEditionId}`}>
+            {this.state.tournamentEditionName}
+          </Link>
         </div>
 
         <div className="input-group">
@@ -64,12 +71,14 @@ export class CreateScheme extends Component {
         </div>
 
         <div className="input-group">
-          <div>
-            <label>
-              <input type="checkbox"
-                onChange={e => this.setState({ singleTeams: !this.state.singleTeams })} />
-              Двойки</label>
-          </div>
+          <div>Формат</div>{this.state.singleTeams}
+          <select onChange={(e) => this.setState({ singleTeams: e.target.value == 'true' ? true : false, mixedTeams: false })}>
+            <option value={true}>Единични отбори</option>
+            <option value={false}>Двойки</option>
+          </select>
+        </div>
+
+        <div className="input-group">
           <div>
             <label>
               <input type="checkbox"
@@ -82,12 +91,12 @@ export class CreateScheme extends Component {
                 onChange={e => this.setState({ femaleTeams: !this.state.femaleTeams })} />
               Жени</label>
           </div>
-          <div>
+          {!this.state.singleTeams ? <div className="fade-in">
             <label>
               <input type="checkbox"
                 onChange={e => this.setState({ mixedTeams: !this.state.mixedTeams })} />
               Микс</label>
-          </div>
+          </div> : null}
           <div className="error">{this.state.errors.mixedSingleTeams ? '*Схемата е за единични отбори' : null}</div>
           <div className="error">{this.state.errors.schemeType ? '*Поне едно от "Мъже", "Жени", "Микс" трябва да бъде избрано' : null}</div>
         </div>
@@ -130,7 +139,7 @@ export class CreateScheme extends Component {
 
         <div className="input-group">
           <div>Начало на регистрациите</div>
-          <input type="date"
+          <input type="datetime-local"
             onChange={e => this.setState({ registrationStart: e.target.value })} />
           <div className="error">{this.state.errors.registrationStartEnd ? '*Неправилен интервал' : null}</div>
           <div className="error">{this.state.errors.registrationStart ? '*Задължително поле' : null}</div>
@@ -138,7 +147,7 @@ export class CreateScheme extends Component {
 
         <div className="input-group">
           <div>Последна дата за регистрация</div>
-          <input type="date"
+          <input type="datetime-local"
             onChange={e => this.setState({ registrationEnd: e.target.value })} />
           <div className="error">{this.state.errors.registrationStartEnd ? '*Неправилен интервал' : null}</div>
           <div className="error">{this.state.errors.registrationEnd ? '*Задължително поле' : null}</div>

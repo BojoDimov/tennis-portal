@@ -83,7 +83,7 @@ export class ViewScheme extends Component {
                         <td><b>Информация</b></td><td>{this.state.info}</td>
                       </tr>
                       <tr>
-                        <td><b>Дата</b></td><td>{dateString(this.state.date)}</td>
+                        <td><b>Дата</b></td><td>{dateString(this.state.date, true)}</td>
                       </tr>
                       <tr>
                         <td><b>Ограничения</b></td><td>{this.getSchemeLimitations()}</td>
@@ -165,9 +165,9 @@ export class ViewScheme extends Component {
   }
 }
 
-function dateString(str) {
+function dateString(str, noTime = false) {
   let date = new Date(str);
-  return date.toLocaleDateString();
+  return noTime ? date.toLocaleDateString() : date.toLocaleString();
 }
 
 export class Enrollments extends React.Component {

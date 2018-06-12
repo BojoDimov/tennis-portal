@@ -63,7 +63,7 @@ export class EditionsTable extends React.Component {
             <tr>
               <th>
                 <span>Издания</span>
-                <Link to={`/editions/create`}>
+                <Link to={`/editions/create?tournamentId=${this.props.tournamentId}`}>
                   <span className="button-group">
                     <span className="button">добавяне</span>
                   </span>

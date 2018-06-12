@@ -70,7 +70,7 @@ export class SchemesTable extends React.Component {
             <tr>
               <th>
                 <span>Схеми</span>
-                <Link to={`/schemes/create`}>
+                <Link to={`/schemes/create?editionId=${this.props.editionId}`}>
                   <span className="button-group">
                     <span className="button">добавяне</span>
                   </span>

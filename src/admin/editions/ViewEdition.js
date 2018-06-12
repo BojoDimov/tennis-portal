@@ -84,7 +84,7 @@ export class ViewEdition extends Component {
           </table>
         </div>
 
-        <SchemesTable schemes={this.state.schemes} />
+        <SchemesTable schemes={this.state.schemes} editionId={this.state.id} />
       </Fragment>
     );
   }

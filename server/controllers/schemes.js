@@ -26,15 +26,23 @@ const getSchemeEnrollments = (req, res) => {
     .findById(req.params.id)
     .then(e => getEnrollments(db, e.id, e.maxPlayerCount))
     .then(e => {
-      console.log(e);
       return res.json(e);
     });
 }
 
-const createSchemeMatches = (req, res) => {
+const createSchemeMatches = (req, res, next) => {
   let scheme = null;
-  return TournamentSchemes
-    .findById(req.params.id)
+  return Matches.findAll({
+    where: {
+      schemeId: req.params.id
+    }
+  })
+    .then(matches => {
+      if (matches.length > 0)
+        throw null;
+    })
+    .catch(() => next({ name: 'DomainActionError', message: 'Invalid action: draw scheme' }, req, res, null))
+    .then(() => TournamentSchemes.findById(req.params.id))
     .then(e => {
       scheme = e;
       return getEnrollments(db, e.id, e.maxPlayerCount)
@@ -48,8 +56,8 @@ const createSchemeMatches = (req, res) => {
         schemeId: scheme.id
       },
       include: [
-        { model: Users, as: 'team1' },
-        { model: Users, as: 'team2' }
+        { model: Users, as: 'team1', attributes: ['id', 'fullname'] },
+        { model: Users, as: 'team2', attributes: ['id', 'fullname'] }
       ]
     }))
     .then(matches => res.json(matches));
@@ -58,11 +66,11 @@ const createSchemeMatches = (req, res) => {
 const getSchemeMatches = (req, res) => {
   return Matches.findAll({
     where: {
-      schemeId: scheme.id
+      schemeId: req.params.id
     },
     include: [
-      { model: Users, as: 'team1' },
-      { model: Users, as: 'team2' }
+      { model: Users, as: 'team1', attributes: ['id', 'fullname'] },
+      { model: Users, as: 'team2', attributes: ['id', 'fullname'] }
     ]
   })
     .then(matches => res.json(matches));
