@@ -6,9 +6,9 @@ export class Breadcrumb extends React.Component {
     return (
       <div className="breadcrumb">
         <Link to="/"><i className="fas fa-home"></i></Link>
-        {this.props.path.map(part => (
+        {/* {this.props.path.map(part => (
           <span>{' / '}<Link to={part.link}>{part.name}</Link></span>
-        ))}
+        ))} */}
       </div>
     );
   }
