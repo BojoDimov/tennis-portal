@@ -101,10 +101,16 @@ export class ViewTournament extends Component {
 }
 
 export class RankList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      limit: 10
+    }
+  }
   render() {
     return (
       <div className="container">
-        <table className="list-table">
+        <table className="list-table input-group">
           <thead>
             <tr>
               <th>
@@ -116,7 +122,7 @@ export class RankList extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {this.props.ranking.map(e => (
+            {this.props.ranking.slice(0, this.state.limit).map(e => (
               <tr key={e.id}>
                 <td>
                   <Link to={`/editions/view/${e.id}`} >{e.User.fullname}</Link>
@@ -128,6 +134,18 @@ export class RankList extends React.Component {
             ))}
           </tbody>
         </table>
+        {this.state.limit != this.props.ranking.length ?
+          <div className="center">
+            <a className="link" onClick={() => this.setState({ limit: this.props.ranking.length })}>
+              покажи всичко
+              </a>
+          </div> : null}
+        {this.state.limit == this.props.ranking.length ?
+          <div className="center">
+            <a className="link" onClick={() => this.setState({ limit: 10 })}>
+              скрий
+              </a>
+          </div> : null}
       </div>
     );
   }
