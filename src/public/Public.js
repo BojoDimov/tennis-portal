@@ -1,7 +1,7 @@
 import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom'
-import { LoginComponent } from '../user/LoginComponent';
-import { RegistrationComponent } from '../user/RegistrationComponent';
+import { LoginComponent } from './LoginComponent';
+import { RegistrationComponent } from './RegistrationComponent';
 import { AuthenticatedUser } from '../app/AuthenticatedUser';
 
 export class Public extends React.Component {

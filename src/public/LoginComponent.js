@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { ActionButton } from '../admin/Infrastructure';
 import { post } from '../services/fetch';
-import './Test.css';
 
 
 export class LoginComponent extends Component {

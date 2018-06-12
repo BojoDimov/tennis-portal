@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { post } from '../services/fetch';
 import { ActionButton } from '../admin/Infrastructure';
-import './Test.css'
 
 export class RegistrationComponent extends Component {
   constructor(props) {
