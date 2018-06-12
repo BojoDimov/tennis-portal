@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { get } from '../../services/fetch';
 import { Bracket } from '../bracket/Bracket';
 import { EventEmitter } from '../../services/events';
@@ -58,7 +59,10 @@ export class SchemesPreview extends React.Component {
             </span>
           )}
         </div>
-        {this.state.notDrawn ?
+        {this.state.active != -1 ? <div className="input-group">
+          <Link to={`/schemes/view/${this.props.schemes[this.state.active].id}`}>Детайли</Link>
+        </div> : null}
+        {this.state.notDrawn && this.state.active != -1 ?
           <div>
             <div className="input-group"><i>Схемата не е изтеглена</i></div>
             <div className="input-group">

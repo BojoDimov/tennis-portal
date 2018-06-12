@@ -8,7 +8,6 @@ export class ViewEdition extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      active: 0,
       Tournament: {
 
       },
@@ -84,8 +83,6 @@ export class ViewEdition extends Component {
             </tbody>
           </table>
         </div>
-
-        {/* <SchemesTable schemes={this.state.schemes} editionId={this.state.id} /> */}
         <SchemesPreview schemes={this.state.schemes} />
       </Fragment>
     );
