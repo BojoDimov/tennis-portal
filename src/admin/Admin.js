@@ -15,7 +15,7 @@ export class Admin extends React.Component {
           <Route path="/tournaments" component={Tournaments} />
           <Route path="/editions" component={Editions} />
           <Route path="/schemes" component={Schemes} />
-          <Route render={() => <h1 style={{ "text-align": "center" }}>404 Not Found</h1>} />
+          <Route render={() => <h1 style={{ textAlign: "center" }}>404 Not Found</h1>} />
         </Switch>
       </div>
     );

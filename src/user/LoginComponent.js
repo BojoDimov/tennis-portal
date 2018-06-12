@@ -10,7 +10,9 @@ export class LoginComponent extends Component {
     return post('/login', this.state)
       .then(res => {
         window.localStorage.setItem('token', JSON.stringify(res));
-        return this.props.onChange();
+        // return 
+        //this.props.onChange();
+        window.location.replace('/');
       });
   }
 
