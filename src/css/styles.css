@@ -126,12 +126,31 @@ a:hover {
   color: white;
 }
 
+.button.active {
+  border-color: #505050;
+  background-color: #505050;
+  color: white;
+}
+
+.button.active:hover {
+  animation: none;
+  border-color: #505050;
+  background-color: #505050;
+  color: white;
+}
+
 .button-group {
   margin-left: .5em;
 }
 
 .button-group .button + .button {
   margin-left: .3em;
+}
+
+.tab-group {
+  display: inline-flex;
+  align-content: space-between;
+  flex-wrap: wrap;
 }
 
 .info {
@@ -311,12 +330,31 @@ a:hover {
   color: white;
 }
 
+.button.active {
+  border-color: #505050;
+  background-color: #505050;
+  color: white;
+}
+
+.button.active:hover {
+  animation: none;
+  border-color: #505050;
+  background-color: #505050;
+  color: white;
+}
+
 .button-group {
   margin-left: .5em;
 }
 
 .button-group .button + .button {
   margin-left: .3em;
+}
+
+.tab-group {
+  display: inline-flex;
+  align-content: space-between;
+  flex-wrap: wrap;
 }
 
 .info {
@@ -339,6 +377,10 @@ a:hover {
 
 .input-group {
   margin-bottom: .5em;
+}
+
+input.inline {
+  width: auto;
 }
 
 .form-container {

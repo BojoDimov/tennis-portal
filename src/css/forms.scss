@@ -20,6 +20,10 @@ input, select, textarea {
   @extend .form-style;
 }
 
+input.inline {
+  width: auto;
+}
+
 .form-container {
   @extend .container;
   display: flex;

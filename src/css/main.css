@@ -27,7 +27,7 @@
   }
 }
 
-.fade-in, .container, .form-container {
+.fade-in, .container {
   animation: .5s ease-out init;
 }
 
@@ -51,17 +51,17 @@ a:hover {
   cursor: pointer;
 }
 
-.shadow, .container, .form-container {
+.shadow, .container {
   box-shadow: 2px 3px #a0a0a0;
 }
 
 @media screen and (max-width: 580px) {
-  .shadow, .container, .form-container {
+  .shadow, .container {
     box-shadow: none;
   }
 }
 
-.container, .form-container {
+.container {
   background-color: white;
   border: .5px solid lightgrey;
   margin-top: 1rem;
@@ -159,48 +159,4 @@ a:hover {
   color: #6a6a6a;
   margin-left: .5em;
   font-weight: 500;
-}
-
-.form-style, input, select, textarea {
-  padding: .3em .3em;
-  width: 100%;
-  box-sizing: border-box;
-  color: #373737;
-  border-radius: 5px;
-  border: 1px solid #9d9d9d;
-  outline: none;
-}
-
-.input-group {
-  margin-bottom: .5em;
-}
-
-input.inline {
-  width: auto;
-}
-
-.form-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.form-box {
-  width: 20rem;
-  box-sizing: border-box;
-}
-
-@media screen and (max-width: 580px) {
-  .form-box {
-    width: 100%;
-  }
-}
-
-.form-box input[type="checkbox"] {
-  width: initial;
-  margin-right: .3em;
-}
-
-.form-box a + a {
-  margin-left: 1em;
 }

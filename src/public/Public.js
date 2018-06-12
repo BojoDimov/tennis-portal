@@ -1,10 +1,18 @@
 import React from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom'
+import { Switch, Route, Redirect, Link } from 'react-router-dom'
 import { LoginComponent } from './LoginComponent';
 import { RegistrationComponent } from './RegistrationComponent';
 import { AuthenticatedUser } from '../app/AuthenticatedUser';
 
 export class Public extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      tabs: ['мъже', 'жени', 'двойки'],
+      active: 0
+    }
+  }
+
   render() {
     return (
       <div className="public">

@@ -2,12 +2,13 @@ import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { get } from '../../services/fetch';
 import { Status } from '../Infrastructure';
-import { SchemesTable } from '../schemes/Schemes';
+import { SchemesPreview } from '../schemes/SchemesPreview';
 
 export class ViewEdition extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      active: 0,
       Tournament: {
 
       },
@@ -43,7 +44,7 @@ export class ViewEdition extends Component {
   render() {
     return (
       <Fragment>
-        <div className="container test">
+        <div className="container">
           <table className="list-table">
             <thead>
               <tr>
@@ -84,7 +85,8 @@ export class ViewEdition extends Component {
           </table>
         </div>
 
-        <SchemesTable schemes={this.state.schemes} editionId={this.state.id} />
+        {/* <SchemesTable schemes={this.state.schemes} editionId={this.state.id} /> */}
+        <SchemesPreview schemes={this.state.schemes} />
       </Fragment>
     );
   }

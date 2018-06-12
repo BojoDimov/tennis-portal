@@ -94,11 +94,30 @@ a:hover{
   }
 }
 
+.button.active {
+  border-color: #505050;
+  background-color: #505050;
+  color: white;
+}
+
+.button.active:hover {
+  animation: none;
+  border-color: #505050;
+  background-color: #505050;
+  color: white;
+}
+
 .button-group {
   margin-left: .5em;
   .button + .button {
     margin-left: .3em;
   }
+}
+
+.tab-group {
+  display: inline-flex;
+  align-content: space-between;
+  flex-wrap: wrap;
 }
 
 .info {

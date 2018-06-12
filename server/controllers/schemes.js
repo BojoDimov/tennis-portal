@@ -32,13 +32,14 @@ const getSchemeEnrollments = (req, res) => {
 
 const createSchemeMatches = (req, res, next) => {
   let scheme = null;
+  let seed = parseInt(req.query.seed);
   return Matches.findAll({
     where: {
       schemeId: req.params.id
     }
   })
     .then(matches => {
-      if (matches.length > 0)
+      if (matches.length > 0 || !seed)
         throw null;
     })
     .catch(() => next({ name: 'DomainActionError', message: 'Invalid action: draw scheme' }, req, res, null))
@@ -48,7 +49,7 @@ const createSchemeMatches = (req, res, next) => {
       return getEnrollments(db, e.id, e.maxPlayerCount)
     })
     .then(e => {
-      let matches = drawScheme(scheme, 8, e)
+      let matches = drawScheme(scheme, seed, e)
       return Matches.bulkCreate(matches);
     })
     .then((matches) => Matches.findAll({
