@@ -20,6 +20,7 @@ const Tournaments = db.import(__dirname + '/db/tournaments.js');
 const TournamentEditions = db.import(__dirname + '/db/tournamentEditions.js');
 const TournamentSchemes = db.import(__dirname + '/db/tournamentSchemes.js');
 const SchemeEnrollments = db.import(__dirname + '/db/schemeEnrollments.js');
+const EnrollmentsQueue = db.import(__dirname + '/db/enrollmentsQueue.js');
 const Rankings = db.import(__dirname + '/db/rankings.js');
 const Matches = db.import(__dirname + '/db/matches.js');
 
@@ -98,6 +99,14 @@ TournamentSchemes.hasMany(SchemeEnrollments, {
   }
 });
 
+TournamentSchemes.hasMany(EnrollmentsQueue, {
+  as: 'enrollmentsQueue',
+  foreignKey: {
+    name: 'schemeId',
+    allowNull: false
+  }
+});
+
 SchemeEnrollments.belongsTo(Users, {
   foreignKey: {
     name: 'userId',
@@ -106,6 +115,20 @@ SchemeEnrollments.belongsTo(Users, {
 });
 
 SchemeEnrollments.belongsTo(TournamentSchemes, {
+  foreignKey: {
+    name: 'schemeId',
+    allowNull: false
+  }
+});
+
+EnrollmentsQueue.belongsTo(Users, {
+  foreignKey: {
+    name: 'userId',
+    allowNull: false
+  }
+});
+
+EnrollmentsQueue.belongsTo(TournamentSchemes, {
   foreignKey: {
     name: 'schemeId',
     allowNull: false
