@@ -160,7 +160,7 @@ TournamentSchemes.hasMany(Matches, {
 
 module.exports = {
   Tournaments, TournamentEditions, TournamentSchemes,
-  Users, Tokens, SchemeEnrollments, Rankings, Matches,
+  Users, Tokens, SchemeEnrollments, Rankings, Matches, EnrollmentsQueue,
   Logs,
   db,
   init: function () {

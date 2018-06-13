@@ -81,6 +81,9 @@ const getSchemeMatches = (req, res) => {
     include: [
       { model: Users, as: 'team1', attributes: ['id', 'fullname'] },
       { model: Users, as: 'team2', attributes: ['id', 'fullname'] }
+    ],
+    order: [
+      'match'
     ]
   })
     .then(matches => res.json(matches));

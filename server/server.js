@@ -26,6 +26,7 @@ let Tournaments = require('./controllers/tournaments');
 let Editions = require('./controllers/editions');
 let Schemes = require('./controllers/schemes');
 let Users = require('./controllers/users');
+let Diagnostics = require('./diagnostics');
 
 app.listen(3100, () => console.log('Server listening...'));
 
@@ -35,6 +36,7 @@ app.use(express.json());
 
 Users.init(app);
 
+Diagnostics.init(app);
 app.use(passport.authenticate('bearer', { session: false }));
 
 Tournaments.init(app);

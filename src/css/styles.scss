@@ -60,11 +60,11 @@ span%status {
   color: $statusColor;
 }
 
+
 .draft {
   @extend %status;
   background-color: $draft;
 }
-
 
 .published {
   @extend %status;

@@ -53,7 +53,7 @@ export class SchemesPreview extends React.Component {
       <div className="container">
         <div className="tab-group input-group">
           {this.props.schemes.map((scheme, i) =>
-            <span className={'button' + (i == this.state.active ? ' active' : '')}
+            <span key={scheme.id} className={'button' + (i == this.state.active ? ' active' : '')}
               onClick={() => this.selectScheme(i)}>
               {scheme.name}
             </span>

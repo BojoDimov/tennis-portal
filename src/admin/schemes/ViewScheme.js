@@ -174,6 +174,12 @@ function dateString(str, noTime = false) {
 }
 
 export class Enrollments extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      limit: 10
+    }
+  }
   render() {
     return (
       <div className="container">
@@ -189,7 +195,7 @@ export class Enrollments extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {this.props.enrollments.map((e, i) => (
+            {this.props.enrollments.slice(0, this.state.limit).map((e, i) => (
               <tr key={e.id}>
                 <td>
                   <span>{(i + 1) + '.'}</span><Link to={`/editions/view/${e.id}`} >{e.name}</Link>
@@ -201,6 +207,18 @@ export class Enrollments extends React.Component {
             ))}
           </tbody>
         </table>
+        {this.state.limit != this.props.enrollments.length && this.props.enrollments.length > 0 ?
+          <div className="center">
+            <a className="link" onClick={() => this.setState({ limit: this.props.enrollments.length })}>
+              покажи всичко
+              </a>
+          </div> : null}
+        {this.state.limit == this.props.enrollments.length && this.props.enrollments.length > 0 ?
+          <div className="center">
+            <a className="link" onClick={() => this.setState({ limit: 10 })}>
+              скрий
+              </a>
+          </div> : null}
       </div>
     );
   }
@@ -244,7 +262,7 @@ export class Queue extends React.Component {
         {this.props.queue.length == 0 ? <div><i>Няма записани играчи в опашка</i></div> : null}
         {this.state.limit != this.props.queue.length && this.props.queue.length > 0 ?
           <div className="center">
-            <a className="link" onClick={() => this.setState({ limit: this.props.ranking.length })}>
+            <a className="link" onClick={() => this.setState({ limit: this.props.queue.length })}>
               покажи всичко
               </a>
           </div> : null}
