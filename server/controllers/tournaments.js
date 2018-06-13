@@ -35,8 +35,12 @@ const createTournament = (req, res) => {
     .then(e => res.json(e));
 };
 
-const editTournament = (req, res) => {
-
+const editTournament = (req, res, next) => {
+  return Tournaments
+    .findById(req.body.id)
+    .then(e => e.update(req.body))
+    .then(e => res.json(e))
+    .catch(err => next(err, req, res, null));
 };
 
 const publish = (req, res) => {
@@ -82,7 +86,7 @@ module.exports = {
     app.get('/api/tournaments', getAll);
     app.get('/api/tournaments/:id', getTournament);
     app.post('/api/tournaments', createTournament);
-    app.post('/api/tournaments/edit/:id', editTournament);
+    app.post('/api/tournaments/edit', editTournament);
     app.get('/api/tournaments/:id/publish', publish);
     app.get('/api/tournaments/:id/draft', draft);
     app.get('/api/rankings', getAllRankings);

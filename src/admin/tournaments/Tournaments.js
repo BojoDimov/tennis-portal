@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { CreateTournament } from './CreateTournament';
 import { ViewTournament } from './ViewTournament';
+import { EditTournament } from './EditTournament';
 import { get } from '../../services/fetch';
 import {
   Route, Switch, Link
@@ -43,6 +44,7 @@ export class Tournaments extends Component {
               </UseBreadcrumbPath>
             );
           }} />
+          <Route path='/tournaments/edit/:id' render={(props) => <EditTournament {...props} />} />
           <Route exact path={`${this.props.match.path}`} render={() => <TournamentsTable tournaments={this.state.tournaments} />} />
         </Switch>
       </Fragment>

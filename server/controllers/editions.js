@@ -25,8 +25,12 @@ const createEdition = (req, res, next) => {
     .catch(err => next(err, req, res, null));
 };
 
-const editEdition = (req, res) => {
-
+const editEdition = (req, res, next) => {
+  return TournamentEditions
+    .findById(req.body.id)
+    .then(e => e.update(req.body))
+    .then(e => res.json(e))
+    .catch(err => next(err, req, res, null));
 };
 
 const publish = (req, res) => {
@@ -50,7 +54,7 @@ module.exports = {
     app.get('/api/editions', getAll);
     app.get('/api/editions/:id', getEditions);
     app.post('/api/editions', createEdition);
-    app.post('/api/editions/edit/:id', editEdition);
+    app.post('/api/editions/edit/', editEdition);
     app.get('/api/editions/:id/publish', publish);
     app.get('/api/editions/:id/draft', draft);
   }

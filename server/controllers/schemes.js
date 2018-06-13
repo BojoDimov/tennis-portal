@@ -86,7 +86,11 @@ const createScheme = (req, res, next) => {
 };
 
 const editScheme = (req, res) => {
-
+  return TournamentSchemes
+    .findById(req.body.id)
+    .then(e => e.update(req.body))
+    .then(e => res.json(e))
+    .catch(err => next(err, req, res, null));
 };
 
 const publish = (req, res) => {
@@ -110,7 +114,7 @@ module.exports = {
     app.get('/api/schemes', getAll);
     app.get('/api/schemes/:id', getScheme);
     app.post('/api/schemes', createScheme);
-    app.post('/api/schemes/edit/:id', editScheme);
+    app.post('/api/schemes/edit/', editScheme);
     app.get('/api/schemes/:id/publish', publish);
     app.get('/api/schemes/:id/draft', draft);
     app.get('/api/schemes/:id/enrollments', getSchemeEnrollments);

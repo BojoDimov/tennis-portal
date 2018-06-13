@@ -1,9 +1,187 @@
 import React, { Component } from 'react';
+import { ActionButton } from '../Infrastructure';
+import { get, post } from '../../services/fetch';
 
 export class EditScheme extends Component {
-  render() {
-    return (
-      <div>Konichiwa</div>
-    );
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      name: '',
+      info: '',
+      ageFrom: 0,
+      ageTo: 0,
+      maxPlayerCount: 0,
+      date: '',
+      registrationStart: '',
+      registrationEnd: '',
+      singleTeams: true,
+      maleTeams: false,
+      femaleTeams: false,
+      mixedTeams: false,
+      hasGroupPhase: false,
+      errors: {}
+    };
   }
+
+  componentDidMount() {
+    return get(`/schemes/${this.props.match.params.id}`)
+      .then(res => {
+        this.setState(res);
+        this.setState({ errors: {} });
+      });
+  }
+
+  update() {
+    return post('/schemes/edit', this.state)
+      .catch(err => {
+        this.setState({ errors: err });
+        throw err;
+      });
+  }
+
+  render() {
+    return <div className="form-container">
+      <h2 className="form-box">Промяна на схема</h2>
+      <form className="form-box">
+        {/* <div className="input-group">
+          <Link to={`/editions/view/${this.state.tournamentEditionId}`}>
+            {this.state.tournamentEditionName}
+          </Link>
+        </div> */}
+
+        <div className="input-group">
+          <div>Име на схемата</div>
+          <input
+            type="text"
+            value={this.state.name}
+            onChange={e => this.setState({ name: e.target.value })} />
+          <div className="error">{this.state.errors.name ? '*Задължително поле' : null}</div>
+        </div>
+
+        <div className="input-group">
+          <div>Допълнителна информация</div>
+          <textarea
+            type="text"
+            value={this.state.info}
+            onChange={e => this.setState({ info: e.target.value })} />
+        </div>
+
+        <div className="input-group">
+          <div>Формат</div>{this.state.singleTeams}
+          <select value={this.state.singleTeams}
+            onChange={(e) => this.setState({ singleTeams: e.target.value == 'true' ? true : false, mixedTeams: false })}>
+            <option value={true}>Единични отбори</option>
+            <option value={false}>Двойки</option>
+          </select>
+        </div>
+
+        <div className="input-group">
+          <div>
+            <label>
+              <input type="checkbox"
+                checked={this.state.maleTeams}
+                onChange={e => this.setState({ maleTeams: !this.state.maleTeams })} />
+              Мъже</label>
+          </div>
+          <div>
+            <label>
+              <input type="checkbox"
+                checked={this.state.femaleTeams}
+                onChange={e => this.setState({ femaleTeams: !this.state.femaleTeams })} />
+              Жени</label>
+          </div>
+          {!this.state.singleTeams ? <div className="fade-in">
+            <label>
+              <input type="checkbox"
+                checked={this.state.mixedTeams}
+                onChange={e => this.setState({ mixedTeams: !this.state.mixedTeams })} />
+              Микс</label>
+          </div> : null}
+          <div className="error">{this.state.errors.mixedSingleTeams ? '*Схемата е за единични отбори' : null}</div>
+          <div className="error">{this.state.errors.schemeType ? '*Поне едно от "Мъже", "Жени", "Микс" трябва да бъде избрано' : null}</div>
+        </div>
+
+        <div className="input-group">
+          <div>Възраст от</div>
+          <input
+            type="number" min="0"
+            value={this.state.ageFrom}
+            onChange={e => this.setState({ ageFrom: e.target.value })} />
+          <div className="error">{this.state.errors.ageFromTo ? '*Неправилен интервал' : null}</div>
+          <div className="error">{this.state.errors.ageFrom ? '*Невалидна стойност' : null}</div>
+        </div>
+
+        <div className="input-group">
+          <div>Възраст до</div>
+          <input
+            type="number" min="0"
+            value={this.state.ageTo}
+            onChange={e => this.setState({ ageTo: e.target.value })} />
+          <div className="error">{this.state.errors.ageFromTo ? '*Неправилен интервал' : null}</div>
+          <div className="error">{this.state.errors.ageTo ? '*Невалидна стойност' : null}</div>
+        </div>
+
+
+        <div className="input-group">
+          <div>Брой играчи</div>
+          <input
+            type="number" min="4" max="128"
+            value={this.state.maxPlayerCount}
+            onChange={e => this.setState({ maxPlayerCount: e.target.value })} />
+          <div className="error">{this.state.errors.maxPlayerCount ? '*Невалидна стойност' : null}</div>
+        </div>
+
+        <div className="input-group">
+          <div>Дата на схемата</div>
+          <input type="date"
+            value={this.state.date}
+            onChange={e => this.setState({ date: e.target.value })} />
+          <div className="error">{this.state.errors.tournamentDate ? '*Датата е преди дата за регистрация' : null}</div>
+          <div className="error">{this.state.errors.date ? '*Задължително поле' : null}</div>
+        </div>
+
+        <div className="input-group">
+          <div>Начало на регистрациите</div>
+          <input type="datetime-local"
+            value={this.state.registrationStart}
+            onChange={e => this.setState({ registrationStart: e.target.value })} />
+          <div className="error">{this.state.errors.registrationStartEnd ? '*Неправилен интервал' : null}</div>
+          <div className="error">{this.state.errors.registrationStart ? '*Задължително поле' : null}</div>
+        </div>
+
+        <div className="input-group">
+          <div>Последна дата за регистрация</div>
+          <input type="datetime-local"
+            value={this.state.registrationEnd}
+            onChange={e => this.setState({ registrationEnd: e.target.value })} />
+          <div className="error">{this.state.errors.registrationStartEnd ? '*Неправилен интервал' : null}</div>
+          <div className="error">{this.state.errors.registrationEnd ? '*Задължително поле' : null}</div>
+        </div>
+
+        <div className="input-group">
+          <label>
+            <input type="checkbox"
+              checked={this.state.hasGroupPhase}
+              onChange={e => this.setState({ hasGroupPhase: !this.state.hasGroupPhase })} />
+            Включване на групова фаза</label>
+        </div>
+
+        <ActionButton className="center"
+          onSuccess={`/schemes/view/${this.state.id}`}
+          onClick={() => this.update()}>
+          Готово
+          </ActionButton>
+
+      </form>
+    </div >;
+  }
+
+  // getDateFormat(date) {
+  //   // debugger;
+  //   // let str = date.toString();
+  //   // str = str.slice(0, str.length - 1);
+  //   //return new Date(str).toUTCString();
+  //   return new Date(date).toLocaleDateString();
+  // }
 }
