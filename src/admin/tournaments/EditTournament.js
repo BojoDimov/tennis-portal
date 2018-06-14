@@ -21,7 +21,7 @@ export class EditTournament extends Component {
   }
 
   update() {
-    return post('/tournaments/edit', this.state)
+    return post('/tournaments/edit', this.state, 'Промяната е успешна')
       .then(({ id }) => {
         console.log('success');
         //this.setState({ id: id });

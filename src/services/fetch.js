@@ -1,7 +1,7 @@
 const backend = 'http://localhost:3100/api';
 
 module.exports = {
-  post: function (path, data) {
+  post: function (path, data, onSuccess, onError) {
     let options = {
       body: JSON.stringify(data), // must match 'Content-Type' header
       headers: {
@@ -16,8 +16,14 @@ module.exports = {
       options.headers['Authorization'] = 'Bearer ' + tokenInfo.token;
 
     return fetch(backend + path, options)
-      .then(res => error_handler(res))
-      .then(res => res.json());
+      .then(res => {
+        message_handler(onError);
+        return error_handler(res)
+      })
+      .then(res => {
+        message_handler(onSuccess);
+        return res.json()
+      });
 
   },
   get: function (path) {
@@ -46,4 +52,13 @@ function error_handler(res) {
     window.location.replace('login');
   }
   else return res;
+}
+
+function message_handler(message) {
+  let el = document.getElementById("messages");
+  let ev = new CustomEvent('message', { detail: message });
+  if (message) {
+    console.log('Dispatching event', ev, el);
+    el.dispatchEvent(ev);
+  }
 }

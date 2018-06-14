@@ -6,12 +6,14 @@ import { post } from '../services/fetch';
 
 export class LoginComponent extends Component {
   login() {
-    return post('/login', this.state)
+    return post('/login', this.state, 'Добре дошли!')
       .then(res => {
         window.localStorage.setItem('token', JSON.stringify(res));
         // return 
-        //this.props.onChange();
-        window.location.replace('/');
+        this.props.onChange();
+        //window.location.replace('/');
+
+        // onKeyPress = (e) => e.key == 'Enter' ? this.login()
       });
   }
 
@@ -26,7 +28,7 @@ export class LoginComponent extends Component {
           </div>
           <div className="input-group">
             <div>Парола</div>
-            <input type="password" onChange={e => this.setState({ password: e.target.value })} onKeyPress={(e) => e.key == 'Enter' ? this.login() : null} />
+            <input type="password" onChange={e => this.setState({ password: e.target.value })} />
           </div>
           <ActionButton onSuccess={`/tournaments`}
             onClick={() => this.login()}

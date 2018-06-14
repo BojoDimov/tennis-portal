@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Admin } from '../admin/Admin';
 import { Public } from '../public/Public';
 import { Menu } from '../public/Menu';
+import { MessagesContainer } from '../public/Messages';
 import { Breadcrumb, ProvideBreadcrumbPath } from '../public/Breadcrumb';
 import { ProvideAuthenticatedUser, AuthenticatedUser } from './AuthenticatedUser';
 
@@ -65,6 +66,7 @@ export class App extends Component {
           <Menu />
           <Breadcrumb path={this.state.breadcrumb.path} />
           <LoginGuard isLogged={this.state.authenticatedUser.isLogged} />
+          <MessagesContainer />
         </ProvideBreadcrumbPath>
       </ProvideAuthenticatedUser>
     );

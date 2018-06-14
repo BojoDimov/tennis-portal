@@ -13,7 +13,7 @@ export class CreateTournament extends Component {
     };
   }
   create() {
-    return post('/tournaments', this.state)
+    return post('/tournaments', this.state, 'Турнирът е успешно създаден')
       .then(({ id }) => {
         this.setState({ id: id });
         this.props.onChange()

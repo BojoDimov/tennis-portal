@@ -28,7 +28,7 @@ export class CreateScheme extends Component {
 
   create() {
     this.setState({ errors: {} });
-    return post('/schemes', this.state)
+    return post('/schemes', this.state, 'Схемата е успешно създадена')
       .then(({ id }) => {
         this.setState({ id: id });
         this.props.onChange();

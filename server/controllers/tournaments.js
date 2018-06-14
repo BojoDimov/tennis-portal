@@ -28,11 +28,12 @@ const getTournament = (req, res) => {
     }).then(t => res.json(t))
 };
 
-const createTournament = (req, res) => {
+const createTournament = (req, res, next) => {
   let model = req.body;
   model.status = 'draft';
   let tournament = Tournaments.create(model)
-    .then(e => res.json(e));
+    .then(e => res.json(e))
+    .catch(err => next(err, req, res, null));
 };
 
 const editTournament = (req, res, next) => {

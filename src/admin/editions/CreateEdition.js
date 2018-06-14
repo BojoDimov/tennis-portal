@@ -25,7 +25,7 @@ export class CreateEdition extends Component {
   }
 
   create() {
-    return post('/editions', this.state)
+    return post('/editions', this.state, 'Изданието е успешно създадено')
       .then(({ id }) => {
         this.setState({ id });
         this.props.onChange();

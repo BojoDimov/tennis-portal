@@ -3,6 +3,10 @@
 @import 'tournaments';
 @import 'forms';
 
+body, html {
+  overflow: hidden;
+}
+
 #menu {
   position: absolute;
   display: flex;
@@ -74,6 +78,35 @@ span%status {
   }
 }
 
+.messages {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  background-color: #dff0d7;
+  color: #3a773a;
+  border: 1px solid #3a773a;
+  border-radius: 3px;
+  font-size: 1.1em;
+  font-weight: 600;
+  animation: 1.5s ease-out slide-in;
+
+  .icon-box {
+    font-size: initial;
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 3rem;
+    width: 3rem;
+    color: whitesmoke;
+    background-color:#3a773a;
+  }
+
+  .text-box {
+    padding: 1rem;
+  }
+}
+
 .draft {
   @extend %status;
   background-color: $draft;
@@ -95,7 +128,15 @@ span%status {
   font-size: 12px;
 }
 
-@keyframes logo-spin {
-  from { transform: rotateY(0deg); }
-  to { transform: rotateY(360deg); }
+@keyframes slide-in {
+  0%{
+    right: -20rem;
+  }
+
+  85%{
+    right: 2rem;
+  }
+  100%{
+    right: 1rem;
+  }
 }

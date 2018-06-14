@@ -33,7 +33,7 @@ export class EditScheme extends Component {
   }
 
   update() {
-    return post('/schemes/edit', this.state)
+    return post('/schemes/edit', this.state, 'Промяната е успешна')
       .catch(err => {
         this.setState({ errors: err });
         throw err;
