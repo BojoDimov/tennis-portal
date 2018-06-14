@@ -20,3 +20,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 package-lock.json
+src/css/main.min.css
+src/css/main.css
+src/css/variables.css
+src/css/styles.min.css
+src/css/variables.min.css

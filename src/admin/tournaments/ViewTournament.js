@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { get } from '../../services/fetch';
-import { Status, ItemList } from '../Infrastructure';
+import { Status, ConfirmationButton } from '../Infrastructure';
 import { EditionsTable } from '../editions/Editions';
 
 export class ViewTournament extends Component {
@@ -92,9 +92,9 @@ export class ViewTournament extends Component {
   buttons() {
     return (
       <span className="button-group">
-        {this.state.status === 'draft' ? <span className="button" onClick={() => this.publish()}>Публикуване</span> : null}
+        {this.state.status === 'draft' ? <ConfirmationButton onChange={flag => flag ? this.publish() : null}>Публикуване</ConfirmationButton> : null}
         {this.state.status === 'draft' ? <span className="button"><Link to={`/tournaments/edit/${this.state.id}`}>Промяна</Link></span> : null}
-        {this.state.status === 'published' ? <span className="button" onClick={() => this.draft()}>Връщане в чернова</span> : null}
+        {this.state.status === 'published' ? <ConfirmationButton onChange={flag => flag ? this.draft() : null}>Връщане в чернова</ConfirmationButton> : null}
       </span>
     );
   }

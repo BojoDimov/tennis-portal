@@ -2,33 +2,37 @@ import React from 'react';
 import { Link, Route } from 'react-router-dom';
 import { get } from '../services/fetch';
 
-export const ItemView = ({ match, item }) => {
-  return (
-    <div className="item">
-      <div>
-        <span className="name">
-          <Link to={`${match.path}/view/${item.id}`}>
-            {item.name}
-          </Link>
-          <Status status={item.status} />
-        </span>
-      </div>
-      <div className="info">{item.info}</div>
-    </div>
-  );
-};
-
-export const Status = ({ status }) => {
-  const statusNames = {
-    'draft': 'чернова',
-    'published': 'активен',
-    'inactive': 'неактивен'
+export class ConfirmationButton extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      opened: false
+    };
   }
-  return (
-    // <span className={status}>{statusNames[status]}</span>
-    <span className="info">{status === 'draft' ? '(' + (statusNames[status]) + ')' : null}</span>
-  );
-};
+
+  action(accepted) {
+    this.setState({ opened: false });
+    this.props.onChange(accepted);
+  }
+
+  render() {
+    return (
+      <span>
+        <span className="button" onClick={() => this.setState({ opened: true })}>{this.props.children}</span>
+        {this.state.opened ?
+          <div className="backdrop fade-in" onClick={() => this.action(false)}>
+            <div className="public container" onClick={(e) => e.stopPropagation()}>
+              <div>Тази операция извършва промени по базата, моля потвърдете!</div>
+              <div>
+                <span className="button" onClick={() => this.action(true)}>Добре</span>
+                <span className="button" onClick={() => this.action(false)}>Отказ</span>
+              </div>
+            </div>
+          </div> : null}
+      </span>
+    );
+  }
+}
 
 export class ActionButton extends React.Component {
   render() {
@@ -69,3 +73,15 @@ export class Select extends React.Component {
     );
   }
 }
+
+export const Status = ({ status }) => {
+  const statusNames = {
+    'draft': 'чернова',
+    'published': 'активен',
+    'inactive': 'неактивен'
+  }
+  return (
+    // <span className={status}>{statusNames[status]}</span>
+    <span className="info">{status === 'draft' ? '(' + (statusNames[status]) + ')' : null}</span>
+  );
+};
