@@ -409,8 +409,8 @@ input.inline {
   margin-left: 1em;
 }
 
-body, html {
-  overflow: hidden;
+body {
+  overflow-x: hidden;
 }
 
 #menu {
@@ -510,6 +510,12 @@ span.draft, span.published, span.inactive {
 
 .messages .text-box {
   padding: 1rem;
+}
+
+@media screen and (max-width: 580px) {
+  .messages {
+    display: none;
+  }
 }
 
 .draft {

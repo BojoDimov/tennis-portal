@@ -3,8 +3,8 @@
 @import 'tournaments';
 @import 'forms';
 
-body, html {
-  overflow: hidden;
+body {
+  overflow-x: hidden;
 }
 
 #menu {
@@ -104,6 +104,10 @@ span%status {
 
   .text-box {
     padding: 1rem;
+  }
+
+  @media screen and (max-width: 580px){
+    display: none;
   }
 }
 
