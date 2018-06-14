@@ -58,6 +58,11 @@ export class SchemesPreview extends React.Component {
               {scheme.name}
             </span>
           )}
+          <Link to={`/schemes/create?editionId=${this.props.editionId}`}>
+            <span className="button-group">
+              <span className="button">добавяне</span>
+            </span>
+          </Link>
         </div>
         {this.state.active != -1 ? <div className="input-group">
           <Link to={`/schemes/view/${this.props.schemes[this.state.active].id}`}>Детайли</Link>

@@ -83,7 +83,7 @@ export class ViewEdition extends Component {
             </tbody>
           </table>
         </div>
-        <SchemesPreview schemes={this.state.schemes} />
+        <SchemesPreview schemes={this.state.schemes} editionId={this.state.id} />
       </Fragment>
     );
   }

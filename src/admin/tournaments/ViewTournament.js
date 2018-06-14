@@ -134,13 +134,13 @@ export class RankList extends React.Component {
             ))}
           </tbody>
         </table>
-        {this.state.limit != this.props.ranking.length ?
+        {this.state.limit < this.props.ranking.length ?
           <div className="center">
-            <a className="link" onClick={() => this.setState({ limit: this.props.ranking.length })}>
+            <a className="link" onClick={() => this.setState({ limit: this.props.ranking.length + 1 })}>
               покажи всичко
               </a>
           </div> : null}
-        {this.state.limit == this.props.ranking.length ?
+        {this.state.limit > this.props.ranking.length ?
           <div className="center">
             <a className="link" onClick={() => this.setState({ limit: 10 })}>
               скрий

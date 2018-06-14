@@ -13,7 +13,7 @@ module.exports = {
       inner join "Users" u
       on u.id = e."userId"
       where s.id = ${schemeId}
-      order by r.points desc
+      order by case when r."points" is null then 1 else 0 end, r.points desc
       limit ${limit}
       `;
 
