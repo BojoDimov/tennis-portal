@@ -71,7 +71,7 @@ export class SchemesPreview extends React.Component {
           <div>
             <div className="input-group"><i>Схемата не е изтеглена</i></div>
             <div className="input-group">
-              <div>Брой позиционирани играчи</div>
+              <div>Брой поставени играчи</div>
               <input className="inline" type="number" onChange={(e) => this.setState({ seed: e.target.value })} />
             </div>
             <span className="button" onClick={() => this.createScheme()} >изтегляне</span>
