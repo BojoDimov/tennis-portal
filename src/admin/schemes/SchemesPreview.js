@@ -51,6 +51,15 @@ export class SchemesPreview extends React.Component {
   render() {
     return (
       <div className="container">
+        <h2 className="header">
+          Схеми
+          <Link to={`/schemes/create?editionId=${this.props.editionId}`}>
+            <span className="button-group">
+              <span className="button">добавяне</span>
+            </span>
+          </Link>
+        </h2>
+
         <div className="tab-group input-group">
           {this.props.schemes.map((scheme, i) =>
             <span key={scheme.id} className={'button' + (i == this.state.active ? ' active' : '')}
@@ -58,11 +67,6 @@ export class SchemesPreview extends React.Component {
               {scheme.name}
             </span>
           )}
-          <Link to={`/schemes/create?editionId=${this.props.editionId}`}>
-            <span className="button-group">
-              <span className="button">добавяне</span>
-            </span>
-          </Link>
         </div>
         {this.state.active != -1 ? <div className="input-group">
           <Link to={`/schemes/view/${this.props.schemes[this.state.active].id}`}>Детайли</Link>
@@ -76,7 +80,7 @@ export class SchemesPreview extends React.Component {
             </div>
             <span className="button" onClick={() => this.createScheme()} >изтегляне</span>
           </div> : null}
-        <Bracket options={this.options} />
+        {this.state.notDrawn ? null : <Bracket options={this.options} />}
       </div>
     );
   }

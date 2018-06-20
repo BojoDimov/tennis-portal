@@ -436,6 +436,15 @@ body {
   color: white;
 }
 
+.header {
+  font-family: "Poiret One", cursive;
+  margin: 0;
+  padding: 0;
+  padding-bottom: .3em;
+  margin-bottom: .5em;
+  border-bottom: 1px solid #505050;
+}
+
 .link {
   text-decoration: underline;
 }

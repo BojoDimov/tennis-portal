@@ -26,7 +26,9 @@ module.exports = (db, Sequelize) => {
         min: 0
       }
     },
-    maxPlayerCount: { type: Sequelize.INTEGER, allowNull: false, validate: { min: 4, max: 128 } },
+    maxPlayerCount: { type: Sequelize.INTEGER, allowNull: true },
+    groupCount: { type: Sequelize.INTEGER, allowNull: true },
+    teamsPerGroup: { type: Sequelize.INTEGER, allowNull: true },
     registrationStart: { type: Sequelize.DATE, allowNull: false },
     registrationEnd: { type: Sequelize.DATE, allowNull: false },
     hasGroupPhase: { type: Sequelize.BOOLEAN, allowNull: false },
@@ -34,7 +36,15 @@ module.exports = (db, Sequelize) => {
       type: Sequelize.ENUM,
       values: ['draft', 'published', 'inactive'],
       allowNull: false
-    }
+    },
+    schemeType: {
+      type: Sequelize.ENUM,
+      values: ['elimination', 'round-robin'],
+      allowNull: false
+    },
+    pPoints: { type: Sequelize.INTEGER, default: 0, allowNull: false },
+    wPoints: { type: Sequelize.INTEGER, default: 0, allowNull: false },
+    cPoints: { type: Sequelize.INTEGER, default: 0, allowNull: false }
   }, {
       validate: {
         mixedSingleTeams() {
@@ -53,9 +63,25 @@ module.exports = (db, Sequelize) => {
           if (this.date < this.registrationStart)
             throw new Error('Tournament start cannot be before registration start date');
         },
-        schemeType() {
+        schemeFormat() {
           if (!this.maleTeams && !this.femaleTeams && !this.mixedTeams)
             throw new Error('');
+        },
+        eTeamCount() {
+          if (this.schemeType == 'elimination' && !this.maxPlayerCount)
+            throw new Error();
+        },
+        gCount() {
+          if (this.schemeType == 'round-robin' && !this.groupCount)
+            throw new Error();
+        },
+        rrTeamCount() {
+          if (this.schemeType == 'round-robin' && !this.teamsPerGroup)
+            throw new Error();
+        },
+        groupPhase() {
+          if (!this.groupPhaseId && this.hasGroupPhase)
+            throw new Error();
         }
       }
     });

@@ -108,6 +108,13 @@ TournamentSchemes.hasMany(EnrollmentsQueue, {
   }
 });
 
+TournamentSchemes.hasOne(TournamentSchemes, {
+  foreignKey: {
+    name: 'groupPhaseId',
+    allowNull: true
+  }
+});
+
 SchemeEnrollments.belongsTo(Users, {
   foreignKey: {
     name: 'userId',

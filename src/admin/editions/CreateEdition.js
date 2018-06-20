@@ -41,8 +41,6 @@ export class CreateEdition extends Component {
       <h2 className="form-box">Ново издание</h2>
       <form className="form-box">
         <div className="input-group">
-          {/* <div>Турнир</div>
-          <Select url="/tournaments" onChange={id => this.setState({ tournamentId: id })} /> */}
           <Link to={`/tournaments/view/${this.state.tournamentId}`}>
             {this.state.tournamentName}
           </Link>

@@ -13,6 +13,10 @@ export class CreateScheme extends Component {
       femaleTeams: false,
       mixedTeams: false,
       hasGroupPhase: false,
+      schemeType: 'elimination',
+      pPoints: 1,
+      wPoints: 15,
+      cPoints: 20,
       errors: {}
     };
   }
@@ -45,9 +49,6 @@ export class CreateScheme extends Component {
       <h2 className="form-box">Добавяне на схема</h2>
       <form className="form-box">
         <div className="input-group">
-          {/* <div>Издание</div>
-          <Select url="/editions" onChange={id => this.setState({ tournamentEditionId: id })} value={this.state.tournamentEditionId} />
-          <div className="error">{this.state.errors.tournamentEditionId ? '*Задължително поле' : null}</div> */}
           <Link to={`/editions/view/${this.state.tournamentEditionId}`}>
             {this.state.tournamentEditionName}
           </Link>
@@ -98,8 +99,61 @@ export class CreateScheme extends Component {
               Микс</label>
           </div> : null}
           <div className="error">{this.state.errors.mixedSingleTeams ? '*Схемата е за единични отбори' : null}</div>
-          <div className="error">{this.state.errors.schemeType ? '*Поне едно от "Мъже", "Жени", "Микс" трябва да бъде избрано' : null}</div>
+          <div className="error">{this.state.errors.schemeFormat ? '*Поне едно от "Мъже", "Жени", "Микс" трябва да бъде избрано' : null}</div>
         </div>
+
+        <div className="input-group">
+          <div>Тип на схемата</div>
+          <select value={this.state.schemeType} onChange={(e) => this.setState({
+            schemeType: e.target.value,
+            maxPlayerCount: undefined,
+            groupPhaseId: undefined,
+            groupCount: undefined,
+            teamsPerGroup: undefined
+          })}>
+            <option value="elimination">Елиминации</option>
+            <option value="round-robin">Групова фаза</option>
+          </select>
+        </div>
+
+        {this.state.schemeType == 'elimination' ?
+          <div className="input-group">
+            <div>Брой играчи</div>
+            <input
+              type="number" min="4" max="128"
+              onChange={e => this.setState({ maxPlayerCount: e.target.value })} />
+            <div className="error">{this.state.errors.eTeamCount ? '*Задължително поле' : null}</div>
+          </div> : null
+        }
+
+        {this.state.schemeType == 'elimination' ?
+          <div className="input-group">
+            <label>
+              <input type="checkbox"
+                onChange={e => this.setState({ hasGroupPhase: !this.state.hasGroupPhase })} />
+              Включване на групова фаза</label>
+          </div> : null}
+
+        {this.state.schemeType == 'elimination' && this.state.hasGroupPhase ?
+          <div className="input-group">
+            <div>Групова фаза</div>
+            <Select url="/schemes" onChange={(e) => this.setState({ groupPhaseId: e.target.value })} />
+            <div className="error">{this.state.errors.groupPhase ? '*Задължително поле' : null}</div>
+          </div> : null}
+
+        {this.state.schemeType == 'round-robin' ?
+          <div>
+            <div className="input-group">
+              <div>Брой групи</div>
+              <input type="number" onChange={(e) => this.setState({ groupCount: e.target.value })} />
+              <div className="error">{this.state.errors.gCount ? '*Задължително поле' : null}</div>
+            </div>
+            <div className="input-group">
+              <div>Брой играчи в група</div>
+              <input type="number" onChange={(e) => this.setState({ teamsPerGroup: e.target.value })} />
+              <div className="error">{this.state.errors.rrTeamCount ? '*Задължително поле' : null}</div>
+            </div>
+          </div> : null}
 
         <div className="input-group">
           <div>Възраст от</div>
@@ -117,16 +171,6 @@ export class CreateScheme extends Component {
             onChange={e => this.setState({ ageTo: e.target.value })} />
           <div className="error">{this.state.errors.ageFromTo ? '*Неправилен интервал' : null}</div>
           <div className="error">{this.state.errors.ageTo ? '*Невалидна стойност' : null}</div>
-        </div>
-
-
-        <div className="input-group">
-          <div>Брой играчи</div>
-          <input
-            type="number" min="4" max="128"
-            value={this.state.maxPlayerCount}
-            onChange={e => this.setState({ maxPlayerCount: e.target.value })} />
-          <div className="error">{this.state.errors.maxPlayerCount ? '*Невалидна стойност' : null}</div>
         </div>
 
         <div className="input-group">
@@ -154,11 +198,23 @@ export class CreateScheme extends Component {
         </div>
 
         <div className="input-group">
-          <label>
-            <input type="checkbox"
-              onChange={e => this.setState({ hasGroupPhase: !this.state.hasGroupPhase })} />
-            Включване на групова фаза</label>
+          <div>Брой точки за участие</div>
+          <input value={this.state.pPoints} type="number"
+            onChange={e => this.setState({ pPoints: e.target.value })} />
         </div>
+
+        <div className="input-group">
+          <div>Брой точки за победа</div>
+          <input value={this.state.wPoints} type="number"
+            onChange={e => this.setState({ wPoints: e.target.value })} />
+        </div>
+
+        <div className="input-group">
+          <div>Брой точки за шампион</div>
+          <input value={this.state.cPoints} type="number"
+            onChange={e => this.setState({ cPoints: e.target.value })} />
+        </div>
+
 
         <ActionButton className="center"
           onSuccess={`/schemes/view/${this.state.id}`}

@@ -102,11 +102,29 @@ export class ViewScheme extends Component {
                         </td>
                       </tr>
                       <tr>
-                        <td><b>Групова фаза</b></td>
+                        <td><b>Тип на схемата</b></td>
                         <td>
-                          {this.state.hasGroupPhase ? 'има групова фаза' : 'няма групова фаза'}
+                          {this.state.schemeType == 'elimination' ? 'елиминации' : 'групова фаза'}
                         </td>
                       </tr>
+                      {this.state.schemeType == 'elimination' ?
+                        <tr>
+                          <td><b>Групова фаза</b></td>
+                          <td>
+                            {this.state.hasGroupPhase ? 'има групова фаза' : 'няма групова фаза'}
+                          </td>
+                        </tr> : null}
+                      {this.state.schemeType == 'round-robin' ?
+                        <React.Fragment>
+                          <tr>
+                            <td><b>Брой групи</b></td>
+                            <td>{this.state.groupCount}</td>
+                          </tr>
+                          <tr>
+                            <td><b>Брой играчи в група</b></td>
+                            <td>{this.state.teamsPerGroup}</td>
+                          </tr>
+                        </React.Fragment> : null}
                     </tbody>
                   </table>
                 </td>
@@ -207,6 +225,7 @@ export class Enrollments extends React.Component {
             ))}
           </tbody>
         </table>
+        {this.props.enrollments.length == 0 ? <div><i>Няма записани играчи</i></div> : null}
         {this.state.limit != this.props.enrollments.length && this.props.enrollments.length > 0 ?
           <div className="center">
             <a className="link" onClick={() => this.setState({ limit: this.props.enrollments.length })}>
