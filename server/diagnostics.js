@@ -11,8 +11,12 @@ const registerTeams = (req, res, next) => {
     .findById(schemeId)
     .then(scheme => {
       let enrollments = createEnrollments(schemeId, count);
-      let e = enrollments.slice(0, scheme.maxPlayerCount);
-      let q = enrollments.slice(scheme.maxPlayerCount, enrollments.length);
+      let e = [];
+      if (scheme.schemeType == 'elimination')
+        e = enrollments.slice(0, scheme.maxPlayerCount);
+      else
+        e = enrollments.slice(0, scheme.groupCount * scheme.teamsPerGroup);
+      let q = enrollments.slice(e.length, enrollments.length);
 
       return Promise.all([
         SchemeEnrollments.bulkCreate(e),
