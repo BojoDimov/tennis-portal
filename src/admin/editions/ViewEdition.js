@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { get } from '../../services/fetch';
-import { Status } from '../Infrastructure';
+import { Status, ConfirmationButton } from '../Infrastructure';
 import { SchemesPreview } from '../schemes/SchemesPreview';
 
 export class ViewEdition extends Component {
@@ -91,9 +91,9 @@ export class ViewEdition extends Component {
   buttons() {
     return (
       <span className="button-group">
-        {this.state.status === 'draft' ? <span className="button" onClick={() => this.publish()}>Публикуване</span> : null}
+        {this.state.status === 'draft' ? <ConfirmationButton onChange={flag => flag ? this.publish() : null}>Публикуване</ConfirmationButton> : null}
         {this.state.status === 'draft' ? <span className="button"><Link to={`/editions/edit/${this.state.id}`}>Промяна</Link></span> : null}
-        {this.state.status === 'published' ? <span className="button" onClick={() => this.draft()}>Връщане в чернова</span> : null}
+        {this.state.status === 'published' ? <ConfirmationButton onChange={flag => flag ? this.draft() : null}>Връщане в чернова</ConfirmationButton> : null}
       </span>
     );
   }

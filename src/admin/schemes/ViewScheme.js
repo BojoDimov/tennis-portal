@@ -1,7 +1,8 @@
 import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { get } from '../../services/fetch';
-import { Status } from '../Infrastructure';
+import { Status, ConfirmationButton } from '../Infrastructure';
+import { Enrollments, EnrollmentsQueue } from './Enrollments';
 
 export class ViewScheme extends Component {
   constructor(props) {
@@ -134,7 +135,7 @@ export class ViewScheme extends Component {
         </div>
 
         <Enrollments enrollments={this.state.enrollments} />
-        <Queue queue={this.state.queue} />
+        <EnrollmentsQueue queue={this.state.queue} />
       </React.Fragment>
     );
   }
@@ -164,9 +165,9 @@ export class ViewScheme extends Component {
   buttons() {
     return (
       <span className="button-group">
-        {this.state.status === 'draft' ? <span className="button" onClick={() => this.publish()}>Публикуване</span> : null}
+        {this.state.status === 'draft' ? <ConfirmationButton onChange={flag => flag ? this.publish() : null}>Публикуване</ConfirmationButton> : null}
         {this.state.status === 'draft' ? <span className="button"><Link to={`/schemes/edit/${this.state.id}`}>Промяна</Link></span> : null}
-        {this.state.status === 'published' ? <span className="button" onClick={() => this.draft()}>Връщане в чернова</span> : null}
+        {this.state.status === 'published' ? <ConfirmationButton onChange={flag => flag ? this.draft() : null}>Връщане в чернова</ConfirmationButton> : null}
         {/* {
           <div className="dropdown">
             <span className="button" onClick={() => this.setState({ showDrawScheme: !this.state.showDrawScheme })}>Изтегляне на схема</span>
@@ -189,109 +190,4 @@ export class ViewScheme extends Component {
 function dateString(str, noTime = false) {
   let date = new Date(str);
   return noTime ? date.toLocaleDateString() : date.toLocaleString();
-}
-
-export class Enrollments extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      limit: 10
-    }
-  }
-  render() {
-    return (
-      <div className="container">
-        <table className="list-table">
-          <thead>
-            <tr>
-              <th>
-                <span>Записани играчи</span>
-              </th>
-              <th className="text-right">
-                Точки
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.props.enrollments.slice(0, this.state.limit).map((e, i) => (
-              <tr key={e.id}>
-                <td>
-                  <span>{(i + 1) + '.'}</span><Link to={`/editions/view/${e.id}`} >{e.name}</Link>
-                </td>
-                <td className="text-right">
-                  {e.points}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {this.props.enrollments.length == 0 ? <div><i>Няма записани играчи</i></div> : null}
-        {this.state.limit != this.props.enrollments.length && this.props.enrollments.length > 0 ?
-          <div className="center">
-            <a className="link" onClick={() => this.setState({ limit: this.props.enrollments.length })}>
-              покажи всичко
-              </a>
-          </div> : null}
-        {this.state.limit == this.props.enrollments.length && this.props.enrollments.length > 0 ?
-          <div className="center">
-            <a className="link" onClick={() => this.setState({ limit: 10 })}>
-              скрий
-              </a>
-          </div> : null}
-      </div>
-    );
-  }
-}
-
-export class Queue extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      limit: 10
-    }
-  }
-
-  render() {
-    return (
-      <div className="container">
-        <table className="list-table">
-          <thead>
-            <tr>
-              <th>
-                <span>Опашка</span>
-              </th>
-              <th className="text-right">
-                Точки
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {this.props.queue.slice(0, this.state.limit).map((e, i) => (
-              <tr key={e.id}>
-                <td>
-                  <span>{(i + 1) + '.'}</span><Link to={`/editions/view/${e.id}`} >{e.name}</Link>
-                </td>
-                <td className="text-right">
-                  {e.points}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        {this.props.queue.length == 0 ? <div><i>Няма записани играчи в опашка</i></div> : null}
-        {this.state.limit != this.props.queue.length && this.props.queue.length > 0 ?
-          <div className="center">
-            <a className="link" onClick={() => this.setState({ limit: this.props.queue.length })}>
-              покажи всичко
-              </a>
-          </div> : null}
-        {this.state.limit == this.props.queue.length && this.props.queue.length > 0 ?
-          <div className="center">
-            <a className="link" onClick={() => this.setState({ limit: 10 })}>
-              скрий
-              </a>
-          </div> : null}
-      </div>
-    );
-  }
 }
