@@ -1,7 +1,7 @@
 module.exports = {
-  getEnrollments: (db, schemeId, limit) => {
+  getEnrollments: (db, schemeId) => {
     const query = `
-      select u.id, u.fullname as name, r.points from "TournamentSchemes" s
+      select u.id, u.fullname as name, r.points, e."createdAt", e.id as "enrollmentId" from "TournamentSchemes" s
       inner join "TournamentEditions" te
       on s."tournamentEditionId" = te.id
       inner join "Tournaments" t
@@ -14,14 +14,13 @@ module.exports = {
       on u.id = e."userId"
       where s.id = ${schemeId}
       order by case when r."points" is null then 1 else 0 end, r.points desc
-      limit ${limit}
       `;
 
     return db.query(query, { type: db.QueryTypes.SELECT });
   },
   getEnrollmentsQueue: (db, schemeId) => {
     const query = `
-      select u.id, u.fullname as name, r.points from "TournamentSchemes" s
+      select u.id, u.fullname as name, r.points, e."createdAt", e.id as "enrollmentId" from "TournamentSchemes" s
       inner join "TournamentEditions" te
       on s."tournamentEditionId" = te.id
       inner join "Tournaments" t

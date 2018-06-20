@@ -1,4 +1,9 @@
-const { Tournaments, TournamentEditions, TournamentSchemes, db, Matches, Users } = require('../sequelize.config');
+const {
+  Tournaments, TournamentEditions, TournamentSchemes,
+  SchemeEnrollments, EnrollmentsQueue,
+  Matches,
+  Users,
+  db } = require('../sequelize.config');
 const { getEnrollments, getEnrollmentsQueue } = require('../db/enrollments.js');
 const { drawScheme } = require('../logic/drawScheme');
 
@@ -24,7 +29,7 @@ const getScheme = (req, res) => {
 const getSchemeEnrollments = (req, res) => {
   return TournamentSchemes
     .findById(req.params.id)
-    .then(e => getEnrollments(db, e.id, e.maxPlayerCount))
+    .then(e => getEnrollments(db, e.id))
     .then(e => {
       return res.json(e);
     });
@@ -55,7 +60,7 @@ const createSchemeMatches = (req, res, next) => {
     .then(() => TournamentSchemes.findById(req.params.id))
     .then(e => {
       scheme = e;
-      return getEnrollments(db, e.id, e.maxPlayerCount)
+      return getEnrollments(db, e.id)
     })
     .then(e => {
       let matches = drawScheme(scheme, seed, e)
@@ -100,9 +105,10 @@ const createScheme = (req, res, next) => {
     .catch(err => next(err, req, res, null));
 };
 
-const editScheme = (req, res) => {
+const editScheme = (req, res, next) => {
   return TournamentSchemes
     .findById(req.body.id)
+    .then(e => updateEnrollments(e, req.body))
     .then(e => e.update(req.body))
     .then(e => res.json(e))
     .catch(err => next(err, req, res, null));
@@ -122,6 +128,60 @@ function setStatus(id, status) {
   return TournamentSchemes
     .findById(id)
     .then(edition => edition.update({ status: status }));
+}
+
+function updateEnrollments(oldScheme, newScheme) {
+  let diff = 0;
+  let mode = 'none';
+  if (oldScheme.schemeType == 'elimination')
+    diff = oldScheme.maxPlayerCount - newScheme.maxPlayerCount;
+  else if (oldScheme.schemeType == 'round-robin')
+    diff = oldScheme.groupCount * oldScheme.teamsPerGroup - newScheme.groupCount * newScheme.teamsPerGroup;
+
+  if (diff > 0)
+    mode = 'remove';
+  else if (diff < 0) {
+    mode = 'add';
+    diff = -1 * diff;
+  }
+
+  return Promise.all([
+    getEnrollments(db, oldScheme.id),
+    getEnrollmentsQueue(db, oldScheme.id)
+  ]).then(([e, q]) => {
+    if (mode == 'remove') {
+      let transferred = e.slice(e.length - diff, e.length);
+      return Promise.all([
+        SchemeEnrollments.destroy({
+          where: {
+            id: transferred.map(t => t.enrollmentId)
+          }
+        }),
+        EnrollmentsQueue.bulkCreate(transferred.map(t => {
+          t.schemeId = oldScheme.id;
+          t.userId = t.id;
+          t.id = undefined;
+          return t;
+        }))
+      ]);
+    }
+    else if (mode == 'add') {
+      let transferred = q.slice(0, diff);
+      return Promise.all([
+        SchemeEnrollments.bulkCreate(transferred.map(t => {
+          t.schemeId = oldScheme.id;
+          t.userId = t.id;
+          t.id = undefined;
+          return t;
+        })),
+        EnrollmentsQueue.destroy({
+          where: {
+            id: transferred.map(t => t.enrollmentId)
+          }
+        })
+      ]);
+    }
+  }).then(() => oldScheme);
 }
 
 module.exports = {
