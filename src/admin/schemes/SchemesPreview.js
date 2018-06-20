@@ -14,20 +14,10 @@ export class SchemesPreview extends React.Component {
     }
   }
 
-  componentDidMount() {
-    if (this.props.schemes.length > 0)
+  componentDidUpdate() {
+    if (this.props.schemes.length > 0 && this.state.active == -1)
       this.selectScheme(0)
-
   }
-
-  componentDidChange() {
-    console.log('changes');
-  }
-
-  // componentDidUpdate() {
-  //   if (this.state.active == -1 && this.props.schemes.length > 0)
-  //     this.selectScheme(0)
-  // }
 
   selectScheme(index) {
     let schemeId = this.props.schemes[index].id;
