@@ -7,21 +7,6 @@ export class EditScheme extends Component {
     super(props);
 
     this.state = {
-      name: '',
-      info: '',
-      ageFrom: 0,
-      ageTo: 0,
-      maxPlayerCount: 0,
-      groupCount: 0,
-      teamsPerGroup: 0,
-      date: '',
-      registrationStart: '',
-      registrationEnd: '',
-      singleTeams: true,
-      maleTeams: false,
-      femaleTeams: false,
-      mixedTeams: false,
-      hasGroupPhase: false,
       errors: {}
     };
   }
