@@ -10,14 +10,14 @@ function _draw_groups(scheme, seed, enrollments) {
     if (!groups[g])
       groups[g] = {
         schemeId: scheme.id,
-        group: g + 1,
+        group: g,
         teams: []
       };
 
     if (i < enrollments.length)
-      groups[g].teams.push({ teamId: enrollments[i].id, groupId: -1 });
+      groups[g].teams.push({ teamId: enrollments[i].id, order: groups[g].teams.length + 1 });
     else
-      groups[g].teams.push({ teamId: null, groupId: -1 });
+      groups[g].teams.push({ teamId: null, order: groups[g].teams.length + 1 });
   }
 
   return groups;

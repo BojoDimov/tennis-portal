@@ -211,6 +211,14 @@ Groups.hasMany(GroupTeams, {
   }
 });
 
+Groups.hasMany(Matches, {
+  as: 'matches',
+  foreignKey: {
+    name: 'groupId',
+    allowNull: true
+  }
+});
+
 // Groups.hasMany(Users, { through: GroupTeams });
 
 Groups.belongsTo(TournamentSchemes, {

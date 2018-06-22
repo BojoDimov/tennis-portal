@@ -154,7 +154,45 @@ function _get_draw_data(scheme) {
         order: [
           'match'
         ]
+      })
+      .then(matches => {
+        return {
+          schemeId: scheme.id,
+          schemeType: 'elimination',
+          data: matches,
+          isDrawn: matches.length > 0
+        }
       });
   else if (scheme.schemeType == 'round-robin')
-    return {};
+    return Groups
+      .findAll({
+        where: {
+          schemeId: scheme.id
+        },
+        include: [
+          {
+            model: GroupTeams,
+            as: 'teams',
+            include: [
+              { model: Users, attributes: ['id', 'fullname'] }
+            ]
+          },
+          {
+            model: Matches,
+            as: 'matches'
+          }
+        ],
+        order: [
+          'group',
+          ['teams', 'order', 'asc']
+        ]
+      })
+      .then(groups => {
+        return {
+          schemeId: scheme.id,
+          schemeType: 'round-robin',
+          data: groups,
+          isDrawn: groups.length > 0
+        }
+      });
 }

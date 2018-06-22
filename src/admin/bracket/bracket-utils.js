@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function init_bracket(matches) {
+export function init_elimination_bracket(matches) {
   let bracket_size = matches.length * 2;
   let bracket = [];
 
@@ -19,7 +19,7 @@ export function init_bracket(matches) {
   return bracket;
 }
 
-export function get_headers(matches) {
+export function get_elimination_headers(matches) {
   let bracket_size = matches.length * 2;
   let headers = [];
   while (bracket_size > 1) {
