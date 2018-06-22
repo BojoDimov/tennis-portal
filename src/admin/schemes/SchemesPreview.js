@@ -23,7 +23,7 @@ export class SchemesPreview extends React.Component {
     let schemeId = this.props.schemes[index].id;
     return get(`/schemes/${schemeId}/getDraw`)
       .then(matches => {
-        if (matches.length == 0)
+        if (matches)
           this.setState({ notDrawn: true });
         else
           this.setState({ notDrawn: false });

@@ -1,7 +1,7 @@
 const {
   Tournaments, TournamentEditions, TournamentSchemes,
   SchemeEnrollments, EnrollmentsQueue,
-  Matches, Groups,
+  Matches, Groups, GroupTeams,
   Users,
   db } = require('../sequelize.config');
 const DrawActions = require('../logic/drawActions');
@@ -100,7 +100,12 @@ const draw = (req, res, next) => {
       }
       else if (scheme.schemeType == 'round-robin') {
         let groups = DrawActions._draw_groups(scheme, seed, e);
-        return Groups.bulkCreate(groups);
+        return Promise.all(groups.map(group => Groups.create(group, {
+          include: [
+            { model: GroupTeams, as: 'teams' }
+          ]
+        })));
+        //return Groups.bulkCreate(groups);
       }
     })
     .then(() => _get_draw_data(scheme))

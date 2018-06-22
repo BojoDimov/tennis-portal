@@ -199,7 +199,7 @@ GroupTeams.belongsTo(Users, {
 GroupTeams.belongsTo(Groups, {
   foreignKey: {
     name: 'groupId',
-    allowNull: false
+    allowNull: true
   }
 });
 
@@ -207,14 +207,16 @@ Groups.hasMany(GroupTeams, {
   as: 'teams',
   foreignKey: {
     name: 'groupId',
-    allowNull: false
+    allowNull: true
   }
 });
+
+// Groups.hasMany(Users, { through: GroupTeams });
 
 Groups.belongsTo(TournamentSchemes, {
   foreignKey: {
     name: 'schemeId',
-    allowNull: false
+    allowNull: true
   }
 });
 
@@ -232,10 +234,10 @@ module.exports = {
   Users, Tokens,
   Tournaments, TournamentEditions, TournamentSchemes, Rankings,
   SchemeEnrollments, EnrollmentsQueue,
-  Matches, Groups, Sets,
+  Matches, Groups, GroupTeams, Sets,
   Logs,
   db,
   init: function () {
-    return db.sync().then(() => process.exit());
+    return db.sync({ force: true }).then(() => process.exit());
   }
 };

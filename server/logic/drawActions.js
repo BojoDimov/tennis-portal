@@ -15,9 +15,9 @@ function _draw_groups(scheme, seed, enrollments) {
       };
 
     if (i < enrollments.length)
-      groups[g].teams.push({ teamId: enrollments[i].id });
+      groups[g].teams.push({ teamId: enrollments[i].id, groupId: -1 });
     else
-      groups[g].teams.push({ teamId: null });
+      groups[g].teams.push({ teamId: null, groupId: -1 });
   }
 
   return groups;
