@@ -1,6 +1,29 @@
-module.exports = { drawScheme };
+module.exports = { _draw_eliminations, _draw_groups };
 
-function drawScheme(scheme, seed, enrollments) {
+function _draw_groups(scheme, seed, enrollments) {
+  let bracket_size = scheme.groupCount * scheme.teamsPerGroup;
+  let ordering = get_group_order(seed, scheme.groupCount, scheme.teamsPerGroup);
+  let groups = [];
+
+  for (let i = 0; i < bracket_size; i++) {
+    let g = ordering[i];
+    if (!groups[g])
+      groups[g] = {
+        schemeId: scheme.id,
+        group: g + 1,
+        teams: []
+      };
+
+    if (i < enrollments.length)
+      groups[g].teams.push({ teamId: enrollments[i].id });
+    else
+      groups[g].teams.push({ teamId: null });
+  }
+
+  return groups;
+}
+
+function _draw_eliminations(scheme, seed, enrollments) {
   let bracket_size = Math.pow(2, Math.ceil(Math.log2(enrollments.length)));
   let { mapping, remaining, empty } = get_order(seed, enrollments.length, bracket_size);
   let matches = [];
@@ -37,6 +60,29 @@ function drawScheme(scheme, seed, enrollments) {
   });
 
   return matches.slice(1);
+}
+
+function get_group_order(seed, nGroups, nTeamsPerGroup) {
+  let groups = [];
+  for (let i = 0; i < seed; i++) {
+    let group = Math.floor(Math.random() * 10000) % nGroups;
+    while (groups.indexOf(group) != -1)
+      group = Math.floor(Math.random() * 10000) % nGroups;
+    groups.push(group);
+  }
+
+  let t = [];
+  for (let i = 0; i < nGroups * nTeamsPerGroup - seed; i++) {
+    let group = Math.floor(Math.random() * 10000) % nGroups;
+    while (t.indexOf(group) != -1)
+      group = Math.floor(Math.random() * 10000) % nGroups;
+    groups.push(group);
+    t.push(group);
+    if (t.length == nGroups)
+      t = [];
+  }
+
+  return groups;
 }
 
 function get_order(positioned, count, max_count) {

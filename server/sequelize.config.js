@@ -23,6 +23,8 @@ const SchemeEnrollments = db.import(__dirname + '/db/schemeEnrollments.js');
 const EnrollmentsQueue = db.import(__dirname + '/db/enrollmentsQueue.js');
 const Rankings = db.import(__dirname + '/db/rankings.js');
 const Matches = db.import(__dirname + '/db/matches.js');
+const Groups = db.import(__dirname + '/db/groups.js');
+const GroupTeams = db.import(__dirname + '/db/groupTeams.js');
 const Sets = db.import(__dirname + '/db/sets.js');
 
 Users.hasOne(Tokens, {
@@ -180,9 +182,57 @@ Matches.hasMany(Sets, {
   }
 });
 
+Matches.belongsTo(Groups, {
+  foreignKey: {
+    name: 'groupId',
+    allowNull: true
+  }
+});
+
+GroupTeams.belongsTo(Users, {
+  foreignKey: {
+    name: 'teamId',
+    allowNull: true
+  }
+});
+
+GroupTeams.belongsTo(Groups, {
+  foreignKey: {
+    name: 'groupId',
+    allowNull: false
+  }
+});
+
+Groups.hasMany(GroupTeams, {
+  as: 'teams',
+  foreignKey: {
+    name: 'groupId',
+    allowNull: false
+  }
+});
+
+Groups.belongsTo(TournamentSchemes, {
+  foreignKey: {
+    name: 'schemeId',
+    allowNull: false
+  }
+});
+
+
+
+// TournamentSchemes.hasMany(Groups, {
+//   as: 'groups',
+//   foreignKey: {
+//     name: 'schemeId',
+//     allowNull: false
+//   }
+// });
+
 module.exports = {
-  Tournaments, TournamentEditions, TournamentSchemes,
-  Users, Tokens, SchemeEnrollments, Rankings, Matches, Sets, EnrollmentsQueue,
+  Users, Tokens,
+  Tournaments, TournamentEditions, TournamentSchemes, Rankings,
+  SchemeEnrollments, EnrollmentsQueue,
+  Matches, Groups, Sets,
   Logs,
   db,
   init: function () {
