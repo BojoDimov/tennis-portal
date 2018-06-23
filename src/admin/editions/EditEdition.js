@@ -25,11 +25,6 @@ export class EditEdition extends Component {
 
   update() {
     return post('/editions/edit', this.state, 'Промяната е успешна')
-      .then(({ id }) => {
-        console.log('success');
-        //this.setState({ id: id });
-        //this.props.onChange()
-      })
       .catch(err => {
         this.setState({ errors: err });
         throw err;

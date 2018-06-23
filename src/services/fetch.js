@@ -59,8 +59,6 @@ function error_handler(res) {
 function message_handler(message) {
   let el = document.getElementById("messages");
   let ev = new CustomEvent('message', { detail: message });
-  if (message) {
-    console.log('Dispatching event', ev, el);
+  if (message)
     el.dispatchEvent(ev);
-  }
 }

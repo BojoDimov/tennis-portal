@@ -28,7 +28,6 @@ export class ViewScheme extends Component {
     ]).then(([scheme, enrollments, queue]) => {
       scheme.enrollments = enrollments;
       scheme.queue = queue;
-      console.log(scheme);
       return this.setState(scheme);
     });
   }

@@ -38,7 +38,6 @@ export class CreateScheme extends Component {
         this.props.onChange();
       })
       .catch(err => {
-        console.log(err);
         this.setState({ errors: err });
         throw err;
       });

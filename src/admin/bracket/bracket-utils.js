@@ -9,7 +9,6 @@ export function init_elimination_bracket(matches, refresh_handler) {
 
   for (let i = 0; i < matches.length; i++) {
     bracket[i] = [];
-    console.log(matches[i]);
     bracket[i][0] = <EntryBox key={0} match={matches[i]} refresh={refresh_handler} />
   }
 
@@ -117,8 +116,7 @@ export class TeamLabel extends React.Component {
           </span>
         </div>
       );
-    else {
-      console.log(this.props.team)
+    else
       if (this.state.selectTeam)
         return (
           <div>
@@ -142,6 +140,5 @@ export class TeamLabel extends React.Component {
             <option value={0}>bye</option>
           </Select>
         );
-    }
   }
 }
