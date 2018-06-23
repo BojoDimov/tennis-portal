@@ -120,28 +120,32 @@ TournamentSchemes.hasOne(TournamentSchemes, {
 SchemeEnrollments.belongsTo(Users, {
   foreignKey: {
     name: 'userId',
-    allowNull: false
+    allowNull: false,
+    unique: 'Enrollments_Scheme_Team_UQ'
   }
 });
 
 SchemeEnrollments.belongsTo(TournamentSchemes, {
   foreignKey: {
     name: 'schemeId',
-    allowNull: false
+    allowNull: false,
+    unique: 'Enrollments_Scheme_Team_UQ'
   }
 });
 
 EnrollmentsQueue.belongsTo(Users, {
   foreignKey: {
     name: 'userId',
-    allowNull: false
+    allowNull: false,
+    unique: 'EnrollmentsQueues_Scheme_Team_UQ'
   }
 });
 
 EnrollmentsQueue.belongsTo(TournamentSchemes, {
   foreignKey: {
     name: 'schemeId',
-    allowNull: false
+    allowNull: false,
+    unique: 'EnrollmentsQueues_Scheme_Team_UQ'
   }
 });
 
@@ -246,6 +250,6 @@ module.exports = {
   Logs,
   db,
   init: function () {
-    return db.sync({ force: true }).then(() => process.exit());
+    return db.sync().then(() => process.exit());
   }
 };

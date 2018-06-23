@@ -43,15 +43,15 @@ export class BracketGroup extends React.Component {
             {this.props.group.teams.map((t, i) => <th key={i}>{t.order}</th>)}
           </tr>
         </thead>
-        {this.props.group.teams.map((t1, i) => (
-          <tr key={i}>
-            <td>
-              {`${t1.order}. ${t1.User.fullname}`}
-            </td>
-            {this.props.group.teams.map((t2, j) => <td key={j}>{this.get_match(i, j)}</td>)}
-          </tr>
-        ))}
         <tbody>
+          {this.props.group.teams.map((t1, i) => (
+            <tr key={i}>
+              <td>
+                {`${t1.order}. ${t1.User.fullname}`}
+              </td>
+              {this.props.group.teams.map((t2, j) => <td key={j}>{this.get_match(i, j)}</td>)}
+            </tr>
+          ))}
         </tbody>
       </table>
     );

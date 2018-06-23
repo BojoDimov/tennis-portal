@@ -49,7 +49,11 @@ export class SchemesPreview extends React.Component {
         </div> : null}
 
         <BracketDrawForm draw={this.state.draw} onChange={draw => this.setState({ draw: draw })} />
-        <BracketPreview draw={this.state.draw} />
+        <BracketPreview draw={this.state.draw} refresh={() => {
+          console.log('calling refresh');
+          this.selectScheme(this.state.active)
+        }
+        } />
       </div>
     );
   }

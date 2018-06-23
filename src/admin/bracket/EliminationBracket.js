@@ -3,7 +3,11 @@ import { init_elimination_bracket, get_elimination_headers } from './bracket-uti
 import './Bracket.css';
 
 export class EliminationBracket extends React.Component {
+  componentDidUpdate() {
+    console.log('caught update in EliminationBracket');
+  }
   render() {
+    console.log('rendering');
     return (
       <div>
         <table className="bracket">
@@ -13,7 +17,7 @@ export class EliminationBracket extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {init_elimination_bracket(this.props.matches).map((row, index) => <tr key={index}>{row}</tr>)}
+            {init_elimination_bracket(this.props.matches, this.props.refresh).map((row, index) => <tr key={index}>{row}</tr>)}
           </tbody>
         </table>
       </div>
