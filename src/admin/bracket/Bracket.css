@@ -5,6 +5,7 @@
 }
 
 .entry table {
+  display: inline-table;
   border-collapse: collapse;
   width: 20rem;
 }

@@ -7,6 +7,66 @@ body {
   overflow-x: hidden;
 }
 
+.elimination-table {
+  table-layout: fixed;
+
+  th {
+    border-bottom: 1px solid $primary;
+  }
+
+  .td-container{
+    display: flex;
+    align-items: center;
+    border: .5px solid rgba(153, 153, 153, 0.50);
+    border-left:none; 
+    padding-right: .8rem;
+  }
+
+  .number {
+    width: 2em;
+  }
+
+  .seed {
+    width: 2em;
+    color: #AEAEAE;
+  }
+
+  .cell {
+    border: .5px solid rgba(153, 153, 153, 0.25);
+    width: 8em;
+    height: 2em;
+  }
+
+  .delim {
+    border-top: 1px dotted rgba(153, 153, 153, 0.50) ;
+  }
+
+  .button.h2h {
+    @extend .top-to-bottom;
+
+    display: inline-block;
+    border-radius: 0px;
+    letter-spacing: 0;
+    font-size: .8rem;
+    padding: .5rem .1rem;
+    margin-right: .3rem;
+  }
+
+  .match-table {
+    width: 18rem;
+    th {
+      display: table-cell;
+      border: none;
+    }
+
+    td{
+      display: table-cell;
+      padding: .5rem 0;
+      // border: 1px solid black;
+    }
+  }
+}
+
 #menu {
   position: absolute;
   display: flex;
@@ -51,6 +111,11 @@ body {
   margin-left: .3em;
   position: relative;
   display: inline-block;
+}
+
+.top-to-bottom{
+  writing-mode: vertical-lr;
+  text-orientation: upright;
 }
 
 .dropdown-content {

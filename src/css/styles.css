@@ -413,6 +413,64 @@ body {
   overflow-x: hidden;
 }
 
+.elimination-table {
+  table-layout: fixed;
+}
+
+.elimination-table th {
+  border-bottom: 1px solid #505050;
+}
+
+.elimination-table .td-container {
+  display: flex;
+  align-items: center;
+  border: 0.5px solid rgba(153, 153, 153, 0.5);
+  border-left: none;
+  padding-right: .8rem;
+}
+
+.elimination-table .number {
+  width: 2em;
+}
+
+.elimination-table .seed {
+  width: 2em;
+  color: #AEAEAE;
+}
+
+.elimination-table .cell {
+  border: 0.5px solid rgba(153, 153, 153, 0.25);
+  width: 8em;
+  height: 2em;
+}
+
+.elimination-table .delim {
+  border-top: 1px dotted rgba(153, 153, 153, 0.5);
+}
+
+.elimination-table .button.h2h {
+  display: inline-block;
+  border-radius: 0px;
+  letter-spacing: 0;
+  font-size: .8rem;
+  padding: .5rem .1rem;
+  margin-right: .3rem;
+}
+
+.elimination-table .match-table {
+  width: 18rem;
+}
+
+.elimination-table .match-table th {
+  display: table-cell;
+  border: none;
+}
+
+.elimination-table .match-table td {
+  display: table-cell;
+  padding: .5rem 0;
+}
+
 #menu {
   position: absolute;
   display: flex;
@@ -457,6 +515,11 @@ body {
   margin-left: .3em;
   position: relative;
   display: inline-block;
+}
+
+.top-to-bottom, .elimination-table .button.h2h {
+  writing-mode: vertical-lr;
+  text-orientation: upright;
 }
 
 .dropdown-content {

@@ -61,31 +61,40 @@ export class EntryBox extends React.Component {
 
   render() {
     return (
-      <td className="entry">
-        <table>
-          <tbody>
-            <tr>
-              <td className="number">{this.props.match.match * 2 - 1}</td>
-              <td className="seed">{this.props.match.seed1 ? `(${this.props.match.seed1})` : null}</td>
-              <td>
-                <TeamLabel team={this.props.match.team1}
-                  onRemove={() => this.removeTeam(1)}
-                  onChange={team => this.setTeam(1, team.id)} />
-              </td>
-            </tr>
-            <tr>
-              <td>{this.props.match.match * 2}</td>
-              <td className="seed">{this.props.match.seed2 ? `(${this.props.match.seed2})` : null}</td>
-              <td className="delim">
-                <TeamLabel team={this.props.match.team2}
-                  onRemove={() => this.removeTeam(2)}
-                  onChange={team => this.setTeam(2, team.id)} />
-              </td>
-            </tr>
-          </tbody>
-        </table>
+      <td>
+        <div className="td-container">
+          <div className="button h2h">h2h</div>
+          <table className="match-table">
+            <tbody>
+              <tr>
+                <td className="number">{this.props.match.match * 2 - 1}</td>
+                <td className="seed">{this.props.match.seed1 ? `(${this.props.match.seed1})` : null}</td>
+                <td>
+                  <TeamLabel team={this.props.match.team1}
+                    onRemove={() => this.removeTeam(1)}
+                    onChange={team => this.setTeam(1, team.id)} />
+                </td>
+              </tr>
+              <tr>
+                <td>{this.props.match.match * 2}</td>
+                <td className="seed">{this.props.match.seed2 ? `(${this.props.match.seed2})` : null}</td>
+                <td className="delim">
+                  <TeamLabel team={this.props.match.team2}
+                    onRemove={() => this.removeTeam(2)}
+                    onChange={team => this.setTeam(2, team.id)} />
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </td>
     );
+  }
+}
+
+export class MatchScore extends React.Component {
+  render() {
+    return <div></div>
   }
 }
 
@@ -106,31 +115,28 @@ export class TeamLabel extends React.Component {
   render() {
     if (this.props.team)
       return (
-        <div>
+        <React.Fragment>
           <Link to={`/baba`}>{this.props.team.fullname}</Link>
           <span className="button-group">
             <ConfirmationButton onChange={flag => flag ? this.props.onRemove() : null}>
               <i className="fa fa-times"></i>
-              {/* изтрий */}
             </ConfirmationButton>
           </span>
-        </div>
+        </React.Fragment>
       );
     else
       if (this.state.selectTeam)
         return (
-          <div>
+          <React.Fragment>
             <a onClick={() => this.setState({ selectTeam: false })}>{this.state.selected ? this.state.selected.name : "bye"}</a>
-            {/* <span className="button" onClick={()=> this.setState({selectTeam: !this.state.selectTeam})}>избери участник</span> */}
             {this.state.selected ?
               <span className="button-group">
                 <ConfirmationButton onChange={flag => flag ? this.setTeam() : null}>
                   <i className="fa fa-plus"></i>
-                  {/* добави */}
                 </ConfirmationButton>
               </span> : null
             }
-          </div>
+          </React.Fragment>
         );
       else
         return (
