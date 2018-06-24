@@ -19,10 +19,12 @@ const removeTeam = (req, res, next) => {
       if (pos == 1) {
         team = match.team1;
         match.team1Id = null;
+        match.seed1 = null;
       }
       else {
         team = match.team2;
         match.team2Id = null;
+        match.seed2 = null;
       }
 
       let p1 = SchemeEnrollments.destroy({
