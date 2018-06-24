@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { get } from '../../services/fetch';
 import { Status, ConfirmationButton } from '../Infrastructure';
 import { Enrollments, EnrollmentsQueue } from './Enrollments';
+import { updateBreadcrumb } from '../../public/Breadcrumb';
 
 export class ViewScheme extends Component {
   constructor(props) {
@@ -17,11 +18,20 @@ export class ViewScheme extends Component {
   }
 
   componentDidMount() {
-    this.getData();
+    this.getData()
+      .then(() => updateBreadcrumb(this.getPath()));
+  }
+
+  getPath() {
+    return [
+      { title: this.state.TournamentEdition.Tournament.name, link: `/tournaments/view/${this.state.TournamentEdition.Tournament.id}` },
+      { title: this.state.TournamentEdition.name, link: `/editions/view/${this.state.TournamentEdition.id}` },
+      { title: this.state.name, link: `/schemes/view/${this.state.id}` },
+    ]
   }
 
   getData() {
-    Promise.all([
+    return Promise.all([
       get(`/schemes/${this.props.match.params.id}`),
       get(`/schemes/${this.props.match.params.id}/enrollments`),
       get(`/schemes/${this.props.match.params.id}/queue`)

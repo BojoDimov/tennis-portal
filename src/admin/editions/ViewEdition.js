@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { get } from '../../services/fetch';
 import { Status, ConfirmationButton } from '../Infrastructure';
 import { SchemesPreview } from '../schemes/SchemesPreview';
+import { updateBreadcrumb } from '../../public/Breadcrumb';
 
 export class ViewEdition extends Component {
   constructor(props) {
@@ -16,7 +17,15 @@ export class ViewEdition extends Component {
   }
 
   componentDidMount() {
-    this.getData();
+    this.getData()
+      .then(() => updateBreadcrumb(this.getPath()));
+  }
+
+  getPath() {
+    return [
+      { title: this.state.Tournament.name, link: `/tournaments/view/${this.state.Tournament.id}` },
+      { title: this.state.name, link: `/editions/view/${this.state.id}` },
+    ]
   }
 
   getData() {

@@ -71,31 +71,31 @@ a:hover {
   overflow: auto;
 }
 
-.public, .breadcrumb {
+.public, #breadcrumb {
   width: 50%;
   margin: 0 auto;
   box-sizing: border-box;
 }
 
 @media screen and (max-width: 1280px) {
-  .public, .breadcrumb {
+  .public, #breadcrumb {
     width: 60%;
   }
 }
 
 @media screen and (max-width: 990px) {
-  .public, .breadcrumb {
+  .public, #breadcrumb {
     width: 70%;
   }
 }
 
 @media screen and (max-width: 580px) {
-  .public, .breadcrumb {
+  .public, #breadcrumb {
     width: 100%;
   }
 }
 
-.breadcrumb {
+#breadcrumb {
   margin: 2.3em auto;
   margin-bottom: 0;
 }
@@ -275,31 +275,31 @@ a:hover {
   overflow: auto;
 }
 
-.public, .breadcrumb {
+.public, #breadcrumb {
   width: 50%;
   margin: 0 auto;
   box-sizing: border-box;
 }
 
 @media screen and (max-width: 1280px) {
-  .public, .breadcrumb {
+  .public, #breadcrumb {
     width: 60%;
   }
 }
 
 @media screen and (max-width: 990px) {
-  .public, .breadcrumb {
+  .public, #breadcrumb {
     width: 70%;
   }
 }
 
 @media screen and (max-width: 580px) {
-  .public, .breadcrumb {
+  .public, #breadcrumb {
     width: 100%;
   }
 }
 
-.breadcrumb {
+#breadcrumb {
   margin: 2.3em auto;
   margin-bottom: 0;
 }
@@ -488,7 +488,7 @@ span.draft, span.published, span.inactive {
   z-index: 1;
 }
 
-.backdrop .public, .backdrop .breadcrumb {
+.backdrop .public, .backdrop #breadcrumb {
   margin-top: .5rem;
 }
 

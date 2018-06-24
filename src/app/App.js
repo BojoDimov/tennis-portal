@@ -3,7 +3,7 @@ import { Admin } from '../admin/Admin';
 import { Public } from '../public/Public';
 import { Menu } from '../public/Menu';
 import { MessagesContainer } from '../public/Messages';
-import { Breadcrumb, ProvideBreadcrumbPath } from '../public/Breadcrumb';
+import { Breadcrumb } from '../public/Breadcrumb';
 import { ProvideAuthenticatedUser, AuthenticatedUser } from './AuthenticatedUser';
 
 const LoginGuard = ({ isLogged }) => {
@@ -62,12 +62,10 @@ export class App extends Component {
   render() {
     return (
       <ProvideAuthenticatedUser value={this.state.authenticatedUser}>
-        <ProvideBreadcrumbPath value={this.state.breadcrumb}>
-          <Menu />
-          <Breadcrumb path={this.state.breadcrumb.path} />
-          <LoginGuard isLogged={this.state.authenticatedUser.isLogged} />
-          <MessagesContainer />
-        </ProvideBreadcrumbPath>
+        <Menu />
+        <Breadcrumb path={this.state.breadcrumb.path} />
+        <LoginGuard isLogged={this.state.authenticatedUser.isLogged} />
+        <MessagesContainer />
       </ProvideAuthenticatedUser>
     );
   }

@@ -7,7 +7,6 @@ import {
   Route, Switch, Link
 } from 'react-router-dom';
 import { Status } from '../Infrastructure';
-import { UseBreadcrumbPath } from '../../public/Breadcrumb';
 
 export class Tournaments extends Component {
   constructor(props) {
@@ -39,9 +38,7 @@ export class Tournaments extends Component {
           }} />
           <Route path={`${this.props.match.path}/view/:id`} render={(props) => {
             return (
-              <UseBreadcrumbPath>
-                {b => <ViewTournament {...props} onChange={() => this.getData()} onInit={b.updatePath} />}
-              </UseBreadcrumbPath>
+              <ViewTournament {...props} onChange={() => this.getData()} />
             );
           }} />
           <Route path='/tournaments/edit/:id' render={(props) => <EditTournament {...props} />} />

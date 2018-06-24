@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { get } from '../../services/fetch';
 import { Status, ConfirmationButton } from '../Infrastructure';
 import { EditionsTable } from '../editions/Editions';
+import { updateBreadcrumb } from '../../public/Breadcrumb';
 
 export class ViewTournament extends Component {
   constructor(props) {
@@ -15,7 +16,13 @@ export class ViewTournament extends Component {
 
   componentDidMount() {
     return this.getData()
-      .then((tournament) => this.updatePath(tournament));
+      .then((tournament) => updateBreadcrumb(this.getPath()));
+  }
+
+  getPath() {
+    return [
+      { title: this.state.name, link: `/tournaments/view/${this.state.id}` }
+    ]
   }
 
   getData() {
