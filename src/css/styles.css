@@ -471,6 +471,18 @@ body {
   padding: .5rem 0;
 }
 
+.elimination-table .match-result-table td {
+  border: none;
+}
+
+.elimination-table .match-result-table th {
+  border: none;
+}
+
+.elimination-table .match-result-table input {
+  width: 3rem;
+}
+
 #menu {
   position: absolute;
   display: flex;

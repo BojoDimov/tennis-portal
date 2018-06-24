@@ -37,7 +37,7 @@ export class Breadcrumb extends React.Component {
       <div id="breadcrumb">
         <Link onClick={() => this.home()} to="/"><i className="fas fa-home"></i></Link>
         {this.state.current.map((s, i) => (
-          <React.Fragment>
+          <React.Fragment key={i}>
             <span>{" / "}</span>
             <Link onClick={() => this.navigate(i)} to={s.link}>{s.title}</Link>
           </React.Fragment>
