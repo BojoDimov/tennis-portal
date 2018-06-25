@@ -104,6 +104,10 @@ a:hover {
   display: inline-block;
 }
 
+.button-block .button {
+  display: block;
+}
+
 .button {
   cursor: pointer;
   font-weight: 700;
@@ -306,6 +310,10 @@ a:hover {
 
 .button-inline .button {
   display: inline-block;
+}
+
+.button-block .button {
+  display: block;
 }
 
 .button {

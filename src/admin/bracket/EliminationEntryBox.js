@@ -18,7 +18,7 @@ export class EliminationEntryBox extends React.Component {
     return (
       <td>
         <div className="td-container">
-          <MatchScore match={this.props.match} />
+          <MatchScore match={this.props.match} refresh={this.props.refresh} />
           <table className="match-table">
             <tbody>
               <tr>

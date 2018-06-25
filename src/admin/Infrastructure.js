@@ -17,7 +17,7 @@ export class ConfirmationButton extends React.Component {
 
   render() {
     return (
-      <span>
+      <span className={this.props.className}>
         <span className="button" onClick={() => this.setState({ opened: true })}>{this.props.children}</span>
         {this.state.opened ?
           <div className="backdrop fade-in" onClick={() => this.action(false)}>

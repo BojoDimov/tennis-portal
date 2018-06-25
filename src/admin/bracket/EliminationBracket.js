@@ -1,6 +1,5 @@
 import React from 'react';
 import { init_elimination_bracket, get_elimination_headers } from './bracket-utils';
-//import './Bracket.css';
 
 export class EliminationBracket extends React.Component {
   render() {

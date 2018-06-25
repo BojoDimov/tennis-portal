@@ -1,12 +1,14 @@
 import React from 'react';
 import { post } from '../../services/fetch';
+import { ConfirmationButton } from '../Infrastructure';
 
 export class MatchScore extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       showMatchForm: false,
-      sets: this.initSets()
+      sets: this.initSets(),
+      withdraw: 0
     }
   }
 
@@ -14,7 +16,6 @@ export class MatchScore extends React.Component {
     let sets = [];
     for (let i = 0; i < 5; i++)
       sets.push({
-        matchId: 0,
         order: i + 1,
         team1: '',
         team2: '',
@@ -29,12 +30,22 @@ export class MatchScore extends React.Component {
     let sets = this.state.sets;
     sets[index]['team' + pos] = value;
     if (index < (5 - 1) && sets[index].team1 !== '' && sets[index].team2 !== '')
+      //sets.slice(index + 1).forEach(set => set.disabled = false);
       sets[index + 1].disabled = false;
 
-    if (index < (5 - 1) && (sets[index].team1 === '' || sets[index].team2 === ''))
-      sets[index + 1].disabled = true;
+    // if (index < (5 - 1) && (sets[index].team1 === '' || sets[index].team2 === ''))
+    //   sets.slice(index + 1).forEach(set => set.disabled = true);
+    // sets[index + 1].disabled = true;
 
     this.setState({ sets: sets });
+  }
+
+  saveMatch() {
+    post(`/matches/${this.props.match.id}/addResult`, { sets: this.state.sets, withdraw: this.state.withdraw })
+      .then(() => {
+        this.setState({ showMatchForm: false });
+        return this.props.refresh();
+      });
   }
 
   render() {
@@ -74,13 +85,16 @@ export class MatchScore extends React.Component {
               </table>
               <div className="input-group">
                 <div>Отказал се</div>
-                <select value={0}>
+                <select value={this.state.withdraw} onChange={e => this.setState({ withdraw: e.target.value })}>
                   <option value={0}>нямa</option>
                   <option value={this.props.match.team1Id}>{this.props.match.team1.fullname}</option>
                   <option value={this.props.match.team2Id}>{this.props.match.team2.fullname}</option>
                 </select>
               </div>
-              <div className="button center" onClick={() => this.setState({ showMatchForm: false })}>Запис на резултата</div>
+              {/* <ConfirmationButton className="button-block center" onChange={flag => flag ? this.saveMatch() : null}>
+                Запис на резултата
+              </ConfirmationButton> */}
+              <div className="button center" onClick={() => this.saveMatch()}>Запис на резултата</div>
             </div>
             : null}
         </div>
