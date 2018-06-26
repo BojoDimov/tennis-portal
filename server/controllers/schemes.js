@@ -1,11 +1,12 @@
 const {
   Tournaments, TournamentEditions, TournamentSchemes,
   SchemeEnrollments, EnrollmentsQueue,
-  Matches, Groups, GroupTeams,
+  Matches, Sets, Groups, GroupTeams,
   Users,
   db } = require('../sequelize.config');
 const DrawActions = require('../logic/drawActions');
 const EnrollmentsActions = require('../logic/enrollmentsActions');
+const { formatSet } = require('./matches');
 
 const getAll = (req, res) => {
   return TournamentSchemes
@@ -149,17 +150,22 @@ function _get_draw_data(scheme) {
         },
         include: [
           { model: Users, as: 'team1', attributes: ['id', 'fullname'] },
-          { model: Users, as: 'team2', attributes: ['id', 'fullname'] }
+          { model: Users, as: 'team2', attributes: ['id', 'fullname'] },
+          { model: Sets, as: 'sets' }
         ],
         order: [
-          'match'
+          'match',
+          ['sets', 'order', 'asc']
         ]
       })
       .then(matches => {
         return {
           schemeId: scheme.id,
           schemeType: 'elimination',
-          data: matches,
+          data: matches.map(match => {
+            match.sets = match.sets.map(formatSet);
+            return match;
+          }),
           isDrawn: matches.length > 0
         }
       });

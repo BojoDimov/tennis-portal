@@ -8,7 +8,8 @@ export class MatchScore extends React.Component {
     this.state = {
       showMatchForm: false,
       sets: this.initSets(),
-      withdraw: 0
+      withdraw: 0,
+      refreshed: false
     }
   }
 
@@ -24,6 +25,29 @@ export class MatchScore extends React.Component {
 
     sets[0].disabled = false;
     return sets;
+  }
+
+  componentDidMount() {
+    let sets = this.state.sets;
+    this.props.match.sets.forEach((set, i) => {
+      set.disabled = false;
+      sets[i] = set;
+      if (i < sets.length - 1)
+        sets[i + 1].disabled = false;
+    });
+
+    this.setState({ sets: sets, withdraw: this.props.match.withdraw });
+  }
+
+  componentDidChange() {
+    console.log('calling component did change');
+  }
+
+  clear() {
+    // this.setState({
+    //   showMatchForm: false,
+    //   sets: 
+    // })
   }
 
   handle_input(value, index, pos) {
@@ -87,8 +111,8 @@ export class MatchScore extends React.Component {
                 <div>Отказал се</div>
                 <select value={this.state.withdraw} onChange={e => this.setState({ withdraw: e.target.value })}>
                   <option value={0}>нямa</option>
-                  <option value={this.props.match.team1Id}>{this.props.match.team1.fullname}</option>
-                  <option value={this.props.match.team2Id}>{this.props.match.team2.fullname}</option>
+                  <option value={1}>{this.props.match.team1.fullname}</option>
+                  <option value={2}>{this.props.match.team2.fullname}</option>
                 </select>
               </div>
               <ConfirmationButton className="button-block center" onChange={flag => flag ? this.saveMatch() : null}>

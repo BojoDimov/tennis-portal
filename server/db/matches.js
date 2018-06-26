@@ -4,6 +4,7 @@ module.exports = (db, Sequelize) => {
     match: Sequelize.INTEGER,
     round: Sequelize.INTEGER,
     seed1: { type: Sequelize.INTEGER, allowNull: true },
-    seed2: { type: Sequelize.INTEGER, allowNull: true }
+    seed2: { type: Sequelize.INTEGER, allowNull: true },
+    withdraw: { type: Sequelize.INTEGER, allowNull: true }
   });
 }

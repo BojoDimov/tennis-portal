@@ -175,11 +175,12 @@ TournamentSchemes.hasMany(Matches, {
 Sets.belongsTo(Matches, {
   foreignKey: {
     name: 'matchId',
-    allowNull: 'false'
+    allowNull: false
   }
 });
 
 Matches.hasMany(Sets, {
+  as: 'sets',
   foreignKey: {
     name: 'matchId',
     allowNull: false

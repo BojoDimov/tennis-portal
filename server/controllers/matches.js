@@ -1,5 +1,5 @@
 const {
-  Matches, EnrollmentsQueue, SchemeEnrollments, Users
+  Matches, Sets, EnrollmentsQueue, SchemeEnrollments, Users
 } = require('../sequelize.config');
 
 const removeTeam = (req, res, next) => {
@@ -84,20 +84,57 @@ const addResult = (req, res, next) => {
   let withdraw = req.body.withdraw;
   let matchId = req.params.id;
 
+  let deleted = sets.filter(set => set.id && !set.team1 && !set.team2);
+
+  sets = sets.filter((set) => (set.team1 || set.team2));
   sets = sets.map(parseSet);
-  console.log(sets);
+  sets.forEach(set => set.matchId = matchId);
+
+  let updated = sets.filter(set => set.id);
+  let created = sets.filter(set => !set.id);
+
+  let p1 = Matches
+    .findById(matchId)
+    .then(match => {
+      match.withdraw = withdraw;
+      return match.save();
+    })
+    .catch(err => next(err, req, res, null));
+
+  let p2 = Sets
+    .bulkCreate(created)
+    .catch(err => next(err, req, res, null));
+
+  let p3 = Sets
+    .findAll({
+      where: {
+        id: updated.map(set => set.id)
+      }
+    })
+    .then(sets => {
+      return Promise.all(sets.map(set => set.update(updated.find(e => e.id == set.id))));
+    });
+
+  let p4 = Sets
+    .destroy({
+      where: {
+        id: deleted.map(set => set.id)
+      }
+    });
+
+  return Promise.all([p1, p2, p3, p4]).then(e => res.json(e));
 }
 
-const scoreParser = /^(\d+)(\(\d+\))*$/;
-
 function parseSet(set) {
-  if (!set.team1 || !set.team2)
-    throw "invalid score format";
+  const scoreParser = /^(\d+)(\(\d+\))*$/;
 
-  let t1m = set.team1.match(scoreParser);
-  let t2m = set.team2.match(scoreParser);
+  if (!set.team1 || !set.team2)
+    throw { name: 'DomainActionError', message: 'Invalid format: match->set' };
+
+  let t1m = set.team1.toString().match(scoreParser);
+  let t2m = set.team2.toString().match(scoreParser);
   if ((t1m[2] && t2m[2]) || t1m.length < 2 || t2m.length < 2)
-    throw "invalid score format";
+    throw { name: 'DomainActionError', message: 'Invalid format: match->set' };
 
   set.team1 = parseInt(t1m[1]);
   set.team2 = parseInt(t2m[1]);
@@ -116,5 +153,16 @@ module.exports = {
     app.get('/api/matches/:id/removeTeam', removeTeam);
     app.get('/api/matches/:id/setTeam', setTeam);
     app.post('/api/matches/:id/addResult', addResult);
+  },
+  formatSet: (set) => {
+    if (!set.tiebreaker)
+      return set;
+
+    if (set.team1 < set.team2)
+      set.team1 = set.team1 + "(" + set.tiebreaker + ")";
+    else
+      set.team2 = set.team2 + "(" + set.tiebreaker + ")";
+
+    return set;
   }
 };
