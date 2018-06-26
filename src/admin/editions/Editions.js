@@ -51,10 +51,6 @@ export class Editions extends Component {
 }
 
 export class EditionsTable extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <div className="container">

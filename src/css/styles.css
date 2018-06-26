@@ -448,12 +448,19 @@ body {
 
 .elimination-table .cell {
   border: 0.5px solid rgba(153, 153, 153, 0.25);
-  width: 8em;
+  width: 12em;
   height: 2em;
 }
 
 .elimination-table .delim {
   border-top: 1px dotted rgba(153, 153, 153, 0.5);
+}
+
+.elimination-table .team-label {
+  border: 0.5px solid rgba(153, 153, 153, 0.25);
+  width: 12em;
+  height: 2em;
+  word-wrap: break-word;
 }
 
 .elimination-table .button.h2h {

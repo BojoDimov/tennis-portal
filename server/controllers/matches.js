@@ -84,27 +84,66 @@ const addResult = (req, res, next) => {
   let withdraw = req.body.withdraw;
   let matchId = req.params.id;
 
+  //has id but scores are removed => DELETED
   let deleted = sets.filter(set => set.id && !set.team1 && !set.team2);
 
+  //filter empty sets
   sets = sets.filter((set) => (set.team1 || set.team2));
+  //parse score inputs
   sets = sets.map(parseSet);
   sets.forEach(set => set.matchId = matchId);
 
+  //has id => UPDATED
   let updated = sets.filter(set => set.id);
+
+  //doesn't have id => CREATED
   let created = sets.filter(set => !set.id);
 
+  //update matches
   let p1 = Matches
     .findById(matchId)
     .then(match => {
       match.withdraw = withdraw;
       return match.save();
     })
+    .then(match => {
+      let winner = null;
+
+      if (withdraw == 1)
+        winner = match.team2Id;
+      else if (withdraw == 2)
+        winner = match.team1Id;
+      else if (sets.length > 0)
+        //if there are sets, winner is the one with winning last set
+        winner = sets[sets.length - 1].team1 > sets[sets.length - 1].team2 ?
+          match.team1Id : match.team2Id;
+      else return;
+
+      return Matches
+        .findOrCreate({
+          where: {
+            round: match.round + 1,
+            match: Math.ceil(match.match / 2),
+            schemeId: match.schemeId
+          }
+        })
+        .then(([nextMatch, _]) => {
+          if (match.match % 2 == 0)
+            nextMatch.team2Id = winner;
+          else
+            nextMatch.team1Id = winner;
+
+          return nextMatch.save();
+        });
+    })
     .catch(err => next(err, req, res, null));
 
+  //create sets
   let p2 = Sets
     .bulkCreate(created)
     .catch(err => next(err, req, res, null));
 
+  //update set results
   let p3 = Sets
     .findAll({
       where: {
@@ -115,6 +154,7 @@ const addResult = (req, res, next) => {
       return Promise.all(sets.map(set => set.update(updated.find(e => e.id == set.id))));
     });
 
+  //remove sets
   let p4 = Sets
     .destroy({
       where: {
