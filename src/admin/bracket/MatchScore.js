@@ -91,10 +91,10 @@ export class MatchScore extends React.Component {
                   <option value={this.props.match.team2Id}>{this.props.match.team2.fullname}</option>
                 </select>
               </div>
-              {/* <ConfirmationButton className="button-block center" onChange={flag => flag ? this.saveMatch() : null}>
+              <ConfirmationButton className="button-block center" onChange={flag => flag ? this.saveMatch() : null}>
                 Запис на резултата
-              </ConfirmationButton> */}
-              <div className="button center" onClick={() => this.saveMatch()}>Запис на резултата</div>
+              </ConfirmationButton>
+              {/* <div className="button center" onClick={() => this.saveMatch()}>Запис на резултата</div> */}
             </div>
             : null}
         </div>

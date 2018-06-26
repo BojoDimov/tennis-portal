@@ -568,7 +568,7 @@ span.draft, span.published, span.inactive {
   width: 100%;
   height: 100%;
   background-color: rgba(59, 59, 59, 0.5);
-  z-index: 1;
+  z-index: 100;
 }
 
 .backdrop .public, .backdrop #breadcrumb {

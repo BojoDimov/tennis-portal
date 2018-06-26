@@ -5,6 +5,7 @@ import { Menu } from '../public/Menu';
 import { MessagesContainer } from '../public/Messages';
 import { Breadcrumb } from '../public/Breadcrumb';
 import { ProvideAuthenticatedUser, AuthenticatedUser } from './AuthenticatedUser';
+import { ModalHolder } from '../admin/Infrastructure';
 
 const LoginGuard = ({ isLogged }) => {
   if (isLogged)
@@ -62,6 +63,7 @@ export class App extends Component {
   render() {
     return (
       <ProvideAuthenticatedUser value={this.state.authenticatedUser}>
+        <ModalHolder />
         <Menu />
         <Breadcrumb path={this.state.breadcrumb.path} />
         <LoginGuard isLogged={this.state.authenticatedUser.isLogged} />

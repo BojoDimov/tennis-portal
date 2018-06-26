@@ -10,25 +10,29 @@ export class ConfirmationButton extends React.Component {
     };
   }
 
-  action(accepted) {
-    this.setState({ opened: false });
+  component = (
+    <div className="public container" onClick={(e) => e.stopPropagation()}>
+      <div>Тази операция извършва промени по базата, моля потвърдете!</div>
+      <div>
+        <span className="button" onClick={() => this.close(true)}>Добре</span>
+        <span className="button" onClick={() => this.close(false)}>Отказ</span>
+      </div>
+    </div>
+  );
+
+  open() {
+    createOpenModalEvent(this.component, () => this.close(false));
+  }
+
+  close(accepted) {
     this.props.onChange(accepted);
+    createCloseModalEvent();
   }
 
   render() {
     return (
       <span className={this.props.className}>
-        <span className="button" onClick={() => this.setState({ opened: true })}>{this.props.children}</span>
-        {this.state.opened ?
-          <div className="backdrop fade-in" onClick={() => this.action(false)}>
-            <div className="public container" onClick={(e) => e.stopPropagation()}>
-              <div>Тази операция извършва промени по базата, моля потвърдете!</div>
-              <div>
-                <span className="button" onClick={() => this.action(true)}>Добре</span>
-                <span className="button" onClick={() => this.action(false)}>Отказ</span>
-              </div>
-            </div>
-          </div> : null}
+        <span className="button" onClick={() => this.open()}>{this.props.children}</span>
       </span>
     );
   }
@@ -85,3 +89,61 @@ export const Status = ({ status }) => {
     <span className="info">{status === 'draft' ? '(' + (statusNames[status]) + ')' : null}</span>
   );
 };
+
+export class ModalHolder extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      isOpened: false,
+      component: null,
+      _close_handle: null
+    };
+  }
+
+  componentDidMount() {
+    const modal = document.getElementById("modal");
+    modal.addEventListener("open-modal", (ev) => {
+      let data = ev.detail;
+      this.setState({
+        isOpened: true,
+        component: data.component,
+        _close_handle: data.onClose
+      });
+    });
+
+    modal.addEventListener("close-modal", (ev) => {
+      this.setState({
+        isOpened: false, component: null, _close_handle: null
+      })
+    });
+  }
+
+  close() {
+    this.state._close_handle();
+    this.setState({ isOpened: false, component: null, _close_handle: null });
+  }
+
+  render() {
+    return (
+      <div id="modal">
+        {this.state.isOpened ?
+          <div className="backdrop fade-in" onClick={() => this.close()}>
+            {this.state.component}
+          </div> : null
+        }
+      </div>
+    );
+  }
+}
+
+export function createOpenModalEvent(component, onClose) {
+  const modal = document.getElementById("modal");
+  const e = new CustomEvent("open-modal", { detail: { component, onClose } });
+  modal.dispatchEvent(e);
+}
+
+export function createCloseModalEvent() {
+  const modal = document.getElementById("modal");
+  const e = new CustomEvent("close-modal");
+  modal.dispatchEvent(e);
+}
