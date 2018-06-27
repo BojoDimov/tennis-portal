@@ -47,8 +47,9 @@ export class SchemesPreview extends React.Component {
         {this.state.active != -1 ? <div className="input-group">
           <Link to={`/schemes/view/${this.props.schemes[this.state.active].id}`}>Детайли</Link>
         </div> : null}
-
-        <BracketDrawForm draw={this.state.draw} onChange={draw => this.setState({ draw: draw })} />
+        {this.state.active != -1 ?
+          <BracketDrawForm draw={this.state.draw} onChange={draw => this.setState({ draw: draw })} />
+          : <div><i>няма налични схеми</i></div>}
         <BracketPreview draw={this.state.draw} refresh={() => { console.log('calling refresh'); this.selectScheme(this.state.active) }} />
       </div>
     );
