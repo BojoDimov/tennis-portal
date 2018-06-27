@@ -44,7 +44,8 @@ body {
   .team-label{
     border: .5px solid rgba(153, 153, 153, 0.25);
     width: 12em;
-    height: 2em;
+    height: auto;
+    min-height: 2em;
     word-wrap: break-word;
   }
 
@@ -132,7 +133,6 @@ body {
 .dropdown {
   margin-left: .3em;
   position: relative;
-  display: inline-block;
 }
 
 .top-to-bottom{

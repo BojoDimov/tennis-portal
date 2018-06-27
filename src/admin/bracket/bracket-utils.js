@@ -1,5 +1,6 @@
 import React from 'react';
 import { EliminationEntryBox } from './EliminationEntryBox';
+import { EliminationTeamBox } from './EliminationTeamBox';
 import { Link } from 'react-router-dom';
 
 const Cell = ({ rowSpan }) => {
@@ -21,25 +22,33 @@ export function init_elimination_bracket(matches, refresh_handler) {
   }
 
   let rounds = Math.log2(bracket_size);
-  for (let round = 1; round <= rounds; round++) {
-    let power = Math.pow(2, round - 1);
-    for (let row = 0; row < startingMatches.length; row += power) {
-      let matchId = Math.ceil((row + 1) / 2);
-      let roundId = round + 1;
+  for (let col = 1, round = 2; col <= rounds; col++ , round++) {
+    let power = Math.pow(2, col - 1);
+    for (let row = 0, match = 1; row < startingMatches.length; row += power, match += 1 / 2) {
+      let pos = Math.floor(match) < match ? 1 : 0;
+      let currentMatch = matches.find(e => e.round == round && e.match == Math.floor(match));
+      let previousMatch = get_prev_match(pos, Math.floor(match), round, matches);
+      let teams = currentMatch ? [currentMatch.team1, currentMatch.team2] : [null, null];
 
-      let match = matches.find(match => match.round == roundId && match.match == matchId);
-      if (match && row % 2 == 0 && match.team1)
-        bracket[row][round] = <Temp key={round} rowSpan={power} team={match.team1} />
-      else if (match && row % 2 != 0 && match.team2)
-        bracket[row][round] = <Temp key={round} rowSpan={power} team={match.team2} />
-      else
-        bracket[row][round] = <Cell key={round} rowSpan={power} />
+      bracket[row][col] = (
+        <td key={col} rowSpan={power}>
+          <EliminationTeamBox
+            team={teams[pos]}
+            previousMatch={previousMatch}
+            refresh={refresh_handler}
+          />
+        </td>
+      );
     }
   }
 
-  //set the winner
-
   return bracket;
+}
+
+export function get_prev_match(pos, matchId, roundId, matches) {
+  let t = (pos == 0 ? -1 : 0);
+  let match = matches.find(e => e.match == 2 * matchId + t && e.round == roundId - 1);
+  return match;
 }
 
 export function get_elimination_headers(matches) {
