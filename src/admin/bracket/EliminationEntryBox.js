@@ -26,6 +26,7 @@ export class EliminationEntryBox extends React.Component {
                 <td className="seed">{this.props.match.seed1 ? `(${this.props.match.seed1})` : null}</td>
                 <td>
                   <TeamLabel team={this.props.match.team1}
+                    schemeId={this.props.match.schemeId}
                     onRemove={() => this.removeTeam(1)}
                     onChange={team => this.setTeam(1, team.id)} />
                 </td>
@@ -35,6 +36,7 @@ export class EliminationEntryBox extends React.Component {
                 <td className="seed">{this.props.match.seed2 ? `(${this.props.match.seed2})` : null}</td>
                 <td className="delim">
                   <TeamLabel team={this.props.match.team2}
+                    schemeId={this.props.match.schemeId}
                     onRemove={() => this.removeTeam(2)}
                     onChange={team => this.setTeam(2, team.id)} />
                 </td>

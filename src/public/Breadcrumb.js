@@ -13,19 +13,18 @@ export class Breadcrumb extends React.Component {
   }
 
   componentDidMount() {
-    window.onpopstate = function (event) {
-      console.log("location: " + document.location.pathname + ", state: " + JSON.stringify(event.state));
-    };
+    // window.onpopstate = function (event) {
+    //   console.log("location: " + document.location.pathname + ", state: " + JSON.stringify(event.state));
+    // };
 
     let breadcrumb = document.getElementById("breadcrumb");
     breadcrumb.addEventListener('breadcrumb', ev => {
-      console.log(ev.detail);
       this.setState({ history: this.state.history.concat([ev.detail]), current: ev.detail });
     });
   }
 
   navigate(i) {
-    console.log('navigating');
+    //console.log('navigating');
   }
 
   home() {

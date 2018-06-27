@@ -20,7 +20,7 @@ export class TeamLabel extends React.Component {
     if (this.props.team)
       return (
         <React.Fragment>
-          <Link to={`/baba`}>{this.props.team.fullname}</Link>
+          <Link to={`/users/${this.props.team.id}`}>{this.props.team.fullname}</Link>
           <span className="button-group">
             <ConfirmationButton onChange={flag => flag ? this.props.onRemove() : null}>
               <i className="fa fa-times"></i>
@@ -45,7 +45,7 @@ export class TeamLabel extends React.Component {
       else
         return (
           <Select value={this.state.selected ? this.state.selected.id : 0}
-            url={`/schemes/2/queue`}
+            url={`/schemes/${this.props.schemeId}/queue`}
             onChange={team => this.setState({ selectTeam: true, selected: team })}>
             <option value={0}>bye</option>
           </Select>

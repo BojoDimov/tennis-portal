@@ -1,15 +1,6 @@
 import React from 'react';
 import { EliminationEntryBox } from './EliminationEntryBox';
 import { EliminationTeamBox } from './EliminationTeamBox';
-import { Link } from 'react-router-dom';
-
-const Cell = ({ rowSpan }) => {
-  return (<td rowSpan={rowSpan}><div className="cell"></div></td>);
-}
-
-const Temp = ({ rowSpan, team }) => {
-  return (<td rowSpan={rowSpan}><div className="team-label"><Link to={`/users/${team.id}`}>{team.fullname}</Link></div></td>);
-}
 
 export function init_elimination_bracket(matches, refresh_handler) {
   let startingMatches = matches.filter(match => match.round == 1);

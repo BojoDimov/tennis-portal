@@ -446,10 +446,13 @@ body {
   color: #AEAEAE;
 }
 
-.elimination-table .cell {
-  border: 0.5px solid rgba(153, 153, 153, 0.25);
-  width: 12em;
-  height: 2em;
+.elimination-table .score {
+  font-size: .8em;
+  font-weight: 700;
+}
+
+.elimination-table .score sup {
+  font-size: .8em;
 }
 
 .elimination-table .delim {

@@ -31,10 +31,12 @@ body {
     color: #AEAEAE;
   }
 
-  .cell {
-    border: .5px solid rgba(153, 153, 153, 0.25);
-    width: 12em;
-    height: 2em;
+  .score{
+    font-size: .8em;
+    font-weight: 700;
+    sup {
+      font-size: .8em;
+    }
   }
 
   .delim {
