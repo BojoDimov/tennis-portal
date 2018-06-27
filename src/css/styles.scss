@@ -7,6 +7,27 @@ body {
   overflow-x: hidden;
 }
 
+.round-robin-table{
+  border-spacing: 1.3em .3em;
+
+  th {
+    text-align: left;
+    border-bottom: 1px solid $primary;
+    padding: .8em 0;
+  }
+
+  td{
+    text-align: center;
+  }
+
+  .team-label {
+    text-align: left;
+    width: 16em;
+  }
+
+  margin: 1.5em 0;
+}
+
 .elimination-table {
   table-layout: fixed;
 

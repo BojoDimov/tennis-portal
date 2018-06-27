@@ -421,6 +421,26 @@ body {
   overflow-x: hidden;
 }
 
+.round-robin-table {
+  border-spacing: 1.3em .3em;
+  margin: 1.5em 0;
+}
+
+.round-robin-table th {
+  text-align: left;
+  border-bottom: 1px solid #505050;
+  padding: .8em 0;
+}
+
+.round-robin-table td {
+  text-align: center;
+}
+
+.round-robin-table .team-label {
+  text-align: left;
+  width: 16em;
+}
+
 .elimination-table {
   table-layout: fixed;
 }
