@@ -40,7 +40,7 @@ const create = (req, res, next) => {
 const edit = (req, res, next) => {
   return TournamentSchemes
     .findById(req.body.id)
-    .then(e => EnrollmentsActions._update(e, req.body))
+    .then(e => EnrollmentsActions._update(db, e, req.body))
     .then(e => e.update(req.body))
     .then(e => res.json(e))
     .catch(err => next(err, req, res, null));

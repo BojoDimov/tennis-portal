@@ -1,5 +1,5 @@
 const { SchemeEnrollments, EnrollmentsQueue, TournamentSchemes, Users, Rankings } = require('./sequelize.config');
-let first = ['Петър', 'Мирослав', 'Евлоги', , 'Големан', 'Божидар', 'Даниел', 'Георги', 'Дилян', 'Борислав', 'Виктор', 'Крум', 'Мартин', 'Милен', 'Димитър', 'Симеон', 'Светослав', 'Веселин', 'Калин', 'Кристиан', 'Мариан', 'Богомил', 'Самуил', 'Тодор'];
+let first = ['Петър', 'Мирослав', 'Евлоги', , 'Големан', 'Божидар', 'Даниел', 'Георги', 'Дилян', 'Борислав', 'Виктор', 'Крум', 'Мартин', 'Милен', 'Димитър', 'Симеон', 'Светослав', 'Веселин', 'Калин', 'Кристиан', 'Мариан', 'Богомил', 'Самуил', 'Тодор', 'Дарин', 'Сава', 'Маргарит', ' Пресиял', 'Павел', 'Бойко', 'Ангел', 'Асен', 'Анко', 'Янко', 'Янислав', 'Фотьо', 'Филип', 'Траян', 'Тишо'];
 let last = ['Димитров', 'Чучуров', 'Гусарев', 'Карпузов', 'Георгиев', 'Измирлиев', 'Петров', 'Савов', 'Сомов', 'Томов', 'Тодоров', 'Тонев', 'Пашов', 'Конедарев', 'Молеров', 'Чакалов', 'Бакалов', 'Събев', 'Тоцев', 'Пърлев'];
 
 const registerTeams = (req, res, next) => {
@@ -28,7 +28,7 @@ const registerTeams = (req, res, next) => {
 
 function createEnrollments(id, count) {
   let objects = [];
-  for (let i = 1; i < count; i++)
+  for (let i = 1; i <= count; i++)
     objects.push({
       schemeId: id,
       userId: i
@@ -39,12 +39,12 @@ function createEnrollments(id, count) {
 const createUsers = (req, res, next) => {
   let objects = [];
   let count = req.query.count;
-  for (let k = 1; k <= count; k++) {
+  for (let k = 0; k < count; k++) {
     let i = Math.ceil((Math.random() * 10000000)) % first.length;
     let j = Math.ceil((Math.random() * 10000000)) % last.length;
     objects.push({
       email: "test_" + (k * 1000) + "@abv.bg",
-      fullname: first[i] + " " + last[i],
+      fullname: first[i] + " " + last[j],
       passwordHash: "asdasdasd",
       passwordSalt: "sadsadasd",
       age: 23,

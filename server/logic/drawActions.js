@@ -1,8 +1,9 @@
 module.exports = { _draw_eliminations, _draw_groups };
 
 function _draw_groups(scheme, seed, enrollments) {
-  let bracket_size = scheme.groupCount * scheme.teamsPerGroup;
-  let ordering = get_group_order(seed, scheme.groupCount, scheme.teamsPerGroup);
+  //let bracket_size = scheme.groupCount * scheme.teamsPerGroup;
+  let bracket_size = Math.ceil(enrollments.length / scheme.teamsPerGroup) * scheme.teamsPerGroup;
+  let ordering = get_group_order(seed, bracket_size / scheme.teamsPerGroup, scheme.teamsPerGroup);
   let groups = [];
 
   for (let i = 0; i < bracket_size; i++) {

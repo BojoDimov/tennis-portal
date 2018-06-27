@@ -1,6 +1,7 @@
 module.exports = { _get, _get_queue, _update }
+const { EnrollmentsQueue, SchemeEnrollments } = require('../sequelize.config');
 
-function _update(oldScheme, newScheme) {
+function _update(db, oldScheme, newScheme) {
   let diff = 0;
   let mode = 'none';
   if (oldScheme.schemeType == 'elimination')
@@ -36,7 +37,7 @@ function _update(oldScheme, newScheme) {
       ]);
     }
     else if (mode == 'add') {
-      let transferred = q.slice(0, diff);
+      let transferred = q.slice(0, (diff > q.length ? q.length : diff));
       return Promise.all([
         SchemeEnrollments.bulkCreate(transferred.map(t => {
           t.schemeId = oldScheme.id;
@@ -51,7 +52,8 @@ function _update(oldScheme, newScheme) {
         })
       ]);
     }
-  }).then(() => oldScheme);
+  }).then(() => oldScheme)
+    .catch(err => console.log(err));
 }
 
 function _get(db, schemeId) {

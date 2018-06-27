@@ -251,6 +251,6 @@ module.exports = {
   Logs,
   db,
   init: function () {
-    return db.sync().then(() => process.exit());
+    return db.sync({ force: true }).then(() => process.exit());
   }
 };
