@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { get } from '../../services/fetch';
 import { BracketPreview } from '../bracket/BracketPreview';
 import { BracketDrawForm } from '../bracket/BracketDrawForm';
+import { ConfirmationButton } from '../Infrastructure';
 
 export class SchemesPreview extends React.Component {
   constructor(props) {
@@ -21,6 +22,10 @@ export class SchemesPreview extends React.Component {
   selectScheme(index) {
     return get(`/schemes/${this.props.schemes[index].id}/getDraw`)
       .then(draw => this.setState({ active: index, draw: draw }));
+  }
+
+  finishDraw() {
+    return get(`/schemes/${this.props.schemes[this.state.active].id}/finishDraw`);
   }
 
   render() {
@@ -47,7 +52,10 @@ export class SchemesPreview extends React.Component {
         {this.state.active != -1 ?
           <div className="input-group">
             <div><i>{this.state.draw.schemeType === 'elimination' ? 'Елиминационна схема' : 'Групова фаза'}</i></div>
-            <Link to={`/schemes/view/${this.props.schemes[this.state.active].id}`}>детайли</Link>
+            <Link to={`/schemes/view/${this.props.schemes[this.state.active].id}`}><div className="input-group">детайли</div></Link>
+            <ConfirmationButton onChange={flag => flag ? this.finishDraw() : null}>
+              финализиране на схемата
+            </ConfirmationButton>
           </div>
           : null}
 

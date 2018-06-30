@@ -4,22 +4,23 @@ const { EnrollmentsQueue, SchemeEnrollments } = require('../sequelize.config');
 function _update(db, oldScheme, newScheme) {
   let diff = 0;
   let mode = 'none';
-  if (oldScheme.schemeType == 'elimination')
-    diff = oldScheme.maxPlayerCount - newScheme.maxPlayerCount;
-  else if (oldScheme.schemeType == 'round-robin')
-    diff = oldScheme.groupCount * oldScheme.teamsPerGroup - newScheme.groupCount * newScheme.teamsPerGroup;
-
-  if (diff > 0)
-    mode = 'remove';
-  else if (diff < 0) {
-    mode = 'add';
-    diff = -1 * diff;
-  }
 
   return Promise.all([
     _get(db, oldScheme.id),
     _get_queue(db, oldScheme.id)
   ]).then(([e, q]) => {
+    if (oldScheme.schemeType == 'elimination')
+      diff = e.length - newScheme.maxPlayerCount;
+    else if (oldScheme.schemeType == 'round-robin')
+      diff = e.length - newScheme.groupCount * newScheme.teamsPerGroup;
+
+    if (diff > 0)
+      mode = 'remove';
+    else if (diff < 0) {
+      mode = 'add';
+      diff = -1 * diff;
+    }
+
     if (mode == 'remove') {
       let transferred = e.slice(e.length - diff, e.length);
       return Promise.all([

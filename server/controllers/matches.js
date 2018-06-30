@@ -273,6 +273,31 @@ function formatSet(set) {
   return set;
 }
 
+/**
+ * Function to generate points for tournament "Rankings".
+ * Matches should be ordered ascending: tournament final should be last.
+ * Team1, team2, sets should be included
+ */
+function generatePoints(scheme, matches, hasWinner) {
+  let teamPoints = [];
+  matches.forEach(match => {
+    if (!teamPoints[match.team1Id])
+      teamPoints[match.team1Id] = scheme.pPoints;
+    if (!teamPoints[match.team2Id])
+      teamPoints[match.team2Id] = scheme.pPoints;
+  });
+
+  matches.forEach(match => {
+    let winner = getWinner(match);
+    teamPoints[winner] += scheme.wPoints;
+  });
+
+  //let tournamentWinner = getWinner(matches[matches.length - 1]);
+  if (hasWinner)
+    teamPoints[matches[matches.length - 1].team1Id] += scheme.cPoints;
+  return teamPoints
+}
+
 module.exports = {
   init: (app) => {
     app.get('/api/matches/:id/removeTeam', removeTeam);
@@ -281,5 +306,6 @@ module.exports = {
     app.post('/api/matches/create', createMatch);
   },
   formatSet,
-  transfer
+  transfer,
+  generatePoints
 };

@@ -2,6 +2,12 @@ import React from 'react';
 import { get } from '../../services/fetch';
 
 export class BracketDrawForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+
+    }
+  }
   draw() {
     get(`/schemes/${this.props.draw.schemeId}/draw?seed=${this.state.seed}`)
       .then(draw => this.props.onChange(draw));

@@ -1,12 +1,12 @@
 const {
-  Tournaments, TournamentEditions, TournamentSchemes,
+  Tournaments, TournamentEditions, TournamentSchemes, Rankings,
   SchemeEnrollments, EnrollmentsQueue,
   Matches, Sets, Groups, GroupTeams,
   Users,
   db } = require('../sequelize.config');
 const DrawActions = require('../logic/drawActions');
 const EnrollmentsActions = require('../logic/enrollmentsActions');
-const { formatSet } = require('./matches');
+const { formatSet, generatePoints } = require('./matches');
 
 const getAll = (req, res) => {
   return TournamentSchemes
@@ -76,7 +76,7 @@ const getEnrollmentsQueue = (req, res) => {
 
 const draw = (req, res, next) => {
   let scheme = null;
-  let seed = parseInt(req.query.seed);
+  let seed = !parseInt(req.query.seed) ? 0 : parseInt(req.query.seed);
 
   return Matches
     .findAll({
@@ -85,7 +85,7 @@ const draw = (req, res, next) => {
       }
     })
     .then(matches => {
-      if (matches.length > 0 || !seed)
+      if (matches.length > 0)
         throw null;
     })
     .catch(() => next({ name: 'DomainActionError', message: 'Invalid action: draw scheme' }, req, res, null))
@@ -120,6 +120,63 @@ const getDraw = (req, res) => {
     .then(data => res.json(data));
 }
 
+
+const finishDraw = (req, res, next) => {
+  let scheme = null;
+
+  return db
+    .transaction(function (trn) {
+      return TournamentSchemes
+        .findById(req.params.id, {
+          transaction: trn,
+          include: [
+            {
+              model: TournamentEditions,
+              include: [
+                { model: Tournaments }
+              ]
+            }
+          ]
+        })
+        .then(e => {
+          scheme = e;
+          return _get_draw_data(scheme, trn);
+        })
+        .then(e => {
+          if (e.schemeType == 'elimination')
+            return generatePoints(scheme, e.data, true);
+          else {
+            let matches = [];
+            e.data.forEach(group => matches = matches.concat(group.matches));
+            return generatePoints(scheme, matches, false);
+          }
+        })
+        .then(points => {
+          let keys = Object.keys(points).filter(e => e != "null").map(e => parseInt(e));
+          return Promise.all([points, Rankings.findAll({
+            where: {
+              userId: keys,
+              tournamentId: scheme.TournamentEdition.Tournament.id
+            },
+            transaction: trn
+          })])
+        })
+        .then(([points, rankings]) => {
+          var create = Object.keys(points).filter(k => k != "null" && !rankings.find(r => r.userId == k)).map(k => {
+            return {
+              userId: k,
+              tournamentId: scheme.TournamentEdition.tournamentId,
+              points: points[k]
+            };
+          });
+          return Promise.all(rankings.map(e => e.update({ points: e.points + points[e.userId] }, { transaction: trn }))
+            .concat(Rankings.bulkCreate(create, { transaction: trn })));
+        })
+    })
+    .then(e => res.json(e))
+    .catch(err => next(err, req, res, null));
+}
+
 module.exports = {
   init: (app) => {
     app.get('/api/schemes', getAll);
@@ -132,6 +189,7 @@ module.exports = {
     app.get('/api/schemes/:id/queue', getEnrollmentsQueue);
     app.get('/api/schemes/:id/draw', draw);
     app.get('/api/schemes/:id/getDraw', getDraw);
+    app.get('/api/schemes/:id/finishDraw', finishDraw);
   }
 };
 
@@ -141,7 +199,7 @@ function _set_status(id, status) {
     .then(edition => edition.update({ status: status }));
 }
 
-function _get_draw_data(scheme) {
+function _get_draw_data(scheme, transaction) {
   if (scheme.schemeType == 'elimination')
     return Matches
       .findAll({
@@ -154,14 +212,15 @@ function _get_draw_data(scheme) {
           { model: Sets, as: 'sets' }
         ],
         order: [
-          'match',
+          'round', 'match',
           ['sets', 'order', 'asc']
-        ]
+        ],
+        transaction: transaction
       })
       .then(matches => {
         return {
           schemeId: scheme.id,
-          schemeType: 'elimination',
+          schemeType: scheme.schemeType,
           data: matches.map(match => {
             match.sets = match.sets.map(formatSet);
             return match;
@@ -197,7 +256,8 @@ function _get_draw_data(scheme) {
           'group',
           ['teams', 'order', 'asc'],
           ['matches', 'sets', 'order', 'asc']
-        ]
+        ],
+        transaction: transaction
       })
       .then(groups => {
         groups.forEach(group => {
@@ -208,7 +268,7 @@ function _get_draw_data(scheme) {
 
         return {
           schemeId: scheme.id,
-          schemeType: 'round-robin',
+          schemeType: scheme.schemeType,
           data: groups,
           isDrawn: groups.length > 0
         }
