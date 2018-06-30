@@ -20,6 +20,10 @@ input, select, textarea {
   @extend .form-style;
 }
 
+label.cursor:hover{
+  cursor: pointer;
+}
+
 input.inline {
   width: auto;
 }

@@ -13,14 +13,8 @@ module.exports = (db, Sequelize) => {
     passwordHash: { type: Sequelize.STRING(40), allowNull: false },
     passwordSalt: { type: Sequelize.STRING(16), allowNull: false },
     fullname: { type: Sequelize.STRING, allowNull: false },
-    age: {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-      validate: {
-        min: 0
-      }
-    },
-    telephone: Sequelize.STRING,
+    birthDate: { type: Sequelize.DATEONLY, allowNull: false },
+    telephone: { type: Sequelize.STRING, allowNull: false },
     gender: {
       type: Sequelize.ENUM,
       allowNull: false,

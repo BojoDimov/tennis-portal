@@ -87,6 +87,21 @@ a:hover{
   padding: .2em .5em; 
 }
 
+.button.disabled {
+  animation: none;
+  background-color: lighten($primary, 35%);
+  border: 1px solid $primary;
+  color: whitesmoke;
+}
+
+.button.disabled:hover{
+  animation: none;
+  cursor: not-allowed;
+  background-color: lighten($primary, 35%);
+  border: 1px solid $primary;
+  color: whitesmoke;
+}
+
 .button:hover {
   @include colorize(button-transition);
   background-color: $click;

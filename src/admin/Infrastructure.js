@@ -44,7 +44,7 @@ export class ActionButton extends React.Component {
       <Route render={({ history }) => {
         return (
           <div className={this.props.className}>
-            <div className="button" onClick={() => this.click(history)}>{this.props.children}</div>
+            <div className={"button" + (this.props.disabled ? " disabled" : "")} onClick={() => this.click(history)}>{this.props.children}</div>
           </div>
         );
       }} />

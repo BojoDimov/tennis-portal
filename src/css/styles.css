@@ -119,6 +119,21 @@ a:hover {
   padding: .2em .5em;
 }
 
+.button.disabled {
+  animation: none;
+  background-color: darkgray;
+  border: 1px solid #505050;
+  color: whitesmoke;
+}
+
+.button.disabled:hover {
+  animation: none;
+  cursor: not-allowed;
+  background-color: darkgray;
+  border: 1px solid #505050;
+  color: whitesmoke;
+}
+
 .button:hover {
   animation: 0.2s ease-in button-transition;
   background-color: #0074B2;
@@ -328,6 +343,21 @@ a:hover {
   padding: .2em .5em;
 }
 
+.button.disabled {
+  animation: none;
+  background-color: darkgray;
+  border: 1px solid #505050;
+  color: whitesmoke;
+}
+
+.button.disabled:hover {
+  animation: none;
+  cursor: not-allowed;
+  background-color: darkgray;
+  border: 1px solid #505050;
+  color: whitesmoke;
+}
+
 .button:hover {
   animation: 0.2s ease-in button-transition;
   background-color: #0074B2;
@@ -387,6 +417,10 @@ a:hover {
 
 .input-group {
   margin-bottom: .5em;
+}
+
+label.cursor:hover {
+  cursor: pointer;
 }
 
 input.inline {
