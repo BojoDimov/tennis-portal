@@ -44,6 +44,22 @@ const removeTeam = (req, res, next) => {
     .catch(err => next(err, req, res, null));
 }
 
+const transfer = (from, to, schemeId, teamId, transaction) => {
+  return Promise.all([
+    from.destroy({
+      where: {
+        schemeId: schemeId,
+        userId: teamId
+      },
+      transaction: transaction
+    }),
+    to.create({
+      schemeId: schemeId,
+      userId: teamId
+    }, { transaction: transaction })
+  ]);
+}
+
 const setTeam = (req, res, next) => {
   let pos = parseInt(req.query['pos']);
   if (!pos || (pos != 1 && pos != 2))
@@ -204,5 +220,6 @@ module.exports = {
       set.team2 = set.team2 + "(" + set.tiebreaker + ")";
 
     return set;
-  }
+  },
+  transfer
 };

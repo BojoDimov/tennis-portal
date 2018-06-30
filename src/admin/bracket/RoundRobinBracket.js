@@ -2,13 +2,14 @@ import React from 'react';
 import { TeamLabel } from './TeamLabel';
 import { Score } from './Score';
 import { MatchScore2 } from './MatchScore';
+import { get } from '../../services/fetch';
 
 export class RoundRobinBracket extends React.Component {
   render() {
     return (
       <div>
         {this.props.groups.map((group, i) => (
-          <BracketGroup key={i} group={group} />
+          <BracketGroup key={i} group={group} refresh={this.props.refresh} />
         ))}
       </div>
     );
@@ -23,11 +24,6 @@ function get_group_header(group) {
 export class BracketGroup extends React.Component {
   get_header() {
     return String.fromCharCode("А".charCodeAt(0) + this.props.group.group);
-  }
-
-  removeTeam(pos) {
-    // get(`/matches/${this.props.match.id}/removeTeam?pos=${pos}`)
-    //   .then(() => this.props.refresh());
   }
 
   isReversed(team1Id, team2Id) {
@@ -63,6 +59,18 @@ export class BracketGroup extends React.Component {
       return [];
   }
 
+
+
+  removeTeam(t) {
+    get(`/groups/${this.props.group.id}/removeTeam?teamId=${t.id}`)
+      .then(() => this.props.refresh());
+  }
+
+  addTeam(gt, t) {
+    get(`/groups/${this.props.group.id}/addTeam?teamId=${t.id}&groupTeamId=${gt.id}`)
+      .then(() => this.props.refresh());
+  }
+
   render() {
     return (
       <table className="round-robin-table">
@@ -77,7 +85,10 @@ export class BracketGroup extends React.Component {
             <tr key={i}>
               <td className="team-label">
                 <span>{`${t1.order}. `}</span>
-                <TeamLabel team={t1.User} />
+                <TeamLabel team={t1.User}
+                  schemeId={this.props.group.schemeId}
+                  onRemove={() => this.removeTeam(t1.User)}
+                  onChange={team => this.addTeam(t1, team)} />
               </td>
               {this.props.group.teams.map((t2, j) => (
                 <td key={j}>

@@ -26,6 +26,7 @@ let Tournaments = require('./controllers/tournaments');
 let Editions = require('./controllers/editions');
 let Schemes = require('./controllers/schemes');
 let Matches = require('./controllers/matches');
+let Groups = require('./controllers/groups');
 let Users = require('./controllers/users');
 let Diagnostics = require('./diagnostics');
 
@@ -44,6 +45,7 @@ Tournaments.init(app);
 Editions.init(app);
 Schemes.init(app);
 Matches.init(app);
+Groups.init(app);
 
 //error handling middleware
 app.use((err, req, res, next) => {
