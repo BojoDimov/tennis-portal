@@ -26,6 +26,7 @@ export class MatchScoreForm extends React.Component {
   }
 
   componentDidMount() {
+    console.log(this.props.match);
     let sets = this.state.sets;
     this.props.match.sets.forEach((set, i) => {
       set.disabled = false;
@@ -52,8 +53,17 @@ export class MatchScoreForm extends React.Component {
   }
 
   saveMatch() {
-    post(`/matches/${this.props.match.id}/addResult`, { sets: this.state.sets, withdraw: this.state.withdraw })
-      .then((res) => this.props.onChange(res));
+    if (this.props.match.id)
+      return post(`/matches/${this.props.match.id}/addResult`, { sets: this.state.sets, withdraw: this.state.withdraw })
+        .then((res) => this.props.onChange(res));
+    else {
+      console.log('detected new match, creating instead of update')
+      let match = this.props.match;
+      match.withdraw = this.state.withdraw;
+      match.sets = this.state.sets;
+      return post(`/matches/create`, match)
+        .then((res) => this.props.onChange(res));
+    }
   }
 
   render() {

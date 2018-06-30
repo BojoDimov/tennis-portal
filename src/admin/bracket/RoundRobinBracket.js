@@ -1,7 +1,7 @@
 import React from 'react';
 import { TeamLabel } from './TeamLabel';
 import { Score } from './Score';
-import { MatchScore2 } from './MatchScore';
+import { MatchScore } from './MatchScore';
 import { get } from '../../services/fetch';
 
 export class RoundRobinBracket extends React.Component {
@@ -31,9 +31,8 @@ export class BracketGroup extends React.Component {
   }
 
   getMatch(t1, t2) {
-    console.log(t1, t2);
-    let match = this.props.group.matches.find(e => e.team1Id == t1.team1Id && e.team2Id == t2.team2Id);
-    let reversed = this.isReversed(t1.team1Id, t2.team2Id);
+    let match = this.props.group.matches.find(e => e.team1Id == t1.teamId && e.team2Id == t2.teamId);
+    let reversed = this.isReversed(t1.teamId, t2.teamId);
 
     if (match)
       return match;
@@ -42,24 +41,39 @@ export class BracketGroup extends React.Component {
     else return {
       groupId: this.props.group.id,
       schemeId: this.props.group.schemeId,
-      team1Id: t1.team1Id,
-      team2Id: t2.team2Id,
+      team1Id: t1.teamId,
+      team2Id: t2.teamId,
       team1: t1.User,
       team2: t2.User,
       sets: []
     };
   }
 
-  getSets(t1, t2) {
-    let match = this.getMatch(t1, t2);
+  getScore(t1, t2) {
+    let match = this.props.group.matches.find(e => e.team1Id == t1.teamId && e.team2Id == t2.teamId);
+    let reversed = this.isReversed(t1.teamId, t2.teamId);
+    let isReversed = !match && reversed;
+    if (isReversed)
+      match = reversed;
 
-    if (match)
-      return match.sets;
-    else
-      return [];
+    let withdraw = null;
+    let c1 = 1, c2 = 1;
+    if (isReversed) {
+      c1 = 2;
+      c2 = 1 / 2;
+    }
+
+    if (match && match.withdraw == 1 * c1)
+      withdraw = t1.order;
+    else if (match && match.withdraw == 2 * c2)
+      withdraw = t2.order;
+
+    return {
+      sets: match ? match.sets : [],
+      withdraw: withdraw,
+      reversed: isReversed
+    }
   }
-
-
 
   removeTeam(t) {
     get(`/groups/${this.props.group.id}/removeTeam?teamId=${t.id}`)
@@ -94,11 +108,8 @@ export class BracketGroup extends React.Component {
                 <td key={j}>
                   {i == j ? <span>x</span> :
                     <React.Fragment>
-                      <Score
-                        sets={this.getSets(t1, t2)}
-                        reversed={this.isReversed(t1.team1Id, t2.team2Id)}
-                      />
-                      <MatchScore2 match={this.getMatch(t1, t2)} refresh={this.props.refresh} />
+                      <Score {...this.getScore(t1, t2) } />
+                      <MatchScore match={this.getMatch(t1, t2)} refresh={this.props.refresh} />
                     </React.Fragment>
                   }
                 </td>
@@ -110,3 +121,7 @@ export class BracketGroup extends React.Component {
     );
   }
 }
+
+// sets = { this.getSets(t1, t2) }
+// withdraw = { this.getMatch(t1, t2).withdraw }
+// reversed = { this.isReversed(t1.teamId, t2.teamId) }

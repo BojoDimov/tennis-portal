@@ -4,7 +4,7 @@ import { ConfirmationButton } from '../Infrastructure';
 import { MatchScoreForm } from './MatchScoreForm';
 import { Score } from './Score';
 
-export class MatchScore2 extends React.Component {
+export class MatchScore extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -16,121 +16,12 @@ export class MatchScore2 extends React.Component {
     return (
       <div className="dropdown">
         <div className="button" onClick={() => this.setState({ showMatchForm: !this.state.showMatchForm })}>резултат</div>
-        {this.state.showMatchForm ? <MatchScoreForm match={this.props.match} onChange={() => { this.setState({ showMatchForm: false }); this.props.refresh(); }} /> : null}
+        {this.state.showMatchForm ?
+          <MatchScoreForm
+            match={this.props.match}
+            onChange={() => { this.setState({ showMatchForm: false }); this.props.refresh(); }}
+          /> : null}
       </div>
     );
-  }
-}
-
-export class MatchScore extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      showMatchForm: false,
-      sets: this.initSets(),
-      withdraw: 0,
-      refreshed: false
-    }
-  }
-
-  initSets() {
-    let sets = [];
-    for (let i = 0; i < 5; i++)
-      sets.push({
-        order: i + 1,
-        team1: '',
-        team2: '',
-        disabled: true
-      });
-
-    sets[0].disabled = false;
-    return sets;
-  }
-
-  componentDidMount() {
-    let sets = this.state.sets;
-    this.props.match.sets.forEach((set, i) => {
-      set.disabled = false;
-      sets[i] = set;
-      if (i < sets.length - 1)
-        sets[i + 1].disabled = false;
-    });
-
-    this.setState({ sets: sets, withdraw: this.props.match.withdraw });
-  }
-
-  handle_input(value, index, pos) {
-    let sets = this.state.sets;
-    sets[index]['team' + pos] = value;
-    if (index < (5 - 1) && sets[index].team1 !== '' && sets[index].team2 !== '')
-      //sets.slice(index + 1).forEach(set => set.disabled = false);
-      sets[index + 1].disabled = false;
-
-    // if (index < (5 - 1) && (sets[index].team1 === '' || sets[index].team2 === ''))
-    //   sets.slice(index + 1).forEach(set => set.disabled = true);
-    // sets[index + 1].disabled = true;
-
-    this.setState({ sets: sets });
-  }
-
-  saveMatch() {
-    post(`/matches/${this.props.match.id}/addResult`, { sets: this.state.sets, withdraw: this.state.withdraw })
-      .then(() => {
-        this.setState({ showMatchForm: false });
-        return this.props.refresh();
-      });
-  }
-
-  render() {
-    if (!this.props.match.team1Id || !this.props.match.team2)
-      return null;
-    else
-      return (
-        <div className="dropdown">
-          <div className="button h2h" onClick={() => this.setState({ showMatchForm: !this.state.showMatchForm })}>h2h</div>
-          {this.state.showMatchForm ?
-            <div className="dropdown-content">
-              <table className="match-result-table input-group">
-                <thead>
-                  <tr>
-                    <th></th>
-                    <th>I</th>
-                    <th>II</th>
-                    <th>III</th>
-                    <th>IV</th>
-                    <th>V</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>{this.props.match.team1.fullname}</td>
-                    {this.state.sets.map((set, i) => (
-                      <td key={i}><input type="text" disabled={set.disabled} value={set.team1} onChange={(e) => this.handle_input(e.target.value, i, 1)} /></td>
-                    ))}
-                  </tr>
-                  <tr>
-                    <td>{this.props.match.team2.fullname}</td>
-                    {this.state.sets.map((set, i) => (
-                      <td key={i}><input type="text" disabled={set.disabled} value={set.team2} onChange={(e) => this.handle_input(e.target.value, i, 2)} /></td>
-                    ))}
-                  </tr>
-                </tbody>
-              </table>
-              <div className="input-group">
-                <div>Отказал се</div>
-                <select value={this.state.withdraw} onChange={e => this.setState({ withdraw: e.target.value })}>
-                  <option value={0}>нямa</option>
-                  <option value={1}>{this.props.match.team1.fullname}</option>
-                  <option value={2}>{this.props.match.team2.fullname}</option>
-                </select>
-              </div>
-              <ConfirmationButton className="button-block center" onChange={flag => flag ? this.saveMatch() : null}>
-                Запис на резултата
-              </ConfirmationButton>
-              {/* <div className="button center" onClick={() => this.saveMatch()}>Запис на резултата</div> */}
-            </div>
-            : null}
-        </div>
-      );
   }
 }

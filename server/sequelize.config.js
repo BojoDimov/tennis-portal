@@ -179,6 +179,14 @@ Sets.belongsTo(Matches, {
   }
 });
 
+Matches.belongsTo(TournamentSchemes, {
+  as: 'scheme',
+  foreignKey: {
+    name: 'schemeId',
+    allowNull: false
+  }
+});
+
 Matches.hasMany(Sets, {
   as: 'sets',
   foreignKey: {

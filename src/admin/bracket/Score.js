@@ -2,7 +2,11 @@ import React from 'react';
 
 export class Score extends React.Component {
   render() {
-    if (this.props.sets.length > 0)
+    if (this.props.withdraw) {
+      console.log(this.props);
+      return <i className="score">{`отказал се играч ${this.props.withdraw}`}</i>
+    }
+    else if (this.props.sets.length > 0)
       return <div className="button-group score">
         {this.props.sets.map((set, i) => {
           if (this.props.reversed)

@@ -185,15 +185,27 @@ function _get_draw_data(scheme) {
           },
           {
             model: Matches,
-            as: 'matches'
+            as: 'matches',
+            include: [
+              { model: Users, as: 'team1', attributes: ['id', 'fullname'] },
+              { model: Users, as: 'team2', attributes: ['id', 'fullname'] },
+              { model: Sets, as: 'sets' }
+            ]
           }
         ],
         order: [
           'group',
-          ['teams', 'order', 'asc']
+          ['teams', 'order', 'asc'],
+          ['matches', 'sets', 'order', 'asc']
         ]
       })
       .then(groups => {
+        groups.forEach(group => {
+          group.matches.forEach(match => {
+            match.sets = match.sets.map(formatSet);
+          });
+        });
+
         return {
           schemeId: scheme.id,
           schemeType: 'round-robin',

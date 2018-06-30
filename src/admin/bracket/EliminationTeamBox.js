@@ -1,8 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ConfirmationButton } from '../Infrastructure';
-import { MatchScoreForm } from './MatchScoreForm';
-import { MatchScore2 } from './MatchScore';
+import { MatchScore } from './MatchScore';
 import { Score } from './Score';
 import { post } from '../../services/fetch';
 
@@ -23,7 +22,7 @@ export class EliminationTeamBox extends React.Component {
         {this.props.previousMatch && this.props.previousMatch.team1 && this.props.previousMatch.team2 ?
           <React.Fragment>
             <Score sets={this.props.previousMatch.sets} />
-            <MatchScore2 match={this.props.previousMatch} refresh={this.props.refresh} />
+            <MatchScore match={this.props.previousMatch} refresh={this.props.refresh} />
           </React.Fragment>
           : null
         }

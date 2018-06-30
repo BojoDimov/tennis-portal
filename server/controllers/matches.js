@@ -1,50 +1,9 @@
 const {
-  Matches, Sets, EnrollmentsQueue, SchemeEnrollments, Users
+  TournamentSchemes,
+  Matches, Sets, EnrollmentsQueue, SchemeEnrollments, Users, db
 } = require('../sequelize.config');
 
-const removeTeam = (req, res, next) => {
-  let pos = parseInt(req.query['pos']);
-  if (!pos || (pos != 1 && pos != 2))
-    res.status(400).send();
-
-  return Matches
-    .findById(req.params.id, {
-      include: [
-        { model: Users, as: 'team1', attributes: ['id', 'fullname'] },
-        { model: Users, as: 'team2', attributes: ['id', 'fullname'] }
-      ]
-    })
-    .then(match => {
-      let team = null;
-      if (pos == 1) {
-        team = match.team1;
-        match.team1Id = null;
-        match.seed1 = null;
-      }
-      else {
-        team = match.team2;
-        match.team2Id = null;
-        match.seed2 = null;
-      }
-
-      let p1 = SchemeEnrollments.destroy({
-        where: {
-          schemeId: match.schemeId,
-          userId: team.id
-        }
-      });
-
-      let p2 = EnrollmentsQueue.create({ schemeId: match.schemeId, userId: team.id });
-
-      let p3 = match.save();
-
-      return Promise.all([p1, p2, p3]);
-    })
-    .then(e => res.json(e))
-    .catch(err => next(err, req, res, null));
-}
-
-const transfer = (from, to, schemeId, teamId, transaction) => {
+function transfer(from, to, schemeId, teamId, transaction) {
   return Promise.all([
     from.destroy({
       where: {
@@ -58,6 +17,53 @@ const transfer = (from, to, schemeId, teamId, transaction) => {
       userId: teamId
     }, { transaction: transaction })
   ]);
+}
+
+const removeTeam = (req, res, next) => {
+  let pos = parseInt(req.query['pos']);
+  if (!pos || (pos != 1 && pos != 2))
+    res.status(400).send();
+
+  return db
+    .transaction(function (trn) {
+      return Matches
+        .findById(req.params.id, {
+          include: [
+            { model: Users, as: 'team1', attributes: ['id', 'fullname'] },
+            { model: Users, as: 'team2', attributes: ['id', 'fullname'] }
+          ],
+          transaction: trn
+        })
+        .then(match => {
+          let team = null;
+          if (pos == 1) {
+            team = match.team1;
+            match.team1Id = null;
+            match.seed1 = null;
+          }
+          else {
+            team = match.team2;
+            match.team2Id = null;
+            match.seed2 = null;
+          }
+
+          let p1 = SchemeEnrollments.destroy({
+            where: {
+              schemeId: match.schemeId,
+              userId: team.id
+            },
+            transaction: trn
+          });
+
+          let p2 = EnrollmentsQueue.create({ schemeId: match.schemeId, userId: team.id }, { transaction: trn });
+
+          let p3 = match.save({ transaction: trn });
+
+          return Promise.all([p1, p2, p3]);
+        });
+    })
+    .then(e => res.json(e))
+    .catch(err => next(err, req, res, null));
 }
 
 const setTeam = (req, res, next) => {
@@ -96,18 +102,103 @@ const setTeam = (req, res, next) => {
 }
 
 const addResult = (req, res, next) => {
-  let sets = req.body.sets;
   let withdraw = req.body.withdraw;
   let matchId = req.params.id;
+  let sets = req.body.sets;
+  sets.forEach(set => set.matchId = matchId);
 
+  return db
+    .transaction(function (trn) {
+      return manageSets(sets, trn)
+        .then(() => Matches
+          .findById(matchId, {
+            include: [
+              { model: Sets, as: 'sets' },
+              { model: TournamentSchemes, as: 'scheme' }
+            ],
+            order: [
+              ['sets', 'order', 'asc']
+            ],
+            transaction: trn
+          })
+          .then(match => {
+            match.withdraw = withdraw;
+            return match.save({ transaction: trn });
+          }))
+        .then(match => {
+          if (match.scheme.schemeType == 'elimination')
+            return manageNextMatch(match, trn);
+          else return Promise.resolve(match);
+        });
+    })
+    .then(e => res.json(e))
+    .catch(err => next(err, req, res, null));
+}
+
+const createMatch = (req, res, next) => {
+  let match = req.body;
+  match.sets = match.sets.filter((set) => (set.team1 || set.team2));
+  match.sets = match.sets.map(parseSet);
+
+  return db
+    .transaction(function (trn) {
+      return Matches.create(match, {
+        include: [
+          { model: Sets, as: 'sets' }
+        ],
+        transaction: trn
+      })
+    })
+    .then(e => res.json(e))
+    .catch(err => next(err, req, res, null));
+}
+
+function getWinner(match) {
+  let winner = null;
+
+  if (match.withdraw == 1)
+    winner = match.team2Id;
+  else if (match.withdraw == 2)
+    winner = match.team1Id;
+  else if (match.sets.length > 0)
+    //if there are sets, winner is the one with winning last set
+    winner = match.sets[match.sets.length - 1].team1 > match.sets[match.sets.length - 1].team2 ?
+      match.team1Id : match.team2Id;
+
+  return winner;
+}
+
+function manageNextMatch(match, transaction) {
+  let winner = getWinner(match);
+  if (!winner)
+    return Promise.resolve();
+
+  return Matches
+    .findOrCreate({
+      where: {
+        round: match.round + 1,
+        match: Math.ceil(match.match / 2),
+        schemeId: match.schemeId
+      },
+      transaction: transaction
+    })
+    .then(([nextMatch, _]) => {
+      if (match.match % 2 == 0)
+        nextMatch.team2Id = winner;
+      else
+        nextMatch.team1Id = winner;
+
+      return nextMatch.save({ transaction: transaction });
+    });
+}
+
+function manageSets(sets, transaction) {
   //has id but scores are removed => DELETED
   let deleted = sets.filter(set => set.id && !set.team1 && !set.team2);
-
   //filter empty sets
   sets = sets.filter((set) => (set.team1 || set.team2));
   //parse score inputs
   sets = sets.map(parseSet);
-  sets.forEach(set => set.matchId = matchId);
 
   //has id => UPDATED
   let updated = sets.filter(set => set.id);
@@ -115,70 +206,36 @@ const addResult = (req, res, next) => {
   //doesn't have id => CREATED
   let created = sets.filter(set => !set.id);
 
-  //update matches
-  let p1 = Matches
-    .findById(matchId)
-    .then(match => {
-      match.withdraw = withdraw;
-      return match.save();
-    })
-    .then(match => {
-      let winner = null;
-
-      if (withdraw == 1)
-        winner = match.team2Id;
-      else if (withdraw == 2)
-        winner = match.team1Id;
-      else if (sets.length > 0)
-        //if there are sets, winner is the one with winning last set
-        winner = sets[sets.length - 1].team1 > sets[sets.length - 1].team2 ?
-          match.team1Id : match.team2Id;
-      else return;
-
-      return Matches
-        .findOrCreate({
-          where: {
-            round: match.round + 1,
-            match: Math.ceil(match.match / 2),
-            schemeId: match.schemeId
-          }
-        })
-        .then(([nextMatch, _]) => {
-          if (match.match % 2 == 0)
-            nextMatch.team2Id = winner;
-          else
-            nextMatch.team1Id = winner;
-
-          return nextMatch.save();
-        });
-    })
-    .catch(err => next(err, req, res, null));
-
   //create sets
-  let p2 = Sets
-    .bulkCreate(created)
-    .catch(err => next(err, req, res, null));
+  let p1 = Sets.bulkCreate(created, { transaction: transaction });
 
   //update set results
-  let p3 = Sets
+  let p2 = Sets
     .findAll({
       where: {
         id: updated.map(set => set.id)
-      }
+      },
+      transaction: transaction
     })
     .then(sets => {
-      return Promise.all(sets.map(set => set.update(updated.find(e => e.id == set.id))));
+      return Promise.all(
+        sets.map(
+          set => set.update(
+            updated.find(e => e.id == set.id), { transaction: transaction })
+        )
+      );
     });
 
   //remove sets
-  let p4 = Sets
+  let p3 = Sets
     .destroy({
       where: {
         id: deleted.map(set => set.id)
-      }
+      },
+      transaction: transaction
     });
 
-  return Promise.all([p1, p2, p3, p4]).then(e => res.json(e));
+  return Promise.all([p1, p2, p3]);
 }
 
 function parseSet(set) {
@@ -204,22 +261,25 @@ function parseSet(set) {
   return set;
 }
 
+function formatSet(set) {
+  if (!set.tiebreaker)
+    return set;
+
+  if (set.team1 < set.team2)
+    set.team1 = set.team1 + "(" + set.tiebreaker + ")";
+  else
+    set.team2 = set.team2 + "(" + set.tiebreaker + ")";
+
+  return set;
+}
+
 module.exports = {
   init: (app) => {
     app.get('/api/matches/:id/removeTeam', removeTeam);
     app.get('/api/matches/:id/setTeam', setTeam);
     app.post('/api/matches/:id/addResult', addResult);
+    app.post('/api/matches/create', createMatch);
   },
-  formatSet: (set) => {
-    if (!set.tiebreaker)
-      return set;
-
-    if (set.team1 < set.team2)
-      set.team1 = set.team1 + "(" + set.tiebreaker + ")";
-    else
-      set.team2 = set.team2 + "(" + set.tiebreaker + ")";
-
-    return set;
-  },
+  formatSet,
   transfer
 };

@@ -7,6 +7,16 @@ body {
   overflow-x: hidden;
 }
 
+table {
+  .score{
+    font-size: .8em;
+    font-weight: 700;
+    sup {
+      font-size: .8em;
+    }
+  }
+}
+
 .round-robin-table{
   border-spacing: 1.3em .3em;
 
@@ -26,6 +36,20 @@ body {
   }
 
   margin: 1.5em 0;
+}
+
+.match-result-table {
+  td {
+    border: none;
+  }
+
+  th {
+    border: none;
+  }
+
+  input{
+    width: 3rem;
+  }
 }
 
 .elimination-table {
@@ -50,14 +74,6 @@ body {
   .seed {
     width: 2em;
     color: #AEAEAE;
-  }
-
-  .score{
-    font-size: .8em;
-    font-weight: 700;
-    sup {
-      font-size: .8em;
-    }
   }
 
   .delim {
@@ -95,20 +111,6 @@ body {
       display: table-cell;
       padding: .5rem 0;
       // border: 1px solid black;
-    }
-  }
-
-  .match-result-table {
-    td {
-      border: none;
-    }
-
-    th {
-      border: none;
-    }
-
-    input{
-      width: 3rem;
     }
   }
 }

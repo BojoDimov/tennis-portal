@@ -421,6 +421,15 @@ body {
   overflow-x: hidden;
 }
 
+table .score {
+  font-size: .8em;
+  font-weight: 700;
+}
+
+table .score sup {
+  font-size: .8em;
+}
+
 .round-robin-table {
   border-spacing: 1.3em .3em;
   margin: 1.5em 0;
@@ -439,6 +448,18 @@ body {
 .round-robin-table .team-label {
   text-align: left;
   width: 16em;
+}
+
+.match-result-table td {
+  border: none;
+}
+
+.match-result-table th {
+  border: none;
+}
+
+.match-result-table input {
+  width: 3rem;
 }
 
 .elimination-table {
@@ -464,15 +485,6 @@ body {
 .elimination-table .seed {
   width: 2em;
   color: #AEAEAE;
-}
-
-.elimination-table .score {
-  font-size: .8em;
-  font-weight: 700;
-}
-
-.elimination-table .score sup {
-  font-size: .8em;
 }
 
 .elimination-table .delim {
@@ -508,18 +520,6 @@ body {
 .elimination-table .match-table td {
   display: table-cell;
   padding: .5rem 0;
-}
-
-.elimination-table .match-result-table td {
-  border: none;
-}
-
-.elimination-table .match-result-table th {
-  border: none;
-}
-
-.elimination-table .match-result-table input {
-  width: 3rem;
 }
 
 #menu {
