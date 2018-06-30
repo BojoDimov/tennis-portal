@@ -91,7 +91,7 @@ export class BracketGroup extends React.Component {
         <thead>
           <tr>
             <th>{`Група "${this.get_header()}"`}</th>
-            {this.props.group.teams.map((t, i) => <th key={i}>{t.order}</th>)}
+            {this.props.group.teams.map((t, i) => <th key={i} className="center">{t.order}</th>)}
           </tr>
         </thead>
         <tbody>

@@ -35,7 +35,7 @@ export class SchemesPreview extends React.Component {
           </Link>
         </h2>
 
-        <div className="tab-group input-group">
+        <div className="tab-group input-group button-group">
           {this.props.schemes.map((scheme, i) =>
             <span key={scheme.id} className={'button' + (i == this.state.active ? ' active' : '')}
               onClick={() => this.selectScheme(i)}>
@@ -44,12 +44,14 @@ export class SchemesPreview extends React.Component {
           )}
         </div>
 
-        {this.state.active != -1 ? <div className="input-group">
-          <Link to={`/schemes/view/${this.props.schemes[this.state.active].id}`}>Детайли</Link>
-        </div> : null}
         {this.state.active != -1 ?
-          <BracketDrawForm draw={this.state.draw} onChange={draw => this.setState({ draw: draw })} />
-          : <div><i>няма налични схеми</i></div>}
+          <div className="input-group">
+            <div><i>{this.state.draw.schemeType === 'elimination' ? 'Елиминационна схема' : 'Групова фаза'}</i></div>
+            <Link to={`/schemes/view/${this.props.schemes[this.state.active].id}`}>детайли</Link>
+          </div>
+          : null}
+
+        <BracketDrawForm draw={this.state.draw} onChange={draw => this.setState({ draw: draw })} />
         <BracketPreview draw={this.state.draw} refresh={() => { console.log('calling refresh'); this.selectScheme(this.state.active) }} />
       </div>
     );

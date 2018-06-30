@@ -18,12 +18,20 @@ table {
 }
 
 .round-robin-table{
-  border-spacing: 1.3em .3em;
+  border-spacing: 0;
+  width: 100%;
+  tr {
+    padding: 0;
+  }
 
   th {
     text-align: left;
-    border-bottom: 1px solid $primary;
+    border-bottom: 1px solid lighten($primary, 35%);
     padding: .8em 0;
+  }
+
+  th.center{
+    text-align: center;
   }
 
   td{

@@ -22,7 +22,7 @@ export function init_elimination_bracket(matches, refresh_handler) {
       let teams = currentMatch ? [currentMatch.team1, currentMatch.team2] : [null, null];
 
       bracket[row][col] = (
-        <td key={col} rowSpan={power}>
+        <td key={col} rowSpan={power} style={{ overflow: 'hidden', position: 'relative' }}>
           <EliminationTeamBox
             team={teams[pos]}
             previousMatch={previousMatch}

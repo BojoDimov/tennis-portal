@@ -152,6 +152,7 @@ a:hover {
 }
 
 .tab-group {
+  margin-left: 0;
   display: inline-flex;
   align-content: space-between;
   flex-wrap: wrap;
@@ -360,6 +361,7 @@ a:hover {
 }
 
 .tab-group {
+  margin-left: 0;
   display: inline-flex;
   align-content: space-between;
   flex-wrap: wrap;
@@ -431,14 +433,23 @@ table .score sup {
 }
 
 .round-robin-table {
-  border-spacing: 1.3em .3em;
+  border-spacing: 0;
+  width: 100%;
   margin: 1.5em 0;
+}
+
+.round-robin-table tr {
+  padding: 0;
 }
 
 .round-robin-table th {
   text-align: left;
-  border-bottom: 1px solid #505050;
+  border-bottom: 1px solid darkgray;
   padding: .8em 0;
+}
+
+.round-robin-table th.center {
+  text-align: center;
 }
 
 .round-robin-table td {
