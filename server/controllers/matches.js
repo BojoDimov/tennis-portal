@@ -168,6 +168,19 @@ function getWinner(match) {
   return winner;
 }
 
+function getMatchStatistics(match, teamId) {
+  let ourTeam = match.team1Id == teamId ? 'team1' : 'team2';
+  let oppositeTeam = match.team1Id == teamId ? 'team2' : 'team1';
+
+  return {
+    sets: match.sets.length,
+    setsWon: match.sets.reduce((acc, next) => (next[ourTeam] > next[oppositeTeam] ? acc + 1 : acc)),
+    games: match.sets.reduce((acc, next) => acc + next.team1 + next.team2),
+    gamesWon: match.sets.reduce((acc, next) => (next[ourTeam] > next[oppositeTeam] ? acc + next[ourTeam] : acc)),
+    isWinner: getWinner(match) == teamId
+  }
+}
+
 function manageNextMatch(match, transaction) {
   let winner = getWinner(match);
   if (!winner)

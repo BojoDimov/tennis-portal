@@ -1,4 +1,62 @@
-module.exports = { _draw_eliminations, _draw_groups };
+module.exports = { _draw_eliminations, _draw_groups, _fill_groups, _draw_eliminations_from_groups };
+
+function _fill_groups(groups) {
+  //playerPerGroup
+  const ppg = 2;
+  //groupCount
+  const gc = groups.length;
+  //bracketSize
+  const bs = gc * ppg;
+  //dummyGroupCount
+  const dgc = (Math.pow(2, Math.ceil(Math.log2(bs))) - bs) / ppg;
+  //distance between 2 dummy groups
+  const dist = Math.floor(gc / dgc);
+
+  //i am filling the dummy groups reversed because i want them to be at the end of the draw
+  let result = [];
+  let counter = 0;
+  for (let i = groups.length - 1; i >= 0; i--) {
+    if (counter < dgc && i % dist == 0) {
+      result.push({
+        team1: null,
+        team2: null
+      });
+      counter++;
+    }
+
+    result.push(groups[i]);
+  }
+
+  //reverse reverse
+  result.reverse();
+
+  //fix order
+  result.forEach((g, i) => g.order = i);
+  return result;
+}
+
+function _draw_eliminations_from_groups(groups) {
+  let matches = [];
+  for (let i = 0; i < groups.length / 2; i++) {
+    matches.push({
+      team1: groups[i].team1,
+      team2: groups[groups.length - i - 1].team2,
+      match: matches.length + 1,
+      round: 1
+    })
+  }
+
+  for (let i = 0; i < groups.length / 2; i++) {
+    matches.push({
+      team2: groups[i].team2,
+      team1: groups[groups.length - i - 1].team1,
+      match: matches.length + 1,
+      round: 1
+    })
+  }
+
+  return matches;
+}
 
 function _draw_groups(scheme, seed, enrollments) {
   //let bracket_size = scheme.groupCount * scheme.teamsPerGroup;
