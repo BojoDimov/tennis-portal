@@ -2,7 +2,7 @@ const {
   Groups, GroupTeams, EnrollmentsQueue, SchemeEnrollments, db
 } = require('../sequelize.config');
 
-const { transfer } = require('./matches');
+const MatchActions = require('../logic/matchActions');
 
 const removeTeam = (req, res, next) => {
   let teamId = req.query.teamId;
@@ -23,7 +23,7 @@ const removeTeam = (req, res, next) => {
 
       let p2 = Groups
         .findById(req.params.id)
-        .then(group => transfer(SchemeEnrollments, EnrollmentsQueue, group.schemeId, teamId, trn));
+        .then(group => MatchActions.transfer(SchemeEnrollments, EnrollmentsQueue, group.schemeId, teamId, trn));
 
       return Promise.all([p1, p2]);
     })
@@ -44,7 +44,7 @@ const addTeam = (req, res, next) => {
 
       let p2 = Groups
         .findById(req.params.id, { transaction: trn })
-        .then(group => transfer(EnrollmentsQueue, SchemeEnrollments, group.schemeId, teamId, trn));
+        .then(group => MatchActions.transfer(EnrollmentsQueue, SchemeEnrollments, group.schemeId, teamId, trn));
 
       return Promise.all([p1, p2]);
     })

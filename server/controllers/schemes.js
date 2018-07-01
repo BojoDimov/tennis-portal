@@ -6,7 +6,7 @@ const {
   db } = require('../sequelize.config');
 const DrawActions = require('../logic/drawActions');
 const EnrollmentsActions = require('../logic/enrollmentsActions');
-const { formatSet, generatePoints } = require('./matches');
+const MatchActions = require('../logic/matchActions');
 
 const getAll = (req, res) => {
   return TournamentSchemes
@@ -144,11 +144,11 @@ const finishDraw = (req, res, next) => {
         })
         .then(e => {
           if (e.schemeType == 'elimination')
-            return generatePoints(scheme, e.data, true);
+            return MatchActions.generatePoints(scheme, e.data, true);
           else {
             let matches = [];
             e.data.forEach(group => matches = matches.concat(group.matches));
-            return generatePoints(scheme, matches, false);
+            return MatchActions.generatePoints(scheme, matches, false);
           }
         })
         .then(points => {
@@ -222,7 +222,7 @@ function _get_draw_data(scheme, transaction) {
           schemeId: scheme.id,
           schemeType: scheme.schemeType,
           data: matches.map(match => {
-            match.sets = match.sets.map(formatSet);
+            match.sets = match.sets.map(MatchActions.formatSet);
             return match;
           }),
           isDrawn: matches.length > 0
@@ -262,7 +262,7 @@ function _get_draw_data(scheme, transaction) {
       .then(groups => {
         groups.forEach(group => {
           group.matches.forEach(match => {
-            match.sets = match.sets.map(formatSet);
+            match.sets = match.sets.map(MatchActions.formatSet);
           });
         });
 
