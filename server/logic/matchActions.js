@@ -38,9 +38,9 @@ function getMatchStatistics(match, teamId) {
  */
 function orderGroupByStatistics(group) {
   group.teams = group.teams.map(team => {
-    let statistics = draw.data[0].matches.filter(match => match.team1Id == team.teamId
+    let statistics = group.matches.filter(match => match.team1Id == team.teamId
       || match.team2Id == team.teamId)
-      .map(match => MatchActions.getMatchStatistics(match, team.teamId));
+      .map(match => getMatchStatistics(match, team.teamId));
 
     team.wins = statistics.filter(s => s.isWinner).length;
     team.totalSets = statistics.reduce((acc, next) => acc + next.sets, 0);
