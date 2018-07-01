@@ -1,5 +1,5 @@
 module.exports = {
-  getWinner, getMatchStatistics, parseSet, formatSet, generatePoints, transfer
+  getWinner, getMatchStatistics, parseSet, formatSet, generatePoints, transfer, orderGroupByStatistics
 };
 
 /** 
@@ -26,11 +26,43 @@ function getMatchStatistics(match, teamId) {
 
   return {
     sets: match.sets.length,
-    setsWon: match.sets.reduce((acc, next) => (next[ourTeam] > next[oppositeTeam] ? acc + 1 : acc)),
-    games: match.sets.reduce((acc, next) => acc + next.team1 + next.team2),
-    gamesWon: match.sets.reduce((acc, next) => (next[ourTeam] > next[oppositeTeam] ? acc + next[ourTeam] : acc)),
+    setsWon: match.sets.reduce((acc, next) => (next[ourTeam] > next[oppositeTeam] ? acc + 1 : acc), 0),
+    games: match.sets.reduce((acc, next) => acc + next.team1 + next.team2, 0),
+    gamesWon: match.sets.reduce((acc, next) => (next[ourTeam] > next[oppositeTeam] ? acc + next[ourTeam] : acc), 0),
     isWinner: getWinner(match) == teamId
   }
+}
+
+/**
+ * Order by wins, setsScore, gamesScore 
+ */
+function orderGroupByStatistics(group) {
+  group.teams = group.teams.map(team => {
+    let statistics = draw.data[0].matches.filter(match => match.team1Id == team.teamId
+      || match.team2Id == team.teamId)
+      .map(match => MatchActions.getMatchStatistics(match, team.teamId));
+
+    team.wins = statistics.filter(s => s.isWinner).length;
+    team.totalSets = statistics.reduce((acc, next) => acc + next.sets, 0);
+    team.totalSetsWon = statistics.reduce((acc, next) => acc + next.setsWon, 0);
+    team.totalGames = statistics.reduce((acc, next) => acc + next.games, 0);
+    team.totalGamesWon = statistics.reduce((acc, next) => acc + next.gamesWon, 0);
+    team.setsScore = (team.totalSets != 0 ? team.totalSetsWon / team.totalSets : 0);
+    team.gamesScore = (team.totalGames != 0 ? team.totalGamesWon / team.totalGames : 0);
+
+    return team;
+  });
+
+  group.teams.sort((t1, t2) => {
+    if (t1.wins == t2.wins) {
+      if (t1.setsScore == t2.setsScore)
+        return t2.gamesScore - t1.gamesScore;
+      else
+        return t2.setsScore - t1.setsScore;
+    }
+    else return t2.wins - t1.wins;
+  });
+  return group;
 }
 
 function parseSet(set) {

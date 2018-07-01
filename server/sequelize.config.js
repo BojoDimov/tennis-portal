@@ -3,7 +3,7 @@ const Sequelize = require('sequelize');
 const db = new Sequelize('tennis-portal-db', 'postgres', '12345678', {
   host: 'localhost',
   dialect: 'postgres',
-  logging: console.log,
+  logging: false,
   pool: {
     max: 5,
     min: 0,

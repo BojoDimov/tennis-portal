@@ -190,7 +190,8 @@ module.exports = {
     app.get('/api/schemes/:id/draw', draw);
     app.get('/api/schemes/:id/getDraw', getDraw);
     app.get('/api/schemes/:id/finishDraw', finishDraw);
-  }
+  },
+  _get_draw_data
 };
 
 function _set_status(id, status) {
@@ -199,7 +200,7 @@ function _set_status(id, status) {
     .then(edition => edition.update({ status: status }));
 }
 
-function _get_draw_data(scheme, transaction) {
+function _get_draw_data(scheme, transaction, format = true) {
   if (scheme.schemeType == 'elimination')
     return Matches
       .findAll({
@@ -222,7 +223,8 @@ function _get_draw_data(scheme, transaction) {
           schemeId: scheme.id,
           schemeType: scheme.schemeType,
           data: matches.map(match => {
-            match.sets = match.sets.map(MatchActions.formatSet);
+            if (format)
+              match.sets = match.sets.map(MatchActions.formatSet);
             return match;
           }),
           isDrawn: matches.length > 0
@@ -262,7 +264,8 @@ function _get_draw_data(scheme, transaction) {
       .then(groups => {
         groups.forEach(group => {
           group.matches.forEach(match => {
-            match.sets = match.sets.map(MatchActions.formatSet);
+            if (format)
+              match.sets = match.sets.map(MatchActions.formatSet);
           });
         });
 
