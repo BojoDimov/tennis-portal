@@ -34,16 +34,13 @@ app.listen(3100, () => console.log('Server listening...'));
 
 //wire controllers, order of middleware is super important
 app.use('/', express.static('build'));
-app.get('*', (req, res) => {
-  res.sendFile('build/index.html', { root: './' });
-});
+
 app.use(cors());
 app.use(express.json());
 
 Users.init(app);
 
 Diagnostics.init(app);
-app.use(passport.authenticate('bearer', { session: false }));
 
 Tournaments.init(app);
 Editions.init(app);
@@ -52,6 +49,10 @@ Matches.init(app);
 Groups.init(app);
 
 
+app.get('*', (req, res) => {
+  res.sendFile('build/index.html', { root: './' });
+});
+app.use(passport.authenticate('bearer', { session: false }));
 
 //error handling middleware
 app.use((err, req, res, next) => {
