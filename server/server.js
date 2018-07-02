@@ -50,6 +50,7 @@ Groups.init(app);
 
 //error handling middleware
 app.use((err, req, res, next) => {
+  console.log(err);
   if (err.name === 'SequelizeValidationError') {
     const result = {}
     err.errors.forEach(e => result[e.path] = e.message);
