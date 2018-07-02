@@ -33,7 +33,6 @@ let Diagnostics = require('./diagnostics');
 app.listen(3100, () => console.log('Server listening...'));
 
 //wire controllers, order of middleware is super important
-app.use('/', express.static('build'));
 app.use(cors());
 app.use(express.json());
 
@@ -69,3 +68,6 @@ app.use((err, req, res, next) => {
     error: JSON.stringify(err)
   }).then(() => res.status(500).end());
 });
+
+
+app.use('/', express.static('build'));
