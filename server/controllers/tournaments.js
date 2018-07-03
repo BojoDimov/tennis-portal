@@ -1,4 +1,12 @@
-const { Tournaments, TournamentEditions, TournamentSchemes, Rankings, Users } = require('../db');
+const express = require('express');
+const router = express.Router();
+const {
+  Tournaments,
+  TournamentEditions,
+  TournamentSchemes,
+  Rankings,
+  Users
+} = require('../db');
 
 const getAll = (req, res) => {
   Tournaments
@@ -60,36 +68,10 @@ function setStatus(id, status) {
     .then(t => t.update({ status: status }));
 }
 
-// const getRankings = (req, res) => {
-//   return Rankings.findAll({
-//     where: {
-//       Tournament
-//     }
-//   })
-// }
-
-const getAllRankings = (req, res) => {
-  return Rankings.findAll({
-    include: [
-      {
-        model: Users,
-        attributes: ['id', 'fullname']
-      },
-      {
-        model: Tournaments
-      }]
-  })
-    .then(rankings => res.json(rankings));
-}
-
-module.exports = {
-  init: (app) => {
-    app.get('/api/tournaments', getAll);
-    app.get('/api/tournaments/:id', getTournament);
-    app.post('/api/tournaments', createTournament);
-    app.post('/api/tournaments/edit', editTournament);
-    app.get('/api/tournaments/:id/publish', publish);
-    app.get('/api/tournaments/:id/draft', draft);
-    app.get('/api/rankings', getAllRankings);
-  }
-};
+router.get('/', getAll);
+router.get('/:id', getTournament);
+router.get('/:id/publish', publish);
+router.get('/:id/draft', draft);
+router.post('/', createTournament);
+router.post('/edit', editTournament);
+module.exports = router;

@@ -1,5 +1,8 @@
+const express = require('express');
+const router = express.Router();
+const auth = require('../middlewares/auth');
 const crypto = require('crypto');
-const { Users, Tokens } = require('../db');
+const Users = require('../models/users');
 
 const registerUser = (req, res, next) => {
   let model = req.body;
@@ -8,57 +11,12 @@ const registerUser = (req, res, next) => {
   hash.update(model.passwordSalt + req.body.password);
   model.passwordHash = hash.digest('hex').slice(40);
 
-  Users.create(model)
+  return Users
+    .create(model)
     .then(user => res.json({}))
     .catch(err => next(err, req, res, null));
-};
-
-const login = (req, res, next) => {
-  let password = req.body.password;
-  Users.findOne({
-    where: {
-      email: req.body.email
-    }
-  }).then(user => {
-    let hash = crypto.createHash('sha256');
-    hash.update(user.passwordSalt + password);
-
-    if (hash.digest('hex').slice(40) === user.passwordHash)
-      return issueToken(user.id, req);
-    else
-      return { authenticated: false };
-  }).then(token => res.send(token))
-    .catch(err => next(err, req, res, null));
-};
-
-const issueToken = (userId, req) => {
-  return Tokens.findOne({
-    where: {
-      userId: userId
-    }
-  }).then(token => {
-    const expires = new Date();
-    expires.setHours(expires.getHours() + 24);
-
-    if (token)
-      return token.update({
-        token: crypto.randomBytes(40).toString('hex').slice(40),
-        expires: expires,
-        issued: req.ip
-      });
-    else
-      return Tokens.create({
-        userId: userId,
-        token: crypto.randomBytes(40).toString('hex').slice(40),
-        expires: expires,
-        issued: req.ip
-      });
-  });
 }
 
-module.exports = {
-  init: (app) => {
-    app.post('/api/users', registerUser);
-    app.post('/api/login', login);
-  }
-}
+router.post('/', registerUser);
+
+module.exports = router;
