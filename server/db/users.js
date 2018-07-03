@@ -1,5 +1,5 @@
 module.exports = (db, Sequelize) => {
-  return db.define('Users', {
+  const Users = db.define('Users', {
     id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
     email: {
       type: Sequelize.STRING,
@@ -20,5 +20,24 @@ module.exports = (db, Sequelize) => {
       allowNull: false,
       values: ['male', 'female']
     }
-  })
+  });
+
+  Users.associate = (models) => {
+    models.Users.hasOne(models.Tokens, {
+      foreignKey: {
+        name: 'userId',
+        allowNull: false
+      }
+    });
+
+    models.Users.hasMany(models.Rankings, {
+      as: 'ranking',
+      foreignKey: {
+        name: 'userId',
+        allowNull: false
+      }
+    });
+  }
+
+  return Users;
 }

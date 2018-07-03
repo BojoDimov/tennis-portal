@@ -1,5 +1,5 @@
 module.exports = (db, Sequelize) => {
-  return db.define('TournamentSchemes', {
+  const TournamentSchemes = db.define('TournamentSchemes', {
     id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
     name: {
       type: Sequelize.STRING,
@@ -85,4 +85,45 @@ module.exports = (db, Sequelize) => {
         }
       }
     });
+
+  TournamentSchemes.associate = (models) => {
+    models.TournamentSchemes.belongsTo(models.TournamentEditions, {
+      foreignKey: {
+        name: 'tournamentEditionId',
+        allowNull: false
+      }
+    });
+
+    models.TournamentSchemes.hasMany(models.SchemeEnrollments, {
+      as: 'enrollments',
+      foreignKey: {
+        name: 'schemeId',
+        allowNull: false
+      }
+    });
+
+    models.TournamentSchemes.hasMany(models.EnrollmentQueues, {
+      as: 'enrollmentsQueue',
+      foreignKey: {
+        name: 'schemeId',
+        allowNull: false
+      }
+    });
+
+    models.TournamentSchemes.hasOne(models.TournamentSchemes, {
+      foreignKey: {
+        name: 'groupPhaseId',
+        allowNull: true
+      }
+    });
+
+    models.TournamentSchemes.hasMany(models.Matches, {
+      foreignKey: {
+        name: 'schemeId',
+        allowNull: false
+      }
+    });
+  }
+
+  return TournamentSchemes;
 }

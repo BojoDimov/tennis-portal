@@ -1,5 +1,25 @@
 module.exports = (db, Sequelize) => {
-  return db.define("SchemeEnrollments", {
+  const SchemeEnrollments = db.define("SchemeEnrollments", {
     id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true }
   });
+
+  SchemeEnrollments.associate = (models) => {
+    models.SchemeEnrollments.belongsTo(models.Users, {
+      foreignKey: {
+        name: 'userId',
+        allowNull: false,
+        unique: 'Enrollments_Scheme_Team_UQ'
+      }
+    });
+
+    models.SchemeEnrollments.belongsTo(models.TournamentSchemes, {
+      foreignKey: {
+        name: 'schemeId',
+        allowNull: false,
+        unique: 'Enrollments_Scheme_Team_UQ'
+      }
+    });
+  }
+
+  return SchemeEnrollments;
 }

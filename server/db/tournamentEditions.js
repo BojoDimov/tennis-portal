@@ -1,22 +1,24 @@
 module.exports = (db, Sequelize) => {
-  return db.define('TournamentEditions', {
-    id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
-    name: {
-      type: Sequelize.STRING,
-      allowNull: false,
-      validate: {
-        notEmpty: true,
+  const TournamentEditions = db
+    .define('TournamentEditions', {
+      id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
+      name: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        validate: {
+          notEmpty: true,
+        }
+      },
+      info: Sequelize.TEXT,
+      startDate: Sequelize.DATEONLY,
+      endDate: Sequelize.DATEONLY,
+      status: {
+        type: Sequelize.ENUM,
+        values: ['draft', 'published', 'inactive'],
+        allowNull: false
       }
     },
-    info: Sequelize.TEXT,
-    startDate: Sequelize.DATEONLY,
-    endDate: Sequelize.DATEONLY,
-    status: {
-      type: Sequelize.ENUM,
-      values: ['draft', 'published', 'inactive'],
-      allowNull: false
-    }
-  }, {
+    {
       validate: {
         startDateEndDate() {
           if (this.startDate > this.endDate)
@@ -24,4 +26,23 @@ module.exports = (db, Sequelize) => {
         }
       }
     });
+
+  TournamentEditions.associate = (models) => {
+    models.TournamentEditions.belongsTo(models.Tournaments, {
+      foreignKey: {
+        name: 'tournamentId',
+        allowNull: false
+      }
+    });
+
+    models.TournamentEditions.hasMany(models.TournamentSchemes, {
+      as: 'schemes',
+      foreignKey: {
+        name: 'tournamentEditionId',
+        allowNull: false
+      }
+    });
+  }
+
+  return TournamentEditions;
 }

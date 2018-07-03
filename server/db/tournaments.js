@@ -1,5 +1,5 @@
 module.exports = (db, Sequelize) => {
-  return db.define('Tournaments', {
+  const Tournaments = db.define('Tournaments', {
     id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
     name: {
       type: Sequelize.STRING,
@@ -15,4 +15,24 @@ module.exports = (db, Sequelize) => {
       allowNull: false
     }
   });
+
+  Tournaments.associate = (models) => {
+    models.Tournaments.hasMany(models.TournamentEditions, {
+      as: 'editions',
+      foreignKey: {
+        name: 'tournamentId',
+        allowNull: false
+      }
+    });
+
+    models.Tournaments.hasMany(models.Rankings, {
+      as: 'ranking',
+      foreignKey: {
+        name: 'tournamentId',
+        allowNull: false
+      }
+    });
+  }
+
+  return Tournaments;
 }

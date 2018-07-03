@@ -1,6 +1,33 @@
 module.exports = (db, Sequelize) => {
-  return db.define("Groups", {
+  const Groups = db.define("Groups", {
     id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
     group: { type: Sequelize.INTEGER, allowNull: false }
-  })
+  });
+
+  Groups.associate = (models) => {
+    models.Groups.hasMany(models.GroupTeams, {
+      as: 'teams',
+      foreignKey: {
+        name: 'groupId',
+        allowNull: true
+      }
+    });
+
+    models.Groups.hasMany(models.Matches, {
+      as: 'matches',
+      foreignKey: {
+        name: 'groupId',
+        allowNull: true
+      }
+    });
+
+    models.Groups.belongsTo(models.TournamentSchemes, {
+      foreignKey: {
+        name: 'schemeId',
+        allowNull: true
+      }
+    });
+  }
+
+  return Groups;
 }
