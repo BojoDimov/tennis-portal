@@ -3,7 +3,7 @@ const {
   SchemeEnrollments, EnrollmentsQueue,
   Matches, Sets, Groups, GroupTeams,
   Users,
-  db } = require('../sequelize.config');
+  db } = require('../db');
 const DrawActions = require('../logic/drawActions');
 const EnrollmentsActions = require('../logic/enrollmentsActions');
 const MatchActions = require('../logic/matchActions');

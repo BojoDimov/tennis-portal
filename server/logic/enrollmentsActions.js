@@ -1,5 +1,5 @@
 module.exports = { _get, _get_queue, _update }
-const { EnrollmentsQueue, SchemeEnrollments } = require('../sequelize.config');
+const { EnrollmentsQueue, SchemeEnrollments } = require('../db');
 
 function _update(db, oldScheme, newScheme) {
   let diff = 0;

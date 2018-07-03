@@ -1,1 +1,1 @@
-require('./sequelize.config').init();
+require('./db').init();

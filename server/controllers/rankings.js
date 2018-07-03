@@ -1,4 +1,4 @@
-const { Rankin } = require('../sequelize.config');
+const { Rankings } = require('../db');
 
 module.exports = {
   init: (app) => {

@@ -1,6 +1,6 @@
 const {
   Groups, GroupTeams, EnrollmentsQueue, SchemeEnrollments, db
-} = require('../sequelize.config');
+} = require('../db');
 
 const MatchActions = require('../logic/matchActions');
 

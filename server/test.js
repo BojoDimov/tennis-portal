@@ -3,7 +3,7 @@ const MatchActions = require('./logic/matchActions');
 const getDrawData = require('./controllers/schemes')._get_draw_data;
 const orderGroups = require('./logic/matchActions').orderGroupByStatistics;
 
-const { TournamentSchemes, db } = require('./sequelize.config');
+const { TournamentSchemes, db } = require('./db');
 
 TournamentSchemes
   .findById(4)

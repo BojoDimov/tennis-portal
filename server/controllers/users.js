@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const { Users, Tokens } = require('../sequelize.config');
+const { Users, Tokens } = require('../db');
 
 const registerUser = (req, res, next) => {
   let model = req.body;

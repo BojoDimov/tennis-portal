@@ -1,4 +1,4 @@
-const { Tournaments, TournamentEditions, TournamentSchemes, Rankings, Users } = require('../sequelize.config');
+const { Tournaments, TournamentEditions, TournamentSchemes, Rankings, Users } = require('../db');
 
 const getAll = (req, res) => {
   Tournaments

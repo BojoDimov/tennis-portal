@@ -5,7 +5,7 @@ var passport = require('passport');
 var HttpBearerStrategy = require('passport-http-bearer').Strategy;
 
 //sequelize models
-let { Logs, Tokens } = require('./sequelize.config');
+let { Logs, Tokens } = require('./db');
 
 passport.use(new HttpBearerStrategy((token, next) => {
   Tokens.findOne({

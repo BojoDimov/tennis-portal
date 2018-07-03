@@ -1,7 +1,7 @@
 const {
   TournamentSchemes,
   Matches, Sets, EnrollmentsQueue, SchemeEnrollments, Users, db
-} = require('../sequelize.config');
+} = require('../db');
 
 const MatchActions = require('../logic/matchActions');
 
