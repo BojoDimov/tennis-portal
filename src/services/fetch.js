@@ -1,4 +1,4 @@
-const backend = 'http://104.199.101.33/api';
+const backend = '/api';
 
 module.exports = {
   post: function (path, data, onSuccess, onError) {
