@@ -1,4 +1,4 @@
-const { SchemeEnrollments, EnrollmentsQueue, TournamentSchemes, Users, Rankings } = require('./db');
+const { SchemeEnrollments, EnrollmentQueues, TournamentSchemes, Users, Rankings } = require('./db');
 let first = ['Петър', 'Мирослав', 'Евлоги', , 'Големан', 'Божидар', 'Даниел', 'Георги', 'Дилян', 'Борислав', 'Виктор', 'Крум', 'Мартин', 'Милен', 'Димитър', 'Симеон', 'Светослав', 'Веселин', 'Калин', 'Кристиан', 'Мариан', 'Богомил', 'Самуил', 'Тодор', 'Дарин', 'Сава', 'Маргарит', ' Пресиял', 'Павел', 'Бойко', 'Ангел', 'Асен', 'Анко', 'Янко', 'Янислав', 'Фотьо', 'Филип', 'Траян', 'Тишо'];
 let last = ['Димитров', 'Чучуров', 'Гусарев', 'Карпузов', 'Георгиев', 'Измирлиев', 'Петров', 'Савов', 'Сомов', 'Томов', 'Тодоров', 'Тонев', 'Пашов', 'Конедарев', 'Молеров', 'Чакалов', 'Бакалов', 'Събев', 'Тоцев', 'Пърлев'];
 
@@ -20,7 +20,7 @@ const registerTeams = (req, res, next) => {
 
       return Promise.all([
         SchemeEnrollments.bulkCreate(e),
-        EnrollmentsQueue.bulkCreate(q)
+        EnrollmentQueues.bulkCreate(q)
       ])
     })
     .then(e => res.json(e));

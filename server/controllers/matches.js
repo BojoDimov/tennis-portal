@@ -1,6 +1,6 @@
 const {
   TournamentSchemes,
-  Matches, Sets, EnrollmentsQueue, SchemeEnrollments, Users, db
+  Matches, Sets, EnrollmentQueues, SchemeEnrollments, Users, db
 } = require('../db');
 
 const MatchActions = require('../logic/matchActions');
@@ -41,7 +41,7 @@ const removeTeam = (req, res, next) => {
             transaction: trn
           });
 
-          let p2 = EnrollmentsQueue.create({ schemeId: match.schemeId, userId: team.id }, { transaction: trn });
+          let p2 = EnrollmentQueues.create({ schemeId: match.schemeId, userId: team.id }, { transaction: trn });
 
           let p3 = match.save({ transaction: trn });
 
@@ -70,7 +70,7 @@ const setTeam = (req, res, next) => {
       else
         match.team2Id = req.query['teamId'];
 
-      let p1 = EnrollmentsQueue.destroy({
+      let p1 = EnrollmentQueues.destroy({
         where: {
           schemeId: match.schemeId,
           userId: req.query['teamId']

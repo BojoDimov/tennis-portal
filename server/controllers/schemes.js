@@ -1,6 +1,6 @@
 const {
   Tournaments, TournamentEditions, TournamentSchemes, Rankings,
-  SchemeEnrollments, EnrollmentsQueue,
+  SchemeEnrollments, EnrollmentQueues,
   Matches, Sets, Groups, GroupTeams,
   Users,
   db } = require('../db');
@@ -65,7 +65,7 @@ const getEnrollments = (req, res) => {
     });
 }
 
-const getEnrollmentsQueue = (req, res) => {
+const getEnrollmentQueues = (req, res) => {
   return TournamentSchemes
     .findById(req.params.id)
     .then(e => EnrollmentsActions._get_queue(db, e.id))
@@ -186,7 +186,7 @@ module.exports = {
     app.get('/api/schemes/:id/publish', publish);
     app.get('/api/schemes/:id/draft', draft);
     app.get('/api/schemes/:id/enrollments', getEnrollments);
-    app.get('/api/schemes/:id/queue', getEnrollmentsQueue);
+    app.get('/api/schemes/:id/queue', getEnrollmentQueues);
     app.get('/api/schemes/:id/draw', draw);
     app.get('/api/schemes/:id/getDraw', getDraw);
     app.get('/api/schemes/:id/finishDraw', finishDraw);

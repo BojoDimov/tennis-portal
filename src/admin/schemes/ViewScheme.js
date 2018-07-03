@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { get } from '../../services/fetch';
 import { Status, ConfirmationButton } from '../Infrastructure';
-import { Enrollments, EnrollmentsQueue } from './Enrollments';
+import { Enrollments, EnrollmentQueues } from './Enrollments';
 import { updateBreadcrumb } from '../../public/Breadcrumb';
 
 export class ViewScheme extends Component {
@@ -144,7 +144,7 @@ export class ViewScheme extends Component {
         </div>
 
         <Enrollments enrollments={this.state.enrollments} />
-        <EnrollmentsQueue queue={this.state.queue} />
+        <EnrollmentQueues queue={this.state.queue} />
       </React.Fragment>
     );
   }

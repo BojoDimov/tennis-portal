@@ -54,7 +54,7 @@ export class Enrollments extends React.Component {
   }
 }
 
-export class EnrollmentsQueue extends React.Component {
+export class EnrollmentQueues extends React.Component {
   constructor(props) {
     super(props);
     this.state = {

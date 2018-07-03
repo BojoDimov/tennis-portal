@@ -103,7 +103,7 @@ module.exports = (db, Sequelize) => {
     });
 
     models.TournamentSchemes.hasMany(models.EnrollmentQueues, {
-      as: 'enrollmentsQueue',
+      as: 'EnrollmentQueues',
       foreignKey: {
         name: 'schemeId',
         allowNull: false

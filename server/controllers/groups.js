@@ -1,5 +1,5 @@
 const {
-  Groups, GroupTeams, EnrollmentsQueue, SchemeEnrollments, db
+  Groups, GroupTeams, EnrollmentQueues, SchemeEnrollments, db
 } = require('../db');
 
 const MatchActions = require('../logic/matchActions');
@@ -23,7 +23,7 @@ const removeTeam = (req, res, next) => {
 
       let p2 = Groups
         .findById(req.params.id)
-        .then(group => MatchActions.transfer(SchemeEnrollments, EnrollmentsQueue, group.schemeId, teamId, trn));
+        .then(group => MatchActions.transfer(SchemeEnrollments, EnrollmentQueues, group.schemeId, teamId, trn));
 
       return Promise.all([p1, p2]);
     })
@@ -44,7 +44,7 @@ const addTeam = (req, res, next) => {
 
       let p2 = Groups
         .findById(req.params.id, { transaction: trn })
-        .then(group => MatchActions.transfer(EnrollmentsQueue, SchemeEnrollments, group.schemeId, teamId, trn));
+        .then(group => MatchActions.transfer(EnrollmentQueues, SchemeEnrollments, group.schemeId, teamId, trn));
 
       return Promise.all([p1, p2]);
     })

@@ -1,5 +1,5 @@
 module.exports = { _get, _get_queue, _update }
-const { EnrollmentsQueue, SchemeEnrollments } = require('../db');
+const { EnrollmentQueues, SchemeEnrollments } = require('../db');
 
 function _update(db, oldScheme, newScheme) {
   let diff = 0;
@@ -29,7 +29,7 @@ function _update(db, oldScheme, newScheme) {
             id: transferred.map(t => t.enrollmentId)
           }
         }),
-        EnrollmentsQueue.bulkCreate(transferred.map(t => {
+        EnrollmentQueues.bulkCreate(transferred.map(t => {
           t.schemeId = oldScheme.id;
           t.userId = t.id;
           t.id = undefined;
@@ -46,7 +46,7 @@ function _update(db, oldScheme, newScheme) {
           t.id = undefined;
           return t;
         })),
-        EnrollmentsQueue.destroy({
+        EnrollmentQueues.destroy({
           where: {
             id: transferred.map(t => t.enrollmentId)
           }
@@ -84,7 +84,7 @@ function _get_queue(db, schemeId) {
       on s."tournamentEditionId" = te.id
       inner join "Tournaments" t
       on te."tournamentId" = t.id
-      inner join "EnrollmentsQueues" e
+      inner join "EnrollmentQueues" e
       on s.id = e."schemeId"
       left join "Rankings" r
       on e."userId" = r."userId" and r."tournamentId" = t.id

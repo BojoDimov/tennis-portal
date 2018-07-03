@@ -8,7 +8,7 @@ module.exports = (db, Sequelize) => {
       foreignKey: {
         name: 'userId',
         allowNull: false,
-        unique: 'EnrollmentsQueues_Scheme_Team_UQ'
+        unique: 'EnrollmentQueuess_Scheme_Team_UQ'
       }
     });
 
@@ -16,7 +16,7 @@ module.exports = (db, Sequelize) => {
       foreignKey: {
         name: 'schemeId',
         allowNull: false,
-        unique: 'EnrollmentsQueues_Scheme_Team_UQ'
+        unique: 'EnrollmentQueuess_Scheme_Team_UQ'
       }
     });
   }
