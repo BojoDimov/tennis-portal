@@ -1,14 +1,14 @@
 const DrawActions = require('./logic/drawActions');
 const MatchActions = require('./logic/matchActions');
 const getDrawData = require('./controllers/schemes')._get_draw_data;
-const orderGroups = require('./logic/matchActions').orderGroupByStatistics;
+const Groups = require('./models/groups');
 
 const { TournamentSchemes, db } = require('./db');
 
 TournamentSchemes
   .findById(4)
   .then(scheme => getDrawData(scheme, null, false))
-  .then(draw => draw.data.map(group => orderGroups(group)))
+  .then(draw => draw.data.map(group => Groups.orderByStatistics(group)))
   .then(groups => groups.map(group => {
     return {
       team1: group.teams[0],

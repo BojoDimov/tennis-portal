@@ -1,12 +1,13 @@
 const {
   Tournaments, TournamentEditions, TournamentSchemes, Rankings,
   SchemeEnrollments, EnrollmentQueues,
-  Matches, Sets, Groups, GroupTeams,
+  Sets, GroupTeams,
   Users,
   db } = require('../db');
 const DrawActions = require('../logic/drawActions');
 const EnrollmentsActions = require('../logic/enrollmentsActions');
-const MatchActions = require('../logic/matchActions');
+const Groups = require('../models/groups');
+const Matches = require('../models/matches');
 
 const getAll = (req, res) => {
   return TournamentSchemes
@@ -144,11 +145,11 @@ const finishDraw = (req, res, next) => {
         })
         .then(e => {
           if (e.schemeType == 'elimination')
-            return MatchActions.generatePoints(scheme, e.data, true);
+            return Matches.generatePoints(scheme, e.data, true);
           else {
             let matches = [];
             e.data.forEach(group => matches = matches.concat(group.matches));
-            return MatchActions.generatePoints(scheme, matches, false);
+            return Matches.generatePoints(scheme, matches, false);
           }
         })
         .then(points => {
@@ -224,7 +225,7 @@ function _get_draw_data(scheme, transaction, format = true) {
           schemeType: scheme.schemeType,
           data: matches.map(match => {
             if (format)
-              match.sets = match.sets.map(MatchActions.formatSet);
+              match.sets = match.sets.map(Matches.formatSet);
             return match;
           }),
           isDrawn: matches.length > 0
@@ -265,7 +266,7 @@ function _get_draw_data(scheme, transaction, format = true) {
         groups.forEach(group => {
           group.matches.forEach(match => {
             if (format)
-              match.sets = match.sets.map(MatchActions.formatSet);
+              match.sets = match.sets.map(Matches.formatSet);
           });
         });
 

@@ -1,16 +1,22 @@
+const express = require('express');
+const router = express.Router();
 const {
   TournamentSchemes,
-  Matches, Sets, EnrollmentQueues, SchemeEnrollments, Users, db
+  Sets,
+  EnrollmentQueues,
+  SchemeEnrollments,
+  Users,
+  sequelize
 } = require('../db');
+const Matches = require('../models/matches');
 
-const MatchActions = require('../logic/matchActions');
 
 const removeTeam = (req, res, next) => {
   let pos = parseInt(req.query['pos']);
   if (!pos || (pos != 1 && pos != 2))
     res.status(400).send();
 
-  return db
+  return sequelize
     .transaction(function (trn) {
       return Matches
         .findById(req.params.id, {
@@ -87,15 +93,15 @@ const setTeam = (req, res, next) => {
     .catch(err => next(err, req, res, null));
 }
 
-const addResult = (req, res, next) => {
+const update = (req, res, next) => {
   let withdraw = req.body.withdraw;
   let matchId = req.params.id;
   let sets = req.body.sets;
   sets.forEach(set => set.matchId = matchId);
 
-  return db
+  return sequelize
     .transaction(function (trn) {
-      return manageSets(sets, trn)
+      return Matches.manageSets(sets, trn)
         .then(() => Matches
           .findById(matchId, {
             include: [
@@ -113,7 +119,7 @@ const addResult = (req, res, next) => {
           }))
         .then(match => {
           if (match.scheme.schemeType == 'elimination')
-            return manageNextMatch(match, trn);
+            return Matches.manageNextMatch(match, trn);
           else return Promise.resolve(match);
         });
     })
@@ -121,99 +127,27 @@ const addResult = (req, res, next) => {
     .catch(err => next(err, req, res, null));
 }
 
-const createMatch = (req, res, next) => {
+const create = (req, res, next) => {
   let match = req.body;
   match.sets = match.sets.filter((set) => (set.team1 || set.team2));
-  match.sets = match.sets.map(MatchActions.parseSet);
+  match.sets = match.sets.map(Matches.parseSet);
 
-  return db
+  return sequelize
     .transaction(function (trn) {
-      return Matches.create(match, {
-        include: [
-          { model: Sets, as: 'sets' }
-        ],
-        transaction: trn
-      })
+      return Matches
+        .create(match, {
+          include: [
+            { model: Sets, as: 'sets' }
+          ],
+          transaction: trn
+        })
     })
     .then(e => res.json(e))
     .catch(err => next(err, req, res, null));
 }
 
-function manageNextMatch(match, transaction) {
-  let winner = MatchActions.getWinner(match);
-  if (!winner)
-    return Promise.resolve();
-
-  return Matches
-    .findOrCreate({
-      where: {
-        round: match.round + 1,
-        match: Math.ceil(match.match / 2),
-        schemeId: match.schemeId
-      },
-      transaction: transaction
-    })
-    .then(([nextMatch, _]) => {
-      if (match.match % 2 == 0)
-        nextMatch.team2Id = winner;
-      else
-        nextMatch.team1Id = winner;
-
-      return nextMatch.save({ transaction: transaction });
-    });
-}
-
-function manageSets(sets, transaction) {
-  //has id but scores are removed => DELETED
-  let deleted = sets.filter(set => set.id && !set.team1 && !set.team2);
-  //filter empty sets
-  sets = sets.filter((set) => (set.team1 || set.team2));
-  //parse score inputs
-  sets = sets.map(MatchActions.parseSet);
-
-  //has id => UPDATED
-  let updated = sets.filter(set => set.id);
-
-  //doesn't have id => CREATED
-  let created = sets.filter(set => !set.id);
-
-  //create sets
-  let p1 = Sets.bulkCreate(created, { transaction: transaction });
-
-  //update set results
-  let p2 = Sets
-    .findAll({
-      where: {
-        id: updated.map(set => set.id)
-      },
-      transaction: transaction
-    })
-    .then(sets => {
-      return Promise.all(
-        sets.map(
-          set => set.update(
-            updated.find(e => e.id == set.id), { transaction: transaction })
-        )
-      );
-    });
-
-  //remove sets
-  let p3 = Sets
-    .destroy({
-      where: {
-        id: deleted.map(set => set.id)
-      },
-      transaction: transaction
-    });
-
-  return Promise.all([p1, p2, p3]);
-}
-
-module.exports = {
-  init: (app) => {
-    app.get('/api/matches/:id/removeTeam', removeTeam);
-    app.get('/api/matches/:id/setTeam', setTeam);
-    app.post('/api/matches/:id/addResult', addResult);
-    app.post('/api/matches/create', createMatch);
-  }
-};
+router.get('/:id/removeTeam', removeTeam);
+router.get('/:id/setTeam');
+router.post('/', create);
+router.post('/:id', update);
+module.exports = router;

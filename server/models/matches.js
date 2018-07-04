@@ -1,11 +1,76 @@
-module.exports = {
-  getWinner, getMatchStatistics, parseSet, formatSet, generatePoints, transfer, orderGroupByStatistics
-};
+const { Matches } = require('../db');
 
-/** 
-* Returns the winner teamId based on the match.sets and match.withdraw
-*/
-function getWinner(match) {
+Matches.manageNextMatch = function (match, transaction) {
+  let winner = Matches.getWinner(match);
+  if (!winner)
+    return Promise.resolve();
+
+  return Matches
+    .findOrCreate({
+      where: {
+        round: match.round + 1,
+        match: Math.ceil(match.match / 2),
+        schemeId: match.schemeId
+      },
+      transaction: transaction
+    })
+    .then(([nextMatch, _]) => {
+      if (match.match % 2 == 0)
+        nextMatch.team2Id = winner;
+      else
+        nextMatch.team1Id = winner;
+
+      return nextMatch.save({ transaction: transaction });
+    });
+}
+
+Matches.manageSets = function (sets, transaction) {
+  //has id but scores are removed => DELETED
+  let deleted = sets.filter(set => set.id && !set.team1 && !set.team2);
+  //filter empty sets
+  sets = sets.filter((set) => (set.team1 || set.team2));
+  //parse score inputs
+  sets = sets.map(Matches.parseSet);
+
+  //has id => UPDATED
+  let updated = sets.filter(set => set.id);
+
+  //doesn't have id => CREATED
+  let created = sets.filter(set => !set.id);
+
+  //create sets
+  let p1 = Sets.bulkCreate(created, { transaction: transaction });
+
+  //update set results
+  let p2 = Sets
+    .findAll({
+      where: {
+        id: updated.map(set => set.id)
+      },
+      transaction: transaction
+    })
+    .then(sets => {
+      return Promise.all(
+        sets.map(
+          set => set.update(
+            updated.find(e => e.id == set.id), { transaction: transaction })
+        )
+      );
+    });
+
+  //remove sets
+  let p3 = Sets
+    .destroy({
+      where: {
+        id: deleted.map(set => set.id)
+      },
+      transaction: transaction
+    });
+
+  return Promise.all([p1, p2, p3]);
+}
+
+Matches.getWinner = function (match) {
   let winner = null;
 
   if (match.withdraw == 1)
@@ -20,7 +85,7 @@ function getWinner(match) {
   return winner;
 }
 
-function getMatchStatistics(match, teamId) {
+Matches.getMatchStatistics = function (match, teamId) {
   let ourTeam = match.team1Id == teamId ? 'team1' : 'team2';
   let oppositeTeam = match.team1Id == teamId ? 'team2' : 'team1';
 
@@ -29,43 +94,11 @@ function getMatchStatistics(match, teamId) {
     setsWon: match.sets.reduce((acc, next) => (next[ourTeam] > next[oppositeTeam] ? acc + 1 : acc), 0),
     games: match.sets.reduce((acc, next) => acc + next.team1 + next.team2, 0),
     gamesWon: match.sets.reduce((acc, next) => (next[ourTeam] > next[oppositeTeam] ? acc + next[ourTeam] : acc), 0),
-    isWinner: getWinner(match) == teamId
+    isWinner: Matches.getWinner(match) == teamId
   }
 }
 
-/**
- * Order by wins, setsScore, gamesScore 
- */
-function orderGroupByStatistics(group) {
-  group.teams = group.teams.map(team => {
-    let statistics = group.matches.filter(match => match.team1Id == team.teamId
-      || match.team2Id == team.teamId)
-      .map(match => getMatchStatistics(match, team.teamId));
-
-    team.wins = statistics.filter(s => s.isWinner).length;
-    team.totalSets = statistics.reduce((acc, next) => acc + next.sets, 0);
-    team.totalSetsWon = statistics.reduce((acc, next) => acc + next.setsWon, 0);
-    team.totalGames = statistics.reduce((acc, next) => acc + next.games, 0);
-    team.totalGamesWon = statistics.reduce((acc, next) => acc + next.gamesWon, 0);
-    team.setsScore = (team.totalSets != 0 ? team.totalSetsWon / team.totalSets : 0);
-    team.gamesScore = (team.totalGames != 0 ? team.totalGamesWon / team.totalGames : 0);
-
-    return team;
-  });
-
-  group.teams.sort((t1, t2) => {
-    if (t1.wins == t2.wins) {
-      if (t1.setsScore == t2.setsScore)
-        return t2.gamesScore - t1.gamesScore;
-      else
-        return t2.setsScore - t1.setsScore;
-    }
-    else return t2.wins - t1.wins;
-  });
-  return group;
-}
-
-function parseSet(set) {
+Matches.parseSet = function (set) {
   const scoreParser = /^(\d+)(\(\d+\))*$/;
 
   if (!set.team1 || !set.team2)
@@ -88,7 +121,7 @@ function parseSet(set) {
   return set;
 }
 
-function formatSet(set) {
+Matches.formatSet = function (set) {
   if (!set.tiebreaker)
     return set;
 
@@ -102,8 +135,9 @@ function formatSet(set) {
 
 /**
  * Transfer team between SchemeEnrollments and EnrollmentQueues
+ * extract this to Teams.transfer
  */
-function transfer(from, to, schemeId, teamId, transaction) {
+Matches.transfer = function (from, to, schemeId, teamId, transaction) {
   return Promise.all([
     from.destroy({
       where: {
@@ -124,7 +158,7 @@ function transfer(from, to, schemeId, teamId, transaction) {
  * Matches should be ordered ascending: tournament final should be last.
  * Team1, team2, sets should be included
  */
-function generatePoints(scheme, matches, hasWinner) {
+Matches.generatePoints = function (scheme, matches, hasWinner) {
   let teamPoints = [];
   matches.forEach(match => {
     if (!teamPoints[match.team1Id])
@@ -134,7 +168,7 @@ function generatePoints(scheme, matches, hasWinner) {
   });
 
   matches.forEach(match => {
-    let winner = getWinner(match);
+    let winner = Matches.getWinner(match);
     teamPoints[winner] += scheme.wPoints;
   });
 

@@ -1,13 +1,18 @@
+const express = require('express');
+const router = express.Router();
 const {
-  Groups, GroupTeams, EnrollmentQueues, SchemeEnrollments, db
+  Groups,
+  GroupTeams,
+  EnrollmentQueues,
+  SchemeEnrollments,
+  sequelize
 } = require('../db');
-
-const MatchActions = require('../logic/matchActions');
+const Matches = require('../models/matches');
 
 const removeTeam = (req, res, next) => {
   let teamId = req.query.teamId;
 
-  return db
+  return sequelize
     .transaction(function (trn) {
       let p1 = GroupTeams
         .findOne({
@@ -23,7 +28,7 @@ const removeTeam = (req, res, next) => {
 
       let p2 = Groups
         .findById(req.params.id)
-        .then(group => MatchActions.transfer(SchemeEnrollments, EnrollmentQueues, group.schemeId, teamId, trn));
+        .then(group => Matches.transfer(SchemeEnrollments, EnrollmentQueues, group.schemeId, teamId, trn));
 
       return Promise.all([p1, p2]);
     })
@@ -33,7 +38,7 @@ const removeTeam = (req, res, next) => {
 
 const addTeam = (req, res, next) => {
   let teamId = parseInt(req.query['teamId']);
-  return db
+  return sequelize
     .transaction(function (trn) {
       let p1 = GroupTeams
         .findById(req.query.groupTeamId, { transaction: trn })
@@ -44,7 +49,7 @@ const addTeam = (req, res, next) => {
 
       let p2 = Groups
         .findById(req.params.id, { transaction: trn })
-        .then(group => MatchActions.transfer(EnrollmentQueues, SchemeEnrollments, group.schemeId, teamId, trn));
+        .then(group => Matches.transfer(EnrollmentQueues, SchemeEnrollments, group.schemeId, teamId, trn));
 
       return Promise.all([p1, p2]);
     })
@@ -52,9 +57,6 @@ const addTeam = (req, res, next) => {
     .catch(err => next(err, req, res, null));
 }
 
-module.exports = {
-  init: (app) => {
-    app.get('/api/groups/:id/removeTeam', removeTeam);
-    app.get('/api/groups/:id/addTeam', addTeam);
-  }
-}
+router.get('/:id/removeTeam', removeTeam);
+router.get('/:id/addTeam', addTeam);
+module.exports = router;

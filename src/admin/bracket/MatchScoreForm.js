@@ -54,14 +54,13 @@ export class MatchScoreForm extends React.Component {
 
   saveMatch() {
     if (this.props.match.id)
-      return post(`/matches/${this.props.match.id}/addResult`, { sets: this.state.sets, withdraw: this.state.withdraw })
+      return post(`/matches/${this.props.match.id}`, { sets: this.state.sets, withdraw: this.state.withdraw })
         .then((res) => this.props.onChange(res));
     else {
-      console.log('detected new match, creating instead of update')
       let match = this.props.match;
       match.withdraw = this.state.withdraw;
       match.sets = this.state.sets;
-      return post(`/matches/create`, match)
+      return post(`/matches`, match)
         .then((res) => this.props.onChange(res));
     }
   }

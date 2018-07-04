@@ -1,12 +1,18 @@
-const { Tournaments, TournamentEditions, TournamentSchemes } = require('../db');
+const express = require('express');
+const router = express.Router();
+const {
+  Tournaments,
+  TournamentEditions,
+  TournamentSchemes
+} = require('../db');
 
-const getAll = (req, res) => {
-  TournamentEditions
+const find = (req, res) => {
+  return TournamentEditions
     .findAll()
-    .then(editions => res.send(editions));
+    .then(editions => res.json(editions));
 };
 
-const getEditions = (req, res) => {
+const get = (req, res) => {
   return TournamentEditions
     .findById(req.params.id, {
       include: [
@@ -17,15 +23,16 @@ const getEditions = (req, res) => {
     .then(e => res.json(e));
 };
 
-const createEdition = (req, res, next) => {
+const create = (req, res, next) => {
   let model = req.body;
   model.status = 'draft';
-  let edition = TournamentEditions.create(model)
+  return TournamentEditions
+    .create(model)
     .then(e => res.json(e))
     .catch(err => next(err, req, res, null));
 };
 
-const editEdition = (req, res, next) => {
+const edit = (req, res, next) => {
   return TournamentEditions
     .findById(req.body.id)
     .then(e => e.update(req.body))
@@ -34,29 +41,25 @@ const editEdition = (req, res, next) => {
 };
 
 const publish = (req, res) => {
-  setStatus(req.params.id, 'published')
-    .then(() => res.json({}));
+  return setStatus(req.params.id, 'published')
+    .then((e) => res.json(e));
 }
 
 const draft = (req, res) => {
-  setStatus(req.params.id, 'draft')
-    .then(() => res.json({}));
+  return setStatus(req.params.id, 'draft')
+    .then((e) => res.json(e));
 }
 
-function setStatus(id, status) {
+const setStatus = (id, status) => {
   return TournamentEditions
     .findById(id)
     .then(edition => edition.update({ status: status }));
 }
 
-module.exports = {
-  init: (app) => {
-    app.get('/api/editions', getAll);
-    app.get('/api/editions/:id', getEditions);
-    app.post('/api/editions', createEdition);
-    app.post('/api/editions/edit/', editEdition);
-    app.get('/api/editions/:id/publish', publish);
-    app.get('/api/editions/:id/draft', draft);
-  }
-};
-
+router.get('/', find);
+router.get('/:id', get);
+router.get('/publish', publish);
+router.get('/draft', draft);
+router.post('/', create);
+router.post('/edit', edit);
+module.exports = router;
