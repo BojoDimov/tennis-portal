@@ -20,12 +20,12 @@ export class SchemesPreview extends React.Component {
   }
 
   selectScheme(index) {
-    return get(`/schemes/${this.props.schemes[index].id}/getDraw`)
+    return get(`/schemes/${this.props.schemes[index].id}/draws`)
       .then(draw => this.setState({ active: index, draw: draw }));
   }
 
   finishDraw() {
-    return get(`/schemes/${this.props.schemes[this.state.active].id}/finishDraw`);
+    return get(`/schemes/${this.props.schemes[this.state.active].id}/draws/finalize`);
   }
 
   render() {

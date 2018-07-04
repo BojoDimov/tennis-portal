@@ -1,5 +1,5 @@
 import React from 'react';
-import { get } from '../../services/fetch';
+import { post } from '../../services/fetch';
 
 export class BracketDrawForm extends React.Component {
   constructor(props) {
@@ -9,7 +9,7 @@ export class BracketDrawForm extends React.Component {
     }
   }
   draw() {
-    get(`/schemes/${this.props.draw.schemeId}/draw?seed=${this.state.seed}`)
+    post(`/schemes/${this.props.draw.schemeId}/draws`, { seed: this.state.seed })
       .then(draw => this.props.onChange(draw));
   }
 
