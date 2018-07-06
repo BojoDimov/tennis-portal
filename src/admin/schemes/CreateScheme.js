@@ -136,7 +136,11 @@ export class CreateScheme extends Component {
         {this.state.schemeType == 'elimination' && this.state.hasGroupPhase ?
           <div className="input-group">
             <div>Групова фаза</div>
-            <Select url="/schemes" onChange={(e) => this.setState({ groupPhaseId: e.target.value })} />
+            <Select value={this.state.groupPhaseId ? this.state.groupPhaseId : 0}
+              url="/schemes?schemeType=round-robin"
+              onChange={scheme => this.setState({ groupPhaseId: scheme ? scheme.id : 0 })}>
+              <option value={0}>-няма-</option>
+            </Select>
             <div className="error">{this.state.errors.groupPhase ? '*Задължително поле' : null}</div>
           </div> : null}
 

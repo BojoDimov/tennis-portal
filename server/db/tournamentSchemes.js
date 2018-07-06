@@ -1,4 +1,7 @@
 module.exports = (db, Sequelize) => {
+  const ELIMINATION = 'elimination';
+  const GROUP = 'round-robin';
+
   const TournamentSchemes = db.define('TournamentSchemes', {
     id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
     name: {
@@ -39,7 +42,7 @@ module.exports = (db, Sequelize) => {
     },
     schemeType: {
       type: Sequelize.ENUM,
-      values: ['elimination', 'round-robin'],
+      values: [ELIMINATION, GROUP],
       allowNull: false
     },
     pPoints: { type: Sequelize.INTEGER, default: 0, allowNull: false },
@@ -68,15 +71,15 @@ module.exports = (db, Sequelize) => {
             throw new Error('');
         },
         eTeamCount() {
-          if (this.schemeType == 'elimination' && !this.maxPlayerCount)
+          if (this.schemeType == ELIMINATION && !this.maxPlayerCount)
             throw new Error();
         },
         gCount() {
-          if (this.schemeType == 'round-robin' && !this.groupCount)
+          if (this.schemeType == GROUP && !this.groupCount)
             throw new Error();
         },
         rrTeamCount() {
-          if (this.schemeType == 'round-robin' && !this.teamsPerGroup)
+          if (this.schemeType == GROUP && !this.teamsPerGroup)
             throw new Error();
         },
         groupPhase() {
@@ -85,6 +88,9 @@ module.exports = (db, Sequelize) => {
         }
       }
     });
+
+  TournamentSchemes.ELIMINATION = ELIMINATION;
+  TournamentSchemes.GROUP = GROUP;
 
   TournamentSchemes.associate = (models) => {
     models.TournamentSchemes.belongsTo(models.TournamentEditions, {

@@ -8,6 +8,8 @@ app.use(cors());
 app.use(express.json());
 app.use('/', express.static('build'));
 
+app.use('/diagnostics', require('./diagnostics'));
+
 app.use('/api/login', require('./controllers/login'))
 app.use('/api/users', require('./controllers/users'));
 app.use('/api/tournaments', auth, require('./controllers/tournaments'));

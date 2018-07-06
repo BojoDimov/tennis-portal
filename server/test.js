@@ -6,7 +6,7 @@ const { TournamentSchemes, db } = require('./db');
 
 TournamentSchemes
   .findById(4)
-  .then(scheme => Draws.getDrawData(scheme, null, false))
+  .then(scheme => Draws.get(scheme, null, false))
   .then(draw => draw.data.map(group => Groups.orderByStatistics(group)))
   .then(groups => groups.map(group => {
     return {

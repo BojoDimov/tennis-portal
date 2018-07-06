@@ -1,19 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const {
-  Tournaments, TournamentEditions, TournamentSchemes, Rankings,
-  SchemeEnrollments, EnrollmentQueues,
-  Sets, GroupTeams,
-  Users,
-  db } = require('../db');
-const DrawActions = require('../logic/drawActions');
-const EnrollmentsActions = require('../logic/enrollmentsActions');
-const Groups = require('../models/groups');
-const Matches = require('../models/matches');
+  Tournaments, TournamentEditions, TournamentSchemes,
+  Enrollments, Groups, Matches, Draws
+} = require('../models');
 
 const find = (req, res) => {
   return TournamentSchemes
-    .findAll()
+    .findAll({
+      where: req.query
+    })
     .then(schemes => res.json(schemes));
 };
 
@@ -43,9 +39,9 @@ const create = (req, res, next) => {
 const edit = (req, res, next) => {
   return TournamentSchemes
     .findById(req.body.id)
-    .then(e => EnrollmentsActions._update(db, e, req.body))
-    .then(e => e.update(req.body))
-    .then(e => res.json(e))
+    .then(oldScheme => Enrollments.update(oldScheme, req.body))
+    .then(oldScheme => oldScheme.update(req.body))
+    .then(newScheme => res.json(newScheme))
     .catch(err => next(err, req, res, null));
 };
 
@@ -62,19 +58,31 @@ const draft = (req, res) => {
 const getEnrollments = (req, res) => {
   return TournamentSchemes
     .findById(req.params.id)
-    .then(e => EnrollmentsActions._get(db, e.id))
-    .then(e => {
-      return res.json(e);
-    });
+    .then(scheme => Enrollments.get(scheme.id))
+    .then(e => res.json(e));
 }
 
 const getEnrollmentQueues = (req, res) => {
   return TournamentSchemes
     .findById(req.params.id)
-    .then(e => EnrollmentsActions._get_queue(db, e.id))
-    .then(e => {
-      return res.json(e);
-    });
+    .then(scheme => Enrollments.getQueue(scheme.id))
+    .then(e => res.json(e));
+}
+
+const attachScheme = (req, res, next) => {
+  TournamentSchemes
+    .findById(req.params.id, {
+      include: [
+        {
+          model: TournamentEditions,
+          include: [
+            { model: Tournaments }
+          ]
+        }
+      ]
+    })
+    .then(scheme => req.scheme = scheme)
+    .then(() => next());
 }
 
 function setStatus(id, status) {
@@ -91,5 +99,5 @@ router.get('/:id/publish', publish);
 router.get('/:id/draft', draft);
 router.get('/:id/enrollments', getEnrollments);
 router.get('/:id/queue', getEnrollmentQueues);
-router.use('/draws', require('./draws'));
+router.use('/:id/draws', attachScheme, require('./draws'));
 module.exports = router;

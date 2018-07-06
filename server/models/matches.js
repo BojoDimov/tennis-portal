@@ -1,4 +1,4 @@
-const { Matches } = require('../db');
+const { Matches, Sets } = require('../db');
 
 Matches.manageNextMatch = function (match, transaction) {
   let winner = Matches.getWinner(match);
@@ -134,26 +134,6 @@ Matches.formatSet = function (set) {
 }
 
 /**
- * Transfer team between SchemeEnrollments and EnrollmentQueues
- * extract this to Teams.transfer
- */
-Matches.transfer = function (from, to, schemeId, teamId, transaction) {
-  return Promise.all([
-    from.destroy({
-      where: {
-        schemeId: schemeId,
-        userId: teamId
-      },
-      transaction: transaction
-    }),
-    to.create({
-      schemeId: schemeId,
-      userId: teamId
-    }, { transaction: transaction })
-  ]);
-}
-
-/**
  * Function to generate points for tournament "Rankings".
  * Matches should be ordered ascending: tournament final should be last.
  * Team1, team2, sets should be included
@@ -177,3 +157,5 @@ Matches.generatePoints = function (scheme, matches, hasWinner) {
     teamPoints[matches[matches.length - 1].team1Id] += scheme.cPoints;
   return teamPoints
 }
+
+module.exports = Matches;

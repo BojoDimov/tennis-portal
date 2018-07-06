@@ -58,8 +58,8 @@ const setStatus = (id, status) => {
 
 router.get('/', find);
 router.get('/:id', get);
-router.get('/publish', publish);
-router.get('/draft', draft);
+router.get('/:id/publish', publish);
+router.get('/:id/draft', draft);
 router.post('/', create);
 router.post('/edit', edit);
 module.exports = router;

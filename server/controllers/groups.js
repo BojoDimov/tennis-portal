@@ -1,13 +1,12 @@
 const express = require('express');
 const router = express.Router();
+const { sequelize } = require('../db');
 const {
   Groups,
   GroupTeams,
-  EnrollmentQueues,
-  SchemeEnrollments,
-  sequelize
-} = require('../db');
-const Matches = require('../models/matches');
+  Matches,
+  Enrollments
+} = require('../models');
 
 const removeTeam = (req, res, next) => {
   let teamId = req.query.teamId;
@@ -28,7 +27,7 @@ const removeTeam = (req, res, next) => {
 
       let p2 = Groups
         .findById(req.params.id)
-        .then(group => Matches.transfer(SchemeEnrollments, EnrollmentQueues, group.schemeId, teamId, trn));
+        .then(group => Enrollments.enqueue(group.schemeId, teamId, trn));
 
       return Promise.all([p1, p2]);
     })
@@ -49,7 +48,7 @@ const addTeam = (req, res, next) => {
 
       let p2 = Groups
         .findById(req.params.id, { transaction: trn })
-        .then(group => Matches.transfer(EnrollmentQueues, SchemeEnrollments, group.schemeId, teamId, trn));
+        .then(group => Enrollments.dequeue(group.schemeId, teamId, trn));
 
       return Promise.all([p1, p2]);
     })

@@ -1,15 +1,13 @@
 const express = require('express');
 const router = express.Router();
+const { sequelize } = require('../db');
 const {
   TournamentSchemes,
   Sets,
-  EnrollmentQueues,
-  SchemeEnrollments,
   Users,
-  sequelize
-} = require('../db');
-const Matches = require('../models/matches');
-
+  Matches,
+  Enrollments
+} = require('../models');
 
 const removeTeam = (req, res, next) => {
   let pos = parseInt(req.query['pos']);
@@ -39,19 +37,10 @@ const removeTeam = (req, res, next) => {
             match.seed2 = null;
           }
 
-          let p1 = SchemeEnrollments.destroy({
-            where: {
-              schemeId: match.schemeId,
-              userId: team.id
-            },
-            transaction: trn
-          });
-
-          let p2 = EnrollmentQueues.create({ schemeId: match.schemeId, userId: team.id }, { transaction: trn });
-
-          let p3 = match.save({ transaction: trn });
-
-          return Promise.all([p1, p2, p3]);
+          return Promise.all([
+            Enrollments.enqueue(match.schemeId, team.id, trn),
+            match.save({ transaction: trn })
+          ]);
         });
     })
     .then(e => res.json(e))
@@ -59,35 +48,31 @@ const removeTeam = (req, res, next) => {
 }
 
 const setTeam = (req, res, next) => {
+  let teamId = req.query['teamId'];
   let pos = parseInt(req.query['pos']);
   if (!pos || (pos != 1 && pos != 2))
     res.status(400).send();
 
-  return Matches
-    .findById(req.params.id, {
-      include: [
-        { model: Users, as: 'team1', attributes: ['id', 'fullname'] },
-        { model: Users, as: 'team2', attributes: ['id', 'fullname'] }
-      ]
-    })
-    .then(match => {
-      if (pos == 1)
-        match.team1Id = req.query['teamId'];
-      else
-        match.team2Id = req.query['teamId'];
+  return sequelize
+    .transaction(function (trn) {
+      return Matches
+        .findById(req.params.id, {
+          include: [
+            { model: Users, as: 'team1', attributes: ['id', 'fullname'] },
+            { model: Users, as: 'team2', attributes: ['id', 'fullname'] }
+          ]
+        })
+        .then(match => {
+          if (pos == 1)
+            match.team1Id = teamId;
+          else
+            match.team2Id = teamId;
 
-      let p1 = EnrollmentQueues.destroy({
-        where: {
-          schemeId: match.schemeId,
-          userId: req.query['teamId']
-        }
-      });
-
-      let p2 = SchemeEnrollments.create({ schemeId: match.schemeId, userId: req.query['teamId'] });
-
-      let p3 = match.save();
-
-      return Promise.all([p1, p2, p3]);
+          return Promise.all([
+            Enrollments.dequeue(match.schemeId, teamId, trn),
+            match.save({ transaction: trn })
+          ]);
+        });
     })
     .then(e => res.json(e))
     .catch(err => next(err, req, res, null));
