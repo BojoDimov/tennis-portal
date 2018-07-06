@@ -1,3 +1,6 @@
+const express = require('express');
+const router = express.Router();
+
 const { SchemeEnrollments, EnrollmentQueues, TournamentSchemes, Users, Rankings } = require('./db');
 let first = ['Петър', 'Мирослав', 'Евлоги', , 'Големан', 'Божидар', 'Даниел', 'Георги', 'Дилян', 'Борислав', 'Виктор', 'Крум', 'Мартин', 'Милен', 'Димитър', 'Симеон', 'Светослав', 'Веселин', 'Калин', 'Кристиан', 'Мариан', 'Богомил', 'Самуил', 'Тодор', 'Дарин', 'Сава', 'Маргарит', ' Пресиял', 'Павел', 'Бойко', 'Ангел', 'Асен', 'Анко', 'Янко', 'Янислав', 'Фотьо', 'Филип', 'Траян', 'Тишо'];
 let last = ['Димитров', 'Чучуров', 'Гусарев', 'Карпузов', 'Георгиев', 'Измирлиев', 'Петров', 'Савов', 'Сомов', 'Томов', 'Тодоров', 'Тонев', 'Пашов', 'Конедарев', 'Молеров', 'Чакалов', 'Бакалов', 'Събев', 'Тоцев', 'Пърлев'];
@@ -47,7 +50,7 @@ const createUsers = (req, res, next) => {
       fullname: first[i] + " " + last[j],
       passwordHash: "asdasdasd",
       passwordSalt: "sadsadasd",
-      age: 23,
+      birthDate: new Date(),
       telephone: "1312312",
       gender: "male"
     })
@@ -77,10 +80,8 @@ const createRanking = (req, res) => {
     .then(e => res.json(e));
 }
 
-module.exports = {
-  init: (app) => {
-    app.get('/diagnostics/createEnrollments', registerTeams);
-    app.get('/diagnostics/createUsers', createUsers);
-    app.get('/diagnostics/createRankings', createRanking);
-  }
-};
+router.get('/createUsers', createUsers);
+router.get('/createRanking', createRanking);
+router.get('/createEnrollments', registerTeams);
+
+module.exports = router;
