@@ -26,11 +26,13 @@ function get(scheme, transaction, format = true) {
         return {
           schemeId: scheme.id,
           schemeType: scheme.schemeType,
+          status: scheme.status,
           data: matches.map(match => {
             if (format)
               match.sets = match.sets.map(Matches.formatSet);
             return match;
           }),
+          isLinked: scheme.groupPhaseId != null,
           isDrawn: matches.length > 0
         }
       });
@@ -76,6 +78,7 @@ function get(scheme, transaction, format = true) {
         return {
           schemeId: scheme.id,
           schemeType: scheme.schemeType,
+          status: scheme.status,
           data: groups,
           isDrawn: groups.length > 0
         }

@@ -1,5 +1,6 @@
 import React from 'react';
 import { post } from '../../services/fetch';
+import { Status } from '../../enums';
 
 export class BracketDrawForm extends React.Component {
   constructor(props) {
@@ -14,7 +15,8 @@ export class BracketDrawForm extends React.Component {
   }
 
   render() {
-    if (this.props.draw && !this.props.draw.isDrawn)
+    console.log(this.props.draw, Status);
+    if (this.props.draw && !this.props.draw.isDrawn && !this.props.draw.isLinked && this.props.draw.status === Status.PUBLISHED)
       return (
         <div>
           <div className="input-group"><i>Схемата не е изтеглена</i></div>

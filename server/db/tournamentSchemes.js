@@ -37,7 +37,7 @@ module.exports = (db, Sequelize) => {
     hasGroupPhase: { type: Sequelize.BOOLEAN, allowNull: false },
     status: {
       type: Sequelize.ENUM,
-      values: ['draft', 'published', 'inactive'],
+      values: ['draft', 'published', 'finalized', 'inactive'],
       allowNull: false
     },
     schemeType: {

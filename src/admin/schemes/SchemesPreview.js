@@ -4,6 +4,7 @@ import { get } from '../../services/fetch';
 import { BracketPreview } from '../bracket/BracketPreview';
 import { BracketDrawForm } from '../bracket/BracketDrawForm';
 import { ConfirmationButton } from '../Infrastructure';
+import { Status, SchemeType } from '../../enums';
 
 export class SchemesPreview extends React.Component {
   constructor(props) {
@@ -51,11 +52,12 @@ export class SchemesPreview extends React.Component {
 
         {this.state.active != -1 ?
           <div className="input-group">
-            <div><i>{this.state.draw.schemeType === 'elimination' ? 'Елиминационна схема' : 'Групова фаза'}</i></div>
+            <div><i>{this.state.draw.schemeType === SchemeType.ELIMINATION ? 'Елиминационна схема' : 'Групова фаза'}</i></div>
             <Link to={`/schemes/view/${this.props.schemes[this.state.active].id}`}><div className="input-group">детайли</div></Link>
-            <ConfirmationButton onChange={flag => flag ? this.finishDraw() : null}>
-              финализиране на схемата
-            </ConfirmationButton>
+            {this.state.draw.status === Status.PUBLISHED && this.state.draw.isDrawn ?
+              <ConfirmationButton onChange={flag => flag ? this.finishDraw() : null}>
+                финализиране на схемата
+            </ConfirmationButton> : null}
           </div>
           : null}
 
