@@ -105,8 +105,8 @@ function finalize(linkedScheme, draw, trn) {
     .map(group => Groups.orderByStatistics(group))
     .map(group => {
       return {
-        team1: group.teams[0],
-        team2: group.teams[1]
+        team1: group.teams[0].User,
+        team2: group.teams[1].User
       }
     }))
     .then(DrawActions._fill_groups)

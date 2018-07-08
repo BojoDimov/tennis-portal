@@ -39,8 +39,8 @@ function _draw_eliminations_from_groups(groups) {
   let matches = [];
   for (let i = 0; i < groups.length / 2; i++) {
     matches.push({
-      team1: groups[i].team1,
-      team2: groups[groups.length - i - 1].team2,
+      team1Id: groups[i].team1 ? groups[i].team1.id : null,
+      team2Id: groups[groups.length - i - 1].team2 ? groups[groups.length - i - 1].team2.id : null,
       match: matches.length + 1,
       round: 1
     })
@@ -48,8 +48,8 @@ function _draw_eliminations_from_groups(groups) {
 
   for (let i = 0; i < groups.length / 2; i++) {
     matches.push({
-      team2: groups[i].team2,
-      team1: groups[groups.length - i - 1].team1,
+      team2Id: groups[i].team2 ? groups[i].team2.id : null,
+      team1Id: groups[groups.length - i - 1].team1 ? groups[groups.length - i - 1].team1.id : null,
       match: matches.length + 1,
       round: 1
     })

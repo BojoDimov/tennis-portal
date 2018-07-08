@@ -1,26 +1,26 @@
-const { Matches } = require('./matches');
+const Matches = require('./matches');
 const { Rankings } = require('../db');
 
 function update(scheme, draw, trn) {
-  let promise = null;
+  let points = null;
   if (draw.schemeType == 'elimination')
     promise = Matches.generatePoints(scheme, draw.data, true);
   else {
     let matches = [];
     draw.data.forEach(group => matches = matches.concat(group.matches));
-    promise = Matches.generatePoints(req.scheme, matches, false);
+    points = Matches.generatePoints(scheme, matches, false);
   }
 
-  if (!promise)
-    throw "promise is null";
+  if (!points)
+    throw "cannot generate points";
 
-  return promise
+  return Promise.resolve(points)
     .then(points => {
       let keys = Object.keys(points).filter(e => e != "null").map(e => parseInt(e));
       return Promise.all([points, Rankings.findAll({
         where: {
           userId: keys,
-          tournamentId: req.scheme.TournamentEdition.Tournament.id
+          tournamentId: scheme.TournamentEdition.Tournament.id
         },
         transaction: trn
       })])
@@ -29,7 +29,7 @@ function update(scheme, draw, trn) {
       var create = Object.keys(points).filter(k => k != "null" && !rankings.find(r => r.userId == k)).map(k => {
         return {
           userId: k,
-          tournamentId: req.scheme.TournamentEdition.tournamentId,
+          tournamentId: scheme.TournamentEdition.tournamentId,
           points: points[k]
         };
       });
