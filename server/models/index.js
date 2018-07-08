@@ -3,13 +3,13 @@ const Groups = require('./groups');
 const Draws = require('./draws');
 const Users = require('./users');
 const Enrollments = require('./enrollments');
+const Rankings = require('./rankings');
 const {
   EnrollmentQueues,
   SchemeEnrollments,
   GroupTeams,
   Logs,
   Tokens,
-  Rankings,
   Sets,
   Tournaments,
   TournamentEditions,

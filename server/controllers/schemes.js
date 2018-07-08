@@ -85,6 +85,25 @@ const attachScheme = (req, res, next) => {
     .then(() => next());
 }
 
+const attachLinkedScheme = (req, res, next) => {
+  TournamentSchemes
+    .findOne({
+      where: {
+        groupPhaseId: req.scheme.id
+      },
+      include: [
+        {
+          model: TournamentEditions,
+          include: [
+            { model: Tournaments }
+          ]
+        }
+      ]
+    })
+    .then(linkedScheme => req.linkedScheme = linkedScheme)
+    .then(() => next());
+}
+
 function setStatus(id, status) {
   return TournamentSchemes
     .findById(id)
@@ -99,5 +118,5 @@ router.get('/:id/publish', publish);
 router.get('/:id/draft', draft);
 router.get('/:id/enrollments', getEnrollments);
 router.get('/:id/queue', getEnrollmentQueues);
-router.use('/:id/draws', attachScheme, require('./draws'));
+router.use('/:id/draws', attachScheme, attachLinkedScheme, require('./draws'));
 module.exports = router;

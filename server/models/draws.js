@@ -97,8 +97,26 @@ function create(scheme, seed, teams) {
   }
 }
 
-function finalize(scheme) {
+function finalize(linkedScheme, draw, trn) {
+  if (!linkedScheme)
+    return null;
 
+  return Promise.resolve(draw.data
+    .map(group => Groups.orderByStatistics(group))
+    .map(group => {
+      return {
+        team1: group.teams[0],
+        team2: group.teams[1]
+      }
+    }))
+    .then(DrawActions._fill_groups)
+    .then(DrawActions._draw_eliminations_from_groups)
+    .then(matches => matches.map(match => {
+      match.schemeId = linkedScheme.id;
+      return match;
+    }))
+    .then(matches => Matches.bulkCreate(matches, { transaction: trn }))
+    .then(() => draw);
 }
 
 module.exports = {
