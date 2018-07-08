@@ -1,4 +1,5 @@
-const backend = '/api';
+const env = process.env.NODE_ENV || 'development';
+const config = require(__dirname + '/../clientConfig.js')[env];
 
 module.exports = {
   post: function (path, data, onSuccess, onError) {
@@ -15,7 +16,7 @@ module.exports = {
     if (tokenInfo)
       options.headers['Authorization'] = 'Bearer ' + tokenInfo.token;
 
-    return fetch(backend + path, options)
+    return fetch(config.backend + path, options)
       .then(res => {
         message_handler(onError);
         return error_handler(res)
@@ -39,7 +40,7 @@ module.exports = {
     if (tokenInfo)
       options.headers['Authorization'] = 'Bearer ' + tokenInfo.token;
 
-    return fetch(backend + path, options).then(res => error_handler(res))
+    return fetch(config.backend + path, options).then(res => error_handler(res))
       .then(res => res.json());
   }
 }
