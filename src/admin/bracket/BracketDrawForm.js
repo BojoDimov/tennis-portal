@@ -15,7 +15,6 @@ export class BracketDrawForm extends React.Component {
   }
 
   render() {
-    console.log(this.props.draw, Status);
     if (this.props.draw && !this.props.draw.isDrawn && !this.props.draw.isLinked && this.props.draw.status === Status.PUBLISHED)
       return (
         <div>
