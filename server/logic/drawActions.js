@@ -122,6 +122,9 @@ function _draw_eliminations(scheme, seed, enrollments) {
 }
 
 function get_group_order(seed, nGroups, nTeamsPerGroup) {
+  if (seed > nGroups)
+    seed = nGroups;
+
   let groups = [];
   for (let i = 0; i < seed; i++) {
     let group = Math.floor(Math.random() * 10000) % nGroups;

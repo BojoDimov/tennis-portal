@@ -20,7 +20,7 @@ Users.issueToken = (id, ip) => {
       else
         return Tokens
           .create({
-            userId: userId,
+            userId: id,
             token: crypto.randomBytes(40).toString('hex').slice(40),
             expires: expires,
             issued: ip
