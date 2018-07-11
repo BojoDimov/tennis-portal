@@ -34,7 +34,7 @@ function createEnrollments(id, count) {
   for (let i = 1; i <= count; i++)
     objects.push({
       schemeId: id,
-      userId: i
+      teamId: i
     });
   return objects;
 }
