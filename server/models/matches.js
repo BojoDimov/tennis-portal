@@ -1,4 +1,4 @@
-const { Matches, Sets } = require('../db');
+const { Matches, Sets, Teams, Users, TournamentSchemes } = require('../db');
 
 Matches.manageNextMatch = function (match, transaction) {
   let winner = Matches.getWinner(match);
@@ -22,6 +22,27 @@ Matches.manageNextMatch = function (match, transaction) {
 
       return nextMatch.save({ transaction: transaction });
     });
+}
+
+Matches.getIncludes = function () {
+  return [
+    {
+      model: Teams, as: 'team1',
+      include: [
+        { model: Users, as: 'user1', attributes: ['name', 'gender', 'birthDate'] },
+        { model: Users, as: 'user2', attributes: ['name', 'gender', 'birthDate'] }
+      ]
+    },
+    {
+      model: Teams, as: 'team2',
+      include: [
+        { model: Users, as: 'user1', attributes: ['name', 'gender', 'birthDate'] },
+        { model: Users, as: 'user2', attributes: ['name', 'gender', 'birthDate'] }
+      ]
+    },
+    { model: Sets, as: 'sets' },
+    { model: TournamentSchemes, as: 'scheme' }
+  ];
 }
 
 Matches.manageSets = function (sets, transaction) {

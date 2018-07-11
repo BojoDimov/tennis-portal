@@ -13,12 +13,13 @@ const {
   Sets,
   Tournaments,
   TournamentEditions,
-  TournamentSchemes
+  TournamentSchemes,
+  Teams
 } = require('../db');
 
 module.exports = {
   Tournaments, TournamentEditions, TournamentSchemes, Rankings,
-  Matches, Sets, Groups, GroupTeams, Draws,
+  Matches, Sets, Groups, GroupTeams, Draws, Teams,
   Enrollments,
   Tokens, Users, Logs
 }

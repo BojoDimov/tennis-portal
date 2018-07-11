@@ -5,6 +5,7 @@ module.exports = (db, Sequelize) => {
 
   Rankings.associate = (models) => {
     models.Rankings.belongsTo(models.Teams, {
+      as: 'team',
       foreignKey: {
         name: 'teamId',
         allowNull: false

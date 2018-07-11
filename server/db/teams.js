@@ -13,7 +13,7 @@ module.exports = (db, Sequelize) => {
       }
     });
 
-    models.Teams.belongsTo(models.Teams, {
+    models.Teams.belongsTo(models.Users, {
       as: 'user2',
       foreignKey: {
         name: 'user2Id',
@@ -29,6 +29,13 @@ module.exports = (db, Sequelize) => {
         allowNull: false
       }
     });
+
+    models.Teams.getAggregateRoot = function () {
+      return [
+        { model: models.Users, as: 'user1', attributes: ['name', 'gender', 'birthDate'] },
+        { model: models.Users, as: 'user2', attributes: ['name', 'gender', 'birthDate'] }
+      ];
+    }
   }
 
   return Teams;

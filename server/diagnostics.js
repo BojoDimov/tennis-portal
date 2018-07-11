@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { SchemeEnrollments, EnrollmentQueues, TournamentSchemes, Users, Rankings } = require('./db');
+const { SchemeEnrollments, EnrollmentQueues, TournamentSchemes, Users, Rankings, Teams } = require('./db');
 let first = ['Петър', 'Мирослав', 'Евлоги', , 'Големан', 'Божидар', 'Даниел', 'Георги', 'Дилян', 'Борислав', 'Виктор', 'Крум', 'Мартин', 'Милен', 'Димитър', 'Симеон', 'Светослав', 'Веселин', 'Калин', 'Кристиан', 'Мариан', 'Богомил', 'Самуил', 'Тодор', 'Дарин', 'Сава', 'Маргарит', ' Пресиял', 'Павел', 'Бойко', 'Ангел', 'Асен', 'Анко', 'Янко', 'Янислав', 'Фотьо', 'Филип', 'Траян', 'Тишо'];
 let last = ['Димитров', 'Чучуров', 'Гусарев', 'Карпузов', 'Георгиев', 'Измирлиев', 'Петров', 'Савов', 'Сомов', 'Томов', 'Тодоров', 'Тонев', 'Пашов', 'Конедарев', 'Молеров', 'Чакалов', 'Бакалов', 'Събев', 'Тоцев', 'Пърлев'];
 
@@ -47,7 +47,7 @@ const createUsers = (req, res, next) => {
     let j = Math.ceil((Math.random() * 10000000)) % last.length;
     objects.push({
       email: "test_" + (k * 1000) + "@abv.bg",
-      fullname: first[i] + " " + last[j],
+      name: first[i] + " " + last[j],
       passwordHash: "asdasdasd",
       passwordSalt: "sadsadasd",
       birthDate: new Date(),
@@ -56,7 +56,17 @@ const createUsers = (req, res, next) => {
     })
   }
 
-  Users.bulkCreate(objects)
+  objects = objects.map(o => {
+
+    return Teams.create({
+      user1Id: -1,
+      user1: o
+    }, {
+        include: ['user1']
+      });
+  });
+
+  Promise.all(objects)
     .then(e => res.json(e))
     .catch(err => next(err, req, res, null));
 }
@@ -65,12 +75,12 @@ const createRanking = (req, res) => {
   let count = req.query.count;
   let t = req.query.tournamentId;
 
-  Users.findAll()
-    .then(users => {
+  Teams.findAll()
+    .then(teams => {
       let objects = [];
       for (let i = 0; i < count; i++) {
         objects.push({
-          userId: users[i].id,
+          teamId: teams[i].id,
           points: Math.ceil(Math.random() * 1000) % 500,
           tournamentId: t
         });

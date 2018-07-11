@@ -132,7 +132,7 @@ export class RankList extends React.Component {
             {this.props.ranking.slice(0, this.state.limit).map(e => (
               <tr key={e.id}>
                 <td>
-                  <Link to={`/editions/view/${e.id}`} >{e.User.fullname}</Link>
+                  <Link to={`/users/${e.team.user1Id}`} >{e.team.user1.name}</Link>
                 </td>
                 <td className="text-right">
                   {e.points}

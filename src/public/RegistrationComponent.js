@@ -51,8 +51,8 @@ export class RegistrationComponent extends Component {
             <div>Име</div>
             <input
               type="text"
-              onChange={e => this.setState({ fullname: e.target.value })} />
-            <div className="error">{this.state.errors.fullname ? '*Задължително поле' : null}</div>
+              onChange={e => this.setState({ name: e.target.value })} />
+            <div className="error">{this.state.errors.name ? '*Задължително поле' : null}</div>
           </div>
 
           <div className="input-group">
