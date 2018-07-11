@@ -1,7 +1,8 @@
+const { Status } = require('../enums');
+
 module.exports = (db, Sequelize) => {
   const TournamentEditions = db
     .define('TournamentEditions', {
-      id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
       name: {
         type: Sequelize.STRING,
         allowNull: false,
@@ -14,7 +15,7 @@ module.exports = (db, Sequelize) => {
       endDate: Sequelize.DATEONLY,
       status: {
         type: Sequelize.ENUM,
-        values: ['draft', 'published', 'inactive'],
+        values: [Status.DRAFT, Status.PUBLISHED, Status.FINALIZED, Status.INACTIVE],
         allowNull: false
       }
     },

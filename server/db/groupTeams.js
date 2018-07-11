@@ -4,7 +4,7 @@ module.exports = (db, Sequelize) => {
   });
 
   GroupTeams.associate = (models) => {
-    models.GroupTeams.belongsTo(models.Users, {
+    models.GroupTeams.belongsTo(models.Teams, {
       foreignKey: {
         name: 'teamId',
         allowNull: true

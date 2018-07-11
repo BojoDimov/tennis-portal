@@ -1,6 +1,5 @@
 module.exports = (db, Sequelize) => {
   const Matches = db.define("Matches", {
-    id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
     match: Sequelize.INTEGER,
     round: Sequelize.INTEGER,
     seed1: { type: Sequelize.INTEGER, allowNull: true },
@@ -9,7 +8,7 @@ module.exports = (db, Sequelize) => {
   });
 
   Matches.associate = (models) => {
-    models.Matches.belongsTo(models.Users, {
+    models.Matches.belongsTo(models.Teams, {
       as: 'team1',
       foreignKey: {
         name: 'team1Id',
@@ -17,7 +16,7 @@ module.exports = (db, Sequelize) => {
       }
     });
 
-    models.Matches.belongsTo(models.Users, {
+    models.Matches.belongsTo(models.Teams, {
       as: 'team2',
       foreignKey: {
         name: 'team2Id',

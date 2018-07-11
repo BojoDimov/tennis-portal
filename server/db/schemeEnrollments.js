@@ -1,12 +1,10 @@
 module.exports = (db, Sequelize) => {
-  const SchemeEnrollments = db.define("SchemeEnrollments", {
-    id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true }
-  });
+  const SchemeEnrollments = db.define("SchemeEnrollments");
 
   SchemeEnrollments.associate = (models) => {
-    models.SchemeEnrollments.belongsTo(models.Users, {
+    models.SchemeEnrollments.belongsTo(models.Teams, {
       foreignKey: {
-        name: 'userId',
+        name: 'teamId',
         allowNull: false,
         unique: 'Enrollments_Scheme_Team_UQ'
       }

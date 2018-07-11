@@ -1,3 +1,5 @@
+const { Status, SchemeType } = require('../enums');
+
 module.exports = (db, Sequelize) => {
   const ELIMINATION = 'elimination';
   const GROUP = 'round-robin';
@@ -37,12 +39,12 @@ module.exports = (db, Sequelize) => {
     hasGroupPhase: { type: Sequelize.BOOLEAN, allowNull: false },
     status: {
       type: Sequelize.ENUM,
-      values: ['draft', 'published', 'finalized', 'inactive'],
+      values: [Status.DRAFT, Status.PUBLISHED, Status.FINALIZED, Status.INACTIVE],
       allowNull: false
     },
     schemeType: {
       type: Sequelize.ENUM,
-      values: [ELIMINATION, GROUP],
+      values: [SchemeType.ELIMINATION, SchemeType.GROUP],
       allowNull: false
     },
     pPoints: { type: Sequelize.INTEGER, default: 0, allowNull: false },
@@ -88,9 +90,6 @@ module.exports = (db, Sequelize) => {
         }
       }
     });
-
-  TournamentSchemes.ELIMINATION = ELIMINATION;
-  TournamentSchemes.GROUP = GROUP;
 
   TournamentSchemes.associate = (models) => {
     models.TournamentSchemes.belongsTo(models.TournamentEditions, {
