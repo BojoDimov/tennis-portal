@@ -124,7 +124,7 @@ const getAll = (req, res, next) => {
 }
 
 router.get('/:id/removeTeam', removeTeam);
-router.get('/:id/setTeam');
+router.get('/:id/setTeam', setTeam);
 router.post('/', create);
 router.post('/:id', update);
 router.get('/', getAll);

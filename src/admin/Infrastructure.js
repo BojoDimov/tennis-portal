@@ -72,7 +72,7 @@ export class Select extends React.Component {
     return (
       <select onChange={(e) => this.props.onChange(this.state.items.find(i => i.id == e.target.value))} value={this.props.value}>
         {this.props.children}
-        {this.state.items.map(item => <option key={item.id} value={item.id}>{item.name}</option>)}
+        {this.state.items.map(item => <option key={item.id} value={item.id}>{item[this.props.selector ? this.props.selector : 'name']}</option>)}
       </select >
     );
   }

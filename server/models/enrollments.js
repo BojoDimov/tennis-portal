@@ -61,7 +61,7 @@ function update(oldScheme, newScheme) {
 function get(schemeId) {
   const query = `
       select 
-        "Teams".id as "teamId", 
+        "Teams".id as "id", 
         u1.id as "user1Id",
         u1.name as "user1Name", 
         u2.id as "user2Id",
@@ -93,7 +93,7 @@ function get(schemeId) {
 function getQueue(schemeId) {
   const query = `
       select
-        "Teams".id as "teamId",
+        "Teams".id as "id",
         u1.id as "user1Id",
         u1.name as "user1Name",
         u2.id as "user2Id",
@@ -127,13 +127,13 @@ function transfer(from, to, schemeId, teamId, transaction) {
     from.destroy({
       where: {
         schemeId: schemeId,
-        userId: teamId
+        teamId: teamId
       },
       transaction: transaction
     }),
     to.create({
       schemeId: schemeId,
-      userId: teamId
+      teamId: teamId
     }, { transaction: transaction })
   ]);
 }

@@ -5,6 +5,7 @@ module.exports = (db, Sequelize) => {
 
   GroupTeams.associate = (models) => {
     models.GroupTeams.belongsTo(models.Teams, {
+      as: 'team',
       foreignKey: {
         name: 'teamId',
         allowNull: true
@@ -12,6 +13,7 @@ module.exports = (db, Sequelize) => {
     });
 
     models.GroupTeams.belongsTo(models.Groups, {
+      as: 'group',
       foreignKey: {
         name: 'groupId',
         allowNull: true

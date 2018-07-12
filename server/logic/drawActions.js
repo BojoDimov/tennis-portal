@@ -113,9 +113,9 @@ function _draw_eliminations(scheme, seed, enrollments) {
   remaining.forEach((pos, i) => {
     let match = matches[Math.floor(pos / 2) + 1];
     if (pos % 2 == 0)
-      match.team1Id = enrollments[seed + i].id;
+      match.team1Id = enrollments[mapping.length + i].id;
     else
-      match.team2Id = enrollments[seed + i].id;
+      match.team2Id = enrollments[mapping.length + i].id;
   });
 
   return matches.slice(1);
@@ -146,6 +146,8 @@ function get_group_order(seed, nGroups, nTeamsPerGroup) {
 
 function get_order(positioned, count, max_count) {
   /** Returns mapping of the positions of teams in the order: positioned, normal, empty */
+  if (positioned > count)
+    positioned = count;
 
   let mapping = [];
   let Q = [{ start: 0, end: max_count - 1, base: 2 }];
