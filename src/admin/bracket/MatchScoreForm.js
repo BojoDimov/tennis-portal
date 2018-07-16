@@ -81,13 +81,13 @@ export class MatchScoreForm extends React.Component {
           </thead>
           <tbody>
             <tr>
-              <td>{this.props.match.team1.fullname}</td>
+              <td>{this.props.match.team1.user1.name}</td>
               {this.state.sets.map((set, i) => (
                 <td key={i}><input type="text" disabled={set.disabled} value={set.team1} onChange={(e) => this.handle_input(e.target.value, i, 1)} /></td>
               ))}
             </tr>
             <tr>
-              <td>{this.props.match.team2.fullname}</td>
+              <td>{this.props.match.team2.user1.name}</td>
               {this.state.sets.map((set, i) => (
                 <td key={i}><input type="text" disabled={set.disabled} value={set.team2} onChange={(e) => this.handle_input(e.target.value, i, 2)} /></td>
               ))}
@@ -98,8 +98,8 @@ export class MatchScoreForm extends React.Component {
           <div>Отказал се</div>
           <select value={this.state.withdraw} onChange={e => this.setState({ withdraw: e.target.value })}>
             <option value={0}>нямa</option>
-            <option value={1}>{this.props.match.team1.fullname}</option>
-            <option value={2}>{this.props.match.team2.fullname}</option>
+            <option value={1}>{this.props.match.team1.user1.name}</option>
+            <option value={2}>{this.props.match.team2.user1.name}</option>
           </select>
         </div>
         <ConfirmationButton className="button-block center" onChange={flag => flag ? this.saveMatch() : null}>

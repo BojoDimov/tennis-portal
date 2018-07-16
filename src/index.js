@@ -2,10 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
 import { App } from './app/App';
-import './css/styles.css';
+import { PublicApp } from './theme_impl/PublicApp';
 
 ReactDOM.render((
   <BrowserRouter>
-    <App />
+    <PublicApp />
   </BrowserRouter>
 ), document.getElementById('root'));

@@ -12,8 +12,8 @@ export class EliminationTeamBox extends React.Component {
       <div className="center team-label">
         {this.props.team ?
           <div>
-            <Link to={`/users/${this.props.team.id}`}>
-              {this.props.team.fullname}
+            <Link to={`/users/${this.props.team.user1Id}`}>
+              {this.props.team.user1.name}
             </Link>
           </div>
           : null
