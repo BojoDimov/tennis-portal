@@ -1,6 +1,9 @@
 const env = process.env.NODE_ENV || 'development';
 const config = require(__dirname + '/../clientConfig.js')[env];
 
+console.log(env);
+console.log(config);
+
 module.exports = {
   post: function (path, data, onSuccess, onError) {
     let options = {

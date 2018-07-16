@@ -16,7 +16,7 @@ app.use('/api/tournaments', auth, require('./controllers/tournaments'));
 app.use('/api/editions', auth, require('./controllers/editions'));
 app.use('/api/schemes', auth, require('./controllers/schemes'));
 app.use('/api/groups', auth, require('./controllers/groups'));
-app.use('/api/matches', auth, require('./controllers/matches'));
+app.use('/api/matches', require('./controllers/matches'));
 
 app.get('*', (req, res) => {
   res.sendFile('build/index.html', { root: './' });

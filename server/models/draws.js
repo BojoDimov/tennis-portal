@@ -1,6 +1,7 @@
 const Matches = require('./matches');
 const Groups = require('./groups');
 const Users = require('./users');
+const Teams = require('./teams');
 const { Sets, GroupTeams } = require('../db');
 const DrawActions = require('../logic/drawActions');
 
@@ -11,11 +12,7 @@ function get(scheme, transaction, format = true) {
         where: {
           schemeId: scheme.id
         },
-        include: [
-          { model: Users, as: 'team1', attributes: ['id', 'fullname'] },
-          { model: Users, as: 'team2', attributes: ['id', 'fullname'] },
-          { model: Sets, as: 'sets' }
-        ],
+        include: Matches.getIncludes(),
         order: [
           'round', 'match',
           ['sets', 'order', 'asc']
@@ -47,17 +44,13 @@ function get(scheme, transaction, format = true) {
             model: GroupTeams,
             as: 'teams',
             include: [
-              { model: Users, attributes: ['id', 'fullname'] }
+              { model: Teams, as: 'team', include: Teams.getAggregateRoot() }
             ]
           },
           {
             model: Matches,
             as: 'matches',
-            include: [
-              { model: Users, as: 'team1', attributes: ['id', 'fullname'] },
-              { model: Users, as: 'team2', attributes: ['id', 'fullname'] },
-              { model: Sets, as: 'sets' }
-            ]
+            include: Matches.getIncludes()
           }
         ],
         order: [
@@ -108,8 +101,8 @@ function finalize(linkedScheme, draw, trn) {
     .map(group => Groups.orderByStatistics(group))
     .map(group => {
       return {
-        team1: group.teams[0].User,
-        team2: group.teams[1].User
+        team1: group.teams[0].team,
+        team2: group.teams[1].team
       }
     }))
     .then(DrawActions._fill_groups)

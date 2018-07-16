@@ -1,14 +1,12 @@
 module.exports = (db, Sequelize) => {
-  const EnrollmentQueues = db.define("EnrollmentQueues", {
-    id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true }
-  });
+  const EnrollmentQueues = db.define("EnrollmentQueues");
 
   EnrollmentQueues.associate = (models) => {
-    models.EnrollmentQueues.belongsTo(models.Users, {
+    models.EnrollmentQueues.belongsTo(models.Teams, {
       foreignKey: {
-        name: 'userId',
+        name: 'teamId',
         allowNull: false,
-        unique: 'EnrollmentQueuess_Scheme_Team_UQ'
+        unique: 'EnrollmentQueues_Scheme_Team_UQ'
       }
     });
 
@@ -16,7 +14,7 @@ module.exports = (db, Sequelize) => {
       foreignKey: {
         name: 'schemeId',
         allowNull: false,
-        unique: 'EnrollmentQueuess_Scheme_Team_UQ'
+        unique: 'EnrollmentQueues_Scheme_Team_UQ'
       }
     });
   }

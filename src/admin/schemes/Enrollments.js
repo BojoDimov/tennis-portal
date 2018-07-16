@@ -27,7 +27,7 @@ export class Enrollments extends React.Component {
             {this.props.enrollments.slice(0, this.state.limit).map((e, i) => (
               <tr key={e.id}>
                 <td>
-                  <span>{(i + 1) + '.'}</span><Link to={`/editions/view/${e.id}`} >{e.name}</Link>
+                  <span>{(i + 1) + '.'}</span><Link to={`/users/${e.user1Id}`} >{e.user1Name}</Link>
                 </td>
                 <td className="text-right">
                   {e.points}
@@ -80,7 +80,7 @@ export class EnrollmentQueues extends React.Component {
             {this.props.queue.slice(0, this.state.limit).map((e, i) => (
               <tr key={e.id}>
                 <td>
-                  <span>{(i + 1) + '.'}</span><Link to={`/editions/view/${e.id}`} >{e.name}</Link>
+                  <span>{(i + 1) + '.'}</span><Link to={`/users/${e.user1Id}`} >{e.user1Name}</Link>
                 </td>
                 <td className="text-right">
                   {e.points}

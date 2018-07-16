@@ -1,6 +1,5 @@
 module.exports = (db, Sequelize) => {
   const Groups = db.define("Groups", {
-    id: { type: Sequelize.INTEGER, autoIncrement: true, primaryKey: true },
     group: { type: Sequelize.INTEGER, allowNull: false }
   });
 

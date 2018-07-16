@@ -60,17 +60,29 @@ function update(oldScheme, newScheme) {
 
 function get(schemeId) {
   const query = `
-      select u.id, u.fullname as name, r.points, e."createdAt", e.id as "enrollmentId" from "TournamentSchemes" s
+      select 
+        "Teams".id as "id", 
+        u1.id as "user1Id",
+        u1.name as "user1Name", 
+        u2.id as "user2Id",
+        u2.name as "user2Name", 
+        r.points, se."createdAt", 
+        se.id as "enrollmentId" 
+      from "TournamentSchemes" s
       inner join "TournamentEditions" te
       on s."tournamentEditionId" = te.id
       inner join "Tournaments" t
       on te."tournamentId" = t.id
-      inner join "SchemeEnrollments" e
-      on s.id = e."schemeId"
+      inner join "SchemeEnrollments" se
+      on s.id = se."schemeId"
       left join "Rankings" r
-      on e."userId" = r."userId" and r."tournamentId" = t.id
-      inner join "Users" u
-      on u.id = e."userId"
+      on se."teamId" = r."teamId" and r."tournamentId" = t.id
+      inner join "Teams"
+      on "Teams"."id" = se."teamId"
+      inner join "Users" u1
+      on "Teams"."user1Id" = u1.id
+      left join "Users" u2
+      on "Teams"."user2Id" = u2.id
       where s.id = ${schemeId}
       order by case when r."points" is null then 1 else 0 end, r.points desc
       `;
@@ -80,19 +92,31 @@ function get(schemeId) {
 
 function getQueue(schemeId) {
   const query = `
-      select u.id, u.fullname as name, r.points, e."createdAt", e.id as "enrollmentId" from "TournamentSchemes" s
+      select
+        "Teams".id as "id",
+        u1.id as "user1Id",
+        u1.name as "user1Name",
+        u2.id as "user2Id",
+        u2.name as "user2Name",
+        r.points, se."createdAt",
+        se.id as "enrollmentId"
+      from "TournamentSchemes" s
       inner join "TournamentEditions" te
       on s."tournamentEditionId" = te.id
       inner join "Tournaments" t
       on te."tournamentId" = t.id
-      inner join "EnrollmentQueues" e
-      on s.id = e."schemeId"
+      inner join "EnrollmentQueues" se
+      on s.id = se."schemeId"
       left join "Rankings" r
-      on e."userId" = r."userId" and r."tournamentId" = t.id
-      inner join "Users" u
-      on u.id = e."userId"
+      on se."teamId" = r."teamId" and r."tournamentId" = t.id
+      inner join "Teams"
+      on "Teams"."id" = se."teamId"
+      inner join "Users" u1
+      on "Teams"."user1Id" = u1.id
+      left join "Users" u2
+      on "Teams"."user2Id" = u2.id
       where s.id = ${schemeId}
-      order by e."createdAt" asc
+      order by case when r."points" is null then 1 else 0 end, r.points desc
       `;
 
   return sequelize.query(query, { type: sequelize.QueryTypes.SELECT });
@@ -103,13 +127,13 @@ function transfer(from, to, schemeId, teamId, transaction) {
     from.destroy({
       where: {
         schemeId: schemeId,
-        userId: teamId
+        teamId: teamId
       },
       transaction: transaction
     }),
     to.create({
       schemeId: schemeId,
-      userId: teamId
+      teamId: teamId
     }, { transaction: transaction })
   ]);
 }

@@ -1,13 +1,13 @@
 module.exports = (db, Sequelize) => {
   const Rankings = db.define("Rankings", {
-    id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
     points: Sequelize.INTEGER
   });
 
   Rankings.associate = (models) => {
-    models.Rankings.belongsTo(models.Users, {
+    models.Rankings.belongsTo(models.Teams, {
+      as: 'team',
       foreignKey: {
-        name: 'userId',
+        name: 'teamId',
         allowNull: false
       }
     });

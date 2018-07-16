@@ -2,9 +2,6 @@ const express = require('express');
 const router = express.Router();
 const { sequelize } = require('../db');
 const {
-  TournamentSchemes,
-  Sets,
-  Users,
   Matches,
   Enrollments
 } = require('../models');
@@ -18,10 +15,7 @@ const removeTeam = (req, res, next) => {
     .transaction(function (trn) {
       return Matches
         .findById(req.params.id, {
-          include: [
-            { model: Users, as: 'team1', attributes: ['id', 'fullname'] },
-            { model: Users, as: 'team2', attributes: ['id', 'fullname'] }
-          ],
+          include: Matches.getIncludes(),
           transaction: trn
         })
         .then(match => {
@@ -57,10 +51,7 @@ const setTeam = (req, res, next) => {
     .transaction(function (trn) {
       return Matches
         .findById(req.params.id, {
-          include: [
-            { model: Users, as: 'team1', attributes: ['id', 'fullname'] },
-            { model: Users, as: 'team2', attributes: ['id', 'fullname'] }
-          ]
+          include: Matches.getIncludes()
         })
         .then(match => {
           if (pos == 1)
@@ -89,10 +80,7 @@ const update = (req, res, next) => {
       return Matches.manageSets(sets, trn)
         .then(() => Matches
           .findById(matchId, {
-            include: [
-              { model: Sets, as: 'sets' },
-              { model: TournamentSchemes, as: 'scheme' }
-            ],
+            include: Matches.getIncludes(),
             order: [
               ['sets', 'order', 'asc']
             ],
@@ -121,9 +109,7 @@ const create = (req, res, next) => {
     .transaction(function (trn) {
       return Matches
         .create(match, {
-          include: [
-            { model: Sets, as: 'sets' }
-          ],
+          include: Matches.getIncludes(),
           transaction: trn
         })
     })
@@ -131,8 +117,15 @@ const create = (req, res, next) => {
     .catch(err => next(err, req, res, null));
 }
 
+const getAll = (req, res, next) => {
+  return Matches.findAll({
+    include: Matches.getIncludes()
+  }).then(e => res.json(e));
+}
+
 router.get('/:id/removeTeam', removeTeam);
-router.get('/:id/setTeam');
+router.get('/:id/setTeam', setTeam);
 router.post('/', create);
 router.post('/:id', update);
+router.get('/', getAll);
 module.exports = router;

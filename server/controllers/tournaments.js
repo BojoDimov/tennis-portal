@@ -5,8 +5,9 @@ const {
   TournamentEditions,
   TournamentSchemes,
   Rankings,
-  Users
-} = require('../db');
+  Users,
+  Teams
+} = require('../models');
 
 const getAll = (req, res) => {
   Tournaments
@@ -23,10 +24,7 @@ const getTournament = (req, res) => {
           model: Rankings,
           as: 'ranking',
           include: [
-            {
-              model: Users,
-              attributes: ['id', 'fullname']
-            }
+            { model: Teams, as: 'team', include: Teams.getAggregateRoot() }
           ]
         }
       ],

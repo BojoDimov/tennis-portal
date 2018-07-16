@@ -8,5 +8,9 @@ module.exports = {
   SchemeType: {
     GROUP: 'round-robin',
     ELIMINATION: 'elimination'
+  },
+  Gender: {
+    MALE: 'male',
+    FEMALE: 'female'
   }
 }
