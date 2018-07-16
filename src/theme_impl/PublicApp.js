@@ -6,6 +6,8 @@ import News from './News';
 import Ranking from './Ranking';
 import Partners from './Partners';
 import Footer from './Footer';
+import Auth from './Auth';
+
 
 export class PublicApp extends React.Component {
   render() {
@@ -21,6 +23,7 @@ export class PublicApp extends React.Component {
           <Route path="/tournaments" component={null} />
           <Route path="/ranking" component={Ranking} />
           <Route path="/partners" component={Partners} />
+          <Route path="/login" component={Auth} />
           <Route>
             <Redirect to="/home" />
           </Route>

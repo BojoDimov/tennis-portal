@@ -56,8 +56,7 @@ export class HeroComponent extends React.Component {
         </header>
         <p>Плажът няма да е единственото горещо място</p>
         <ul className="actions">
-          <li><a href="#" className="button">Вход</a></li>
-          <li><a href="#" className="button">Регистрирай се</a></li>
+          <li><Link to="/login" className="button">Включи се!</Link></li>
         </ul>
       </section>
     );
