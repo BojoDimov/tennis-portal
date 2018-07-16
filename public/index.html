@@ -11,6 +11,7 @@
     -->
   <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
   <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
+  <link rel="stylesheet" href="%PUBLIC_URL%/assets/css/main.css">
   <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -35,6 +36,21 @@
     You need to enable JavaScript to run this app.
   </noscript>
   <div id="root"></div>
+  <script>
+    document.addEventListener('react-load', (e) => {
+      let util = document.createElement('script');
+      let main = document.createElement('script');
+      util.src = "/assets/js/util.js";
+      main.src = "/assets/js/main.js";
+      document.body.appendChild(util);
+      document.body.appendChild(main);
+    })
+  </script>
+  <!-- Scripts -->
+  <script src="%PUBLIC_URL%/assets/js/jquery.min.js"></script>
+  <script src="%PUBLIC_URL%/assets/js/jquery.dropotron.min.js"></script>
+  <script src="%PUBLIC_URL%/assets/js/browser.min.js"></script>
+  <script src="%PUBLIC_URL%/assets/js/breakpoints.min.js"></script>
 </body>
 
 </html>
