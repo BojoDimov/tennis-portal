@@ -7,6 +7,7 @@ import Ranking from './Ranking';
 import Partners from './Partners';
 import Footer from './Footer';
 import Auth from './Auth';
+import LogoutEndpoint from './LogoutEndpoint';
 
 
 export class PublicApp extends React.Component {
@@ -24,6 +25,7 @@ export class PublicApp extends React.Component {
           <Route path="/ranking" component={Ranking} />
           <Route path="/partners" component={Partners} />
           <Route path="/login" component={Auth} />
+          <Route path="/logout" component={LogoutEndpoint} />
           <Route>
             <Redirect to="/home" />
           </Route>

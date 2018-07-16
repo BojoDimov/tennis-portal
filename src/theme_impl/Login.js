@@ -1,13 +1,16 @@
 import React from 'react';
 import { post } from '../services/fetch';
+import * as UserService from '../services/user';
+import { RedirectAction } from '../components';
 
 export default class Login extends React.Component {
   login() {
-    console.log('calling login');
     return post('/login', this.state)
-      .then(res => {
-        //window.localStorage.setItem('token', JSON.stringify(res));
-        //this.props.onChange();
+      .then(token => {
+        let user = token.user;
+        token.user = undefined;
+        UserService.login(token, user);
+        return Promise.resolve();
       });
   }
 
@@ -28,7 +31,9 @@ export default class Login extends React.Component {
           </div>
         </form>
         <ul className="actions">
-          <li><a onClick={() => this.login()} className="button">Вход</a></li>
+          <RedirectAction onSuccess="/news" onClick={() => this.login()}>
+            <a className="button">Вход</a>
+          </RedirectAction>
         </ul>
       </section>
     );

@@ -1,10 +1,22 @@
 import React from 'react';
 import { Link, Switch, Route } from 'react-router-dom';
+import { RedirectAction } from '../components';
+import * as UserService from '../services/user';
 
 export default class Header extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: UserService.getUser()
+    }
+  }
   componentDidMount() {
     const e = new CustomEvent('react-load', null);
     document.dispatchEvent(e);
+    document.addEventListener('login', ({ detail }) => {
+      this.setState({ user: detail.user });
+    });
+    document.addEventListener('logout', () => this.setState({ user: null }));
   }
 
   render() {
@@ -33,8 +45,16 @@ export default class Header extends React.Component {
                   <li><a href="#">Лято 2022</a></li>
                 </ul>
               </li>
-              <li className="break"><Link to="/ranking">Статистика</Link></li>
-              <li><Link to="/partners">Партньори</Link></li>
+              <li className={this.state.user ? "" : "break"}><Link to="/ranking">Статистика</Link></li>
+              <li className={this.state.user ? "break" : ""}><Link to="/partners">Партньори</Link></li>
+              <li></li>
+              {this.state.user ? <li>
+                <a><i class="fas fa-user"></i> <span>{this.state.user.name}</span></a>
+                <ul>
+                  <li><a href="#">Профил</a></li>
+                  <li><Link to="/logout">Изход</Link></li>
+                </ul>
+              </li> : null}
             </ul>
           </nav>
         </div>

@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const crypto = require('crypto');
-const Users = require('../models/users');
+const { Users } = require('../models');
 
 const login = (req, res, next) => {
   let password = req.body.password;

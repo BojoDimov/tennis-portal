@@ -1,11 +1,15 @@
 const passport = require('passport');
 const HttpBearerStrategy = require('passport-http-bearer').Strategy;
 const { Tokens } = require('../db');
+const { Users } = require('../models');
 
 passport.use(new HttpBearerStrategy((bearer, next) => {
   return Tokens
     .findOne({
-      where: { token: bearer }
+      where: { token: bearer },
+      include: [
+        { model: Users, as: 'user', attributes: ['id', 'name', 'birthDate', 'gender'] }
+      ]
     })
     .then(token => {
       if (token && token.expires > new Date())

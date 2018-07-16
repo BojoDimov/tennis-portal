@@ -4,7 +4,10 @@ const { Users, Tokens } = require('../db');
 Users.issueToken = (id, ip) => {
   return Tokens
     .findOne({
-      where: { userId: id }
+      where: { userId: id },
+      include: [
+        { model: Users, as: 'user', attributes: ['id', 'name', 'birthDate', 'gender'] }
+      ]
     })
     .then(token => {
       const expires = new Date();
@@ -24,6 +27,10 @@ Users.issueToken = (id, ip) => {
             token: crypto.randomBytes(40).toString('hex').slice(40),
             expires: expires,
             issued: ip
+          }, {
+            include: [
+              { model: Users, as: 'user', attributes: ['id', 'name', 'birthDate', 'gender'] }
+            ]
           });
     });
 }
