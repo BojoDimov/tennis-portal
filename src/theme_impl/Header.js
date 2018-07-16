@@ -60,7 +60,7 @@ export default class Header extends React.Component {
         </div>
 
         <Switch>
-          <Route path="/home" component={HeroComponent} />
+          <Route path="/home" render={() => <HeroComponent isLogged={this.state.user} />} />
         </Switch>
       </div>
     );
@@ -75,9 +75,9 @@ export class HeroComponent extends React.Component {
           <h2>Албена 2018</h2>
         </header>
         <p>Плажът няма да е единственото горещо място</p>
-        <ul className="actions">
+        {!this.props.isLogged ? <ul className="actions">
           <li><Link to="/login" className="button">Включи се!</Link></li>
-        </ul>
+        </ul> : null}
       </section>
     );
   }
