@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const { Status } = require('../enums');
 const { sequelize } = require('../db');
 const { Rankings, Groups, Matches, Draws, Enrollments } = require('../models');
 
@@ -35,6 +36,10 @@ const finalize = (req, res, next) => {
         .get(req.scheme, trn)
         .then(draw => Rankings.update(req.scheme, draw, trn))
         .then(draw => Draws.finalize(req.linkedScheme, draw, trn))
+        .then(() => {
+          req.scheme.status = Status.FINALIZED;
+          return req.scheme.save({ transaction: trn });
+        })
     })
     .then(e => res.json(e))
     .catch(err => next(err, req, res, null));
