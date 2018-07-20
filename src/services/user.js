@@ -10,7 +10,11 @@ export function isAdmin() {
 }
 
 export function getUser() {
-  return JSON.parse(localStorage.getItem('user'));
+  let user = JSON.parse(localStorage.getItem('user'));
+  let token = JSON.parse(localStorage.getItem('token'));
+  if (user && new Date(token.expires) > new Date())
+    return user;
+  else return null;
 }
 
 export function login(token, user) {
@@ -20,7 +24,6 @@ export function login(token, user) {
 }
 
 export function logout() {
-  console.log('logging out');
   localStorage.removeItem('token');
   localStorage.removeItem('user');
   document.dispatchEvent(new CustomEvent('logout'));

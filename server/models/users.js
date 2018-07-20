@@ -27,17 +27,14 @@ Users.issueToken = (id, ip) => {
             token: crypto.randomBytes(40).toString('hex').slice(40),
             expires: expires,
             issued: ip
-          })
-          .then(token => Tokens
-            .findById(token.id, {
-              include: [
-                {
-                  model: Users, as: 'user', attributes: ['id', 'name', 'birthDate', 'gender']
-                }
-              ]
-            })
-          );
-    });
+          });
+    })
+    .then(token => Tokens
+      .findById(token.id, {
+        include: [
+          { model: Users, as: 'user', attributes: ['id', 'name', 'birthDate', 'gender'] }
+        ]
+      }));
 }
 
 module.exports = Users;
