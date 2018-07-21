@@ -6,6 +6,8 @@ import { MessagesContainer } from '../public/Messages';
 import { Breadcrumb } from '../public/Breadcrumb';
 import { ProvideAuthenticatedUser, AuthenticatedUser } from './AuthenticatedUser';
 import { ModalHolder } from '../admin/Infrastructure';
+import '../css/styles.css';
+
 
 const LoginGuard = ({ isLogged }) => {
   if (isLogged)
