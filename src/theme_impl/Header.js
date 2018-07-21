@@ -2,21 +2,46 @@ import React from 'react';
 import { Link, Switch, Route } from 'react-router-dom';
 import { RedirectAction } from '../components';
 import * as UserService from '../services/user';
+import { get } from '../services/fetch';
 
 export default class Header extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: UserService.getUser()
+      user: UserService.getUser(),
+      editions: []
     }
   }
+
   componentDidMount() {
     const e = new CustomEvent('react-load', null);
-    document.dispatchEvent(e);
+
     document.addEventListener('login', ({ detail }) => {
       this.setState({ user: detail.user });
     });
     document.addEventListener('logout', () => this.setState({ user: null }));
+
+    get('/editions')
+      .then(editions => {
+        console.log(editions);
+        this.setState({ editions: editions });
+        document.dispatchEvent(new CustomEvent('react-load'));
+      })
+  }
+
+  getEditionLink(edition, i) {
+    return (
+      <li key={i}>
+        <Link to={`/editions/${edition.id}`}>{edition.name}</Link>
+        <ul>
+          {edition.schemes.map((s, j) => {
+            return (
+              <li key={j}><Link to={`/schemes/${s.id}`}>{s.name}</Link></li>
+            );
+          })}
+        </ul>
+      </li>
+    );
   }
 
   render() {
@@ -28,8 +53,9 @@ export default class Header extends React.Component {
             <ul>
               <li><Link to="/news">Новини</Link></li>
               <li>
-                <a href="#">Турнири</a>
+                <Link to="/editions">Турнири</Link>
                 <ul>
+                  {this.state.editions.map(this.getEditionLink)}
                   <li><a href="#">Лято 2018</a></li>
                   <li><a href="#">Лято 2019</a></li>
                   <li><a href="#">Лято 2020</a></li>
@@ -49,7 +75,7 @@ export default class Header extends React.Component {
               <li className={this.state.user ? "break" : ""}><Link to="/partners">Партньори</Link></li>
               <li></li>
               {this.state.user ? <li>
-                <a><i class="fas fa-user"></i> <span>{this.state.user.name}</span></a>
+                <a><i className="fas fa-user"></i> <span>{this.state.user.name}</span></a>
                 <ul>
                   <li><a href="#">Профил</a></li>
                   <li><Link to="/logout">Изход</Link></li>

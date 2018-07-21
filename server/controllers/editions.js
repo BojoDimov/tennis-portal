@@ -6,9 +6,15 @@ const {
   TournamentSchemes
 } = require('../db');
 
+const auth = require('../middlewares/auth');
+
 const find = (req, res) => {
   return TournamentEditions
-    .findAll()
+    .findAll({
+      include: [
+        { model: TournamentSchemes, as: 'schemes' }
+      ]
+    })
     .then(editions => res.json(editions));
 };
 
@@ -58,8 +64,8 @@ const setStatus = (id, status) => {
 
 router.get('/', find);
 router.get('/:id', get);
-router.get('/:id/publish', publish);
-router.get('/:id/draft', draft);
-router.post('/', create);
-router.post('/edit', edit);
+router.get('/:id/publish', auth, publish);
+router.get('/:id/draft', auth, draft);
+router.post('/', auth, create);
+router.post('/edit', auth, edit);
 module.exports = router;

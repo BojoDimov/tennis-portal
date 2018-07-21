@@ -8,6 +8,8 @@ import Partners from './Partners';
 import Footer from './Footer';
 import Auth from './Auth';
 import LogoutEndpoint from './LogoutEndpoint';
+import Editions from './Editions';
+import Schemes from './Schemes';
 
 
 export class PublicApp extends React.Component {
@@ -21,7 +23,8 @@ export class PublicApp extends React.Component {
           </Route>
           <Route path="/home" component={Home} />
           <Route path="/news" component={News} />
-          <Route path="/tournaments" component={null} />
+          <Route path="/editions/:id" component={Schemes} />
+          <Route path="/editions" component={Editions} />
           <Route path="/ranking" component={Ranking} />
           <Route path="/partners" component={Partners} />
           <Route path="/login" component={Auth} />
