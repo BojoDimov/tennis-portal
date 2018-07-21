@@ -39,7 +39,12 @@ export default class Schemes extends React.Component {
         </div>
 
         <div style={{ flexGrow: 1, textAlign: 'center' }}>
-          SGL 48 | DBL 16
+          {getLimitations(scheme)}
+        </div>
+
+        <div style={{ padding: '1rem' }}>
+          <div>Записване</div>
+          <div>{getLocaleDate(scheme.registrationStart)} - {getLocaleDate(scheme.registrationEnd)}</div>
         </div>
 
         <div>
@@ -81,6 +86,31 @@ function validateEnroll(user, scheme) {
 
   return [errors, messages];
 }
+
+function getLimitations(scheme) {
+  const limitations = [];
+  if (scheme.singleTeams)
+    limitations.push('SGL ' + getSize(scheme));
+  else
+    limitations.push('DBL ' + getSize(scheme));
+  if (scheme.maleTeams)
+    limitations.push('M');
+  if (scheme.femaleTeams)
+    limitations.push('F');
+  if (scheme.mixedTeams)
+    limitations.push('Mixed');
+  if (scheme.ageFrom || scheme.ageTo)
+    limitations.push(scheme.ageFrom + ' - ' + scheme.ageTo);
+
+  return limitations.join(' | ');
+}
+
+function getSize(scheme) {
+  if (scheme.schemeType == 'elimination')
+    return scheme.maxPlayerCount;
+  else return scheme.groupCount * scheme.teamsPerGroup;
+}
+
 
 function canEnroll(user, scheme) {
   if (scheme.singleTeams) {
