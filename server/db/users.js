@@ -16,6 +16,7 @@ module.exports = (db, Sequelize) => {
     name: { type: Sequelize.STRING, allowNull: false },
     birthDate: { type: Sequelize.DATEONLY, allowNull: false },
     telephone: { type: Sequelize.STRING, allowNull: false },
+    isAdmin: { type: Sequelize.BOOLEAN, allowNull: false, default: 'false' },
     gender: {
       type: Sequelize.ENUM,
       allowNull: false,

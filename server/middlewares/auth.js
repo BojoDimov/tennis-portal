@@ -8,7 +8,7 @@ passport.use(new HttpBearerStrategy((bearer, next) => {
     .findOne({
       where: { token: bearer },
       include: [
-        { model: Users, as: 'user', attributes: ['id', 'name', 'birthDate', 'gender'] }
+        { model: Users, as: 'user', attributes: ['id', 'name', 'birthDate', 'gender', 'isAdmin'] }
       ]
     })
     .then(token => {

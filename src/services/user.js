@@ -12,7 +12,7 @@ export function isAdmin() {
 export function getUser() {
   let user = JSON.parse(localStorage.getItem('user'));
   let token = JSON.parse(localStorage.getItem('token'));
-  if (user && new Date(token.expires) > new Date())
+  if (user && token && new Date(token.expires) > new Date())
     return user;
   else return null;
 }

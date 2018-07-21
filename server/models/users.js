@@ -4,10 +4,7 @@ const { Users, Tokens } = require('../db');
 Users.issueToken = (id, ip) => {
   return Tokens
     .findOne({
-      where: { userId: id },
-      include: [
-        { model: Users, as: 'user', attributes: ['id', 'name', 'birthDate', 'gender'] }
-      ]
+      where: { userId: id }
     })
     .then(token => {
       const expires = new Date();
@@ -32,7 +29,7 @@ Users.issueToken = (id, ip) => {
     .then(token => Tokens
       .findById(token.id, {
         include: [
-          { model: Users, as: 'user', attributes: ['id', 'name', 'birthDate', 'gender'] }
+          { model: Users, as: 'user', attributes: ['id', 'name', 'birthDate', 'gender', 'isAdmin'] }
         ]
       }));
 }
