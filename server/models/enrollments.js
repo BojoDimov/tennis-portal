@@ -152,10 +152,71 @@ function dequeue(schemeId, teamId, trn) {
   return transfer(EnrollmentQueues, SchemeEnrollments, schemeId, teamId, trn);
 }
 
+function enroll(schemeId, teamId, mpc, transaction) {
+  return SchemeEnrollments
+    .count({
+      where: {
+        schemeId: schemeId
+      },
+      transaction: transaction
+    })
+    .then(c => {
+      if (c + 1 <= mpc)
+        return SchemeEnrollments.create({ schemeId: schemeId, teamId: teamId }, { transaction: transaction });
+      else
+        return EnrollmentQueues.create({ schemeId: schemeId, teamId: teamId }, { transaction: transaction });
+    });
+}
+
+function cancelEnroll(schemeId, teamId, transaction) {
+  let p1 = SchemeEnrollments.destroy({
+    where: {
+      schemeId: schemeId,
+      teamId: teamId
+    },
+    transaction: transaction
+  });
+
+  let p2 = EnrollmentQueues.destroy({
+    where: {
+      schemeId: schemeId,
+      teamId: teamId
+    },
+    transaction: transaction
+  });
+
+  return Promise.all([p1, p2]);
+}
+
+function getEnrolled(teamId) {
+  let e = SchemeEnrollments.findAll({
+    where: {
+      teamId: teamId
+    }
+  });
+
+  let q = EnrollmentQueues.findAll({
+    where: {
+      teamId: teamId
+    }
+  });
+
+  return Promise.all([e, q])
+    .then(([e, q]) => {
+      return {
+        enrolled: e.map(t => t.schemeId),
+        queue: q.map(t => t.schemeId)
+      }
+    });
+}
+
 module.exports = {
   update,
   get,
   getQueue,
   enqueue,
-  dequeue
+  dequeue,
+  enroll,
+  cancelEnroll,
+  getEnrolled
 };

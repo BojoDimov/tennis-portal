@@ -11,6 +11,7 @@ const auth = require('../middlewares/auth');
 const find = (req, res) => {
   return TournamentEditions
     .findAll({
+      where: req.query,
       include: [
         { model: TournamentSchemes, as: 'schemes' }
       ]

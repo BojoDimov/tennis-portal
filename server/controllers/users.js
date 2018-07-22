@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../middlewares/auth');
 const crypto = require('crypto');
-const { Teams } = require('../models');
+const { Teams, Enrollments } = require('../models');
 
 const registerUser = (req, res, next) => {
   let model = req.body;
@@ -17,6 +17,20 @@ const registerUser = (req, res, next) => {
     .catch(err => next(err, req, res, null));
 }
 
+const getEnrolled = (req, res, next) => {
+  let userId = req.params.id;
+
+  return Teams
+    .findOne({
+      where: {
+        user1Id: userId
+      }
+    })
+    .then(team => Enrollments.getEnrolled(team.id))
+    .then(e => res.json(e));
+}
+
+router.get('/:id/enrolled', auth, getEnrolled);
 router.post('/', registerUser);
 
 module.exports = router;

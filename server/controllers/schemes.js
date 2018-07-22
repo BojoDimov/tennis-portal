@@ -2,8 +2,10 @@ const express = require('express');
 const router = express.Router();
 const {
   Tournaments, TournamentEditions, TournamentSchemes,
-  Enrollments, Groups, Matches, Draws
+  Enrollments, Groups, Matches, Draws, Teams,
 } = require('../models');
+
+const Enums = require('../enums');
 
 const find = (req, res) => {
   return TournamentSchemes
@@ -104,6 +106,38 @@ const attachLinkedScheme = (req, res, next) => {
     .then(() => next());
 }
 
+const enroll = (req, res, next) => {
+  const userId = req.query.userId;
+
+  let sp = TournamentSchemes.findById(req.params.id);
+  let tp = Teams.findOne({ where: { user1Id: userId } });
+
+  return Promise
+    .all([sp, tp])
+    .then(([scheme, team]) => {
+      let mpc = 0;
+      if (scheme.schemeType == Enums.SchemeType.ELIMINATION)
+        mpc = scheme.maxPlayerCount;
+      else if (scheme.schemeType == Enums.SchemeType.ELIMINATION)
+        mpc = scheme.groupCount * scheme.teamsPerGroup;
+
+      return Enrollments.enroll(scheme.id, team.id, mpc);
+    })
+    .then(() => res.json({}));
+}
+
+const cancelEnroll = (req, res, next) => {
+  const userId = req.query.userId;
+
+  let sp = TournamentSchemes.findById(req.params.id);
+  let tp = Teams.findOne({ where: { user1Id: userId } });
+
+  return Promise
+    .all([sp, tp])
+    .then(([scheme, team]) => Enrollments.cancelEnroll(scheme.id, team.id))
+    .then(() => res.json({}));
+}
+
 function setStatus(id, status) {
   return TournamentSchemes
     .findById(id)
@@ -117,6 +151,8 @@ router.post('/edit', edit);
 router.get('/:id/publish', publish);
 router.get('/:id/draft', draft);
 router.get('/:id/enrollments', getEnrollments);
+router.get('/:id/enroll', enroll);
+router.get('/:id/cancelEnroll', cancelEnroll);
 router.get('/:id/queue', getEnrollmentQueues);
 router.use('/:id/draws', attachScheme, attachLinkedScheme, require('./draws'));
 module.exports = router;
