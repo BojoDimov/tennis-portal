@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {
   Tournaments, TournamentEditions, TournamentSchemes,
-  Enrollments, Groups, Matches, Draws, Teams,
+  Enrollments, Groups, Matches, Draws, Teams, Users
 } = require('../models');
 
 const Enums = require('../enums');
@@ -28,6 +28,40 @@ const get = (req, res) => {
     })
     .then(e => res.json(e))
 };
+
+const collect = (req, res) => {
+  const userId = req.query.userId;
+
+  let team = Teams.findOne({
+    where: {
+      user1Id: userId
+    }
+  });
+
+  let scheme = TournamentSchemes
+    .findById(req.params.id, {
+      include: [
+        { model: TournamentEditions }
+      ]
+    });
+
+  return Promise
+    .all([team, scheme])
+    .then(([team, scheme]) => Promise
+      .all([
+        Promise.resolve(team),
+        Promise.resolve(scheme),
+        Enrollments.get(scheme.id),
+        Enrollments.getQueue(scheme.id),
+        Draws.get(scheme)
+      ])
+    )
+    .then(([team, scheme, enrollments, queue, draw]) => {
+      return res.json({
+        team, scheme, enrollments, queue, draw
+      })
+    });
+}
 
 const create = (req, res, next) => {
   let model = req.body;
@@ -146,6 +180,7 @@ function setStatus(id, status) {
 
 router.get('/', find);
 router.get('/:id', get);
+router.get('/:id/collect', collect);
 router.post('/', create);
 router.post('/edit', edit);
 router.get('/:id/publish', publish);
