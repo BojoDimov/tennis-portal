@@ -4,58 +4,63 @@ function update(oldScheme, newScheme) {
   let diff = 0;
   let mode = 'none';
 
-  return Promise
-    .all([
-      get(oldScheme.id),
-      getQueue(oldScheme.id)
-    ])
-    .then(([e, q]) => {
-      if (oldScheme.schemeType == 'elimination')
-        diff = e.length - newScheme.maxPlayerCount;
-      else if (oldScheme.schemeType == 'round-robin')
-        diff = e.length - newScheme.groupCount * newScheme.teamsPerGroup;
+  return sequelize
+    .transaction(function (trn) {
+      return Promise
+        .all([
+          get(oldScheme.id),
+          getQueue(oldScheme.id)
+        ])
+        .then(([e, q]) => {
+          if (oldScheme.schemeType == 'elimination')
+            diff = e.length - newScheme.maxPlayerCount;
+          else if (oldScheme.schemeType == 'round-robin')
+            diff = e.length - newScheme.groupCount * newScheme.teamsPerGroup;
 
-      if (diff > 0)
-        mode = 'remove';
-      else if (diff < 0) {
-        mode = 'add';
-        diff = -1 * diff;
-      }
+          if (diff > 0)
+            mode = 'remove';
+          else if (diff < 0) {
+            mode = 'add';
+            diff = -1 * diff;
+          }
 
-      if (mode == 'remove') {
-        let transferred = e.slice(e.length - diff, e.length);
-        return Promise.all([
-          SchemeEnrollments.destroy({
-            where: {
-              id: transferred.map(t => t.enrollmentId)
-            }
-          }),
-          EnrollmentQueues.bulkCreate(transferred.map(t => {
-            t.schemeId = oldScheme.id;
-            t.userId = t.id;
-            t.id = undefined;
-            return t;
-          }))
-        ]);
-      }
-      else if (mode == 'add') {
-        let transferred = q.slice(0, (diff > q.length ? q.length : diff));
-        return Promise.all([
-          SchemeEnrollments.bulkCreate(transferred.map(t => {
-            t.schemeId = oldScheme.id;
-            t.userId = t.id;
-            t.id = undefined;
-            return t;
-          })),
-          EnrollmentQueues.destroy({
-            where: {
-              id: transferred.map(t => t.enrollmentId)
-            }
-          })
-        ]);
-      }
-    })
-    .then(() => oldScheme);
+          if (mode == 'remove') {
+            let transferred = e.slice(e.length - diff, e.length);
+            return Promise.all([
+              SchemeEnrollments.destroy({
+                where: {
+                  id: transferred.map(t => t.enrollmentId)
+                },
+                transaction: trn
+              }),
+              EnrollmentQueues.bulkCreate(transferred.map(t => {
+                t.schemeId = oldScheme.id;
+                t.teamId = t.id;
+                t.id = undefined;
+                return t;
+              }), { transaction: trn })
+            ]);
+          }
+          else if (mode == 'add') {
+            let transferred = q.slice(0, (diff > q.length ? q.length : diff));
+            return Promise.all([
+              SchemeEnrollments.bulkCreate(transferred.map(t => {
+                t.schemeId = oldScheme.id;
+                t.teamId = t.id;
+                t.id = undefined;
+                return t;
+              }), { transaction: trn }),
+              EnrollmentQueues.destroy({
+                where: {
+                  id: transferred.map(t => t.enrollmentId)
+                },
+                transaction: trn
+              })
+            ]);
+          }
+        })
+        .then(() => oldScheme);
+    });
 }
 
 function get(schemeId) {
