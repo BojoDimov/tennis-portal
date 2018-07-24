@@ -10,13 +10,16 @@ const login = (req, res, next) => {
       where: { email: req.body.email }
     })
     .then(user => {
+      if (!user)
+        throw { name: 'DomainActionError', login: 'invalid credentials' }
+
       let hash = crypto.createHash('sha256');
       hash.update(user.passwordSalt + password);
 
       if (hash.digest('hex').slice(40) === user.passwordHash)
         return Users.issueToken(user.id, req.ip);
       else
-        return { authenticated: false };
+        throw { name: 'DomainActionError', login: 'invalid credentials' }
     })
     .then(token => res.send(token))
     .catch(err => next(err, req, res, null));
