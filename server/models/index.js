@@ -4,6 +4,7 @@ const Draws = require('./draws');
 const Users = require('./users');
 const Enrollments = require('./enrollments');
 const Rankings = require('./rankings');
+const TournamentSchemes = require('./schemes');
 const {
   EnrollmentQueues,
   SchemeEnrollments,
@@ -13,15 +14,15 @@ const {
   Sets,
   Tournaments,
   TournamentEditions,
-  TournamentSchemes,
-  Teams
+  Teams,
+  Invitations
 } = require('../db');
 
 module.exports = {
   Tournaments, TournamentEditions, TournamentSchemes, Rankings,
   Matches, Sets, Groups, GroupTeams, Draws, Teams,
   Enrollments,
-  Tokens, Users, Logs
+  Tokens, Users, Invitations, Logs
 }
 //removed export of them because their usage is anti-pattern: use Enrollments instead
 //SchemeEnrollments, EnrollmentQueues,

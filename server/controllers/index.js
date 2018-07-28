@@ -4,6 +4,7 @@ const auth = require('../middlewares/auth');
 
 router.use('/login', require('./login'))
 router.use('/users', require('./users'));
+router.use('/invitations', auth, require('./invitations'));
 router.use('/tournaments', auth, require('./tournaments'));
 router.use('/editions', require('./editions'));
 router.use('/schemes', require('./schemes'));

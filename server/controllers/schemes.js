@@ -4,8 +4,7 @@ const {
   Tournaments, TournamentEditions, TournamentSchemes,
   Enrollments, Groups, Matches, Draws, Teams, Users
 } = require('../models');
-
-const Enums = require('../enums');
+const db = require('../db');
 
 const find = (req, res) => {
   return TournamentSchemes
@@ -141,21 +140,16 @@ const attachLinkedScheme = (req, res, next) => {
 }
 
 const enroll = (req, res, next) => {
-  const userId = req.query.userId;
-
-  let sp = TournamentSchemes.findById(req.params.id);
-  let tp = Teams.findOne({ where: { user1Id: userId } });
-
-  return Promise
-    .all([sp, tp])
-    .then(([scheme, team]) => {
-      let mpc = 0;
-      if (scheme.schemeType == Enums.SchemeType.ELIMINATION)
-        mpc = scheme.maxPlayerCount;
-      else if (scheme.schemeType == Enums.SchemeType.ELIMINATION)
-        mpc = scheme.groupCount * scheme.teamsPerGroup;
-
-      return Enrollments.enroll(scheme.id, team.id, mpc);
+  return db.sequelize
+    .transaction(function (trn) {
+      return Teams
+        .findOne({
+          where: {
+            user1Id: req.query.userId
+          },
+          transaction: trn
+        })
+        .then(team => TournamentSchemes.enroll(req.params.id, team))
     })
     .then(() => res.json({}));
 }
