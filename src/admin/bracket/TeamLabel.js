@@ -21,6 +21,11 @@ export class TeamLabel extends React.Component {
       return (
         <React.Fragment>
           <Link to={`/users/${this.props.team.user1Id}`}>{this.props.team.user1.name}</Link>
+          {this.props.team.user2 ?
+            <Link style={{ display: 'block' }}
+              to={`/users/${this.props.team.user2Id}`}>
+              {this.props.team.user2.name}
+            </Link> : null}
           <span className="button-group">
             <ConfirmationButton onChange={flag => flag ? this.props.onRemove() : null}>
               <i className="fa fa-times"></i>

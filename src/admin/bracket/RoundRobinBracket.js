@@ -99,7 +99,7 @@ export class BracketGroup extends React.Component {
             <tr key={i}>
               <td className="team-label">
                 <span>{`${t1.order}. `}</span>
-                <TeamLabel team={t1.User}
+                <TeamLabel team={t1.team}
                   schemeId={this.props.group.schemeId}
                   onRemove={() => this.removeTeam(t1.User)}
                   onChange={team => this.addTeam(t1, team)} />

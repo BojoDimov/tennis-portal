@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { SchemeEnrollments, EnrollmentQueues, TournamentSchemes, Users, Rankings, Teams } = require('./db');
+const { SchemeEnrollments, EnrollmentQueues, TournamentSchemes, Users, Rankings, Teams, Sequelize } = require('./db');
 let first = ['Петър', 'Мирослав', 'Евлоги', , 'Големан', 'Божидар', 'Даниел', 'Георги', 'Дилян', 'Борислав', 'Виктор', 'Крум', 'Мартин', 'Милен', 'Димитър', 'Симеон', 'Светослав', 'Веселин', 'Калин', 'Кристиан', 'Мариан', 'Богомил', 'Самуил', 'Тодор', 'Дарин', 'Сава', 'Маргарит', ' Пресиял', 'Павел', 'Бойко', 'Ангел', 'Асен', 'Анко', 'Янко', 'Янислав', 'Фотьо', 'Филип', 'Траян', 'Тишо'];
 let last = ['Димитров', 'Чучуров', 'Гусарев', 'Карпузов', 'Георгиев', 'Измирлиев', 'Петров', 'Савов', 'Сомов', 'Томов', 'Тодоров', 'Тонев', 'Пашов', 'Конедарев', 'Молеров', 'Чакалов', 'Бакалов', 'Събев', 'Тоцев', 'Пърлев'];
 
@@ -90,8 +90,62 @@ const createRanking = (req, res) => {
     .then(e => res.json(e));
 }
 
+const c = (req, res, next) => {
+  Users.findAll()
+    .then(users => {
+      let rem = users.slice(0, req.query.count * 2);
+      let teams = [];
+      for (let i = 0; i < req.query.count; i += 2) {
+        teams.push({
+          user1Id: rem[i].id,
+          user2Id: rem[i + 1].id
+        });
+      }
+
+      return Teams.bulkCreate(teams);
+    })
+    .then(e => res.json(e));
+}
+
+const enrollDoubleTeams = (req, res, next) => {
+  Teams.findAll({
+    where: {
+      [Sequelize.Op.not]: {
+        user2Id: null
+      }
+    }
+  })
+    .then(teams => {
+      let enrollments = teams.map(t => {
+        return {
+          teamId: t.id,
+          schemeId: req.query.schemeId
+        }
+      });
+
+      return TournamentSchemes
+        .findById(req.query.schemeId)
+        .then(scheme => {
+          let e = [];
+          if (scheme.schemeType == 'elimination')
+            e = enrollments.slice(0, scheme.maxPlayerCount);
+          else
+            e = enrollments.slice(0, scheme.groupCount * scheme.teamsPerGroup);
+          let q = enrollments.slice(e.length, enrollments.length);
+
+          return Promise.all([
+            SchemeEnrollments.bulkCreate(e),
+            EnrollmentQueues.bulkCreate(q)
+          ])
+        });
+    })
+    .then(e => res.json(e));
+}
+
 router.get('/createUsers', createUsers);
 router.get('/createRanking', createRanking);
 router.get('/createEnrollments', registerTeams);
+router.get('/createDoubleTeams', c);
+router.get('/enrollDoubleTeams', enrollDoubleTeams);
 
 module.exports = router;
