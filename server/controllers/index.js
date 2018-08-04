@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const auth = require('../middlewares/auth');
 
-router.use('/login', require('./login'))
+router.use('/login', require('./login'));
+router.use('/news', require('./news'));
 router.use('/users', require('./users'));
 router.use('/invitations', auth, require('./invitations'));
 router.use('/tournaments', auth, require('./tournaments'));
