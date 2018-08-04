@@ -22,7 +22,7 @@ module.exports = {
     host: '127.0.0.1',
     port: 5432,
     dialect: 'postgres',
-    logging: true,
+    logging: false,
     pool: {
       max: 5,
       min: 0,

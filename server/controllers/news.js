@@ -41,7 +41,9 @@ const get = (req, res, next) => {
 }
 
 const create = (req, res, next) => {
-
+  return News
+    .create(req.body, { include: 'subsections' })
+    .then(e => res.json(e));
 }
 
 const update = (req, res, next) => {

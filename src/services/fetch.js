@@ -5,6 +5,23 @@ console.log(env);
 console.log(config);
 
 module.exports = {
+  imgUrl: function (id) {
+    return config.backend + `/files/${id}`;
+  },
+  file: function (file) {
+    let data = new FormData();
+    data.append('file', file);
+
+    let options = {
+      method: 'POST',
+      mode: 'cors',
+      body: data
+    }
+
+    return fetch(config.backend + '/files', options)
+      .then(res => error_handler(res))
+      .then(res => res.json());
+  },
   post: function (path, data, onSuccess, onError) {
     let options = {
       body: JSON.stringify(data), // must match 'Content-Type' header

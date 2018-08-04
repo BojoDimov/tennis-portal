@@ -1,17 +1,17 @@
 @keyframes button-transition {
   0% {
     background-color: white;
-    color: #0074B2;
+    color: #518721;
   }
   100% {
-    background-color: #0074B2;
+    background-color: #518721;
     color: white;
   }
 }
 
 @keyframes link-transition {
   0% {
-    color: #0074B2;
+    color: #518721;
   }
   100% {
     color: #505050;
@@ -41,7 +41,7 @@ body {
 
 a {
   text-decoration: none;
-  color: #0074B2;
+  color: #518721;
   font-weight: 700;
 }
 
@@ -113,8 +113,8 @@ a:hover {
   font-weight: 700;
   font-size: 14px;
   font-family: "Open Sans", sans-serif;
-  border: 1px solid #0074B2;
-  color: #0074B2;
+  border: 1px solid #518721;
+  color: #518721;
   border-radius: 5px;
   padding: .2em .5em;
 }
@@ -136,7 +136,7 @@ a:hover {
 
 .button:hover {
   animation: 0.2s ease-in button-transition;
-  background-color: #0074B2;
+  background-color: #518721;
   color: white;
 }
 
@@ -225,17 +225,17 @@ a:hover {
 @keyframes button-transition {
   0% {
     background-color: white;
-    color: #0074B2;
+    color: #518721;
   }
   100% {
-    background-color: #0074B2;
+    background-color: #518721;
     color: white;
   }
 }
 
 @keyframes link-transition {
   0% {
-    color: #0074B2;
+    color: #518721;
   }
   100% {
     color: #505050;
@@ -265,7 +265,7 @@ body {
 
 a {
   text-decoration: none;
-  color: #0074B2;
+  color: #518721;
   font-weight: 700;
 }
 
@@ -337,8 +337,8 @@ a:hover {
   font-weight: 700;
   font-size: 14px;
   font-family: "Open Sans", sans-serif;
-  border: 1px solid #0074B2;
-  color: #0074B2;
+  border: 1px solid #518721;
+  color: #518721;
   border-radius: 5px;
   padding: .2em .5em;
 }
@@ -360,7 +360,7 @@ a:hover {
 
 .button:hover {
   animation: 0.2s ease-in button-transition;
-  background-color: #0074B2;
+  background-color: #518721;
   color: white;
 }
 
@@ -572,7 +572,7 @@ table .score sup {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #0074B2;
+  background: #518721;
   color: white;
   top: 0;
   left: 0;
