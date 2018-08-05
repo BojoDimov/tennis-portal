@@ -1,8 +1,8 @@
 import React from 'react';
-import { file, imgUrl, post } from '../../services/fetch';
+import { file, imgUrl, post, get } from '../../services/fetch';
 import { ConfirmationButton } from '../Infrastructure';
 
-export class Create extends React.Component {
+export class Edit extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -22,10 +22,13 @@ export class Create extends React.Component {
       if (input.files[0])
         file(input.files[0]).then(e => this.setState({ fileId: e.id }));
     });
+
+    get(`/news/${this.props.match.params.id}`)
+      .then(e => this.setState(e));
   }
 
   save() {
-    post('/news', this.state)
+    post(`/news/${this.props.match.params.id}`, this.state)
       .then(e => {
         this.props.onChange();
         this.props.history.push('/news')
@@ -36,10 +39,18 @@ export class Create extends React.Component {
     this.setState({
       subsections: this.state.subsections.concat({
         heading: '',
-        body: ''
+        body: '',
+        parentId: this.state.id
       })
     });
   }
+
+  removeSection(index) {
+    let ss = this.state.subsections;
+    ss.splice(index, 1);
+    this.setState({ subsections: ss });
+  }
+
 
   update(what, where, newVal) {
     let subsections = this.state.subsections;
@@ -50,7 +61,7 @@ export class Create extends React.Component {
   render() {
     return (
       <div className="form-container">
-        <h2 className="form-box">Добавяне на новина</h2>
+        <h2 className="form-box">Промяна на новина</h2>
         <form style={{ width: '100%' }}>
           <div className="input-group">
             <label>Изображение</label>
@@ -101,6 +112,9 @@ export class Create extends React.Component {
                   style={{ width: '100%', height: '15rem' }}
                   value={ss.body}
                   onChange={e => this.update('body', i, e.target.value)} />
+              </div>
+              <div className="input-group" onClick={() => this.removeSection(i)}>
+                <i className="button fa fa-times" ></i>
               </div>
             </React.Fragment>
           ))}
