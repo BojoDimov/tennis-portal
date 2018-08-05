@@ -43,8 +43,8 @@ export class BracketGroup extends React.Component {
       schemeId: this.props.group.schemeId,
       team1Id: t1.teamId,
       team2Id: t2.teamId,
-      team1: t1.User,
-      team2: t2.User,
+      team1: t1.team,
+      team2: t2.team,
       sets: []
     };
   }

@@ -81,13 +81,28 @@ export class MatchScoreForm extends React.Component {
           </thead>
           <tbody>
             <tr>
-              <td>{this.props.match.team1.user1.name}</td>
+              <td>
+                <div style={{ width: '10rem', fontSize: '.8rem' }}>
+                  {this.props.match.team1.user1.name}
+                </div>
+                <div style={{ width: '10rem', fontSize: '.8rem' }}>
+                  {this.props.match.team1.user2 ? this.props.match.team1.user2.name : null}
+                </div>
+              </td>
+
               {this.state.sets.map((set, i) => (
                 <td key={i}><input type="text" disabled={set.disabled} value={set.team1} onChange={(e) => this.handle_input(e.target.value, i, 1)} /></td>
               ))}
             </tr>
             <tr>
-              <td>{this.props.match.team2.user1.name}</td>
+              <td>
+                <div style={{ width: '10rem', fontSize: '.8rem' }}>
+                  {this.props.match.team2.user1.name}
+                </div>
+                <div style={{ width: '10rem', fontSize: '.8rem' }}>
+                  {this.props.match.team2.user2 ? this.props.match.team1.user2.name : null}
+                </div>
+              </td>
               {this.state.sets.map((set, i) => (
                 <td key={i}><input type="text" disabled={set.disabled} value={set.team2} onChange={(e) => this.handle_input(e.target.value, i, 2)} /></td>
               ))}
