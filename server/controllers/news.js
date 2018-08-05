@@ -10,7 +10,10 @@ const filter = (req, res, next) => {
 
   return News
     .findAll({
-      where: req.query
+      where: req.query,
+      order: [
+        ['createdAt', 'desc']
+      ]
     })
     .then(e => res.json(e));
 }
@@ -37,7 +40,7 @@ function _get(req) {
         parentId: null
       },
       include: [{ model: News, as: 'subsections' }],
-      order: [['id', 'asc']]
+      order: [['subsections', 'order', 'asc']]
     });
 }
 

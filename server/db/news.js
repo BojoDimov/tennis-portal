@@ -3,6 +3,7 @@ module.exports = (db, Sequelize) => {
     heading: Sequelize.TEXT,
     subject: Sequelize.TEXT,
     body: Sequelize.TEXT,
+    order: Sequelize.INTEGER,
     author: { type: Sequelize.STRING, allowNull: true }
   });
 

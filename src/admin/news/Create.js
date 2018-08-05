@@ -36,7 +36,8 @@ export class Create extends React.Component {
     this.setState({
       subsections: this.state.subsections.concat({
         heading: '',
-        body: ''
+        body: '',
+        order: this.state.subsections.length
       })
     });
   }
