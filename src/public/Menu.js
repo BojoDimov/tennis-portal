@@ -18,15 +18,20 @@ export class Menu extends React.Component {
     return (
       <div id="menu">
 
-
-        <div className="dropdown" onClick={() => this.setState({ showMenuDrop: !this.state.showMenuDrop })}>
-          <i className="fas fa-bars" ></i>
-          {this.state.showMenuDrop ?
-            <div style={{ width: '10rem' }} className="dropdown-content" onClick={() => this.setState({ showMenuDrop: !this.state.showMenuDrop })}>
-              <Link style={{ display: 'block' }} to="/news">Преглед на новни</Link>
-              <Link to="/news/create">Нова новина</Link>
-            </div> : null}
-        </div>
+        <AuthenticatedUser>
+          {user => (
+            user.isLogged ?
+              <div className="dropdown" onClick={() => this.setState({ showMenuDrop: !this.state.showMenuDrop })}>
+                <i className="fas fa-bars" ></i>
+                {this.state.showMenuDrop ?
+                  <div style={{ width: '10rem' }} className="dropdown-content" onClick={() => this.setState({ showMenuDrop: !this.state.showMenuDrop })}>
+                    <Link to="/tournaments">Турнири</Link>
+                    <Link style={{ display: 'block' }} to="/news">Новни</Link>
+                    <Link to="/news/create">Нова новина</Link>
+                  </div> : null}
+              </div> : null
+          )}
+        </AuthenticatedUser>
 
         <AuthenticatedUser>
           {user => (

@@ -8,12 +8,10 @@ export class LoginComponent extends Component {
   login() {
     return post('/login', this.state, 'Добре дошли!')
       .then(res => {
-        window.localStorage.setItem('token', JSON.stringify(res));
-        // return 
-        this.props.onChange();
-        //window.location.replace('/');
-
-        // onKeyPress = (e) => e.key == 'Enter' ? this.login()
+        if (res.user.isAdmin) {
+          window.localStorage.setItem('token', JSON.stringify(res));
+          this.props.onChange();
+        }
       });
   }
 
