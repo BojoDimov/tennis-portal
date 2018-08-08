@@ -17,14 +17,17 @@ const {
   Teams,
   Invitations,
   News,
-  Files
+  Files,
+  SmtpCredentials,
+  UserDetails
 } = require('../db');
 
 module.exports = {
   Tournaments, TournamentEditions, TournamentSchemes, Rankings,
   Matches, Sets, Groups, GroupTeams, Draws, Teams,
   Enrollments,
-  Tokens, Users, Invitations, Logs, News, Files
+  Tokens, Users, Invitations, Logs, News, Files,
+  SmtpCredentials, UserDetails
 }
 //removed export of them because their usage is anti-pattern: use Enrollments instead
 //SchemeEnrollments, EnrollmentQueues,

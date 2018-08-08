@@ -12,5 +12,10 @@ module.exports = {
   Gender: {
     MALE: 'male',
     FEMALE: 'female'
+  },
+  EmailType: {
+    REGISTER: 'register',
+    UNREGISTER: 'unregister',
+    CUSTOM: 'custom'
   }
 }

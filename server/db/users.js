@@ -17,6 +17,7 @@ module.exports = (db, Sequelize) => {
     birthDate: { type: Sequelize.DATEONLY, allowNull: false },
     telephone: { type: Sequelize.STRING, allowNull: false },
     isAdmin: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false },
+    isSystemAdministrator: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false },
     gender: {
       type: Sequelize.ENUM,
       allowNull: false,
@@ -29,6 +30,14 @@ module.exports = (db, Sequelize) => {
       foreignKey: {
         name: 'userId',
         allowNull: false
+      }
+    });
+
+    models.Users.hasOne(models.SmtpCredentials, {
+      as: 'smtp',
+      foreignKey: {
+        name: 'userId',
+        allowNull: true
       }
     });
   }

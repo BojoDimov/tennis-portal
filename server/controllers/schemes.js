@@ -2,9 +2,12 @@ const express = require('express');
 const router = express.Router();
 const {
   Tournaments, TournamentEditions, TournamentSchemes,
-  Enrollments, Groups, Matches, Draws, Teams, Users
+  Enrollments, Groups, Matches, Draws, Teams, Users, SmtpCredentials
 } = require('../models');
 const db = require('../db');
+const { EmailType } = require('../enums');
+const { sendEmail } = require('../emailService');
+const auth = require('../middlewares/auth');
 
 const find = (req, res) => {
   return TournamentSchemes
@@ -14,9 +17,9 @@ const find = (req, res) => {
     .then(schemes => res.json(schemes));
 };
 
-const get = (req, res) => {
+function _get(id) {
   return TournamentSchemes
-    .findById(req.params.id, {
+    .findById(id, {
       include: [
         {
           model: TournamentEditions,
@@ -24,8 +27,11 @@ const get = (req, res) => {
             { model: Tournaments }]
         }
       ]
-    })
-    .then(e => res.json(e))
+    });
+}
+
+const get = (req, res) => {
+  return _get(req.params.id).then(e => res.json(e));
 };
 
 const collect = (req, res) => {
@@ -151,7 +157,10 @@ const enroll = (req, res, next) => {
         })
         .then(team => TournamentSchemes.enroll(req.params.id, team))
     })
-    .then(() => res.json({}));
+    .then(() => {
+      enrollmentEmail(req, EmailType.REGISTER);
+      return res.json({});
+    });
 }
 
 const cancelEnroll = (req, res, next) => {
@@ -163,7 +172,33 @@ const cancelEnroll = (req, res, next) => {
   return Promise
     .all([sp, tp])
     .then(([scheme, team]) => Enrollments.cancelEnroll(scheme.id, team.id))
-    .then(() => res.json({}));
+    .then(() => {
+      enrollmentEmail(req, EmailType.UNREGISTER);
+      return res.json({});
+    });
+}
+
+function enrollmentEmail(req, emailType) {
+  return Promise
+    .all([
+      _get(req.params.id),
+      Users.findOne({
+        where: { id: req.query.userId }
+      }),
+      Users.findOne({
+        where: {
+          isSystemAdministrator: true
+        },
+        include: [{ model: SmtpCredentials, as: 'smtp' }]
+      })
+    ])
+    .then(([scheme, user, sysadmin]) => sendEmail(emailType, sysadmin.smtp, {
+      tournamentName: scheme.TournamentEdition.Tournament.name,
+      editionName: scheme.TournamentEdition.name,
+      schemeName: scheme.name
+    },
+      [user.email]
+    ));
 }
 
 function setStatus(id, status) {
@@ -174,14 +209,14 @@ function setStatus(id, status) {
 
 router.get('/', find);
 router.get('/:id', get);
-router.get('/:id/collect', collect);
-router.post('/', create);
-router.post('/edit', edit);
-router.get('/:id/publish', publish);
-router.get('/:id/draft', draft);
+router.get('/:id/collect', auth, collect);
+router.post('/', auth, create);
+router.post('/edit', auth, edit);
+router.get('/:id/publish', auth, publish);
+router.get('/:id/draft', auth, draft);
 router.get('/:id/enrollments', getEnrollments);
-router.get('/:id/enroll', enroll);
-router.get('/:id/cancelEnroll', cancelEnroll);
+router.get('/:id/enroll', auth, enroll);
+router.get('/:id/cancelEnroll', auth, cancelEnroll);
 router.get('/:id/queue', getEnrollmentQueues);
 router.use('/:id/draws', attachScheme, attachLinkedScheme, require('./draws'));
 module.exports = router;
