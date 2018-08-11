@@ -17,5 +17,19 @@ module.exports = {
     REGISTER: 'register',
     UNREGISTER: 'unregister',
     CUSTOM: 'custom'
+  },
+  CourtType: {
+    CLAY: 'clay',
+    HARD: 'hard',
+    GRASS: 'grass',
+    INDOOR: 'indoor'
+  },
+  BackhandType: {
+    ONE: '1h',
+    TWO: '2h'
+  },
+  PlayStyle: {
+    LEFT: 'left-handed',
+    RIGHT: 'right-handed'
   }
 }
