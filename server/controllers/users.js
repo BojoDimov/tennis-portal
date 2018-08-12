@@ -6,6 +6,7 @@ const { Teams, Enrollments, UserDetails, Users, UserActivationCodes, SmtpCredent
 const Op = require('../db').Sequelize.Op;
 const { sendEmail } = require('../emailService');
 const { EmailType } = require('../enums');
+const db = require('../db');
 var config = require(__dirname + '/../../config.js');
 
 function setPassword(model, password) {
@@ -49,20 +50,24 @@ const sendPasswordRecovery = (req, res, next) => {
 }
 
 const acceptPasswordRecovery = (req, res, next) => {
-  return UserActivationCodes
-    .findOne({
-      where: {
-        token: req.body.token
-      },
-      include: [{ model: Users, as: 'user' }]
+
+  return db.sequelize
+    .transaction(function (trn) {
+      return UserActivationCodes
+        .findOne({
+          where: {
+            token: req.body.token
+          },
+          include: [{ model: Users, as: 'user' }]
+        })
+        .then(uac => {
+          if (uac == null || uac.user.birthDate != req.body.birthDate)
+            next({ name: 'DomainActionError', message: 'Invalid action: recover account' }, req, res, null);
+          setPassword(uac.user, req.body.password);
+          return uac.user.save({ transaction: trn });
+        })
+        .then(() => UserActivationCodes.destroy({ where: { token: req.body.token }, transaction: trn }))
     })
-    .then(uac => {
-      if (uac == null || uac.user.birthDate != req.body.birthDate)
-        next({ name: 'DomainActionError', message: 'Invalid action: recover account' }, req, res, null);
-      setPassword(uac.user, req.body.password);
-      return uac.user.save();
-    })
-    .then(() => UserActivationCodes.destroy({ where: { token: req.body.token } }))
     .then(() => res.json({}));
 }
 
