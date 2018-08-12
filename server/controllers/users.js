@@ -3,6 +3,7 @@ const router = express.Router();
 const auth = require('../middlewares/auth');
 const crypto = require('crypto');
 const { Teams, Enrollments, UserDetails, Users } = require('../models');
+const Op = require('../db').Sequelize.Op;
 
 const registerUser = (req, res, next) => {
   let model = req.body;
@@ -50,12 +51,15 @@ const getEnrolled = (req, res, next) => {
   let userId = req.params.id;
 
   return Teams
-    .findOne({
+    .findAll({
       where: {
-        user1Id: userId
+        [Op.or]: {
+          user1Id: userId,
+          user2Id: userId
+        }
       }
     })
-    .then(team => Enrollments.getEnrolled(team.id))
+    .then(teams => Enrollments.getEnrolled(teams.map(e => e.id)))
     .then(e => res.json(e));
 }
 

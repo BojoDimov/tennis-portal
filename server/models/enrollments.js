@@ -173,36 +173,46 @@ function enroll(schemeId, teamId, mpc, transaction) {
     });
 }
 
-function cancelEnroll(schemeId, teamId, transaction) {
-  let p1 = SchemeEnrollments.destroy({
+function cancelEnroll(schemeId, teams, transaction) {
+  let p1 = SchemeEnrollments.findAll({
     where: {
       schemeId: schemeId,
-      teamId: teamId
+      teamId: teams
     },
     transaction: transaction
   });
 
-  let p2 = EnrollmentQueues.destroy({
+  let p2 = EnrollmentQueues.findAll({
     where: {
       schemeId: schemeId,
-      teamId: teamId
+      teamId: teams
     },
     transaction: transaction
   });
 
-  return Promise.all([p1, p2]);
+  //found item will always be only one
+  return Promise
+    .all([p1, p2])
+    .then(([e1, e2]) => {
+      return Promise
+        .all([
+          e1.concat(e2)[0].teamId,
+          e1.concat(e2)[0].destroy()
+        ]);
+    })
+    .then(([teamId, _]) => teamId);
 }
 
-function getEnrolled(teamId) {
+function getEnrolled(teams) {
   let e = SchemeEnrollments.findAll({
     where: {
-      teamId: teamId
+      teamId: teams
     }
   });
 
   let q = EnrollmentQueues.findAll({
     where: {
-      teamId: teamId
+      teamId: teams
     }
   });
 

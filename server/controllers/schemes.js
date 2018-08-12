@@ -158,8 +158,8 @@ const enroll = (req, res, next) => {
         })
         .then(team => TournamentSchemes.enroll(req.params.id, team))
     })
-    .then(() => {
-      enrollmentEmail(req, EmailType.REGISTER);
+    .then(({ teamId }) => {
+      notifyTeam(req.params.id, teamId, EmailType.REGISTER);
       return res.json({});
     });
 }
@@ -168,23 +168,30 @@ const cancelEnroll = (req, res, next) => {
   const userId = req.query.userId;
 
   let sp = TournamentSchemes.findById(req.params.id);
-  let tp = Teams.findOne({ where: { user1Id: userId } });
+  let tp = Teams.findAll({
+    where: {
+      [Op.or]: {
+        user1Id: userId,
+        user2Id: userId
+      }
+    }
+  });
 
   return Promise
     .all([sp, tp])
-    .then(([scheme, team]) => Enrollments.cancelEnroll(scheme.id, team.id))
-    .then(() => {
-      enrollmentEmail(req, EmailType.UNREGISTER);
+    .then(([scheme, teams]) => Enrollments.cancelEnroll(scheme.id, teams.map(t => t.id)))
+    .then(teamId => {
+      notifyTeam(req.params.id, teamId, EmailType.UNREGISTER);
       return res.json({});
     });
 }
 
-function enrollmentEmail(req, emailType) {
+function notifyTeam(schemeId, teamId, emailType) {
   return Promise
     .all([
-      _get(req.params.id),
-      Users.findOne({
-        where: { id: req.query.userId }
+      _get(schemeId),
+      Teams.findById(teamId, {
+        include: [{ model: Users, as: 'user1' }, { model: Users, as: 'user2' }]
       }),
       Users.findOne({
         where: {
@@ -193,12 +200,12 @@ function enrollmentEmail(req, emailType) {
         include: [{ model: SmtpCredentials, as: 'smtp' }]
       })
     ])
-    .then(([scheme, user, sysadmin]) => sendEmail(emailType, sysadmin.smtp, {
+    .then(([scheme, team, sysadmin]) => sendEmail(emailType, sysadmin.smtp, {
       tournamentName: scheme.TournamentEdition.Tournament.name,
       editionName: scheme.TournamentEdition.name,
       schemeName: scheme.name
     },
-      [user.email]
+      [team.user1.email].concat((team.user2 ? [team.user2.email] : []))
     ));
 }
 
