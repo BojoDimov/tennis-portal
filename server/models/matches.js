@@ -98,6 +98,13 @@ Matches.getWinner = function (match) {
     winner = match.sets[match.sets.length - 1].team1 > match.sets[match.sets.length - 1].team2 ?
       match.team1Id : match.team2Id;
 
+  if (match.team2Id == null)
+    winner = match.team1Id;
+  if (match.team1Id == null)
+    winner = match.team2Id;
+  if (match.team1Id == null && match.team2Id == null)
+    winner = null;
+
   return winner;
 }
 

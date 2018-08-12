@@ -33,7 +33,8 @@ const removeTeam = (req, res, next) => {
 
           return Promise.all([
             Enrollments.enqueue(match.schemeId, team.id, trn),
-            match.save({ transaction: trn })
+            match.save({ transaction: trn }),
+            Matches.manageNextMatch(match, trn)
           ]);
         });
     })
