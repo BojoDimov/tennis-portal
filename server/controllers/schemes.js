@@ -5,6 +5,7 @@ const {
   Enrollments, Groups, Matches, Draws, Teams, Users, SmtpCredentials
 } = require('../models');
 const db = require('../db');
+const Op = db.Sequelize.Op;
 const { EmailType } = require('../enums');
 const { sendEmail } = require('../emailService');
 const auth = require('../middlewares/auth');
@@ -209,7 +210,7 @@ function setStatus(id, status) {
 
 router.get('/', find);
 router.get('/:id', get);
-router.get('/:id/collect', auth, collect);
+router.get('/:id/collect', collect);
 router.post('/', auth, create);
 router.post('/edit', auth, edit);
 router.get('/:id/publish', auth, publish);
