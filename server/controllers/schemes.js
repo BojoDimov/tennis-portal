@@ -2,13 +2,14 @@ const express = require('express');
 const router = express.Router();
 const {
   Tournaments, TournamentEditions, TournamentSchemes,
-  Enrollments, Groups, Matches, Draws, Teams, Users, SmtpCredentials
+  Enrollments, Groups, Matches, Draws, Teams, Users, SmtpCredentials, Sets
 } = require('../models');
 const db = require('../db');
 const Op = db.Sequelize.Op;
 const { EmailType } = require('../enums');
 const { sendEmail } = require('../emailService');
 const auth = require('../middlewares/auth');
+const Enums = require('../enums');
 
 const find = (req, res) => {
   return TournamentSchemes
@@ -34,6 +35,29 @@ function _get(id) {
 const get = (req, res) => {
   return _get(req.params.id).then(e => res.json(e));
 };
+
+const getWinner = (req, res, next) => {
+  if (req.scheme.status != Enums.Status.FINALIZED)
+    next({ name: 'DomainActionError', message: 'Invalid action: get winner' }, req, res, null);
+
+  return Matches
+    .findAll({
+      where: {
+        schemeId: req.params.id
+      },
+      include: [
+        { model: Sets, as: 'sets' }
+      ],
+      order: [['round', 'desc'], ['match', 'desc']]
+    })
+    .then(matches => {
+      if (matches[0].team1Id != null)
+        return matches[0].team1Id;
+      else return matches[0].team2Id;
+    })
+    .then(teamId => Teams.findById(teamId, { include: Teams.getAggregateRoot() }))
+    .then(e => res.json(e));
+}
 
 const collect = (req, res) => {
   const userId = req.query.userId;
@@ -217,6 +241,7 @@ function setStatus(id, status) {
 
 router.get('/', find);
 router.get('/:id', get);
+router.get('/:id/winner', attachScheme, getWinner);
 router.get('/:id/collect', collect);
 router.post('/', auth, create);
 router.post('/edit', auth, edit);

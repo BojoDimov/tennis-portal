@@ -32,8 +32,8 @@ module.exports = (db, Sequelize) => {
 
     models.Teams.getAggregateRoot = function () {
       return [
-        { model: models.Users, as: 'user1', attributes: ['name', 'gender', 'birthDate'] },
-        { model: models.Users, as: 'user2', attributes: ['name', 'gender', 'birthDate'] }
+        { model: models.Users, as: 'user1', attributes: ['id', 'name', 'gender', 'birthDate'] },
+        { model: models.Users, as: 'user2', attributes: ['id', 'name', 'gender', 'birthDate'] }
       ];
     }
   }
