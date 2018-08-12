@@ -16,6 +16,7 @@ module.exports = {
   EmailType: {
     REGISTER: 'register',
     UNREGISTER: 'unregister',
+    RECOVERY: 'recovery',
     CUSTOM: 'custom'
   },
   CourtType: {

@@ -30,5 +30,6 @@ module.exports = {
       idle: 10000
     },
     operatorsAliases: false
-  }
+  },
+  frontEnd: 'http://104.199.101.33'
 }

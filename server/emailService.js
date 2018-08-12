@@ -7,9 +7,9 @@ const TEMPLATES = {
       subject: `Записване за турнир`,
       body: `<p>Здравейте, бяхте записан за турнир ${scope.tournamentName} - ${scope.editionName} - ${scope.schemeName}.</p>
       <p>Това съобщение е автоматично генерирано, моля не изпращайте отговор</p>
-      <p>За контакти и въпроси: Ивайло Коев
+      <pre>За контакти и въпроси: Ивайло Коев
       тел: +359 883 326 235
-      e-mail: tournaments@smilevent.net</p>`
+      e-mail: tournaments@smilevent.net</pre>`
     };
   },
   [EmailType.UNREGISTER]: function (scope) {
@@ -17,10 +17,27 @@ const TEMPLATES = {
       subject: `Отписване от турнир`,
       body: `<p>Здравейте, бяхте отписан от турнир ${scope.tournamentName} - ${scope.editionName} - ${scope.schemeName}.</p>
       <p>Това съобщение е автоматично генерирано, моля не изпращайте отговор</p>
-      <p>За контакти и въпроси: Ивайло Коев
+      <pre>За контакти и въпроси: Ивайло Коев
       тел: +359 883 326 235
-      e-mail: tournaments@smilevent.net</p>`
+      e-mail: tournaments@smilevent.net</pre>`
     };
+  },
+  [EmailType.RECOVERY]: function (scope) {
+    return {
+      subject: `Възстановяване на забравена парола`,
+      body: `
+      <pre>
+        Здравейте, използвайте <a href="${scope.recovery}">този</a> линк
+        за да изберете нова парола за своя акаунт в SmileCup.
+      </pre>
+      <pre>
+        Това съобщение е автоматично генерирано, моля не изпращайте отговор.
+        За контакти и въпроси: Ивайло Коев
+        тел: +359 883 326 235
+        e-mail: tournaments@smilevent.net
+      </pre>
+      `
+    }
   }
 }
 
