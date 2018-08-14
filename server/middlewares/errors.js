@@ -6,6 +6,12 @@ module.exports = (err, req, res, next) => {
     err.errors.forEach(e => result[e.path] = e.message);
     res.status(422).send(result);
   }
+  else if (err.name === 'SequelizeUniqueConstraintError') {
+    const result = {}
+    const keys = Object.keys(err.fields);
+    keys.forEach(key => result[key + '_uq'] = err.fields[key]);
+    res.status(422).send(result);
+  }
   else if (err.name === 'DomainActionError') {
     res.status(422).send(err);
   }

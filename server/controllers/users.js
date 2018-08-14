@@ -9,16 +9,31 @@ const { EmailType } = require('../enums');
 const db = require('../db');
 var config = require(__dirname + '/../../config.js');
 
+function validatePassword(password) {
+  let isValid = password.match(/(?=.*\d)(?=.*[a-z, а-я])(?=.*[A-Z, А-Я]).{8,}/);
+  if (!isValid)
+    throw { name: 'DomainActionError', password: true };
+}
+
 function setPassword(model, password) {
+  validatePassword(password);
   let hash = crypto.createHash('sha256');
   model.passwordSalt = crypto.randomBytes(16).toString('hex').slice(16);
   hash.update(model.passwordSalt + password);
   model.passwordHash = hash.digest('hex').slice(40);
 }
 
+
 const registerUser = (req, res, next) => {
   let model = req.body;
-  setPassword(model, req.body.password);
+
+  try {
+    setPassword(model, req.body.password);
+  }
+  catch (err) {
+    next(err, req, res, null);
+  }
+
   model.details = {};
   return Teams
     .create({ user1: model, user1Id: -1 }, {

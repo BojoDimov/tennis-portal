@@ -7,15 +7,33 @@ module.exports = (db, Sequelize) => {
       allowNull: false,
       unique: true,
       validate: {
-        notEmpty: true,
+        isEmail: true
       },
       unique: true
     },
     passwordHash: { type: Sequelize.STRING(40), allowNull: false },
     passwordSalt: { type: Sequelize.STRING(16), allowNull: false },
-    name: { type: Sequelize.STRING, allowNull: false },
-    birthDate: { type: Sequelize.DATEONLY, allowNull: false },
-    telephone: { type: Sequelize.STRING, allowNull: false },
+    name: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        is: /^[А-я, ]+$/
+      }
+    },
+    birthDate: {
+      type: Sequelize.DATEONLY,
+      allowNull: false,
+      validate: {
+        isAfter: "1850-01-01"
+      }
+    },
+    telephone: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        is: /^[0-9,+,(,)]+$/
+      }
+    },
     isAdmin: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false },
     isSystemAdministrator: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false },
     gender: {
