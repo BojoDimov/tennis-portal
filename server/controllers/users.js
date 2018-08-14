@@ -76,13 +76,18 @@ const acceptPasswordRecovery = (req, res, next) => {
           include: [{ model: Users, as: 'user' }]
         })
         .then(uac => {
-          if (uac == null || uac.user.birthDate != req.body.birthDate)
-            next({ name: 'DomainActionError', message: 'Invalid action: recover account' }, req, res, null);
+          if (uac == null)
+            throw { name: 'DomainActionError', invalidToken: true };
+
+          if (uac.user.birthDate != req.body.birthDate)
+            throw { name: 'DomainActionError', birthDate: true };
+
           setPassword(uac.user, req.body.password);
           return uac.user.save({ transaction: trn });
         })
         .then(() => UserActivationCodes.destroy({ where: { token: req.body.token }, transaction: trn }))
     })
+    .catch(err => next(err, req, res, null))
     .then(() => res.json({}));
 }
 
