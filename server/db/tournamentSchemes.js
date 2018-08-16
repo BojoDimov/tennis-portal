@@ -74,11 +74,11 @@ module.exports = (db, Sequelize) => {
             throw new Error('Age from must be <= Age to');
         },
         registrationStartEnd() {
-          if (this.registrationStart > this.registrationEnd)
+          if (new Date(this.registrationStart) > new Date(this.registrationEnd))
             throw new Error('Registration start date cannot be after registration end date');
         },
         tournamentDate() {
-          if (this.date < this.registrationStart)
+          if (this.date < new Date(this.registrationStart))
             throw new Error('Tournament start cannot be before registration start date');
         },
         schemeFormat() {

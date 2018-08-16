@@ -13,9 +13,7 @@ Users.issueToken = (id, ip) => {
       if (token)
         return token
           .update({
-            token: crypto.randomBytes(40).toString('hex').slice(40),
-            expires: expires,
-            issued: ip
+            expires: expires
           });
       else
         return Tokens

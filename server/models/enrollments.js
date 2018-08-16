@@ -166,7 +166,7 @@ function enroll(schemeId, teamId, mpc, registrationEnd, transaction) {
       transaction: transaction
     })
     .then(c => {
-      if (c + 1 <= mpc && registrationEnd > new Date())
+      if (c + 1 <= mpc && new Date(registrationEnd) > new Date())
         return SchemeEnrollments.create({ schemeId: schemeId, teamId: teamId }, { transaction: transaction });
       else
         return EnrollmentQueues.create({ schemeId: schemeId, teamId: teamId }, { transaction: transaction });
