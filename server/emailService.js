@@ -5,7 +5,7 @@ const TEMPLATES = {
   [EmailType.REGISTER]: function (scope) {
     return {
       subject: `Записване за турнир`,
-      body: `<p>Здравейте, бяхте записан за турнир ${scope.tournamentName} - ${scope.editionName} - ${scope.schemeName}.</p>
+      body: `<pre>Здравейте, бяхте записан за турнир ${scope.tournamentName} - ${scope.editionName} - ${scope.schemeName}.</pre>
       <pre>
         Това съобщение е автоматично генерирано, моля не изпращайте отговор.
         За контакти и въпроси: Ивайло Коев
@@ -18,7 +18,7 @@ const TEMPLATES = {
   [EmailType.UNREGISTER]: function (scope) {
     return {
       subject: `Отписване от турнир`,
-      body: `<p>Здравейте, бяхте отписан от турнир ${scope.tournamentName} - ${scope.editionName} - ${scope.schemeName}.</p>
+      body: `<pre>Здравейте, бяхте отписан от турнир ${scope.tournamentName} - ${scope.editionName} - ${scope.schemeName}.</pre>
       <pre>
         Това съобщение е автоматично генерирано, моля не изпращайте отговор.
         За контакти и въпроси: Ивайло Коев

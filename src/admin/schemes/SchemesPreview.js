@@ -26,7 +26,8 @@ export class SchemesPreview extends React.Component {
   }
 
   finishDraw() {
-    return get(`/schemes/${this.props.schemes[this.state.active].id}/draws/finalize`);
+    return get(`/schemes/${this.props.schemes[this.state.active].id}/draws/finalize`)
+      .then(e => this.setState({ draw: e }));
   }
 
   render() {

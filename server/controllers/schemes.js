@@ -72,7 +72,8 @@ const collect = (req, res) => {
   let scheme = TournamentSchemes
     .findById(req.params.id, {
       include: [
-        { model: TournamentEditions }
+        { model: TournamentEditions },
+        { model: TournamentSchemes, as: 'groupPhase' }
       ]
     });
 

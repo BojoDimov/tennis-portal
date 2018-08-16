@@ -19,16 +19,16 @@ function update(scheme, draw, trn) {
       let keys = Object.keys(points).filter(e => e != "null").map(e => parseInt(e));
       return Promise.all([points, Rankings.findAll({
         where: {
-          userId: keys,
+          teamId: keys,
           tournamentId: scheme.TournamentEdition.Tournament.id
         },
         transaction: trn
       })])
     })
     .then(([points, rankings]) => {
-      var create = Object.keys(points).filter(k => k != "null" && !rankings.find(r => r.userId == k)).map(k => {
+      var create = Object.keys(points).filter(k => k != "null" && !rankings.find(r => r.teamId == k)).map(k => {
         return {
-          userId: k,
+          teamId: k,
           tournamentId: scheme.TournamentEdition.tournamentId,
           points: points[k]
         };

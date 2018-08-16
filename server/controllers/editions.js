@@ -13,7 +13,10 @@ const find = (req, res) => {
     .findAll({
       where: req.query,
       include: [
-        { model: TournamentSchemes, as: 'schemes' }
+        {
+          model: TournamentSchemes, as: 'schemes',
+          include: [{ model: TournamentSchemes, as: 'groupPhase' }]
+        },
       ]
     })
     .then(editions => res.json(editions));
@@ -23,7 +26,10 @@ const get = (req, res) => {
   return TournamentEditions
     .findById(req.params.id, {
       include: [
-        { model: TournamentSchemes, as: 'schemes' },
+        {
+          model: TournamentSchemes, as: 'schemes',
+          include: [{ model: TournamentSchemes, as: 'groupPhase' }]
+        },
         { model: Tournaments }
       ]
     })
