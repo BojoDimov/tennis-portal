@@ -7,7 +7,8 @@ const Op = require('../db').Sequelize.Op;
 const { sendEmail } = require('../emailService');
 const { EmailType } = require('../enums');
 const db = require('../db');
-var config = require(__dirname + '/../../config.js');
+const env = process.argv.slice(-1)[0];
+const config = require('../config')[env];
 
 function validatePassword(password) {
   let isValid = password.match(/(?=.*\d)(?=.*[a-z, а-я])(?=.*[A-Z, А-Я]).{8,}/);
@@ -47,7 +48,7 @@ const registerUser = (req, res, next) => {
 
 const sendPasswordRecovery = (req, res, next) => {
   let token = crypto.randomBytes(16).toString('hex');
-  let recovery = config.frontEnd + `/recovery?token=${token}`;
+  let recovery = config.client + `/recovery?token=${token}`;
   const expires = new Date();
   expires.setHours(expires.getHours() + 24);
 

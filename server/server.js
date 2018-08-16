@@ -1,8 +1,13 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
+const env = process.argv.slice(-1)[0];
+const config = require('../config')[env];
 
-app.listen(8080, () => console.log('Server listening...'));
+app.listen(config.port, () => console.log(`
+using configuration "${env}":
+server listening on port ${config.port}`));
+
 app.use(cors());
 
 app.use('/', express.static('build'));
