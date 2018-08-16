@@ -11,9 +11,11 @@ export class ConfirmationButton extends React.Component {
   }
 
   component = (
-    <div className="public container" onClick={(e) => e.stopPropagation()}>
+    <div style={{ marginTop: '5rem', minHeight: '10rem', display: 'flex', flexDirection: 'column', justifyContent: 'space-around', textAlign: 'center' }}
+      className="public container"
+      onClick={(e) => e.stopPropagation()}>
       <div>Тази операция извършва промени по базата, моля потвърдете!</div>
-      <div>
+      <div className="button-group">
         <span className="button" onClick={() => this.close(true)}>Добре</span>
         <span className="button" onClick={() => this.close(false)}>Отказ</span>
       </div>

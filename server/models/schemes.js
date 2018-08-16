@@ -10,11 +10,15 @@ TournamentSchemes.enroll = function (schemeId, team, trn = null) {
       let mpc = 0;
       if (scheme.schemeType == Enums.SchemeType.ELIMINATION)
         mpc = scheme.maxPlayerCount;
-      else if (scheme.schemeType == Enums.SchemeType.ELIMINATION)
+      else if (scheme.schemeType == Enums.SchemeType.GROUP)
         mpc = scheme.groupCount * scheme.teamsPerGroup;
 
-      return Enrollments.enroll(scheme.id, team.id, mpc, trn);
+      return Enrollments.enroll(scheme.id, team.id, mpc, scheme.registrationEnd, trn);
     });
+}
+
+function validateCanEnroll(scheme, team) {
+
 }
 
 module.exports = TournamentSchemes;

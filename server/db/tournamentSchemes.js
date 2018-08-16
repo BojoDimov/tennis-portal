@@ -1,4 +1,5 @@
 const { Status, SchemeType } = require('../enums');
+const moment = require('moment');
 
 module.exports = (db, Sequelize) => {
   const ELIMINATION = 'elimination';
@@ -34,8 +35,20 @@ module.exports = (db, Sequelize) => {
     maxPlayerCount: { type: Sequelize.INTEGER, allowNull: true },
     groupCount: { type: Sequelize.INTEGER, allowNull: true },
     teamsPerGroup: { type: Sequelize.INTEGER, allowNull: true },
-    registrationStart: { type: Sequelize.DATE, allowNull: false },
-    registrationEnd: { type: Sequelize.DATE, allowNull: false },
+    registrationStart: {
+      type: Sequelize.DATE,
+      allowNull: false,
+      get: function () {
+        return moment(this.getDataValue('registrationStart')).format('YYYY-MM-DDTHH:mm');
+      }
+    },
+    registrationEnd: {
+      type: Sequelize.DATE,
+      allowNull: false,
+      get: function () {
+        return moment(this.getDataValue('registrationEnd')).format('YYYY-MM-DDTHH:mm');
+      }
+    },
     hasGroupPhase: { type: Sequelize.BOOLEAN, allowNull: false },
     status: {
       type: Sequelize.ENUM,
@@ -115,7 +128,8 @@ module.exports = (db, Sequelize) => {
       }
     });
 
-    models.TournamentSchemes.hasOne(models.TournamentSchemes, {
+    models.TournamentSchemes.belongsTo(models.TournamentSchemes, {
+      as: 'groupPhase',
       foreignKey: {
         name: 'groupPhaseId',
         allowNull: true

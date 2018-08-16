@@ -27,7 +27,8 @@ function _get(id) {
           model: TournamentEditions,
           include: [
             { model: Tournaments }]
-        }
+        },
+        { model: TournamentSchemes, as: 'groupPhase' }
       ]
     });
 }

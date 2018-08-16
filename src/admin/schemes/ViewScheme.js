@@ -22,6 +22,12 @@ export class ViewScheme extends Component {
       .then(() => updateBreadcrumb(this.getPath()));
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (this.props.match.params.id != this.state.id)
+      this.getData()
+        .then(() => updateBreadcrumb(this.getPath()));
+  }
+
   getPath() {
     return [
       { title: this.state.TournamentEdition.Tournament.name, link: `/tournaments/view/${this.state.TournamentEdition.Tournament.id}` },
@@ -121,7 +127,8 @@ export class ViewScheme extends Component {
                         <tr>
                           <td><b>Групова фаза</b></td>
                           <td>
-                            {this.state.hasGroupPhase ? 'има групова фаза' : 'няма групова фаза'}
+                            {!this.state.groupPhase ? 'няма групова фаза'
+                              : <Link to={`/schemes/view/${this.state.groupPhase.id}`}>{this.state.groupPhase.name}</Link>}
                           </td>
                         </tr> : null}
                       {this.state.schemeType == 'round-robin' ?

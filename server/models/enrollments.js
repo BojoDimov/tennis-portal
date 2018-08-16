@@ -157,7 +157,7 @@ function dequeue(schemeId, teamId, trn) {
   return transfer(EnrollmentQueues, SchemeEnrollments, schemeId, teamId, trn);
 }
 
-function enroll(schemeId, teamId, mpc, transaction) {
+function enroll(schemeId, teamId, mpc, registrationEnd, transaction) {
   return SchemeEnrollments
     .count({
       where: {
@@ -166,7 +166,7 @@ function enroll(schemeId, teamId, mpc, transaction) {
       transaction: transaction
     })
     .then(c => {
-      if (c + 1 <= mpc)
+      if (c + 1 <= mpc && registrationEnd > new Date())
         return SchemeEnrollments.create({ schemeId: schemeId, teamId: teamId }, { transaction: transaction });
       else
         return EnrollmentQueues.create({ schemeId: schemeId, teamId: teamId }, { transaction: transaction });

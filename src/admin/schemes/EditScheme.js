@@ -7,7 +7,9 @@ export class EditScheme extends Component {
     super(props);
 
     this.state = {
-      errors: {}
+      errors: {},
+      registrationStart: null,
+      registrationEnd: null
     };
   }
 
@@ -126,7 +128,12 @@ export class EditScheme extends Component {
         {this.state.schemeType == 'elimination' && this.state.hasGroupPhase ?
           <div className="input-group">
             <div>Групова фаза</div>
-            <Select value={this.state.groupPhaseId} url="/schemes" onChange={(e) => this.setState({ groupPhaseId: e.target.value })} />
+            <Select value={this.state.groupPhaseId ? this.state.groupPhaseId : 0}
+              url="/schemes?schemeType=round-robin"
+              onChange={scheme => this.setState({ groupPhaseId: scheme ? scheme.id : 0 })}>
+              <option value={0}>-няма-</option>
+            </Select>
+            <div className="error">{this.state.errors.groupPhase ? '*Задължително поле' : null}</div>
           </div> : null}
 
         {this.state.schemeType == 'round-robin' ?
@@ -188,6 +195,24 @@ export class EditScheme extends Component {
             onChange={e => this.setState({ registrationEnd: e.target.value })} />
           <div className="error">{this.state.errors.registrationStartEnd ? '*Неправилен интервал' : null}</div>
           <div className="error">{this.state.errors.registrationEnd ? '*Задължително поле' : null}</div>
+        </div>
+
+        <div className="input-group">
+          <div>Брой точки за участие</div>
+          <input value={this.state.pPoints} type="number"
+            onChange={e => this.setState({ pPoints: e.target.value })} />
+        </div>
+
+        <div className="input-group">
+          <div>Брой точки за победа</div>
+          <input value={this.state.wPoints} type="number"
+            onChange={e => this.setState({ wPoints: e.target.value })} />
+        </div>
+
+        <div className="input-group">
+          <div>Брой точки за шампион</div>
+          <input value={this.state.cPoints} type="number"
+            onChange={e => this.setState({ cPoints: e.target.value })} />
         </div>
 
         <ActionButton className="center"

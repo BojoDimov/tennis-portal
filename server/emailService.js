@@ -6,20 +6,26 @@ const TEMPLATES = {
     return {
       subject: `Записване за турнир`,
       body: `<p>Здравейте, бяхте записан за турнир ${scope.tournamentName} - ${scope.editionName} - ${scope.schemeName}.</p>
-      <p>Това съобщение е автоматично генерирано, моля не изпращайте отговор</p>
-      <pre>За контакти и въпроси: Ивайло Коев
-      тел: +359 883 326 235
-      e-mail: tournaments@smilevent.net</pre>`
+      <pre>
+        Това съобщение е автоматично генерирано, моля не изпращайте отговор.
+        За контакти и въпроси: Ивайло Коев
+        тел: +359 883 326 235
+        e-mail: tournaments@smilevent.net
+      </pre>
+      `
     };
   },
   [EmailType.UNREGISTER]: function (scope) {
     return {
       subject: `Отписване от турнир`,
       body: `<p>Здравейте, бяхте отписан от турнир ${scope.tournamentName} - ${scope.editionName} - ${scope.schemeName}.</p>
-      <p>Това съобщение е автоматично генерирано, моля не изпращайте отговор</p>
-      <pre>За контакти и въпроси: Ивайло Коев
-      тел: +359 883 326 235
-      e-mail: tournaments@smilevent.net</pre>`
+      <pre>
+        Това съобщение е автоматично генерирано, моля не изпращайте отговор.
+        За контакти и въпроси: Ивайло Коев
+        тел: +359 883 326 235
+        e-mail: tournaments@smilevent.net
+      </pre>
+      `
     };
   },
   [EmailType.RECOVERY]: function (scope) {
