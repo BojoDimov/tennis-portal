@@ -126,14 +126,18 @@ function get_group_order(seed, nGroups, nTeamsPerGroup) {
     seed = nGroups;
 
   let groups = [];
+  let t = [];
   for (let i = 0; i < seed; i++) {
     let group = Math.floor(Math.random() * 10000) % nGroups;
     while (groups.indexOf(group) != -1)
       group = Math.floor(Math.random() * 10000) % nGroups;
     groups.push(group);
+    t.push(group);
+    if (t.length == nGroups)
+      t = [];
   }
 
-  let t = [];
+
   for (let i = 0; i < nGroups * nTeamsPerGroup - seed; i++) {
     let group = Math.floor(Math.random() * 10000) % nGroups;
     while (t.indexOf(group) != -1)

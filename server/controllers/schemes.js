@@ -63,11 +63,13 @@ const getWinner = (req, res, next) => {
 const collect = (req, res) => {
   const userId = req.query.userId;
 
-  let team = userId ? Teams.findOne({
-    where: {
-      user1Id: userId
-    }
-  }) : Promise.resolve(null);
+  //todo: make this work and remove check from frontend
+  // let team = userId ? Teams.findOne({
+  //   where: {
+  //     user1Id: userId
+  //   }
+  // }) : Promise.resolve(null);
+  let team = Promise.resolve(null);
 
   let scheme = TournamentSchemes
     .findById(req.params.id, {
