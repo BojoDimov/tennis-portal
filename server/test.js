@@ -2,7 +2,7 @@ const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const { SmtpCredentials } = require('./models');
 
-function createCredentials(userId, username, password) {
+function createCredentials(userId, service, username, password) {
   const cipher = crypto.createCipher('aes192', 'ksa051saDIJ31032gka');
   const decipher = crypto.createDecipher('aes192', 'ksa051saDIJ31032gka');
   let encrypted = cipher.update(password, 'utf8', 'hex');
@@ -11,7 +11,7 @@ function createCredentials(userId, username, password) {
   return SmtpCredentials
     .create({
       userId: userId,
-      service: 'gmail',
+      service: service,
       username: username,
       passwordHash: encrypted
     })
