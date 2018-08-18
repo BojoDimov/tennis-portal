@@ -22,7 +22,7 @@ module.exports = {
   },
   "test": {
     "db": {
-      database: "tennis-portal-staging",
+      database: "tennis-portal-db",
       username: "postgres",
       password: "12345678",
       host: '127.0.0.1',
