@@ -7,7 +7,8 @@ const Op = require('../db').Sequelize.Op;
 const { sendEmail } = require('../emailService');
 const { EmailType } = require('../enums');
 const db = require('../db');
-const env = process.argv.slice(-1)[0];
+// const env = process.argv.slice(-1)[0];
+const env = process.env.NODE_ENV || 'dev';
 const config = require('../config')[env];
 
 function validatePassword(password) {

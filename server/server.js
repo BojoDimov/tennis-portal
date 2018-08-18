@@ -1,7 +1,8 @@
 const express = require('express');
 const app = express();
 const cors = require('cors');
-const env = process.argv.slice(-1)[0];
+// const env = process.argv.slice(-1)[0];
+const env = process.env.NODE_ENV || 'dev';
 const config = require('../config')[env];
 
 app.listen(config.port, () => console.log(`

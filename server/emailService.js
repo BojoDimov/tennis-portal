@@ -54,10 +54,15 @@ function sendEmail(emailType, credentials, model, emails) {
   password += decipher.final('utf8');
 
   const transporter = nodemailer.createTransport({
-    service: credentials.service,
+    host: credentials.service,
+    port: '465',
+    secure: true,
     auth: {
       user: credentials.username,
       pass: password
+    },
+    tls: {
+      rejectUnauthorized: false
     }
   });
 

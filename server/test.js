@@ -1,4 +1,5 @@
 const crypto = require('crypto');
+const nodemailer = require('nodemailer');
 const { SmtpCredentials } = require('./models');
 
 function createCredentials(userId, username, password) {
@@ -22,6 +23,30 @@ function createCredentials(userId, username, password) {
     });
 }
 
+function testCredentials(service, username, password) {
+  const transporter = nodemailer.createTransport({
+    host: service,
+    port: '465',
+    secure: true,
+    auth: {
+      user: username,
+      pass: password
+    },
+    tls: {
+      rejectUnauthorized: false
+    }
+  });
+
+  const options = {
+    from: username,
+    to: 'bojko958@abv.bg',
+    subject: 'test email sender',
+    text: 'test'
+  }
+  return transporter.sendMail(options);
+}
+
 module.exports = {
-  createCredentials
+  createCredentials,
+  testCredentials
 };
