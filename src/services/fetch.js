@@ -1,6 +1,7 @@
-const env = process.env.NODE_ENV || 'dev';
+const env = process.env.NODE_ENV;
 const config = require(__dirname + '/../clientConfig.js')[env];
 
+console.log(process.env)
 console.log(env);
 console.log(config);
 

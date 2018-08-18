@@ -9,7 +9,7 @@ const { EmailType } = require('../enums');
 const db = require('../db');
 // const env = process.argv.slice(-1)[0];
 const env = process.env.NODE_ENV || 'dev';
-const config = require('../config')[env];
+const config = require('../../config')[env];
 
 function validatePassword(password) {
   let isValid = password.match(/(?=.*\d)(?=.*[a-z, а-я])(?=.*[A-Z, А-Я]).{8,}/);
