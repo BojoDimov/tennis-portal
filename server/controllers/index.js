@@ -11,5 +11,6 @@ router.use('/editions', require('./editions'));
 router.use('/schemes', require('./schemes'));
 router.use('/groups', auth, require('./groups'));
 router.use('/matches', require('./matches'));
+router.use('/payments', require('./payments'));
 
 module.exports = router;
