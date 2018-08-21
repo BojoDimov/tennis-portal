@@ -17,6 +17,7 @@ module.exports = {
     REGISTER: 'register',
     UNREGISTER: 'unregister',
     RECOVERY: 'recovery',
+    ACTIVATION: 'activation',
     CUSTOM: 'custom'
   },
   CourtType: {

@@ -7,7 +7,7 @@ const login = (req, res, next) => {
   let password = req.body.password;
   return Users
     .findOne({
-      where: { email: req.body.email }
+      where: { email: req.body.email, isActive: true }
     })
     .then(user => {
       if (!user)

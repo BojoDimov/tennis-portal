@@ -36,6 +36,7 @@ module.exports = (db, Sequelize) => {
     },
     isAdmin: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false },
     isSystemAdministrator: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false },
+    isActive: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false },
     gender: {
       type: Sequelize.ENUM,
       allowNull: false,

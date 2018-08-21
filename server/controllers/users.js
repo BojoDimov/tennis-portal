@@ -43,8 +43,26 @@ const registerUser = (req, res, next) => {
         { model: Users, as: 'user1', include: ['details'] }
       ]
     })
-    .then(user => res.json({}))
+    .then(team => sendActivationEmail(team.user1))
+    .then(() => res.json({}))
     .catch(err => next(err, req, res, null));
+}
+
+function sendActivationEmail(user) {
+  let token = crypto.randomBytes(16).toString('hex');
+  let activation = config.client + `/activation?token=${token}`;
+  const expires = new Date();
+  expires.setHours(expires.getHours() + 24);
+
+  return UserActivationCodes
+    .create({ userId: user.id, token: token, expires: expires })
+    .then(() => Users.findOne({
+      where: {
+        isSystemAdministrator: true
+      },
+      include: [{ model: SmtpCredentials, as: 'smtp' }]
+    }))
+    .then(({ smtp }) => sendEmail(EmailType.ACTIVATION, smtp, { activation }, [user.email]));
 }
 
 const sendPasswordRecovery = (req, res, next) => {
@@ -67,7 +85,6 @@ const sendPasswordRecovery = (req, res, next) => {
 }
 
 const acceptPasswordRecovery = (req, res, next) => {
-
   return db.sequelize
     .transaction(function (trn) {
       return UserActivationCodes
@@ -93,6 +110,29 @@ const acceptPasswordRecovery = (req, res, next) => {
     .then(() => res.json({}));
 }
 
+const activateUser = (req, res, next) => {
+  return db.sequelize
+    .transaction(function (trn) {
+      return UserActivationCodes
+        .findOne({
+          where: {
+            token: req.body.token
+          },
+          include: [{ model: Users, as: 'user' }]
+        })
+        .then(uac => {
+          if (uac == null)
+            throw { name: 'DomainActionError', invalidToken: true };
+
+          uac.user.isActive = true;
+          return uac.user.save({ transaction: trn });
+        })
+        .then(() => UserActivationCodes.destroy({ where: { token: req.body.token }, transaction: trn }))
+    })
+    .catch(err => next(err, req, res, null))
+    .then(() => res.json({}));
+}
+
 const get = (req, res, next) => {
   return Users
     .findById(req.params.id, {
@@ -104,7 +144,7 @@ const get = (req, res, next) => {
 
 
 const update = (req, res, next) => {
-  if (req.user.id != req.params.id)
+  if (req.user.id != req.params.id || req.user.id != req.body.details.userId)
     next({ name: 'DomainActionError', message: 'Invalid action: update user' }, req, res, null);
 
   return Users
@@ -137,6 +177,7 @@ const getEnrolled = (req, res, next) => {
 
 router.get('/recovery', sendPasswordRecovery);
 router.post('/recovery', acceptPasswordRecovery);
+router.post('/activation', activateUser);
 router.get('/:id/enrolled', auth, getEnrolled);
 router.get('/:id', get);
 router.post('/:id', auth, update);

@@ -36,11 +36,28 @@ const TEMPLATES = {
   },
   [EmailType.RECOVERY]: function (scope) {
     return {
-      subject: `Възстановяване на забравена парола`,
+      subject: `Възстановяване на забравена парола в сайта на Smile Cup`,
       body: `
       <pre>
         Здравейте, използвайте <a href="${scope.recovery}">този</a> линк
         за да изберете нова парола за своя акаунт в SmileCup.
+      </pre>
+      <pre>
+        Това съобщение е автоматично генерирано, моля не изпращайте отговор.
+        За контакти и въпроси: Ивайло Коев
+        тел: +359 883 326 235
+        e-mail: tournaments@smilevent.net
+      </pre>
+      `
+    }
+  },
+  [EmailType.ACTIVATION]: function (scope) {
+    return {
+      subject: `Активиране на акаунт в сайта на Smile Cup`,
+      body: `
+      <pre>
+        Здравейте, използвайте <a href="${scope.activation}">този</a> линк
+        за да активирате своя акаунт в SmileCup.
       </pre>
       <pre>
         Това съобщение е автоматично генерирано, моля не изпращайте отговор.
