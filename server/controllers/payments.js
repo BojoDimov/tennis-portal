@@ -6,7 +6,9 @@ const get = (req, res) => {
 }
 
 const post = (req, res) => {
-  console.log(req.body, req.query);
+  console.log('body:\n', req.body);
+  console.log('\nparams:\n', req.params);
+  console.log('\query:\n', req.query);
 }
 
 router.get('/', get);

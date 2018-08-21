@@ -12,7 +12,11 @@ server listening on port ${config.port}`));
 app.use(cors());
 
 app.use('/', express.static(__dirname + '../build'));
-app.use('/diagnostics', require('./diagnostics'));
+app.use(
+  '/endpoints/payments',
+  require('body-parser').urlencoded({ extended: true }),
+  require('./controllers/payments')
+);
 app.use('/api/files', require('./controllers/files'));
 app.use('/api', express.json(), require('./controllers'));
 
