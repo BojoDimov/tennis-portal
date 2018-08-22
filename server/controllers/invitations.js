@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { TournamentSchemes, Users, Invitations, Teams, Enrollments } = require('../models');
+const { TournamentEditions, TournamentSchemes, Users, Invitations, Teams, Enrollments } = require('../models');
 const db = require('../db');
 const Op = db.Sequelize.Op;
 
@@ -93,8 +93,22 @@ function _getInvitations(req) {
     .findAll({
       where: {
         invitedId: req.user.id
-      }
-    })
+      },
+      include: [
+        {
+          model: TournamentSchemes,
+          as: 'scheme',
+          attributes: ['id', 'name'],
+          include: [
+            {
+              model: TournamentEditions, attributes: ['id', 'name']
+            }
+          ]
+        },
+        { model: Users, as: 'inviter', attributes: ['id', 'name'] }
+      ],
+      order: [['createdAt', 'desc']]
+    });
 }
 
 const getInvitations = (req, res, next) => {
