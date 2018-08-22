@@ -20,7 +20,7 @@ module.exports = (err, req, res, next) => {
       ip: req.ip,
       path: req.path,
       method: req.method,
-      body: JSON.stringify(req.body),
+      body: null,
       params: JSON.stringify(req.params),
       query: JSON.stringify(req.query),
       error: JSON.stringify(err)
