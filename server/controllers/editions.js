@@ -17,7 +17,8 @@ const find = (req, res) => {
           model: TournamentSchemes, as: 'schemes',
           include: [{ model: TournamentSchemes, as: 'groupPhase' }]
         },
-      ]
+      ],
+      order: [['schemes', 'createdAt', 'asc']]
     })
     .then(editions => res.json(editions));
 };
@@ -31,7 +32,8 @@ const get = (req, res) => {
           include: [{ model: TournamentSchemes, as: 'groupPhase' }]
         },
         { model: Tournaments }
-      ]
+      ],
+      order: [['schemes', 'createdAt', 'asc']]
     })
     .then(e => res.json(e));
 };

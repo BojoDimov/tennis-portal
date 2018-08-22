@@ -155,7 +155,7 @@ export class EditScheme extends Component {
           <input
             type="number" min="0"
             value={this.state.ageFrom}
-            onChange={e => this.setState({ ageFrom: e.target.value })} />
+            onChange={e => this.setState({ ageFrom: e.target.value || null })} />
           <div className="error">{this.state.errors.ageFromTo ? '*Неправилен интервал' : null}</div>
           <div className="error">{this.state.errors.ageFrom ? '*Невалидна стойност' : null}</div>
         </div>
@@ -165,7 +165,7 @@ export class EditScheme extends Component {
           <input
             type="number" min="0"
             value={this.state.ageTo}
-            onChange={e => this.setState({ ageTo: e.target.value })} />
+            onChange={e => this.setState({ ageTo: e.target.value || null })} />
           <div className="error">{this.state.errors.ageFromTo ? '*Неправилен интервал' : null}</div>
           <div className="error">{this.state.errors.ageTo ? '*Невалидна стойност' : null}</div>
         </div>

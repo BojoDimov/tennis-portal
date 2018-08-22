@@ -187,7 +187,7 @@ export class CreateScheme extends Component {
         <div className="input-group">
           <div>Начало на регистрациите</div>
           <input type="datetime-local"
-            onChange={e => this.setState({ registrationStart: e.target.value })} />
+            onChange={e => this.setState({ registrationStart: e.target.value || null })} />
           <div className="error">{this.state.errors.registrationStartEnd ? '*Неправилен интервал' : null}</div>
           <div className="error">{this.state.errors.registrationStart ? '*Задължително поле' : null}</div>
         </div>
@@ -195,7 +195,7 @@ export class CreateScheme extends Component {
         <div className="input-group">
           <div>Последна дата за регистрация</div>
           <input type="datetime-local"
-            onChange={e => this.setState({ registrationEnd: e.target.value })} />
+            onChange={e => this.setState({ registrationEnd: e.target.value || null })} />
           <div className="error">{this.state.errors.registrationStartEnd ? '*Неправилен интервал' : null}</div>
           <div className="error">{this.state.errors.registrationEnd ? '*Задължително поле' : null}</div>
         </div>

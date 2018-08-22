@@ -70,7 +70,7 @@ module.exports = (db, Sequelize) => {
             throw new Error('Cannot have mixed teams when the scheme is for single teams');
         },
         ageFromTo() {
-          if (this.ageFrom > this.ageTo)
+          if (this.ageFrom && this.ageTo && this.ageFrom > this.ageTo)
             throw new Error('Age from must be <= Age to');
         },
         registrationStartEnd() {
