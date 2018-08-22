@@ -17,7 +17,7 @@ module.exports = (db, Sequelize) => {
       type: Sequelize.STRING,
       allowNull: false,
       validate: {
-        is: /^[А-я, ]+$/
+        is: /^([А-Я][a-я]*\W){2,}$/
       }
     },
     birthDate: {
