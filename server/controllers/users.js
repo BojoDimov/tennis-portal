@@ -156,7 +156,8 @@ const update = (req, res, next) => {
       attributes: ['id', 'gender', 'name', 'birthDate']
     })
     .then(user => user.details.update(req.body.details))
-    .then(e => res.json(e));
+    .then(e => res.json(e))
+    .catch(err => next(err, req, res, null));
 }
 
 const getEnrolled = (req, res, next) => {

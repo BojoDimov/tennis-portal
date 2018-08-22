@@ -14,7 +14,14 @@ module.exports = (db, Sequelize) => {
       type: Sequelize.ENUM, allowNull: true,
       values: [PlayStyle.LEFT, PlayStyle.RIGHT]
     },
-    startedPlaying: { type: Sequelize.DATEONLY, allowNull: true }
+    startedPlaying: {
+      type: Sequelize.INTEGER,
+      allowNull: true,
+      validate: {
+        min: 1900,
+        max: (new Date()).getFullYear()
+      }
+    }
   });
 
   UserDetails.associate = function (models) {
