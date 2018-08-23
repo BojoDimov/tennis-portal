@@ -184,12 +184,13 @@ const enroll = (req, res, next) => {
           },
           transaction: trn
         })
-        .then(team => TournamentSchemes.enroll(req.params.id, team))
+        .then(team => TournamentSchemes.enroll(req.params.id, team, trn))
     })
     .then(({ teamId }) => {
       notifyTeam(req.params.id, teamId, EmailType.REGISTER);
       return res.json({});
-    });
+    })
+    .catch(err => next(err, req, res, null));
 }
 
 const cancelEnroll = (req, res, next) => {
@@ -205,13 +206,17 @@ const cancelEnroll = (req, res, next) => {
     }
   });
 
-  return Promise
-    .all([sp, tp])
-    .then(([scheme, teams]) => Enrollments.cancelEnroll(scheme.id, teams.map(t => t.id)))
+  return db.sequelize
+    .transaction(function (trn) {
+      return Promise
+        .all([sp, tp])
+        .then(([scheme, teams]) => Enrollments.cancelEnroll(scheme.id, teams.map(t => t.id), trn))
+    })
     .then(teamId => {
       notifyTeam(req.params.id, teamId, EmailType.UNREGISTER);
       return res.json({});
-    });
+    })
+    .catch(err => next(err, req, res, null));
 }
 
 function notifyTeam(schemeId, teamId, emailType) {

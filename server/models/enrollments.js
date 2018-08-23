@@ -1,4 +1,4 @@
-const { sequelize, SchemeEnrollments, EnrollmentQueues } = require('../db');
+const { sequelize, SchemeEnrollments, EnrollmentQueues, EnrollmentGuards, Teams } = require('../db');
 
 function update(oldScheme, newScheme) {
   let diff = 0;
@@ -157,6 +157,28 @@ function dequeue(schemeId, teamId, trn) {
   return transfer(EnrollmentQueues, SchemeEnrollments, schemeId, teamId, trn);
 }
 
+function enrollGuard(schemeId, team, transaction) {
+  let promises = [EnrollmentGuards.create({ schemeId: schemeId, userId: team.user1Id }, { transaction: transaction })];
+  if (team.user2Id)
+    promises.push(EnrollmentGuards.create({ schemeId: schemeId, userId: team.user2Id }, { transaction: transaction }));
+
+  return Promise.all(promises);
+}
+
+function removeFromGuard(schemeId, teamId, transaction) {
+  return Teams
+    .findById(teamId, { transaction: transaction })
+    .then(team => {
+      let p1 = EnrollmentGuards.destroy({ where: { schemeId: schemeId, userId: team.user1Id }, transaction: transaction });
+      let p2 = null;
+      if (team.user2Id)
+        p2 = EnrollmentGuards.destroy({ where: { schemeId: schemeId, userId: team.user2Id }, transaction: transaction });
+
+      return Promise.all([p1, p2]);
+    })
+    .then(() => teamId);
+}
+
 function enroll(schemeId, teamId, mpc, registrationEnd, transaction) {
   return SchemeEnrollments
     .count({
@@ -200,7 +222,7 @@ function cancelEnroll(schemeId, teams, transaction) {
           e1.concat(e2)[0].destroy()
         ]);
     })
-    .then(([teamId, _]) => teamId);
+    .then(([teamId, _]) => removeFromGuard(schemeId, teamId, transaction));
 }
 
 function getEnrolled(teams) {
@@ -231,6 +253,7 @@ module.exports = {
   getQueue,
   enqueue,
   dequeue,
+  enrollGuard,
   enroll,
   cancelEnroll,
   getEnrolled
