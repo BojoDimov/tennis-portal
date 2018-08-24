@@ -3,6 +3,7 @@ const router = express.Router();
 const { Status } = require('../enums');
 const { sequelize } = require('../db');
 const { Rankings, Groups, Matches, Draws, Enrollments } = require('../models');
+const { SchemeType } = require('../enums');
 
 const create = (req, res, next) => {
   let seed = !parseInt(req.body.seed) ? 0 : parseInt(req.body.seed);
@@ -18,8 +19,19 @@ const create = (req, res, next) => {
         throw null;
     })
     .catch(() => next({ name: 'DomainActionError', message: 'Invalid action: draw scheme' }, req, res, null))
-    .then(() => Enrollments.get(req.scheme.id))
-    .then(teams => Draws.create(req.scheme, seed, teams))
+    .then(() => {
+      let limit = null;
+      if (req.scheme.schemeType == SchemeType.ELIMINATION)
+        limit = req.scheme.maxPlayerCount;
+      else if (req.scheme.schemeType == SchemeType.GROUP)
+        limit = req.scheme.groupCount * req.scheme.teamsPerGroup;
+
+      return Promise.all([
+        Enrollments.get(req.scheme.id, limit),
+        Enrollments.transferUnpaid(req.scheme.id, limit)
+      ]);
+    })
+    .then(([teams, _]) => Draws.create(req.scheme, seed, teams))
     .then(() => Draws.get(req.scheme))
     .then(data => res.json(data));
 }

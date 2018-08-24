@@ -1,4 +1,15 @@
-const { sequelize, SchemeEnrollments, EnrollmentQueues, EnrollmentGuards, Teams } = require('../db');
+const {
+  sequelize,
+  TournamentSchemes,
+  TournamentEditions,
+  SchemeEnrollments,
+  EnrollmentQueues,
+  EnrollmentGuards,
+  Teams,
+  Payments,
+  Users
+} = require('../db');
+const { Op } = require('../db').Sequelize;
 
 function update(oldScheme, newScheme) {
   let diff = 0;
@@ -63,7 +74,7 @@ function update(oldScheme, newScheme) {
     });
 }
 
-function get(schemeId) {
+function get(schemeId, limit = null, includeNotPaid = false) {
   const query = `
       select 
         "Teams".id as "id", 
@@ -72,7 +83,8 @@ function get(schemeId) {
         u2.id as "user2Id",
         u2.name as "user2Name", 
         r.points, se."createdAt", 
-        se.id as "enrollmentId" 
+        se.id as "enrollmentId",
+        se."isPaid" as "isPaid" 
       from "TournamentSchemes" s
       inner join "TournamentEditions" te
       on s."tournamentEditionId" = te.id
@@ -88,8 +100,11 @@ function get(schemeId) {
       on "Teams"."user1Id" = u1.id
       left join "Users" u2
       on "Teams"."user2Id" = u2.id
-      where s.id = ${schemeId}
-      order by case when r."points" is null then 1 else 0 end, r.points desc
+      where
+        s.id = ${schemeId} 
+        and ${includeNotPaid ? 'true' : 'se."isPaid" = true'} 
+      order by se."isPaid" desc, case when r."points" is null then 1 else 0 end, r.points desc
+      limit ${limit}
       `;
 
   return sequelize.query(query, { type: sequelize.QueryTypes.SELECT });
@@ -125,6 +140,44 @@ function getQueue(schemeId) {
       `;
 
   return sequelize.query(query, { type: sequelize.QueryTypes.SELECT });
+}
+
+function transferUnpaid(schemeId) {
+  const query = `
+    insert into "EnrollmentQueues"("createdAt", "updatedAt", "teamId", "schemeId", "isPaid")
+    select now(), now(), se."teamId", se."schemeId", false from "SchemeEnrollments" se
+    where se."schemeId" = ${schemeId} and se."isPaid" = false;
+
+    delete from "SchemeEnrollments" se
+    where se."schemeId" = ${schemeId} and se."isPaid" = false;
+  `;
+
+  return sequelize.query(query);
+}
+
+function getEnrollmentData(userId, schemeId) {
+  return SchemeEnrollments
+    .findOne({
+      where: {
+        schemeId: schemeId
+      },
+      include: [
+        {
+          model: Teams, as: 'team',
+          where: {
+            [Op.or]: {
+              user1Id: userId,
+              user2Id: userId
+            }
+          },
+          include: [
+            { model: Users, as: 'user1', attributes: ['id', 'email'] },
+            { model: Users, as: 'user2', attributes: ['id', 'email'] }
+          ]
+        },
+        { model: TournamentSchemes, as: 'scheme', include: [{ model: TournamentEditions }] }
+      ]
+    });
 }
 
 function transfer(from, to, schemeId, teamId, transaction) {
@@ -179,6 +232,20 @@ function removeFromGuard(schemeId, teamId, transaction) {
     .then(() => teamId);
 }
 
+function removePayment(schemeId, teamId, transaction) {
+  return Teams
+    .findById(teamId, { transaction: transaction })
+    .then(team => Payments.destroy({
+      where: {
+        user1Id: team.user1Id,
+        user2Id: team.user2Id,
+        schemeId: schemeId
+      },
+      transaction: transaction
+    }))
+    .then(() => teamId);
+}
+
 function enroll(schemeId, teamId, mpc, registrationEnd, transaction) {
   return SchemeEnrollments
     .count({
@@ -222,7 +289,8 @@ function cancelEnroll(schemeId, teams, transaction) {
           e1.concat(e2)[0].destroy()
         ]);
     })
-    .then(([teamId, _]) => removeFromGuard(schemeId, teamId, transaction));
+    .then(([teamId, _]) => removePayment(schemeId, teamId, transaction))
+    .then((teamId) => removeFromGuard(schemeId, teamId, transaction));
 }
 
 function getEnrolled(teams) {
@@ -251,10 +319,12 @@ module.exports = {
   update,
   get,
   getQueue,
+  transferUnpaid,
   enqueue,
   dequeue,
   enrollGuard,
   enroll,
   cancelEnroll,
+  getEnrollmentData,
   getEnrolled
 };

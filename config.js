@@ -18,7 +18,11 @@ module.exports = {
     },
     "client": "http://smilevent.net",
     "backend": "http://smilevent.net:8080",
-    "port": 8080
+    "port": 8080,
+    paymentsConfig: {
+      min: "0553292350",
+      secret: "J8Z3TXF2E53Y4QSAK0R26OIMRIJXBDOFMBVTN56HQG6N604RD9Q6COEGISLI70NF"
+    }
   },
   "test": {
     "db": {
@@ -60,6 +64,10 @@ module.exports = {
     },
     "client": "http://localhost:3000",
     "backend": "http://localhost:8080",
-    "port": 8080
+    "port": 8080,
+    paymentsConfig: {
+      min: "D252247444",
+      secret: "S9TUFF9FKSN2G0QIPV8U9IY800ROJ059OHA63PJCT0BDD9EA98GEJR1YSPMNV9O5"
+    }
   }
 }

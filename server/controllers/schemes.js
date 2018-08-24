@@ -2,14 +2,15 @@ const express = require('express');
 const router = express.Router();
 const {
   Tournaments, TournamentEditions, TournamentSchemes,
-  Enrollments, Groups, Matches, Draws, Teams, Users, SmtpCredentials, Sets
+  Enrollments, Groups, Matches, Draws, Teams, Users, SmtpCredentials, Sets, Payments
 } = require('../models');
 const db = require('../db');
 const Op = db.Sequelize.Op;
 const { EmailType } = require('../enums');
-const { sendEmail } = require('../emailService');
 const auth = require('../middlewares/auth');
 const Enums = require('../enums');
+const { notifyTeam, getScheme, cancelUserEnrollment } = require('../services/scheme.service');
+const { encodePayment } = require('../services/payments.service');
 
 const find = (req, res) => {
   return TournamentSchemes
@@ -19,22 +20,8 @@ const find = (req, res) => {
     .then(schemes => res.json(schemes));
 };
 
-function _get(id) {
-  return TournamentSchemes
-    .findById(id, {
-      include: [
-        {
-          model: TournamentEditions,
-          include: [
-            { model: Tournaments }]
-        },
-        { model: TournamentSchemes, as: 'groupPhase' }
-      ]
-    });
-}
-
 const get = (req, res) => {
-  return _get(req.params.id).then(e => res.json(e));
+  return getScheme(req.params.id).then(e => res.json(e));
 };
 
 const getWinner = (req, res, next) => {
@@ -63,36 +50,29 @@ const getWinner = (req, res, next) => {
 const collect = (req, res) => {
   const userId = req.query.userId;
 
-  //todo: make this work and remove check from frontend
-  // let team = userId ? Teams.findOne({
-  //   where: {
-  //     user1Id: userId
-  //   }
-  // }) : Promise.resolve(null);
-  let team = Promise.resolve(null);
+  let enrollment = Enrollments.getEnrollmentData(userId, req.params.id);
+  let payment = encodePayment(req.params.id, userId);
 
-  let scheme = TournamentSchemes
+  return TournamentSchemes
     .findById(req.params.id, {
       include: [
         { model: TournamentEditions },
         { model: TournamentSchemes, as: 'groupPhase' }
       ]
-    });
-
-  return Promise
-    .all([team, scheme])
-    .then(([team, scheme]) => Promise
+    })
+    .then(scheme => Promise
       .all([
-        Promise.resolve(team),
         Promise.resolve(scheme),
-        Enrollments.get(scheme.id),
+        enrollment,
+        payment,
+        Enrollments.get(scheme.id, null, true),
         Enrollments.getQueue(scheme.id),
         Draws.get(scheme)
       ])
     )
-    .then(([team, scheme, enrollments, queue, draw]) => {
+    .then(([scheme, enrollment, payment, enrollments, queue, draw]) => {
       return res.json({
-        team, scheme, enrollments, queue, draw
+        scheme, enrollment, payment, enrollments, queue, draw
       })
     });
 }
@@ -128,7 +108,15 @@ const draft = (req, res) => {
 const getEnrollments = (req, res) => {
   return TournamentSchemes
     .findById(req.params.id)
-    .then(scheme => Enrollments.get(scheme.id))
+    .then(scheme => {
+      let limit = null;
+      if (scheme.schemeType == Enums.SchemeType.ELIMINATION)
+        limit = scheme.maxPlayerCount;
+      else if (scheme.schemeType == Enums.SchemeType.GROUP)
+        limit = scheme.groupCount * scheme.teamsPerGroup;
+
+      return Enrollments.get(scheme.id, limit)
+    })
     .then(e => res.json(e));
 }
 
@@ -194,52 +182,9 @@ const enroll = (req, res, next) => {
 }
 
 const cancelEnroll = (req, res, next) => {
-  const userId = req.query.userId;
-
-  let sp = TournamentSchemes.findById(req.params.id);
-  let tp = Teams.findAll({
-    where: {
-      [Op.or]: {
-        user1Id: userId,
-        user2Id: userId
-      }
-    }
-  });
-
-  return db.sequelize
-    .transaction(function (trn) {
-      return Promise
-        .all([sp, tp])
-        .then(([scheme, teams]) => Enrollments.cancelEnroll(scheme.id, teams.map(t => t.id), trn))
-    })
-    .then(teamId => {
-      notifyTeam(req.params.id, teamId, EmailType.UNREGISTER);
-      return res.json({});
-    })
+  return cancelUserEnrollment(req.params.id, req.query.userId)
+    .then(() => res.json({}))
     .catch(err => next(err, req, res, null));
-}
-
-function notifyTeam(schemeId, teamId, emailType) {
-  return Promise
-    .all([
-      _get(schemeId),
-      Teams.findById(teamId, {
-        include: [{ model: Users, as: 'user1' }, { model: Users, as: 'user2' }]
-      }),
-      Users.findOne({
-        where: {
-          isSystemAdministrator: true
-        },
-        include: [{ model: SmtpCredentials, as: 'smtp' }]
-      })
-    ])
-    .then(([scheme, team, sysadmin]) => sendEmail(emailType, sysadmin.smtp, {
-      tournamentName: scheme.TournamentEdition.Tournament.name,
-      editionName: scheme.TournamentEdition.name,
-      schemeName: scheme.name
-    },
-      [team.user1.email].concat((team.user2 ? [team.user2.email] : []))
-    ));
 }
 
 function setStatus(id, status) {

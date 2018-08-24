@@ -1,6 +1,6 @@
-const { TournamentSchemes, EnrollmentGuards } = require('../db');
+const { TournamentSchemes, EnrollmentGuards, Payments } = require('../db');
 const Enrollments = require('./enrollments');
-const Enums = require('../enums');
+const { SchemeType, PaymentStatus, TournamentTaxes } = require('../enums');
 const Teams = require('./teams');
 
 TournamentSchemes.enroll = function (schemeId, team, trn) {
@@ -8,15 +8,23 @@ TournamentSchemes.enroll = function (schemeId, team, trn) {
     .findById(schemeId)
     .then(scheme => {
       let mpc = 0;
-      if (scheme.schemeType == Enums.SchemeType.ELIMINATION)
+      if (scheme.schemeType == SchemeType.ELIMINATION)
         mpc = scheme.maxPlayerCount;
-      else if (scheme.schemeType == Enums.SchemeType.GROUP)
+      else if (scheme.schemeType == SchemeType.GROUP)
         mpc = scheme.groupCount * scheme.teamsPerGroup;
 
-      return Enrollments
-        .enrollGuard(schemeId, team, trn)
-        .then(() => Enrollments
-          .enroll(scheme.id, team.id, mpc, scheme.registrationEnd, trn))
+      const payment = {
+        amount: scheme.singleTeams ? TournamentTaxes.SINGLE : TournamentTaxes.DOUBLE,
+        status: PaymentStatus.UNPAID,
+        user1Id: team.user1Id,
+        user2Id: team.user2Id,
+        schemeId: schemeId
+      };
+
+      return Payments
+        .create(payment, { transaction: trn })
+        .then(() => Enrollments.enrollGuard(schemeId, team, trn))
+        .then(() => Enrollments.enroll(scheme.id, team.id, mpc, scheme.registrationEnd, trn));
     });
 }
 

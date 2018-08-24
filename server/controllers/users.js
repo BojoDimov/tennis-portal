@@ -56,13 +56,7 @@ function sendActivationEmail(user) {
 
   return UserActivationCodes
     .create({ userId: user.id, token: token, expires: expires })
-    .then(() => Users.findOne({
-      where: {
-        isSystemAdministrator: true
-      },
-      include: [{ model: SmtpCredentials, as: 'smtp' }]
-    }))
-    .then(({ smtp }) => sendEmail(EmailType.ACTIVATION, smtp, { activation }, [user.email]));
+    .then(() => sendEmail(EmailType.ACTIVATION, { activation }, [user.email]));
 }
 
 const sendPasswordRecovery = (req, res, next) => {
@@ -74,13 +68,7 @@ const sendPasswordRecovery = (req, res, next) => {
   return Users
     .findOne({ where: { email: req.query.email } })
     .then(user => UserActivationCodes.create({ userId: user.id, token: token, expires: expires }))
-    .then(() => Users.findOne({
-      where: {
-        isSystemAdministrator: true
-      },
-      include: [{ model: SmtpCredentials, as: 'smtp' }]
-    }))
-    .then(({ smtp }) => sendEmail(EmailType.RECOVERY, smtp, { recovery }, [req.query.email]))
+    .then(() => sendEmail(EmailType.RECOVERY, { recovery }, [req.query.email]))
     .then(() => res.json({}));
 }
 

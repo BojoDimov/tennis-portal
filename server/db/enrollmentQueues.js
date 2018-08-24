@@ -1,5 +1,7 @@
 module.exports = (db, Sequelize) => {
-  const EnrollmentQueues = db.define("EnrollmentQueues");
+  const EnrollmentQueues = db.define("EnrollmentQueues", {
+    isPaid: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false }
+  });
 
   EnrollmentQueues.associate = (models) => {
     models.EnrollmentQueues.belongsTo(models.Teams, {

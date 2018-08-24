@@ -18,7 +18,8 @@ module.exports = {
     UNREGISTER: 'unregister',
     RECOVERY: 'recovery',
     ACTIVATION: 'activation',
-    CUSTOM: 'custom'
+    CUSTOM: 'custom',
+    PAYMENT_ACCEPTED: 'payment'
   },
   CourtType: {
     CLAY: 'clay',
@@ -33,5 +34,14 @@ module.exports = {
   PlayStyle: {
     LEFT: 'left-handed',
     RIGHT: 'right-handed'
+  },
+  PaymentStatus: {
+    UNPAID: 'unpaid',
+    PENDING: 'pending',
+    PAID: 'paid'
+  },
+  TournamentTaxes: {
+    SINGLE: 25,
+    DOUBLE: 30
   }
 }

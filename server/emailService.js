@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+const { Users, SmtpCredentials } = require('./models');
 const { EmailType } = require('./enums');
 
 const TEMPLATES = {
@@ -67,36 +68,61 @@ const TEMPLATES = {
       </pre>
       `
     }
+  },
+  [EmailType.PAYMENT_ACCEPTED]: function (scope) {
+    return {
+      subject: `Успешно извършено плащане към SmileCup`,
+      body: `
+      <pre>
+        Успешно извършихте плащане на такса участие за турнир ${scope.name}.
+      </pre>
+      <pre>
+        Това съобщение е автоматично генерирано, моля не изпращайте отговор.
+        За контакти и въпроси: Ивайло Коев
+        тел: +359 883 326 235
+        e-mail: tournaments@smilevent.net
+      </pre>
+      `
+    }
   }
 }
 
-function sendEmail(emailType, credentials, model, emails) {
-  const template = TEMPLATES[emailType](model);
-  let decipher = require('crypto').createDecipher('aes192', 'ksa051saDIJ31032gka');
-  let password = decipher.update(credentials.passwordHash, 'hex', 'utf8');
-  password += decipher.final('utf8');
+function sendEmail(emailType, model, emails) {
+  return Users
+    .findOne({
+      where: {
+        isSystemAdministrator: true
+      },
+      include: [{ model: SmtpCredentials, as: 'smtp' }]
+    })
+    .then(({ smtp }) => {
+      const template = TEMPLATES[emailType](model);
+      let decipher = require('crypto').createDecipher('aes192', 'ksa051saDIJ31032gka');
+      let password = decipher.update(smtp.passwordHash, 'hex', 'utf8');
+      password += decipher.final('utf8');
 
-  const transporter = nodemailer.createTransport({
-    host: credentials.service,
-    port: '465',
-    secure: true,
-    auth: {
-      user: credentials.username,
-      pass: password
-    },
-    tls: {
-      rejectUnauthorized: false
-    }
-  });
+      const transporter = nodemailer.createTransport({
+        host: smtp.service,
+        port: '465',
+        secure: true,
+        auth: {
+          user: smtp.username,
+          pass: password
+        },
+        tls: {
+          rejectUnauthorized: false
+        }
+      });
 
-  const options = {
-    from: credentials.username,
-    to: emails.join(', '),
-    subject: template.subject,
-    html: template.body
-  }
+      const options = {
+        from: smtp.username,
+        to: emails.join(', '),
+        subject: template.subject,
+        html: template.body
+      }
 
-  return transporter.sendMail(options);
+      return transporter.sendMail(options);
+    });
 }
 
 module.exports = {

@@ -49,7 +49,7 @@ function testCredentials(service, username, password) {
 function payment_demo() {
   var hmac = require('crypto').createHmac('sha1', "S9TUFF9FKSN2G0QIPV8U9IY800ROJ059OHA63PJCT0BDD9EA98GEJR1YSPMNV9O5");
   let data = `MIN=D252247444
-INVOICE=123456
+INVOICE=15
 AMOUNT=25.00
 CURRENCY=BGN
 EXP_TIME=01.08.2020
@@ -81,6 +81,8 @@ ENCODING=utf-8`;
   console.log('\nchecksum: ', checksum);
   console.log('\ndecoded: ', decoded);
 }
+
+payment_demo();
 
 module.exports = {
   createCredentials,

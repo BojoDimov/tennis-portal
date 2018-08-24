@@ -1,8 +1,11 @@
 module.exports = (db, Sequelize) => {
-  const SchemeEnrollments = db.define("SchemeEnrollments");
+  const SchemeEnrollments = db.define("SchemeEnrollments", {
+    isPaid: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false }
+  });
 
   SchemeEnrollments.associate = (models) => {
     models.SchemeEnrollments.belongsTo(models.Teams, {
+      as: 'team',
       foreignKey: {
         name: 'teamId',
         allowNull: false,
@@ -11,6 +14,7 @@ module.exports = (db, Sequelize) => {
     });
 
     models.SchemeEnrollments.belongsTo(models.TournamentSchemes, {
+      as: 'scheme',
       foreignKey: {
         name: 'schemeId',
         allowNull: false,
