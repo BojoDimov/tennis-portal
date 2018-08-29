@@ -1,10 +1,6 @@
 const env = process.env.NODE_ENV;
 const config = require(__dirname + '/../clientConfig.js')[env];
 
-console.log(process.env)
-console.log(env);
-console.log(config);
-
 module.exports = {
   imgUrl: function (id) {
     return config.backend + `/files/${id}`;

@@ -26,7 +26,6 @@ export class MatchScoreForm extends React.Component {
   }
 
   componentDidMount() {
-    console.log(this.props.match);
     let sets = this.state.sets;
     this.props.match.sets.forEach((set, i) => {
       set.disabled = false;

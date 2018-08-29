@@ -102,7 +102,7 @@ function get(schemeId, limit = null, includeNotPaid = false) {
       on "Teams"."user2Id" = u2.id
       where
         s.id = ${schemeId} 
-      order case when r."points" is null then 1 else 0 end, r.points desc
+      order by case when r."points" is null then 1 else 0 end, r.points desc
       limit ${limit}
       `;
 

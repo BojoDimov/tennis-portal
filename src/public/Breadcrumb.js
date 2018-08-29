@@ -13,9 +13,6 @@ export class Breadcrumb extends React.Component {
   }
 
   componentDidMount() {
-    // window.onpopstate = function (event) {
-    //   console.log("location: " + document.location.pathname + ", state: " + JSON.stringify(event.state));
-    // };
 
     let breadcrumb = document.getElementById("breadcrumb");
     breadcrumb.addEventListener('breadcrumb', ev => {
@@ -24,7 +21,6 @@ export class Breadcrumb extends React.Component {
   }
 
   navigate(i) {
-    //console.log('navigating');
   }
 
   home() {

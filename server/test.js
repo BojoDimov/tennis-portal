@@ -18,7 +18,6 @@ function createCredentials(userId, service, username, password) {
     .then((credentials) => {
       let decrypted = decipher.update(credentials.passwordHash, 'hex', 'utf8');
       decrypted += decipher.final('utf8');
-      console.log(decrypted);
       process.exit();
     });
 }
@@ -58,10 +57,6 @@ ENCODING=utf-8`;
   let encoded = new Buffer(data).toString('base64');
   let checksum = hmac.update(encoded).digest('hex');
   let decoded = new Buffer(encoded, 'base64').toString();
-  console.log('\ndata: ', data);
-  console.log('\nencoded: ', encoded);
-  console.log('\nchecksum: ', checksum);
-  console.log('\ndecoded: ', decoded);
 }
 
 function payment_real() {
@@ -76,10 +71,6 @@ ENCODING=utf-8`;
   let encoded = new Buffer(data).toString('base64');
   let checksum = hmac.update(encoded).digest('hex');
   let decoded = new Buffer(encoded, 'base64').toString();
-  console.log('\ndata: ', data);
-  console.log('\nencoded: ', encoded);
-  console.log('\nchecksum: ', checksum);
-  console.log('\ndecoded: ', decoded);
 }
 
 payment_real();

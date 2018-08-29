@@ -13,8 +13,6 @@ const { cancelUserEnrollment } = require('../services/scheme.service');
 const { PaymentStatus, EmailType } = require('../enums');
 const { sendEmail } = require('../emailService');
 
-console.log('Payments config:\n', config);
-
 function encodePayment(schemeId, userId) {
   return Enrollments
     .getEnrollmentData(userId, schemeId)
@@ -88,7 +86,6 @@ function parseInvoice(raw) {
 }
 
 function handleInvoice(model, reject) {
-  console.log(`Handling of INVOICE=${model.invoice}; REJECT=${reject}`);
   return sequelize
     .transaction(function (trn) {
       //TODO: handle expired state by recreating the payment

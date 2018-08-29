@@ -16,8 +16,6 @@ const get = (req, res, next) => {
 const post = (req, res, next) => {
   return decodePayment(req.body.encoded, req.body.checksum)
     .then(handled => {
-      console.log('\nhandled: ', handled);
-      console.log('\nresult: ', handled.join('\n'));
       res.set('Content-Type: text/plain');
       res.send(handled.join('\n'));
     })
