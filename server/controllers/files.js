@@ -5,7 +5,7 @@ const { Files } = require('../models');
 
 const upload = (req, res, next) => {
   if (req.file.mimetype.indexOf('image') == -1)
-    next({ name: 'DomainActionError', message: 'Invalid scheme' }, req, res, null);
+    next({ name: 'DomainActionError', error: { message: 'Invalid scheme' } }, req, res, null);
 
   return Files
     .create({

@@ -67,11 +67,11 @@ ENCODING=utf-8`;
 function payment_real() {
   var hmac = require('crypto').createHmac('sha1', "J8Z3TXF2E53Y4QSAK0R26OIMRIJXBDOFMBVTN56HQG6N604RD9Q6COEGISLI70NF");
   let data = `MIN=0553292350
-INVOICE=1
-AMOUNT=25.00
+INVOICE=19
+AMOUNT=1
 CURRENCY=BGN
-EXP_TIME=01.08.2020
-DESCR=Плащане такса турнир
+EXP_TIME=01.08.2050
+DESCR=Плащане такса турнир Сингъл - Мъже
 ENCODING=utf-8`;
   let encoded = new Buffer(data).toString('base64');
   let checksum = hmac.update(encoded).digest('hex');
@@ -82,7 +82,7 @@ ENCODING=utf-8`;
   console.log('\ndecoded: ', decoded);
 }
 
-payment_demo();
+payment_real();
 
 module.exports = {
   createCredentials,

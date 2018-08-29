@@ -46,13 +46,13 @@ function encodePayment(schemeId, userId) {
             let data = `MIN=${config.min}
 INVOICE=${payment.id}
 AMOUNT=${payment.amount}
-CURRENCY=BGN
-EXP_TIME=01.08.2050
 DESCR=Плащане такса турнир ${payment.scheme.name}
 ENCODING=utf-8`;
             let encoded = new Buffer(data).toString('base64');
             let checksum = hmac.update(encoded).digest('hex');
             return {
+              min: config.min,
+              description: `Плащане такса турнир ${payment.scheme.name}`,
               invoice: payment.id,
               amount: payment.amount,
               scheme: payment.scheme,

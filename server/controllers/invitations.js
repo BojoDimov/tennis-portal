@@ -12,7 +12,7 @@ function _getAvailable(req, res, err) {
     .findById(req.body.schemeId)
     .then(scheme => {
       if (!scheme || scheme.singleTeams)
-        err({ name: 'DomainActionError', message: 'Invalid scheme' }, req, res, null);
+        err({ name: 'DomainActionError', error: { message: 'Invalid scheme' } }, req, res, null);
 
       if (scheme.mixedTeams && req.user.gender == 'male')
         availableGenders.push('female');
@@ -83,7 +83,7 @@ const enrollmentsGuard = (req, res, next) => {
     .all([isEnrolled, isInQueue])
     .then(([flag1, flag2]) => {
       if (flag1 || flag2)
-        next({ name: 'DomainActionError', message: 'Вече сте записан в този турнир' }, req, res, null);
+        next({ name: 'DomainActionError', error: { message: 'Вече сте записан в този турнир' } }, req, res, null);
       else next();
     });
 }

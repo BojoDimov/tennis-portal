@@ -26,7 +26,7 @@ const get = (req, res) => {
 
 const getWinner = (req, res, next) => {
   if (req.scheme.status != Enums.Status.FINALIZED)
-    next({ name: 'DomainActionError', message: 'Invalid action: get winner' }, req, res, null);
+    next({ name: 'DomainActionError', error: { message: 'Invalid action: get winner' } }, req, res, null);
 
   return Matches
     .findAll({

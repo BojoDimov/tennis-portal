@@ -12,9 +12,10 @@ const env = process.env.NODE_ENV || 'dev';
 const config = require('../../config')[env];
 
 function validatePassword(password) {
-  let isValid = password.match(/(?=.*\d)(?=.*[a-z, а-я])(?=.*[A-Z, А-Я]).{8,}/);
-  if (!isValid)
-    throw { name: 'DomainActionError', password: true };
+  let isValid = password.length >= 6;
+  let hasCyrillic = password.match(/[А-я]+/);
+  if (!isValid || hasCyrillic)
+    throw { name: 'DomainActionError', error: { password: true } };
 }
 
 function setPassword(model, password) {
@@ -84,10 +85,10 @@ const acceptPasswordRecovery = (req, res, next) => {
         })
         .then(uac => {
           if (uac == null)
-            throw { name: 'DomainActionError', invalidToken: true };
+            throw { name: 'DomainActionError', error: { invalidToken: true } };
 
           if (uac.user.birthDate != req.body.birthDate)
-            throw { name: 'DomainActionError', birthDate: true };
+            throw { name: 'DomainActionError', error: { birthDate: true } };
 
           setPassword(uac.user, req.body.password);
           return uac.user.save({ transaction: trn });
@@ -110,7 +111,7 @@ const activateUser = (req, res, next) => {
         })
         .then(uac => {
           if (uac == null)
-            throw { name: 'DomainActionError', invalidToken: true };
+            throw { name: 'DomainActionError', error: { invalidToken: true } };
 
           uac.user.isActive = true;
           return uac.user.save({ transaction: trn });
@@ -133,7 +134,7 @@ const get = (req, res, next) => {
 
 const update = (req, res, next) => {
   if (req.user.id != req.params.id || req.user.id != req.body.details.userId)
-    next({ name: 'DomainActionError', message: 'Invalid action: update user' }, req, res, null);
+    next({ name: 'DomainActionError', error: { message: 'Invalid action: update user' } }, req, res, null);
 
   return Users
     .findById(req.params.id, {

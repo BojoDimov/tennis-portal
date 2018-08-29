@@ -125,12 +125,12 @@ Matches.parseSet = function (set) {
   const scoreParser = /^(\d+)(\(\d+\))*$/;
 
   if (!set.team1 || !set.team2)
-    throw { name: 'DomainActionError', message: 'Invalid format: match->set' };
+    throw { name: 'DomainActionError', error: { message: 'Invalid format: match->set' } };
 
   let t1m = set.team1.toString().match(scoreParser);
   let t2m = set.team2.toString().match(scoreParser);
   if ((t1m[2] && t2m[2]) || t1m.length < 2 || t2m.length < 2)
-    throw { name: 'DomainActionError', message: 'Invalid format: match->set' };
+    throw { name: 'DomainActionError', erorr: { message: 'Invalid format: match->set' } };
 
   set.team1 = parseInt(t1m[1]);
   set.team2 = parseInt(t2m[1]);

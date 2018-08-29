@@ -18,7 +18,7 @@ const create = (req, res, next) => {
       if (matches.length > 0)
         throw null;
     })
-    .catch(() => next({ name: 'DomainActionError', message: 'Invalid action: draw scheme' }, req, res, null))
+    .catch(() => next({ name: 'DomainActionError', error: { message: 'Invalid action: draw scheme' } }, req, res, null))
     .then(() => {
       let limit = null;
       if (req.scheme.schemeType == SchemeType.ELIMINATION)

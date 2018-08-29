@@ -13,7 +13,7 @@ module.exports = (err, req, res, next) => {
     res.status(422).send(result);
   }
   else if (err.name === 'DomainActionError') {
-    res.status(422).send(err);
+    res.status(422).send(err.error);
   }
   else Logs
     .create({
