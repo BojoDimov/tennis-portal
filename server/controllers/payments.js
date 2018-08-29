@@ -6,12 +6,12 @@ const { decodePayment, encodePayment } = require('../services/payments.service')
 const { PaymentStatus } = require('../enums');
 
 
-const get = (req, res, next) => {
-  return Payments
-    .findById(req.params.id)
-    .then(p => encodePayment(p.schemeId, p.user1Id))
-    .then(e => res.json(e));
-}
+// const get = (req, res, next) => {
+//   return Payments
+//     .findById(req.params.id)
+//     .then(p => encodePayment(p.schemeId, p.user1Id))
+//     .then(e => res.json(e));
+// }
 
 const post = (req, res, next) => {
   return decodePayment(req.body.encoded, req.body.checksum)
@@ -34,6 +34,6 @@ const pending = (req, res, next) => {
 }
 
 router.get('/:id/pending', express.json(), pending);
-router.get('/:id', get);
+//router.get('/:id', get);
 router.post('/', require('body-parser').urlencoded({ extended: true }), post);
 module.exports = router;

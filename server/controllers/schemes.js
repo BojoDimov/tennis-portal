@@ -51,7 +51,7 @@ const collect = (req, res) => {
   const userId = req.query.userId;
 
   let enrollment = Enrollments.getEnrollmentData(userId, req.params.id);
-  let payment = encodePayment(req.params.id, userId);
+  //let payment = encodePayment(req.params.id, userId);
 
   return TournamentSchemes
     .findById(req.params.id, {
@@ -64,15 +64,15 @@ const collect = (req, res) => {
       .all([
         Promise.resolve(scheme),
         enrollment,
-        payment,
+        //payment,
         Enrollments.get(scheme.id, null, true),
         Enrollments.getQueue(scheme.id),
         Draws.get(scheme)
       ])
     )
-    .then(([scheme, enrollment, payment, enrollments, queue, draw]) => {
+    .then(([scheme, enrollment, enrollments, queue, draw]) => {
       return res.json({
-        scheme, enrollment, payment, enrollments, queue, draw
+        scheme, enrollment, enrollments, queue, draw
       })
     });
 }
