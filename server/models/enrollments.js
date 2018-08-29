@@ -102,8 +102,7 @@ function get(schemeId, limit = null, includeNotPaid = false) {
       on "Teams"."user2Id" = u2.id
       where
         s.id = ${schemeId} 
-        and ${includeNotPaid ? 'true' : 'se."isPaid" = true'} 
-      order by se."isPaid" desc, case when r."points" is null then 1 else 0 end, r.points desc
+      order case when r."points" is null then 1 else 0 end, r.points desc
       limit ${limit}
       `;
 
