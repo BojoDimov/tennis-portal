@@ -15,10 +15,10 @@ module.exports = (db, Sequelize) => {
     passwordSalt: { type: Sequelize.STRING(16), allowNull: false },
     name: {
       type: Sequelize.STRING,
-      allowNull: false,
-      validate: {
-        is: /^([А-Я][a-я]*\W){2,}$/
-      }
+      allowNull: false//,
+      // validate: {
+      //   is: /^([А-Я][a-я]*\W){2,}$/
+      // }
     },
     birthDate: {
       type: Sequelize.DATEONLY,

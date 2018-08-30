@@ -12,6 +12,7 @@ const env = process.env.NODE_ENV || 'dev';
 const config = require('../../config')[env];
 
 function validatePassword(password) {
+  password = password || '';
   let isValid = password.length >= 6;
   let hasCyrillic = password.match(/[А-я]+/);
   if (!isValid || hasCyrillic)
@@ -29,12 +30,25 @@ function setPassword(model, password) {
 
 const registerUser = (req, res, next) => {
   let model = req.body;
+  let firstName = (req.body.firstName || '').trim();
+  let sirName = (req.body.sirName || '').trim();
+
+  if (firstName.length == 0)
+    return next({ name: 'DomainActionError', error: { firstName: true } }, req, res, null);
+
+  if (sirName.length == 0)
+    return next({ name: 'DomainActionError', error: { sirName: true } }, req, res, null);
+
+  firstName = firstName.charAt(0).toUpperCase() + firstName.substr(1);
+  sirName = sirName.charAt(0).toUpperCase() + sirName.substr(1);
+  model.name = firstName + ' ' + sirName;
+
 
   try {
     setPassword(model, req.body.password);
   }
   catch (err) {
-    next(err, req, res, null);
+    return next(err, req, res, null);
   }
 
   model.details = {};
