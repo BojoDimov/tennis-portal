@@ -126,6 +126,19 @@ a:hover{
   color: white;
 }
 
+.danger .button {
+  border-color: darkred;
+  background-color: whitesmoke;
+  color: darkred;
+}
+
+.danger .button:hover {
+  transition: all .25s linear;
+  border-color: darkred;
+  background-color: darkred;
+  color: whitesmoke;
+}
+
 .button-group {
   margin-left: .5em;
   .button {
