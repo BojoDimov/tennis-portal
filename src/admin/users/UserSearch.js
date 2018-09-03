@@ -14,10 +14,10 @@ export class UserSearchComponent extends React.Component {
 
     return (
       <div className="container">
-        <table className="list-table">
+        <table className="list-table" style={{ tableLayout: 'fixed', width: '100%' }}>
           <thead>
             <tr>
-              <th>
+              <th style={{ width: '20rem' }}>
                 <span>Потребител</span>
               </th>
               <th>
@@ -35,6 +35,7 @@ export class UserSearchComponent extends React.Component {
               <tr key={e.id}>
                 <td>
                   <Link to={`/users/${e.id}`} >{e.name}</Link>
+                  <div>({e.email})</div>
                 </td>
                 <td>
                   {e.isActive ? <span>Да</span> : <span>Не</span>}

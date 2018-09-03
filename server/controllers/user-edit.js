@@ -6,8 +6,10 @@ const {
   Users,
   UserDetails,
   UserActivationCodes,
-  Teams
+  Teams,
+  Invitations
 } = require('../models');
+const { Op } = require('../db').Sequelize;
 
 const getAll = (req, res) => {
   return Users
@@ -39,7 +41,15 @@ const remove = (req, res, next) => {
         .all([
           UserDetails.destroy({ where: { userId: req.params.id }, transaction: trn }),
           Teams.destroy({ where: { user1Id: req.params.id }, transaction: trn }),
-          UserActivationCodes.destroy({ where: { userId: req.params.id }, transaction: trn })
+          UserActivationCodes.destroy({ where: { userId: req.params.id }, transaction: trn }),
+          Invitations.destroy({
+            where: {
+              [Op.or]: {
+                inviterId: req.params.id,
+                invitedId: req.params.id
+              }
+            }
+          })
         ])
         .then(() => Users.destroy({ where: { id: req.params.id }, transaction: trn }))
     })

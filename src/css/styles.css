@@ -52,7 +52,7 @@ a:hover {
 }
 
 .shadow, .container, .form-container, .dropdown-content {
-  box-shadow: 2px 3px #a0a0a0;
+  box-shadow: 10px 0px 30px 0px #505050;
 }
 
 @media screen and (max-width: 580px) {
@@ -289,7 +289,7 @@ a:hover {
 }
 
 .shadow, .container, .form-container, .dropdown-content {
-  box-shadow: 2px 3px #a0a0a0;
+  box-shadow: 10px 0px 30px 0px #505050;
 }
 
 @media screen and (max-width: 580px) {

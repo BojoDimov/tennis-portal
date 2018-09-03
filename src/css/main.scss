@@ -23,7 +23,7 @@ a:hover{
 }
 
 .shadow {
-  box-shadow: 2px 3px darken(lightgray, 20%);
+  box-shadow: 10px 0px 30px 0px $primary;
 
   @media screen and (max-width: 580px) {
     box-shadow: none;
