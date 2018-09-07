@@ -8,8 +8,7 @@ module.exports = (db, Sequelize) => {
       unique: true,
       validate: {
         isEmail: true
-      },
-      unique: true
+      }
     },
     passwordHash: { type: Sequelize.STRING(40), allowNull: false },
     passwordSalt: { type: Sequelize.STRING(16), allowNull: false },

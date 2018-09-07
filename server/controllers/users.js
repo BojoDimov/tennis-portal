@@ -30,6 +30,7 @@ function setPassword(model, password) {
 
 const registerUser = (req, res, next) => {
   let model = req.body;
+  model.email = model.email.trim();
   let firstName = (req.body.firstName || '').trim();
   let sirName = (req.body.sirName || '').trim();
 
