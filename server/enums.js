@@ -19,7 +19,8 @@ module.exports = {
     RECOVERY: 'recovery',
     ACTIVATION: 'activation',
     CUSTOM: 'custom',
-    PAYMENT_ACCEPTED: 'payment'
+    PAYMENT_ACCEPTED: 'payment',
+    NOTIFICATION: '_notification',
   },
   CourtType: {
     CLAY: 'clay',

@@ -35,6 +35,26 @@ const TEMPLATES = {
       `
     };
   },
+  [EmailType.REGISTER + EmailType.NOTIFICATION]: function (scope) {
+    return {
+      subject: `Записани за турнир`,
+      body: `
+      <pre>
+        Потребителите: ${scope.users.join(', ')} бяха записани за турнир ${scope.tournamentName} - ${scope.editionName} - ${scope.schemeName}.
+      </pre>
+      `
+    };
+  },
+  [EmailType.UNREGISTER + EmailType.NOTIFICATION]: function (scope) {
+    return {
+      subject: `Отписани от турнир`,
+      body: `
+      <pre>
+        Потребителите: ${scope.users.join(', ')} бяха отписани от турнир ${scope.tournamentName} - ${scope.editionName} - ${scope.schemeName}.
+      </pre>
+      `
+    };
+  },
   [EmailType.RECOVERY]: function (scope) {
     return {
       subject: `Възстановяване на забравена парола в сайта на Smile Cup`,
@@ -121,9 +141,24 @@ function sendEmail(emailType, model, emails) {
         html: template.body
       }
 
-      return transporter.sendMail(options);
+      return transporter
+        .sendMail(options)
+        .then(() => {
+          const templateFn = TEMPLATES[emailType + EmailType.NOTIFICATION];//(model);
+          if (templateFn) {
+            const template = templateFn(model);
+            return transporter.sendMail({
+              from: smtp.username,
+              to: smtp.username,
+              subject: template.subject,
+              html: template.body
+            });
+          }
+          else return null;
+        });
     });
 }
+
 
 module.exports = {
   sendEmail

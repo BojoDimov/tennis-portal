@@ -37,7 +37,8 @@ function notifyTeam(schemeId, teamId, emailType) {
     .then(([scheme, team]) => sendEmail(emailType, {
       tournamentName: scheme.TournamentEdition.Tournament.name,
       editionName: scheme.TournamentEdition.name,
-      schemeName: scheme.name
+      schemeName: scheme.name,
+      users: [team.user1.name].concat((team.user2 ? [team.user2.name] : []))
     },
       [team.user1.email].concat((team.user2 ? [team.user2.email] : []))
     ));
