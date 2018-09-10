@@ -13,5 +13,6 @@ router.use('/editions', require('./editions'));
 router.use('/schemes', require('./schemes'));
 router.use('/groups', auth, require('./groups'));
 router.use('/matches', require('./matches'));
+router.use('/gallery', require('./gallery'));
 
 module.exports = router;

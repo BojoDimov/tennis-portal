@@ -18,6 +18,7 @@ const {
   Invitations,
   News,
   Files,
+  Gallery,
   SmtpCredentials,
   UserDetails,
   UserActivationCodes,
@@ -29,7 +30,7 @@ module.exports = {
   Tournaments, TournamentEditions, TournamentSchemes, Rankings,
   Matches, Sets, Groups, GroupTeams, Draws, Teams,
   Enrollments,
-  Tokens, Users, Invitations, Logs, News, Files,
+  Tokens, Users, Invitations, Logs, News, Files, Gallery,
   SmtpCredentials, UserDetails, UserActivationCodes, EnrollmentGuards,
   Payments
 }

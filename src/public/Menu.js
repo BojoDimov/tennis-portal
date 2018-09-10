@@ -27,6 +27,7 @@ export class Menu extends React.Component {
                   <div style={{ width: '10rem' }} className="dropdown-content" onClick={() => this.setState({ showMenuDrop: !this.state.showMenuDrop })}>
                     <Link to="/tournaments">Турнири</Link>
                     <Link style={{ display: 'block' }} to="/users">Потребители</Link>
+                    <Link style={{ display: 'block' }} to="/gallery/1">Галерия</Link>
                     <Link style={{ display: 'block' }} to="/news">Новни</Link>
                     <Link to="/news/create">Нова новина</Link>
                   </div> : null}
