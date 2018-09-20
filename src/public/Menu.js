@@ -28,7 +28,7 @@ export class Menu extends React.Component {
                     <Link to="/tournaments">Турнири</Link>
                     <Link style={{ display: 'block' }} to="/users">Потребители</Link>
                     <Link style={{ display: 'block' }} to="/gallery/1">Галерия</Link>
-                    <Link style={{ display: 'block' }} to="/news">Новни</Link>
+                    <Link style={{ display: 'block' }} to="/news">Новини</Link>
                     <Link to="/news/create">Нова новина</Link>
                   </div> : null}
               </div> : null
