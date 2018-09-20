@@ -3,7 +3,8 @@ const router = express.Router();
 const { sequelize } = require('../db');
 const {
   Matches,
-  Enrollments
+  Enrollments,
+  Sets
 } = require('../models');
 
 const removeTeam = (req, res, next) => {
@@ -110,9 +111,10 @@ const create = (req, res, next) => {
     .transaction(function (trn) {
       return Matches
         .create(match, {
-          include: Matches.getIncludes(),
-          transaction: trn
+          transaction: trn,
+          include: [{ model: Sets, as: 'sets' }]
         })
+        .then(e => Matches.findById(e.id, { include: Matches.getIncludes() }));
     })
     .then(e => res.json(e))
     .catch(err => next(err, req, res, null));

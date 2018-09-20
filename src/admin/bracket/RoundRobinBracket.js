@@ -104,16 +104,22 @@ export class BracketGroup extends React.Component {
                   onRemove={() => this.removeTeam(t1.User)}
                   onChange={team => this.addTeam(t1, team)} />
               </td>
-              {this.props.group.teams.map((t2, j) => (
-                <td key={j}>
-                  {i == j ? <span>x</span> :
-                    <React.Fragment>
-                      <Score {...this.getScore(t1, t2) } />
-                      <MatchScore match={this.getMatch(t1, t2)} refresh={this.props.refresh} />
-                    </React.Fragment>
-                  }
-                </td>
-              ))}
+              {this.props.group.teams.map((t2, j) => {
+                return (
+                  <td key={j}>
+                    {i == j ? <span>x</span> :
+                      <React.Fragment>
+                        {t1.team && t2.team ?
+                          <React.Fragment>
+                            <Score {...this.getScore(t1, t2) } />
+                            <MatchScore match={this.getMatch(t1, t2)} refresh={this.props.refresh} />
+                          </React.Fragment>
+                          : null}
+                      </React.Fragment>
+                    }
+                  </td>
+                );
+              })}
             </tr>
           ))}
         </tbody>
