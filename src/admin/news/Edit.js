@@ -45,6 +45,24 @@ export class Edit extends React.Component {
     });
   }
 
+  upload(image, index) {
+    let subsections = this.state.subsections;
+
+    if (image)
+      file(image)
+        .then(e => {
+          subsections[index].fileId = e.id;
+          this.setState({ subsections: subsections });
+        });
+  }
+
+  removeImage(index) {
+    let subsections = this.state.subsections;
+    subsections[index].fileId = null;
+
+    this.setState({ subsections: subsections });
+  }
+
   removeSection(index) {
     let ss = this.state.subsections;
     ss.splice(index, 1);
@@ -97,7 +115,21 @@ export class Edit extends React.Component {
           </div>
 
           {this.state.subsections.map((ss, i) => (
-            <React.Fragment>
+            <React.Fragment key={i}>
+              <div className="input-group">
+
+                <label>Изображение</label>
+                <input onChange={(e) => this.upload(e.target.files[0], i)} type="file" accept=".jpg, .jpeg, .png" />
+              </div>
+
+              <div className="input-group" style={{ textAlign: 'center' }}>
+                {ss.fileId ?
+                  <React.Fragment>
+                    <div className="button" onClick={() => this.removeImage(i)}>Премахни</div>
+                    <img src={imgUrl(ss.fileId)} style={{ maxHeight: '25rem', width: 'auto' }} />
+                  </React.Fragment> : null}
+              </div>
+
               <div className="input-group">
                 <div>Заглавие</div>
                 <input
