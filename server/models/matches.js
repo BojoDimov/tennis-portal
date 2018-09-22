@@ -116,7 +116,7 @@ Matches.getMatchStatistics = function (match, teamId) {
     sets: match.sets.length,
     setsWon: match.sets.reduce((acc, next) => (next[ourTeam] > next[oppositeTeam] ? acc + 1 : acc), 0),
     games: match.sets.reduce((acc, next) => acc + next.team1 + next.team2, 0),
-    gamesWon: match.sets.reduce((acc, next) => (next[ourTeam] > next[oppositeTeam] ? acc + next[ourTeam] : acc), 0),
+    gamesWon: match.sets.reduce((acc, next) => acc + next[ourTeam], 0),//(next[ourTeam] > next[oppositeTeam] ? acc + next[ourTeam] : acc), 0),
     isWinner: Matches.getWinner(match) == teamId
   }
 }
