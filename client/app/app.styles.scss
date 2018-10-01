@@ -1,0 +1,40 @@
+.baseline-clear {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  @extend .baseline-clear;
+
+  background: #C6DDFF;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #b6fbff, #C6DDFF);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #b6fbff, #C6DDFF); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+// body {
+//   background: none;
+//   background-color: whitesmoke;
+// }
+
+a {
+  text-decoration: none;
+}
+
+.container {
+  width: 980px;
+  box-sizing: border-box;
+  margin: auto;
+
+  @media screen and(max-width: 980px) {
+    width: 100%;
+  }
+}
+
+.spacing {
+  margin: 1rem 0;
+  
+  button + button {
+    margin-left: .5rem;
+  }
+}
+

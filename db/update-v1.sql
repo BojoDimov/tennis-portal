@@ -1,1 +1,0 @@
-alter table "EnrollmentsQueues" rename to "EnrollmentQueues";
