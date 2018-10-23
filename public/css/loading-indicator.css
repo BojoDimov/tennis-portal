@@ -29,7 +29,7 @@
   left: 10px;
   top: 10px;
   border: 2px solid transparent;
-  border-top: 1px solid #0059A7;
+  border-top: 1px solid #E87114;
   animation: r1 1s infinite ease-out;
 }
 
@@ -39,7 +39,7 @@
   left: 5px;
   top: 5px;
   border: 2px solid transparent;
-  border-top: 1px solid #508400;
+  border-top: 1px solid #FFAF00;
   animation: r1 reverse 1s infinite ease-in;
 }
 
@@ -49,7 +49,7 @@
   left: 0;
   top: 0;
   border: 2px solid transparent;
-  border-top: 1px solid #F95100;
+  border-top: 1px solid #629900;
   animation: r1 1s infinite ease-out;
 }
 

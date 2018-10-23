@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Typography from '@material-ui/core/Typography';
 import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
@@ -9,10 +10,19 @@ import { EnumLocalization } from '../enums';
 
 class EnumSelect extends React.Component {
   render() {
-    const { value, onChange, EnumValues, EnumName, label, required } = this.props;
+    const {
+      value,
+      onChange,
+      EnumValues,
+      EnumName,
+      label,
+      required,
+      error,
+      errorText
+    } = this.props;
 
     return (
-      <FormControl fullWidth={true}>
+      <FormControl fullWidth={true} error={error}>
         <InputLabel required={required}>
           {label}
         </InputLabel>
@@ -25,10 +35,11 @@ class EnumSelect extends React.Component {
           </MenuItem>
           {Object.keys(EnumValues).map((key, i) => {
             return (
-              <MenuItem key={i} value={key}>{EnumLocalization[EnumName][key]}</MenuItem>
+              <MenuItem key={i} value={EnumValues[key]}>{EnumLocalization[EnumName][key]}</MenuItem>
             );
           })}
         </Select>
+        <Typography style={{ color: 'red', fontSize: '.8rem' }}>{errorText}</Typography>
       </FormControl>
     );
   }

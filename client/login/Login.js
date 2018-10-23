@@ -1,28 +1,44 @@
 import React from 'react';
-import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
+
+import QueryService from '../services/query.service';
+import UserService from '../services/user.service';
+import { dispatchEvent } from '../services/events.service';
 
 const styles = (theme) => ({
   form: {
     display: 'flex',
     flexDirection: 'column',
     width: 250,
-    margin: 'auto'
+    margin: '1.5rem auto'
   }
 });
 
 class Login extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {}
+    this.state = {
+      email: '',
+      password: ''
+    };
 
     this.handleChange = (name) => (event) => {
       this.setState({
         [name]: event.target.value
       });
     }
+  }
+
+  login() {
+    QueryService
+      .post(`/login`, this.state)
+      .then(({ token }) => {
+        UserService.login(token);
+        this.props.onClose();
+      })
+      .catch(err => console.log('There have been an error:', err));
   }
 
   render() {
@@ -45,7 +61,9 @@ class Login extends React.Component {
           onChange={this.handleChange('password')}
         />
 
-        <Button variant="outlined" color="primary" size="large">
+        <Button variant="contained" color="primary" size="large" style={{ marginTop: '1rem' }}
+          onClick={() => this.login()}
+        >
           Вход
         </Button>
       </form>

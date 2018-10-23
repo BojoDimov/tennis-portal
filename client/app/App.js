@@ -6,18 +6,26 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import { withStyles } from '@material-ui/core/styles';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 
+import Home from './Home';
 import AppRouting from './app.routing';
 import SignIn from '../login/SignIn';
 import Navigation from '../menu/Navigation';
 import { dispatchEvent, catchEvent } from '../services/events.service';
+import UserService from '../services/user.service';
+import NavigationModel from '../menu/navigation.model';
+import { ApplicationMode } from '../enums';
 import theme from '../theme';
 import './app.styles.scss';
 
 class App extends React.Component {
   constructor(props) {
     super(props);
+    const user = UserService.getUser();
     this.state = {
-      index: 0
+      applicationMode: (user ? (
+        user.isAdmin ? ApplicationMode.ADMIN : ApplicationMode.USER)
+        : ApplicationMode.GUEST),
+      currentRoute: 0
     }
 
     this.handleLoginTab = (event, index) => {
@@ -26,8 +34,17 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    catchEvent('not-found', () => this.props.history.push('/oops'));
-    setTimeout(() => this.onRouteChanged(this.props.location), 3000);
+    catchEvent('not-found', () => this.props.history.replace('/oops'));
+    catchEvent('login', () => this.setState({
+      applicationMode: UserService.isAdmin() ? ApplicationMode.ADMIN : ApplicationMode.USER
+    }));
+    catchEvent('logout', () => {
+      this.setState({
+        applicationMode: ApplicationMode.GUEST
+      });
+      this.props.history.replace('/');
+    });
+    this.onRouteChanged(this.props.location);
   }
 
   componentDidUpdate(prevProps) {
@@ -37,20 +54,28 @@ class App extends React.Component {
   }
 
   onRouteChanged(location) {
-    dispatchEvent('location', location);
+    var route = (NavigationModel.routes
+      .find(route => location.pathname.indexOf(route.to) != -1)
+      || NavigationModel.adminRoutes
+        .find(route => location.pathname.indexOf(route.to) != -1));
+    if (route)
+      this.setState({ currentRoute: route.id });
   }
 
   render() {
-    const { index } = this.state;
-
     return (
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <MuiThemeProvider theme={theme}>
-          <div className="wrapper">
-            <Navigation />
-            <SignIn />
-            <AppRouting />
-          </div>
+          <UserService.SetApplicationMode value={this.state.applicationMode}>
+            <NavigationModel.SetCurrentRoute value={this.state.currentRoute}>
+              <div className="wrapper">
+                <Navigation />
+                {/* <Home /> */}
+                <SignIn />
+                <AppRouting />
+              </div>
+            </NavigationModel.SetCurrentRoute>
+          </UserService.SetApplicationMode>
         </MuiThemeProvider>
       </MuiPickersUtilsProvider>
     );

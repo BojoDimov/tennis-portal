@@ -4,7 +4,7 @@ import CardContent from '@material-ui/core/CardContent';
 
 import UserService from '../services/user.service';
 import QueryService from '../services/query.service';
-import UserModel from '../models/user.model';
+import UserModel from './user.model';
 
 class UsersView extends React.Component {
   constructor(props) {

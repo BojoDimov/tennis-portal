@@ -64,21 +64,6 @@ export const menuItems = (isLogged, isAdmin) => (
       </ListItemIcon>
       <ListItemText primary="Галерия" />
     </ListItem>
-    {!isLogged &&
-      <ListItem button>
-        <ListItemIcon>
-          <SendIcon />
-        </ListItemIcon>
-        <ListItemText
-          onClick={() => EventService.dispatchEvent('menu-login')}
-          primary="Вход" />
-      </ListItem>}
-    {isAdmin && <ListItem button>
-      <ListItemIcon>
-        <SendIcon />
-      </ListItemIcon>
-      <ListItemText primary="Админ" />
-    </ListItem>}
   </div>
 );
 
@@ -99,12 +84,5 @@ export const menuCollapsedItems = (isLogged, isAdmin) => (
         Схеми
     </Button>
     </Link>
-    {!isLogged &&
-      <Button variant="text" color="primary" size="large">
-        <span onClick={() => EventService.dispatchEvent('menu-login')}>Вход</span>
-      </Button>}
-    {isAdmin && <Button variant="text" color="primary" size="large">
-      Админ
-    </Button>}
   </React.Fragment>
 );

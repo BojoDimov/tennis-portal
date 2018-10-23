@@ -8,7 +8,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import { withStyles } from '@material-ui/core/styles';
 
 import QueryService from '../services/query.service';
-import UserModel from '../models/user.model';
+import UserModel from './user.model';
 
 const styles = (theme) => ({
   details: {

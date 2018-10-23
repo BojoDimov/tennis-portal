@@ -9,13 +9,15 @@ import { withStyles } from '@material-ui/core/styles';
 
 import QueryService from '../../services/query.service';
 import UserService from '../../services/user.service';
+import MatchDetailsEdit from './MatchDetailsEdit';
 
 const styles = (theme) => {
-  console.log(theme);
+  //console.log(theme);
   return ({
     cardRoot: {
       width: '100%',
-      marginBottom: '1rem'
+      marginBottom: '1rem',
+      // backgroundColor: '#F5E9DF'
     },
     vsRoot: {
       display: 'flex',
@@ -94,6 +96,13 @@ class MatchDetails extends React.Component {
             <span style={{ color: '#D67D2A', fontWeight: '700' }}>Отказал се:</span>
             {match.team2 && <span style={{ fontStyle: 'italic', marginLeft: '.3rem' }}>{match.team2.user1.name}</span>}
           </Typography>
+
+          <Button variant="contained" color="secondary" size="small">Промяна</Button>
+
+          <div>
+            <MatchDetailsEdit match={match} />
+          </div>
+
         </CardContent>
       </Card>
     );
@@ -103,9 +112,8 @@ class MatchDetails extends React.Component {
 class Score extends React.Component {
   render() {
     const { sets, classes } = this.props;
-    console.log(sets);
+
     if (sets.length == 0) {
-      console.log('wa');
       return (
         <Typography variant="headline" className={classes.vs}>
           VS

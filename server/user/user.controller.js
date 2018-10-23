@@ -1,5 +1,5 @@
-const express = require('express');
-const router = express.Router();
+const router = require('express').Router();
+const auth = require('../infrastructure/middlewares/auth');
 const UserService = require('./user.service');
 
 const getAll = (req, res, next) => {
@@ -8,6 +8,14 @@ const getAll = (req, res, next) => {
     .then(e => res.json(e));
 }
 
-router.get('/', getAll);
+const create = (req, res, next) => {
+  return UserService
+    .create(req.body)
+    .then(e => res.json(e))
+    .catch(err => next(err, req, res, null));
+}
+
+router.get('/', auth, getAll);
+router.post('/', create);
 
 module.exports = router;

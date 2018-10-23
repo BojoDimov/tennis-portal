@@ -1,3 +1,7 @@
 node_modules/
 public/bundle.js.gz
 public/bundle.js
+deployment/assets
+deployment/css
+deployment/bundle*
+deployment/index.html

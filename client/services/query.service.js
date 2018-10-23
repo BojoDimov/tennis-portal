@@ -2,7 +2,7 @@ import { dispatchEvent } from './events.service';
 
 class QueryService {
   constructor() {
-    this.backend = 'http://localhost:4000/api';
+    this.backend = (window.configuration || { backend: 'http://localhost:4000/api' }).backend
   }
 
   get(resource) {

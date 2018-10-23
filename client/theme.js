@@ -3,7 +3,13 @@ import { createMuiTheme } from '@material-ui/core/styles';
 export default createMuiTheme({
   palette: {
     primary: {
-      main: '#3672DB'
+      main: '#aab300',
+      // '#629900'
+      contrastText: '#fff'
+    },
+    secondary: {
+      main: '#E87114',
+      contrastText: '#fff'
     }
   },
   overrides: {
@@ -17,7 +23,7 @@ export default createMuiTheme({
         fontStyle: 'italic'
       },
       body2: {
-        color: '#3672DB'
+        color: '#629900'
       }
     }
   }

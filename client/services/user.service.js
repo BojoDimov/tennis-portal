@@ -1,35 +1,41 @@
+import React from 'react';
+import { dispatchEvent } from './events.service';
+import { ApplicationMode } from '../enums';
+
 class UserService {
+  constructor() {
+    const { Provider, Consumer } = React.createContext(ApplicationMode.GUEST);
+    this.SetApplicationMode = Provider;
+    this.WithApplicationMode = Consumer;
+  }
+
   isLogged() {
     return localStorage.getItem('token') != null;
   }
 
   isAdmin() {
-    return true;
-    const user = JSON.parse(localStorage.getItem('user'));
+    const user = this.getUser();
     if (user && user.isAdmin)
       return true;
     else return false;
   }
 
   getUser() {
-    let user = JSON.parse(localStorage.getItem('user'));
-    let token = JSON.parse(localStorage.getItem('token'));
-    if (user && token && new Date(token.expires) > new Date())
+    let token = JSON.parse(localStorage.getItem('token'))
+    let user = (token || { user: null }).user;
+    if (user && new Date(token.expires) > new Date())
       return user;
     else return null;
   }
 
-  login(token, user) {
+  login(token) {
     localStorage.setItem('token', JSON.stringify(token));
-    localStorage.setItem('user', JSON.stringify(user));
-    document.dispatchEvent(new CustomEvent('login', { detail: { user: user } }));
+    dispatchEvent('login');
   }
 
   logout() {
     localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    document.dispatchEvent(new CustomEvent('logout'));
-    return Promise.resolve();
+    dispatchEvent('logout');
   }
 }
 

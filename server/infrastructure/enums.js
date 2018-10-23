@@ -44,5 +44,20 @@ module.exports = {
   TournamentTaxes: {
     SINGLE: 25,
     DOUBLE: 30
+  },
+  ReservationPayment: {
+    SODEXO: 'sodexo',
+    MULTISPORT: 'multisport',
+    CASH: 'cash',
+    COMPETITOR: 'competitor'
+  },
+  ReservationType: {
+    GUEST: 'guest',
+    TENNIS_SCHOOL: 'school',
+    USER: 'user',
+    COMPETITOR: 'competitor',
+    ELDER_GROUP: 'elder',
+    TOURNAMENT: 'tournament',
+    SERVICE: 'service'
   }
 }

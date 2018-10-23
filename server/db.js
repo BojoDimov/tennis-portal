@@ -4,7 +4,7 @@ const config = {
   password: "12345678",
   host: '127.0.0.1',
   port: 5432,
-  dialect: 'postgres',
+  dialect: 'postgres'
 };
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(config);
@@ -32,7 +32,12 @@ const db = {
   Logs: sequelize.import('./infrastructure/models/log.model.js'),
   Files: sequelize.import('./infrastructure/models/file.model.js'),
   SmtpCredentials: sequelize.import('./infrastructure/models/smtp.model.js'),
-  UserActivationCodes: sequelize.import('./infrastructure/models/uac.model.js')
+  UserActivationCodes: sequelize.import('./infrastructure/models/uac.model.js'),
+
+  Seasons: sequelize.import('./schedule/models/season.model.js'),
+  Courts: sequelize.import('./schedule/models/court.model.js'),
+  Reservations: sequelize.import('./schedule/models/reservation.model.js'),
+  ReservationPayments: sequelize.import('./schedule/models/reservationPayment.model.js')
 };
 
 Object.keys(db).forEach(modelName => {

@@ -1,23 +1,13 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import DatePicker from 'material-ui-pickers/DatePicker';
-import Paper from '@material-ui/core/Paper';
-import TextField from '@material-ui/core/TextField';
-import { withStyles } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
-import StepButton from '@material-ui/core/StepButton';
 import StepContent from '@material-ui/core/StepContent';
 import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
+import { withStyles } from '@material-ui/core/styles';
 
-import EnumSelect from '../components/EnumSelect';
-import { Gender, CourtType, PlayStyle, BackhandType } from '../enums';
+import UserModel from '../users/user.model';
+import QueryService from '../services/query.service';
 
 const styles = (theme) => ({
   action: {
@@ -37,21 +27,8 @@ class RegistrationStepper extends React.Component {
     this.state = {
       activeStep: 0,
       completed: [false, false, false],
-      user: {
-        email: '',
-        password: '',
-        confirmPassword: '',
-        firstName: '',
-        lastName: '',
-        telephone: '',
-        gender: '',
-        birthDate: null,
-        startedPlaying: '',
-        playStyle: '',
-        courtType: '',
-        backhandType: ''
-      },
-      errors: {}
+      user: UserModel.get(),
+      errors: UserModel.getErrorsModel()
     }
 
     this.handleChange = (prop, custom = false) => (event) => {
@@ -67,35 +44,14 @@ class RegistrationStepper extends React.Component {
       completed[this.state.activeStep] = true;
       this.setState({ activeStep: value, completed: completed });
     }
-
-    this.getErrors = (name) => {
-      if (this.state.errors[name])
-        return <span>
-          {Object.values(this.state.errors[name]).map((err, i) => {
-            return (
-              <span key={i} style={{ display: 'block' }}>{err}</span>
-            );
-          })}
-        </span>
-      else return null;
-    }
   }
 
   register() {
-    this.setState({
-      errors: {
-        email: {
-          invalid: 'Невалиден имейл.',
-          unique: 'Съществува потребител с такъв имейл.'
-        },
-        password: {
-          length: 'Паролата трябва да бъде поне 6 символа.'
-        },
-        confirmPassword: {
-          mismatch: 'Паролите не свъпадат.'
-        }
-      }
-    })
+    this.setState({ errors: UserModel.getErrorsModel() });
+    return QueryService
+      .post(`/users`, this.state.user)
+      .then(_ => this.props.onSuccess())
+      .catch(err => this.setState({ errors: err }));
   }
 
   render() {
@@ -111,46 +67,20 @@ class RegistrationStepper extends React.Component {
         >
           <Step>
             <StepLabel
+              style={{ cursor: 'pointer' }}
               onClick={this.changeStep(0)}
               completed={completed[0]}
-              error={Boolean(errors.email) || Boolean(errors.password) || Boolean(errors.confirmPassword)} >
+              error={errors.email.length
+                + errors.password.length
+                + errors.confirmPassword.length > 0}
+            >
               Данни за акаунт
             </StepLabel>
             <StepContent>
-              <TextField
-                id="email"
-                label="Email"
-                value={user.email}
-                required={true}
-                fullWidth={true}
-                error={Boolean(errors.email)}
-                helperText={this.getErrors('email')}
-                onChange={this.handleChange('email')}
-              />
-
-              <TextField
-                id="password"
-                label="Парола"
-                type="password"
-                value={user.password}
-                required={true}
-                fullWidth={true}
-                error={Boolean(errors.password)}
-                helperText={this.getErrors('password')}
-                onChange={this.handleChange('password')}
-              />
-
-              <TextField
-                id="confirmPassword"
-                label="Повтори парола"
-                type="password"
-                value={user.confirmPassword}
-                required={true}
-                fullWidth={true}
-                error={Boolean(errors.confirmPassword)}
-                helperText={this.getErrors('confirmPassword')}
-                onChange={this.handleChange('confirmPassword')}
-              />
+              <UserModel.UserAccountData
+                user={user}
+                errors={errors}
+                onChange={this.handleChange} />
 
               <StepActions
                 activeStep={activeStep}
@@ -160,52 +90,23 @@ class RegistrationStepper extends React.Component {
             </StepContent>
           </Step>
           <Step>
-            <StepButton onClick={this.changeStep(1)} completed={completed[1]}>
+            <StepLabel
+              style={{ cursor: 'pointer' }}
+              completed={completed[1]}
+              onClick={this.changeStep(1)}
+              error={errors.firstName.length
+                + errors.lastName.length
+                + errors.telephone.length
+                + errors.gender.length
+                + errors.birthDate.length > 0}
+            >
               Основни данни за играч
-            </StepButton>
+            </StepLabel>
             <StepContent>
-              <TextField
-                label="Име"
-                value={user.firstName}
-                required={true}
-                fullWidth={true}
-                onChange={this.handleChange('firstName')}
-              />
-
-              <TextField
-                label="Фамилия"
-                value={user.lastName}
-                required={true}
-                fullWidth={true}
-                onChange={this.handleChange('lastName')}
-              />
-
-              <DatePicker
-                autoOk
-                openToYearSelection
-                label="Дата на раждане"
-                clearable
-                required={true}
-                fullWidth={true}
-                value={user.birthDate}
-                onChange={this.handleChange('birthDate', true)}
-              />
-
-              <TextField
-                label="Телефон"
-                required={true}
-                fullWidth={true}
-                value={user.telephone}
-                onChange={this.handleChange('telephone')}
-              />
-
-              <EnumSelect
-                label="Пол"
-                value={user.gender}
-                required={true}
-                onChange={this.handleChange('gender')}
-                EnumValues={Gender}
-                EnumName="Gender" />
+              <UserModel.UserPlayerMainData
+                user={user}
+                errors={errors}
+                onChange={this.handleChange} />
 
               <StepActions
                 activeStep={activeStep}
@@ -215,39 +116,22 @@ class RegistrationStepper extends React.Component {
             </StepContent>
           </Step>
           <Step>
-            <StepButton onClick={this.changeStep(2)} completed={completed[2]}>
+            <StepLabel
+              style={{ cursor: 'pointer' }}
+              onClick={this.changeStep(2)}
+              completed={completed[2]}
+              error={errors.startedPlaying.length
+                + errors.playStyle.length
+                + errors.courtType.length
+                + errors.backhandType.length > 0}
+            >
               Допълнителни данни за играч
-            </StepButton>
+            </StepLabel>
             <StepContent>
-              <TextField
-                id="startedPlaying"
-                label="Започнах да играя през"
-                fullWidth={true}
-                value={user.startedPlaying}
-                onChange={this.handleChange('startedPlaying')}
-                type="number"
-              />
-
-              <EnumSelect
-                label="Играя със"
-                value={user.playStyle}
-                onChange={this.handleChange('playStyle')}
-                EnumValues={PlayStyle}
-                EnumName="PlayStyle" />
-
-              <EnumSelect
-                label="Бекхенд"
-                value={user.backhandType}
-                onChange={this.handleChange('backhandType')}
-                EnumValues={BackhandType}
-                EnumName="BackhandType" />
-
-              <EnumSelect
-                label="Любима настилка"
-                value={user.courtType}
-                onChange={this.handleChange('courtType')}
-                EnumValues={CourtType}
-                EnumName="CourtType" />
+              <UserModel.UserPlayerSecondaryData
+                user={user}
+                errors={errors}
+                onChange={this.handleChange} />
 
               <StepActions
                 activeStep={activeStep}
@@ -265,11 +149,11 @@ class RegistrationStepper extends React.Component {
             телефонния номер който сте задали.
           </em>
           <div className={classes.action}>
-            <Button variant="text" onClick={this.changeStep(0)}>
+            <Button variant="outlined" color="primary" size="small" onClick={this.changeStep(0)}>
               Промяна
           </Button>
 
-            <Button variant="contained" color="primary" onClick={() => this.register()}>
+            <Button style={{ marginLeft: '.3rem' }} variant="contained" size="small" color="primary" onClick={() => this.register()}>
               Регистрация
           </Button>
           </div>
@@ -287,6 +171,9 @@ class StepActions extends React.Component {
     return (
       <div className={className}>
         {activeStep != 0 && <Button
+          variant="outlined"
+          color="primary"
+          size="small"
           disabled={activeStep === 0}
           onClick={changeStep(activeStep - 1)}
         >
@@ -294,8 +181,10 @@ class StepActions extends React.Component {
           </Button>}
 
         <Button
-          variant="text"
+          style={{ marginLeft: '.3rem' }}
+          variant="contained"
           color="primary"
+          size="small"
           onClick={changeStep(activeStep + 1)}
         >
           {activeStep === finalStep ? 'Приключване' : 'Продължи'}
