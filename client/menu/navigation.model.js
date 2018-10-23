@@ -22,7 +22,7 @@ class NavigationModel {
   constructor() {
     this.routes = [
       { id: 1, to: '/schedule', name: 'График' },
-      { id: 2, to: '/players', name: 'Играчи' }
+      // { id: 2, to: '/players', name: 'Играчи' }
     ];
     this.adminRoutes = [
       { id: 6, to: '/admin/users', name: 'Потребители', Icon: PermIdentityRoundedIcon },
