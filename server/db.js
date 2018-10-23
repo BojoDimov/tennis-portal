@@ -5,7 +5,7 @@ const config = {
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
   dialect: 'postgres',
-  logging: process.env.TYPE != 'prod' ? console.log : false
+  // logging: process.env.TYPE != 'prod' ? console.log : false
 };
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(config);
