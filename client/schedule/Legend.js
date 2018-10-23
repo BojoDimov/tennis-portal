@@ -24,7 +24,7 @@ const styles = (theme) => ({
     backgroundColor: theme.palette.secondary.light
   },
   unavailiable: {
-    background: 'url(./empty.png)'
+    background: 'url(assets/empty.png)'
   }
 });
 

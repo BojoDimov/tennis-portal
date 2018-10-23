@@ -1,10 +1,11 @@
 const config = {
-  database: "tennis-portal-experimental",
-  username: "postgres",
-  password: "12345678",
-  host: '127.0.0.1',
-  port: 5432,
-  dialect: 'postgres'
+  database: process.env.DB,
+  username: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  dialect: 'postgres',
+  logging: process.env.TYPE != 'prod' ? console.log : false
 };
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(config);

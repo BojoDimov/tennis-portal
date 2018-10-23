@@ -4,7 +4,7 @@
   "description": "React Boilerplate",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --mode development",
+    "start": "concurrently \"node server\" \"webpack-dev-server --mode development\"",
     "build": "concurrently \"ncp public deployment\" \"webpack --config webpack.prod.config.js\""
   },
   "author": "Bozhidar Dimov",
@@ -20,6 +20,7 @@
     "compression-webpack-plugin": "^2.0.0",
     "cors": "^2.8.4",
     "css-loader": "0.28.11",
+    "dotenv": "^6.1.0",
     "express": "^4.16.3",
     "ncp": "^2.0.0",
     "node-sass": "^4.9.3",

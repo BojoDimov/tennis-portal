@@ -5,3 +5,4 @@ deployment/assets
 deployment/css
 deployment/bundle*
 deployment/index.html
+.env

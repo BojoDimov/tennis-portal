@@ -1,9 +1,10 @@
+require('dotenv').config();
 const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const app = express();
 
-app.listen(80, () => console.log('server running @ port:80'));
+app.listen(process.env.PORT, () => console.log(`server running @ port:${process.env.PORT}`));
 app.use(cors());
 app.use(express.json());
 
@@ -17,7 +18,7 @@ app.use(express.json());
 
 app.use(express.static(__dirname));
 
-app.use('/api', require('../server/index'));
+app.use('/api', require('../server/controllers'));
 app.use(require('../server/infrastructure/middlewares/error'));
 
 app.use('*', (req, res) => {

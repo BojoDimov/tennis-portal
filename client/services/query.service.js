@@ -1,8 +1,9 @@
 import { dispatchEvent } from './events.service';
+import Configuration from '../configuration';
 
 class QueryService {
   constructor() {
-    this.backend = (window.configuration || { backend: 'http://localhost:4000/api' }).backend
+    this.backend = (window.configuration || Configuration).backend;
   }
 
   get(resource) {
