@@ -98,48 +98,49 @@ class Schedule extends React.Component {
             />
 
             <Legend />
-
-            <Table style={{}}>
-              <TableHead>
-                <TableRow>
-                  <TableCell padding="none" style={{ textAlign: 'center' }}>Час\Корт</TableCell>
-                  {courts.map(court => {
+            <div style={{ overflowX: 'auto' }}>
+              <Table style={{ minWidth: '600px' }}>
+                <TableHead>
+                  <TableRow>
+                    <TableCell padding="none" style={{ textAlign: 'center' }}>Час\Корт</TableCell>
+                    {courts.map(court => {
+                      return (
+                        <TableCell
+                          padding="none"
+                          style={{ textAlign: 'center' }}
+                          key={court.id}
+                        >
+                          {court.name}
+                        </TableCell>
+                      );
+                    })}
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {getRange(season.workingHoursStart, season.workingHoursEnd - 1).map(hour => {
                     return (
-                      <TableCell
-                        padding="none"
-                        style={{ textAlign: 'center' }}
-                        key={court.id}
-                      >
-                        {court.name}
-                      </TableCell>
+                      <TableRow key={hour}>
+                        <TableCell padding="none"
+                          classes={{
+                            root: classes.hours
+                          }}
+                        >
+                          {getHour(hour)}
+                        </TableCell>
+                        {courts.map(court =>
+                          <Reservation
+                            mode={mode}
+                            key={court.id}
+                            reservation={this.getReservation(hour, court)}
+                            onChange={_ => this.getData(date)}
+                          />
+                        )}
+                      </TableRow>
                     );
                   })}
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {getRange(season.workingHoursStart, season.workingHoursEnd - 1).map(hour => {
-                  return (
-                    <TableRow key={hour}>
-                      <TableCell padding="none"
-                        classes={{
-                          root: classes.hours
-                        }}
-                      >
-                        {getHour(hour)}
-                      </TableCell>
-                      {courts.map(court =>
-                        <Reservation
-                          mode={mode}
-                          key={court.id}
-                          reservation={this.getReservation(hour, court)}
-                          onChange={_ => this.getData(date)}
-                        />
-                      )}
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
+                </TableBody>
+              </Table>
+            </div>
           </Paper>
         </div>}
       </UserService.WithApplicationMode>
