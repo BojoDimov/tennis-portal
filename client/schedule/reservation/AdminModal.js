@@ -93,6 +93,7 @@ class AdminModal extends React.Component {
               {reservation.user.isAdmin && <Typography style={{ marginLeft: '.5rem' }} variant="caption">(Администратор)</Typography>}
             </Typography>
           </Typography>}
+
           <EnumSelect
             label="Вид резервация:"
             value={reservation.type}
@@ -145,6 +146,15 @@ class AdminModal extends React.Component {
           })}
 
           {reservation.payments.length == 0 && <Typography variant="caption">Няма регистрирани плащания</Typography>}
+
+          <TextField
+            label="Бележка"
+            value={reservation.info}
+            fullWidth={true}
+            multiline={true}
+            margin="none"
+            onChange={this.handleChange('info')}
+          />
 
         </DialogContent>
         <DialogActions>

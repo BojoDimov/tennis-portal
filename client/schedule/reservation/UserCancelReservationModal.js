@@ -55,7 +55,11 @@ class UserCancelReservationModal extends React.Component {
             Час:
             <Typography>{getHour(reservation.hour)} - {getHour(reservation.hour + 1)}</Typography>
           </Typography>
-          <Typography variant="caption">
+          {reservation.info && <Typography variant="caption">
+            Бележка:
+            <Typography>{reservation.info}</Typography>
+          </Typography>}
+          <Typography variant="caption" style={{ marginTop: '.5rem' }}>
             Имате право да откажете резервацията до 8 часа преди уреченият час.
             След това системата отчита вашият час като използван и трябва да го заплатите.
             Ако имате абонамент, часът ще ви се брои като отигран.
