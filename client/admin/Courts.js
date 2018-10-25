@@ -1,5 +1,7 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
+import Button from '@material-ui/core/Button';
+import AddIcon from '@material-ui/icons/Add';
 
 import QueryService from '../services/query.service';
 import CourtItem from './CourtItem';
@@ -42,6 +44,9 @@ class Courts extends React.Component {
 
     return (
       <div className="container">
+        <span onClick={() => this.setState({ courts: this.state.courts.concat[{}] })}> <AddIcon /></span>
+
+        {/* <Button variant="contained" size="medium" color="primary" onClick={() => this.setState({ courts: this.state.courts.concat[{}] })}>Добави</Button> */}
         <div className={classes.root}>
           {this.state.courts.map((court, index) => <CourtItem key={court.id} court={court} onChange={model => this.updateModel(model, index)} />)}
         </div>

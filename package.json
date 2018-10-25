@@ -4,6 +4,7 @@
   "description": "React Boilerplate",
   "main": "index.js",
   "scripts": {
+    "start-frontend": "webpack-dev-server --mode development",
     "start": "concurrently \"node server\" \"webpack-dev-server --mode development\"",
     "copy": "ncp public deployment",
     "build": "concurrently \"ncp public deployment\" \"webpack --config webpack.prod.config.js\""

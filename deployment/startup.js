@@ -16,11 +16,24 @@ app.use(express.json());
 //   // next();
 // });
 
-app.use(express.static(__dirname));
-
 app.use('/api', require('../server/controllers'));
 app.use(require('../server/infrastructure/middlewares/error'));
 
-app.use('*', (req, res) => {
-  res.sendFile(path.join(__dirname, './index.html'))
+app.use(/^.*js$/, (req, res, next) => {
+  const file = req.baseUrl.split('/').reverse()[0];
+  res.sendFile(path.join(__dirname, file));
+});
+
+app.use(/^.*(png|jpeg)$/, (req, res, next) => {
+  const file = req.baseUrl.split('/').reverse()[0];
+  res.sendFile(path.join(__dirname, 'assets', file));
+});
+
+app.use(/^.*css$/, (req, res, next) => {
+  const file = req.baseUrl.split('/').reverse()[0];
+  res.sendFile(path.join(__dirname, 'css', file));
+});
+
+app.use('*', (req, res, next) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
