@@ -9,6 +9,7 @@ import Schedule from '../schedule/Schedule';
 import Courts from '../admin/Courts';
 import NavigationModel from '../menu/navigation.model';
 import UserService from '../services/user.service';
+import Recovery from '../login/Recovery';
 import { ApplicationMode } from '../enums';
 
 const routeMapping = {
@@ -42,6 +43,7 @@ const AppRouting = () => (
         );
       })}
       <Route path="/oops" component={NotFoundPage} />
+      <Route path="/recovery" component={Recovery} />
       <Route exact path="/">
         <Redirect to="/schedule" />
       </Route>

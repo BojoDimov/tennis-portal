@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
@@ -13,6 +14,15 @@ const styles = (theme) => ({
     flexDirection: 'column',
     width: 250,
     margin: '1.5rem auto'
+  },
+  link: {
+    color: theme.palette.primary.main,
+    padding: '.3rem 0',
+    '&:hover': {
+      color: theme.palette.primary.dark,
+      borderBottom: '1px solid',
+      borderColor: theme.palette.primary.main,
+    }
   }
 });
 
@@ -66,6 +76,12 @@ class Login extends React.Component {
         >
           Вход
         </Button>
+        <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center' }}>
+          <Link to="/recovery" className={classes.link} onClick={this.props.onClose}>
+            Забравена парола?
+        </Link>
+        </div>
+
       </form>
     );
   }
