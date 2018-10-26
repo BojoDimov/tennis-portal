@@ -1,12 +1,19 @@
 const router = require('express').Router();
 const ScheduleService = require('./schedule.service');
+const auth = require('../infrastructure/middlewares/auth');
 const identity = require('../infrastructure/middlewares/identity');
 const adminIdentity = require('../infrastructure/middlewares/adminIdentity');
 
-const collect = (req, res, next) => {
-  return Promise
-    .all([ScheduleService.getSeasons(true), ScheduleService.getCourts(true)])
-    .then(([seasons, courts]) => res.json({ seasons, courts }));
+const getSeasons = (_, res) => {
+  return ScheduleService
+    .getSeasons(true)
+    .then(e => res.json(e));
+}
+
+const getCourts = (_, res) => {
+  return ScheduleService
+    .getCourts(true)
+    .then(e => res.json(e));
 }
 
 const getCurrentConfig = (req, res, next) => {
@@ -84,7 +91,8 @@ const deleteReservation = (req, res, next) => {
 }
 
 router.get('/config', getCurrentConfig);
-router.get('/admin', collect);
+router.get('/seasons', auth, getSeasons);
+router.get('/courts', auth, getCourts);
 
 router.post('/seasons', createSeason);
 router.post('/seasons/:id', updateSeason);

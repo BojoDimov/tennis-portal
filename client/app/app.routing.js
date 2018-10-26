@@ -7,6 +7,7 @@ import Schemes from '../schemes';
 import Editions from '../editions';
 import Schedule from '../schedule/Schedule';
 import Courts from '../admin/Courts';
+import Seasons from '../admin/Seasons';
 import NavigationModel from '../menu/navigation.model';
 import UserService from '../services/user.service';
 import Recovery from '../login/Recovery';
@@ -16,7 +17,7 @@ const routeMapping = {
   '/schedule': Schedule,
   '/players': NotFoundPage,
   '/admin/courts': Courts,
-  '/admin/seasons': NotFoundPage,
+  '/admin/seasons': Seasons,
   '/admin/config': NotFoundPage,
   '/admin/users': NotFoundPage
 };

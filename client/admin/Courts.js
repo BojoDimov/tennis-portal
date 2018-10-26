@@ -10,9 +10,6 @@ const styles = () => ({
     display: 'flex',
     flexWrap: 'wrap',
     justifyContent: 'center'
-  },
-  newItem: {
-    minWidth: '200px'
   }
 });
 
@@ -31,8 +28,8 @@ class Courts extends React.Component {
 
   getData() {
     return QueryService
-      .get(`/schedule/admin`)
-      .then(e => this.setState(e));
+      .get(`/schedule/courts`)
+      .then(e => this.setState({ courts: e }));
   }
 
   updateModel(model, index) {
