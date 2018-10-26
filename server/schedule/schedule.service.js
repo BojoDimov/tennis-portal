@@ -57,10 +57,12 @@ class ScheduleService {
   }
 
   createSeason(model) {
+    //TODO: add seasons overlap validation
     return Seasons.create(model);
   }
 
   async updateSeason(id, model) {
+    //TODO: add seasons overlap validation
     const entity = await Seasons.findById(id);
     return entity.update(model);
   }

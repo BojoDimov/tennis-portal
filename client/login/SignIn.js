@@ -17,9 +17,6 @@ import Registration from './Registration';
 import EventService from '../services/events.service';
 
 const styles = (theme) => ({
-  root: {
-    zIndex: 1400
-  },
   centered: {
     display: 'flex',
     justifyContent: 'center'
@@ -69,9 +66,6 @@ class SignIn extends React.Component {
     return (
       <React.Fragment>
         <Dialog
-          classes={{
-            root: classes.root
-          }}
           open={open}
           fullScreen={fullScreen}
           onClose={() => this.setState({ open: false })}

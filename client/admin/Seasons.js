@@ -2,6 +2,7 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 
+import SeasonItem from './SeasonItem';
 import QueryService from '../services/query.service';
 
 const styles = () => ({
@@ -70,13 +71,12 @@ class Seasons extends React.Component {
         <div className={classes.root}>
           {this.state.seasons.map((season, index) => {
             return (
-              // <CourtItem
-              //   key={season.id || 0}
-              //   season={season}
-              //   onChange={model => this.updateModel(model, index)}
-              //   onCreateCancel={() => this.removeSeason(index)}
-              // />
-              <div>baba</div>
+              <SeasonItem
+                key={season.id || 0}
+                season={season}
+                onChange={model => this.updateModel(model, index)}
+                onCreateCancel={() => this.removeSeason(index)}
+              />
             );
           })}
         </div>
