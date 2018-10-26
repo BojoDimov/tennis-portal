@@ -9,6 +9,5 @@ app.listen(process.env.PORT, () => console.log(`server running @ port:${process.
 app.use(cors());
 app.use(express.json());
 
-
 app.use('/api', require('./controllers'));
 app.use(require('../server/infrastructure/middlewares/error'));
