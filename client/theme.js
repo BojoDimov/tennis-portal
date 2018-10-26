@@ -26,7 +26,22 @@ export default createMuiTheme({
       body2: {
         color: '#629900'
       }
+    },
+    MuiDrawer: {
+      modal: {
+        zIndex: 1200
+      }
     }
+    // MuiDialog: {
+    //   root: {
+    //     zIndex: 1400
+    //   }
+    // },
+    // MuiSelect: {
+    //   select: {
+    //     zIndex: 1400
+    //   }
+    // }
   }
 });
 
