@@ -135,6 +135,7 @@ class UserModel {
           autoOk
           openToYearSelection
           label="Дата на раждане"
+          labelFunc={(date) => date ? new Date(date).toLocaleDateString() : ''}
           clearable
           required={true}
           fullWidth={true}
