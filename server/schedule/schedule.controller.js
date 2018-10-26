@@ -5,7 +5,7 @@ const adminIdentity = require('../infrastructure/middlewares/adminIdentity');
 
 const collect = (req, res, next) => {
   return Promise
-    .all([ScheduleService.getSeasons(), ScheduleService.getCourts()])
+    .all([ScheduleService.getSeasons(true), ScheduleService.getCourts(true)])
     .then(([seasons, courts]) => res.json({ seasons, courts }));
 }
 

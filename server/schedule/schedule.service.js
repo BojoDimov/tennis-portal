@@ -13,8 +13,16 @@ class ScheduleService {
     return Seasons.findAll();
   }
 
-  getCourts() {
-    return Courts.findAll({ order: [['id', 'asc']] });
+  getCourts(includeInactive = false) {
+    return Courts.findAll({
+      where: {
+        [Op.or]: [
+          { isActive: true },
+          { isActive: !includeInactive }
+        ]
+      },
+      order: [['id', 'asc']]
+    });
   }
 
   getReservations(date) {

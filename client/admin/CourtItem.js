@@ -6,6 +6,8 @@ import TextField from '@material-ui/core/TextField';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
+import Switch from '@material-ui/core/Switch';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { withStyles } from '@material-ui/core/styles';
 
 import QueryService from '../services/query.service';
@@ -42,10 +44,16 @@ class CourtItem extends React.Component {
       this.setState({ mode: 'create' });
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.court != this.props.court)
+      if (!this.props.court.id)
+        this.setState({ mode: 'create' });
+  }
+
   handleCancel() {
     if (this.state.mode == 'edit')
       this.setState({ mode: 'view' });
-    else this.props.onCancel();
+    else this.props.onCreateCancel();
   }
 
   render() {
@@ -64,9 +72,12 @@ class CourtItem extends React.Component {
       />;
     else
       return (
-        <Card classes={{ root: classes.card }}>
+        <Card classes={{ root: classes.card }} style={{ opacity: court.isActive ? 1 : .5 }}>
           <CardContent classes={{ root: classes.cardContent }}>
-            <Typography variant="title">{court.name}</Typography>
+            <Typography variant="title" style={{ display: 'flex', alignItems: 'center' }}>
+              {court.name}
+              {!court.isActive && <Typography variant="caption">(неактивен)</Typography>}
+            </Typography>
             <Typography variant="caption">{court.info}</Typography>
             <Typography variant="subheading" style={{ paddingRight: '1rem' }}>
               Работно време:
@@ -76,7 +87,7 @@ class CourtItem extends React.Component {
           <CardActions classes={{ root: classes.cardActions }}>
             <Button variant="contained" color="primary" size="small" onClick={() => this.setState({ mode: 'edit' })}>Промяна</Button>
           </CardActions>
-        </Card>
+        </Card >
       );
   }
 }
@@ -88,6 +99,7 @@ class CourtEdit extends React.Component {
       id: null,
       name: '',
       info: '',
+      isActive: true,
       workingHoursStart: '',
       workingHoursEnd: ''
     }
@@ -95,6 +107,16 @@ class CourtEdit extends React.Component {
 
   componentDidMount() {
     this.setState(this.props.court);
+  }
+
+  componentDidUpdate(prevProps) {
+    if (prevProps.court != this.props.court)
+      this.setState(this.props.court);
+  }
+
+  cancel() {
+    this.setState(this.props.court);
+    this.props.onCancel();
   }
 
   save() {
@@ -106,6 +128,8 @@ class CourtEdit extends React.Component {
     else
       return QueryService
         .post(`/schedule/courts`, this.state)
+        .then(e => this.props.onChange(e))
+        .catch(err => console.log('ERR:', err));
   }
 
   render() {
@@ -115,6 +139,20 @@ class CourtEdit extends React.Component {
       <Paper style={{ flexBasis: '250px', display: 'flex', flexDirection: 'column', padding: '2rem' }}>
         {mode == 'create' && <Typography align="center" variant="headline">Нов корт</Typography>}
         {mode == 'edit' && <Typography align="center" variant="headline">Промяна на корт</Typography>}
+
+
+        <FormControlLabel
+          control={
+            <Switch
+              checked={this.state.isActive}
+              onChange={e => this.setState({ isActive: e.target.value === 'true' })}
+              value={this.state.isActive ? 'false' : 'true'}
+              color="primary"
+            />
+          }
+          label="Активен"
+        />
+
         <TextField
           id="name"
           label="Наименование"
@@ -151,9 +189,19 @@ class CourtEdit extends React.Component {
             variant="contained"
             color="primary"
             size="small"
+            style={{ margin: '.5rem .5rem 0 0' }}
             onClick={() => this.save()}
           >
             Създаване
+          </Button>
+          <Button
+            variant="outlined"
+            color="primary"
+            size="small"
+            style={{ margin: '.5rem 0 0 0' }}
+            onClick={() => this.cancel()}
+          >
+            Отказ
           </Button>
         </div>}
 
@@ -173,7 +221,7 @@ class CourtEdit extends React.Component {
             color="primary"
             size="small"
             style={{ margin: '.5rem 0 0 0' }}
-            onClick={() => this.props.onCancel()}
+            onClick={() => this.cancel()}
           >
             Отказ
           </Button>
