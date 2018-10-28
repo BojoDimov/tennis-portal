@@ -6,8 +6,7 @@ import TextField from '@material-ui/core/TextField';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
-import Switch from '@material-ui/core/Switch';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import DatePicker from 'material-ui-pickers/DatePicker';
 import { withStyles } from '@material-ui/core/styles';
 
 import QueryService from '../services/query.service';
@@ -78,6 +77,9 @@ class SeasonItem extends React.Component {
               {season.name}
             </Typography>
             <Typography variant="caption">{season.info}</Typography>
+            <Typography style={{ margin: '.3rem 0' }}>
+              {new Date(season.seasonStart).toLocaleDateString()} - {new Date(season.seasonEnd).toLocaleDateString()}
+            </Typography>
             <Typography variant="subheading" style={{ paddingRight: '1rem' }}>
               Работно време:
               <Typography>{getHour(season.workingHoursStart)} - {getHour(season.workingHoursEnd)}</Typography>
@@ -98,9 +100,11 @@ class SeasonEdit extends React.Component {
       id: null,
       name: '',
       info: '',
-      isActive: true,
+      seasonStart: null,
+      seasonEnd: null,
       workingHoursStart: '',
-      workingHoursEnd: ''
+      workingHoursEnd: '',
+      isActive: true
     }
   }
 
@@ -121,12 +125,12 @@ class SeasonEdit extends React.Component {
   save() {
     if (this.state.id)
       return QueryService
-        .post(`/schedule/courts/${this.state.id}`, this.state)
+        .post(`/schedule/seasons/${this.state.id}`, this.state)
         .then(e => this.props.onChange(e))
         .catch(err => console.log('ERR:', err));
     else
       return QueryService
-        .post(`/schedule/courts`, this.state)
+        .post(`/schedule/seasons`, this.state)
         .then(e => this.props.onChange(e))
         .catch(err => console.log('ERR:', err));
   }
@@ -152,6 +156,26 @@ class SeasonEdit extends React.Component {
           rowsMax="4"
           value={this.state.info}
           onChange={(e) => this.setState({ info: e.target.value })}
+        />
+
+        <DatePicker
+          autoOk
+          label="Начало на сезона"
+          labelFunc={(date) => date ? new Date(date).toLocaleDateString() : ''}
+          clearable
+          fullWidth={true}
+          value={this.state.seasonStart}
+          onChange={value => this.setState({ seasonStart: value })}
+        />
+
+        <DatePicker
+          autoOk
+          label="Край на сезона"
+          labelFunc={(date) => date ? new Date(date).toLocaleDateString() : ''}
+          clearable
+          fullWidth={true}
+          value={this.state.seasonEnd}
+          onChange={value => this.setState({ seasonEnd: value })}
         />
 
         <TextField

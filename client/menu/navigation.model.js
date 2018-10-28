@@ -1,9 +1,9 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import BuildRoundedIcon from '@material-ui/icons/BuildRounded';
-import PermIdentityRoundedIcon from '@material-ui/icons/PermIdentityRounded';
 import ViewQuiltRoundedIcon from '@material-ui/icons/ViewQuiltRounded';
 import WbSunnyRoundedIcon from '@material-ui/icons/WbSunnyRounded';
+import PersonIcon from '@material-ui/icons/Person';
 
 import Guest from './Guest';
 import Admin from './Admin';
@@ -25,7 +25,7 @@ class NavigationModel {
       // { id: 2, to: '/players', name: 'Играчи' }
     ];
     this.adminRoutes = [
-      { id: 6, to: '/admin/users', name: 'Потребители', Icon: PermIdentityRoundedIcon },
+      { id: 6, to: '/admin/users', name: 'Потребители', Icon: PersonIcon },
       { id: 5, to: '/admin/seasons', name: 'Сезони', Icon: WbSunnyRoundedIcon },
       { id: 4, to: '/admin/courts', name: 'Кортове', Icon: ViewQuiltRoundedIcon },
       { id: 3, to: '/admin/config', name: 'Настройки', Icon: BuildRoundedIcon }

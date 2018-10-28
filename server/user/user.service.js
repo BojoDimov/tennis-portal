@@ -9,6 +9,8 @@ const {
 const {
   Users,
   Tokens,
+  Teams,
+  UserActivationCodes,
   sequelize
 } = require('../db');
 
@@ -17,25 +19,38 @@ class UserService {
   getAll() {
     return Users
       .findAll({
-        attributes: ['id', 'email', 'name', 'isActive', 'isAdmin', 'createdAt']
+        attributes: {
+          exclude: ['passwordHash', 'passwordSalt']
+        },
+        order: [['name', 'asc']]
       });
   }
 
   async create(model) {
     model = this.trim(model);
-    model = await this.validate(model);
+    model = await this.validate(model, false);
     model = this.format(model);
     return Users.create(model);
   }
 
-  async update(model) {
+  async update(id, model) {
     model = this.trim(model);
-    await this.validate(model);
-    model = this.format(model);
-    const user = await Users.findById(model.id);
+    await this.validate(model, true);
+    const user = await Users.findById(id);
     if (!user)
       throw { name: 'NotFound' };
-    return user.update(model);
+    return await user.update({
+      name: model.firstName.charAt(0).toUpperCase() + model.firstName.substr(1)
+        + ' ' +
+        model.lastName.charAt(0).toUpperCase() + model.lastName.substr(1),
+      birthDate: model.birthDate,
+      telephone: model.telephone,
+      gender: model.gender,
+      startedPlaying: model.startedPlaying,
+      backhandType: model.backhandType,
+      courtType: model.courtType,
+      playStyle: model.playStyle
+    });
   }
 
   //null if value is undefined, -1 if there is error, true if ok
@@ -74,7 +89,7 @@ class UserService {
     return model;
   }
 
-  async validate(model) {
+  async validate(model, isEditMode = false) {
     const errors = {
       email: [],
       password: [],
@@ -91,23 +106,29 @@ class UserService {
     };
 
     //required fields
-    if (!model.email) errors.email.push('required');
-    if (!model.password) errors.password.push('required');
-    if (!model.confirmPassword) errors.confirmPassword.push('required');
     if (!model.firstName) errors.firstName.push('required');
     if (!model.lastName) errors.lastName.push('required');
     if (!model.telephone) errors.telephone.push('required');
     if (!model.birthDate) errors.birthDate.push('required');
     if (!model.gender) errors.gender.push('required');
 
-    //invalid values
-    if (model.password && model.password.length < 6)
-      errors.password.push('short');
-    if (model.password.match(/[А-я]+/))
-      errors.password.push('invalid');
-    if (model.password && model.confirmPassword && model.confirmPassword !== model.password)
-      errors.confirmPassword.push('mismatch');
+    if (!isEditMode) {
+      const existingEmail = await Users.findOne({ where: { email: model.email } });
 
+      if (!model.email) errors.email.push('required');
+      if (!model.password) errors.password.push('required');
+      if (!model.confirmPassword) errors.confirmPassword.push('required');
+      if (existingEmail)
+        errors.email.push('unique');
+      if (model.password && model.password.length < 6)
+        errors.password.push('short');
+      if (model.password && model.password.match(/[А-я]+/))
+        errors.password.push('invalid');
+      if (model.password && model.confirmPassword && model.confirmPassword !== model.password)
+        errors.confirmPassword.push('mismatch');
+    }
+
+    //invalid values
     if (isNaN(model.startedPlaying))
       errors.startedPlaying.push('invalid');
     if (!isNaN(model.startedPlaying)
@@ -122,10 +143,6 @@ class UserService {
 
     if (model.email && !model.email.match(/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/))
       errors.email.push('invalid');
-
-    const existingEmail = await Users.findOne({ where: { email: model.email } });
-    if (existingEmail)
-      errors.email.push('unique');
 
     if (model.birthDate && model.birthDate > new Date() || model.birthDate < new Date(1900, 1, 1))
       errors.birthDate.push('invalid');
@@ -158,7 +175,9 @@ class UserService {
       return Promise
         .all([
           Users.destroy({ where: { id: id }, transaction: trn }),
-          Teams.destroy({ where: { user1Id: id, user2Id: null }, transaction: trn })
+          Teams.destroy({ where: { user1Id: id, user2Id: null }, transaction: trn }),
+          Tokens.destroy({ where: { userId: id }, transaction: trn }),
+          UserActivationCodes.destroy({ where: { userId: id }, transaction: trn })
         ]);
     });
   }

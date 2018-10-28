@@ -45,12 +45,12 @@ class EnumSelect extends React.Component {
   }
 }
 
-EnumSelect.propTypes = {
-  value: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
-  EnumValues: PropTypes.object.isRequired,
-  EnumName: PropTypes.string.isRequired,
-  onChange: PropTypes.func.isRequired
-};
+// EnumSelect.propTypes = {
+//   value: PropTypes.string.isRequired,
+//   label: PropTypes.string.isRequired,
+//   EnumValues: PropTypes.object.isRequired,
+//   EnumName: PropTypes.string.isRequired,
+//   onChange: PropTypes.func.isRequired
+// };
 
 export default EnumSelect;
