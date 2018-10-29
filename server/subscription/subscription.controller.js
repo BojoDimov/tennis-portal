@@ -1,13 +1,13 @@
 const router = require('express').Router();
 const SubscriptionService = require('./subscription.service');
 
-const current = (_, res, _) => {
+const current = (_, res) => {
   return SubscriptionService
     .getCurrentSubs()
     .then(e => res.json(e));
 }
 
-const history = (_, res, _) => {
+const history = (_, res) => {
   return SubscriptionService
     .getHistorySubs()
     .then(e => res.json(e));
@@ -36,7 +36,7 @@ const remove = (req, res, next) => {
 
 router.get('/', current);
 router.get('/history', history);
-router.update('/:id', update);
+router.post('/:id', update);
 router.post('/', create);
 router.delete('/:id', remove);
 

@@ -8,6 +8,7 @@ import Schedule from '../schedule/Schedule';
 import Courts from '../admin/Courts';
 import Seasons from '../admin/Seasons';
 import Users from '../admin/Users';
+import Subscriptions from '../admin/Subscriptions';
 import NavigationModel from '../menu/navigation.model';
 import UserService from '../services/user.service';
 import Recovery from '../login/Recovery';
@@ -19,6 +20,7 @@ const routeMapping = {
   '/admin/courts': Courts,
   '/admin/seasons': Seasons,
   '/admin/users': Users,
+  '/admin/subscriptions': Subscriptions,
   '/admin/config': NotFoundPage
 };
 
