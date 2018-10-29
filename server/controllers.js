@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const adminIdentity = require('./infrastructure/middlewares/adminIdentity');
 
 router.use('/tournaments', require('./tournament/tournament.controller'));
 router.use('/editions', require('./edition/edition.controller'));
@@ -8,6 +9,6 @@ router.use('/teams', require('./team/team.controller'));
 router.use('/login', require('./user/login.controller'));
 router.use('/users', require('./user/user.controller'));
 router.use('/schedule', require('./schedule/schedule.controller'));
-router.use('/subscriptions', require('./subscription/subscription.controller'));
+router.use('/subscriptions', adminIdentity, require('./subscription/subscription.controller'));
 
 module.exports = router;

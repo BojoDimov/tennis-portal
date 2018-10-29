@@ -38,7 +38,8 @@ const db = {
   Seasons: sequelize.import('./schedule/models/season.model.js'),
   Courts: sequelize.import('./schedule/models/court.model.js'),
   Reservations: sequelize.import('./schedule/models/reservation.model.js'),
-  ReservationPayments: sequelize.import('./schedule/models/reservationPayment.model.js')
+  ReservationPayments: sequelize.import('./schedule/models/reservationPayment.model.js'),
+  Subscriptions: sequelize.import('./subscription/subscription.model.js')
 };
 
 Object.keys(db).forEach(modelName => {

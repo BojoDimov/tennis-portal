@@ -7,5 +7,16 @@ module.exports = (db, Sequelize) => {
     workingHoursStart: { type: Sequelize.INTEGER, allowNull: false },
     workingHoursEnd: { type: Sequelize.INTEGER, allowNull: false }
   });
+
+  Seasons.associate = function (models) {
+    models.Seasons.hasMany(models.Subscriptions, {
+      as: 'subscriptions',
+      foreignKey: {
+        name: 'seasonId',
+        allowNull: false
+      }
+    });
+  }
+
   return Seasons;
 }
