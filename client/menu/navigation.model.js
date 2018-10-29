@@ -4,6 +4,7 @@ import BuildRoundedIcon from '@material-ui/icons/BuildRounded';
 import ViewQuiltRoundedIcon from '@material-ui/icons/ViewQuiltRounded';
 import WbSunnyRoundedIcon from '@material-ui/icons/WbSunnyRounded';
 import PersonIcon from '@material-ui/icons/Person';
+import LoyaltyIcon from '@material-ui/icons/Loyalty';
 
 import Guest from './Guest';
 import Admin from './Admin';
@@ -28,7 +29,7 @@ class NavigationModel {
       { id: 6, to: '/admin/users', name: 'Потребители', Icon: PersonIcon },
       { id: 5, to: '/admin/seasons', name: 'Сезони', Icon: WbSunnyRoundedIcon },
       { id: 4, to: '/admin/courts', name: 'Кортове', Icon: ViewQuiltRoundedIcon },
-      { id: 7, to: '/admin/subscriptions', name: 'Абонаменти', Icon: BuildRoundedIcon },
+      { id: 7, to: '/admin/subscriptions', name: 'Абонаменти', Icon: LoyaltyIcon },
       { id: 3, to: '/admin/config', name: 'Настройки', Icon: BuildRoundedIcon }
     ];
 
