@@ -91,14 +91,14 @@ const deleteReservation = (req, res, next) => {
 }
 
 router.get('/config', getCurrentConfig);
-router.get('/seasons', auth, getSeasons);
-router.get('/courts', auth, getCourts);
+router.get('/seasons', adminIdentity, getSeasons);
+router.get('/courts', adminIdentity, getCourts);
 
-router.post('/seasons', createSeason);
-router.post('/seasons/:id', updateSeason);
+router.post('/seasons', adminIdentity, createSeason);
+router.post('/seasons/:id', adminIdentity, updateSeason);
 
-router.post('/courts', createCourt);
-router.post('/courts/:id', updateCourt);
+router.post('/courts', adminIdentity, createCourt);
+router.post('/courts/:id', adminIdentity, updateCourt);
 
 router.post('/reservations/filter', getReservations);
 router.post('/reservations', identity, createReservation);
