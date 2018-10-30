@@ -15,6 +15,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import BuildIcon from '@material-ui/icons/Build';
 
+import AsyncSelect from '../components/select/AsyncSelect';
 import QueryService from '../services/query.service';
 import { getHour } from '../utils';
 
@@ -87,7 +88,6 @@ class Subscriptions extends React.Component {
 
   render() {
     const { currentSeason, history, editSubscription } = this.state;
-    console.log(editSubscription);
     return (
       <div style={{ margin: '1rem' }}>
         <Paper style={{ marginBottom: '1rem', padding: '1rem' }}>
@@ -235,11 +235,19 @@ class EditSubscription extends React.Component {
   render() {
     const model = this.state;
     return (
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', marginTop: '1rem' }}>
         <Typography variant="caption">
           Сезон
-        <Typography>{model.season.name}</Typography>
+        <Typography style={{ margin: 0 }} >{model.season.name}</Typography>
         </Typography>
+
+        <AsyncSelect
+          label="Потребител"
+          value={model.userId}
+          query="users"
+          onChange={userId => this.setState({ userId })}
+        />
+
         <TextField
           label="Час"
           value={model.hour}
