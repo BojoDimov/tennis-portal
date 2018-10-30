@@ -6,6 +6,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
+import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { withStyles } from '@material-ui/core/styles';
 
 import QueryService from '../services/query.service';
@@ -15,7 +17,20 @@ import Calendar from './calendar/Calendar';
 import Legend from './Legend';
 import { getHour } from '../utils';
 
-const styles = () => ({
+const scrollButton = (theme) => ({
+  zIndex: 1100,
+  backgroundColor: theme.palette.primary.main,
+  color: theme.palette.primary.contrastText,
+  position: 'absolute',
+  boxShadow: `0 0 20px ${theme.palette.primary.dark}`,
+  borderRadius: '50%',
+  padding: '8px',
+  display: 'flex',
+  alignItems: 'center',
+  opacity: '.9'
+});
+
+const styles = (theme) => ({
   hours: {
     width: '10px',
     textAlign: 'center'
@@ -23,6 +38,16 @@ const styles = () => ({
   disabled: {
     cursor: 'not-allowed',
     opacity: .5
+  },
+  scrollLeft: {
+    ...scrollButton(theme),
+    top: '50%',
+    left: '5px'
+  },
+  scrollRight: {
+    ...scrollButton(theme),
+    top: '50%',
+    right: '5px'
   }
 });
 
@@ -38,6 +63,17 @@ class Schedule extends React.Component {
       reservations: [],
       date: new Date(today.getFullYear(), today.getMonth(), today.getDate())
     };
+
+    const rootRef = document.getElementById('root');
+    rootRef.onscroll = () => {
+      const needScrollBtns = rootRef.clientWidth <= 600;
+      const tableInViewport = rootRef.scrollTop + 200 >= this.tableRef.offsetTop;
+
+      if (needScrollBtns && tableInViewport)
+        this.btnContainerRef.style.display = 'block';
+      else
+        this.btnContainerRef.style.display = 'none';
+    }
   }
 
   componentDidMount() {
@@ -78,6 +114,13 @@ class Schedule extends React.Component {
     }
   }
 
+  scroll(mode) {
+    if (mode === 'left')
+      this.tableRef.scrollLeft = this.tableRef.scrollLeft - 300;
+    if (mode === 'right')
+      this.tableRef.scrollLeft = this.tableRef.scrollLeft + 300;
+  }
+
   render() {
     const { classes } = this.props;
     const { season, courts, date } = this.state;
@@ -98,8 +141,20 @@ class Schedule extends React.Component {
             />
 
             <Legend />
-            <div style={{ overflowX: 'auto' }}>
-              <Table style={{ minWidth: '600px' }}>
+
+            <div style={{ overflowX: 'auto', scrollBehavior: 'smooth' }} ref={ref => this.tableRef = ref}>
+
+              <div ref={ref => this.btnContainerRef = ref} style={{ display: 'none' }}>
+                <div className={classes.scrollLeft} onClick={() => this.scroll('left')} >
+                  <ChevronLeftIcon />
+                </div>
+
+                <div className={classes.scrollRight} onClick={() => this.scroll('right')}>
+                  <ChevronRightIcon />
+                </div>
+              </div>
+
+              <Table style={{ minWidth: '600px' }} >
                 <TableHead>
                   <TableRow>
                     <TableCell padding="none" style={{ textAlign: 'center' }}>Час\Корт</TableCell>
