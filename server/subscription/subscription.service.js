@@ -56,9 +56,11 @@ class SubscriptionService {
       if (existing.length > 0)
         throw { name: 'DomainActionError', error: existing };
 
-      const reservations = this.generateReservations(model);
-      const subscription = await Subscriptions.create(model, { transaction: trn });
-      await Reservations.bulkCreate(reservations, { transaction: trn });
+      model.reservations = this.generateReservations(model);
+      const subscription = await Subscriptions.create(model, {
+        include: ['reservations'],
+        transaction: trn
+      });
       return subscription;
     });
   }
@@ -74,25 +76,23 @@ class SubscriptionService {
 
   async removeSubscription(id) {
     return await sequelize.transaction(async (trn) => {
-      const subscription = await Subscriptions.findById(id, { include: ['season'] });
+      const subscription = await Subscriptions.findById(id, {
+        include: [
+          'season',
+          {
+            model: Reservations,
+            as: 'reservations',
+            include: ['payments']
+          }
+        ]
+      });
+
       if (!subscription)
         throw { name: 'NotFound' };
 
-      const reservations = await Reservations.findAll({
-        where: {
-          courtId: subscription.courtId,
-          hour: subscription.hour,
-          date: {
-            [Op.gte]: subscription.season.seasonStart,
-            [Op.lte]: subscription.season.seasonEnd
-          }
-        },
-        include: ['payments']
-      });
-
-      const payments = reservations.reduce((acc, curr) => acc.concat(curr.payments), []);
+      const payments = subscription.reservations.reduce((acc, curr) => acc.concat(curr.payments), []);
       await ReservationPayments.destroy({ where: { id: payments.map(p => p.id) } });
-      await Reservations.destroy({ where: { id: reservations.map(r => r.id) } });
+      await Reservations.destroy({ where: { id: subscription.reservations.map(r => r.id) } });
       await Subscriptions.destroy({ where: { id: subscription.id } });
     });
   }

@@ -96,7 +96,7 @@ class Subscriptions extends React.Component {
 
           {editSubscription && <EditSubscription
             model={editSubscription}
-            onSave={() => this.load()}
+            onSave={() => { this.load(); this.setState({ editSubscription: null }); }}
             onCancel={() => this.setState({ editSubscription: null })}
           />}
         </Paper>
@@ -198,7 +198,8 @@ class EditSubscription extends React.Component {
       courtId: '',
       seasonId: '',
       season: {},
-      userId: ''
+      userId: '',
+      errors: null
     }
   }
 
@@ -221,7 +222,7 @@ class EditSubscription extends React.Component {
       return QueryService
         .post(`/subscriptions`, this.state)
         .then(_ => this.props.onSave())
-        .catch(err => console.log('ERR:', err));
+        .catch(err => this.setState({ errors: err }));
   }
 
   cancel() {
@@ -258,6 +259,11 @@ class EditSubscription extends React.Component {
           query="courts"
           onChange={court => this.setState({ court, courtId: court.value })}
         />
+
+        {model.errors && <Typography color="secondary" >
+          Неуспешно създаване на абонамент.
+          Има запазени часове които се припокриват с часовете на абонамента.
+          </Typography>}
 
         <div>
           <Button

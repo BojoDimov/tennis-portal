@@ -28,6 +28,14 @@ module.exports = (db, Sequelize) => {
         allowNull: false
       }
     });
+
+    models.Subscriptions.hasMany(models.Reservations, {
+      as: 'reservations',
+      foreignKey: {
+        name: 'subscriptionId',
+        allowNull: true
+      }
+    });
   }
 
   return Subscriptions;
