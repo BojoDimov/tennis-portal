@@ -5,6 +5,7 @@ import ViewQuiltRoundedIcon from '@material-ui/icons/ViewQuiltRounded';
 import WbSunnyRoundedIcon from '@material-ui/icons/WbSunnyRounded';
 import PersonIcon from '@material-ui/icons/Person';
 import LoyaltyIcon from '@material-ui/icons/Loyalty';
+import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 
 import Guest from './Guest';
 import Admin from './Admin';
@@ -22,7 +23,7 @@ const styles = () => ({
 class NavigationModel {
   constructor() {
     this.routes = [
-      { id: 1, to: '/schedule', name: 'График' },
+      { id: 1, to: '/schedule', name: 'График', Icon: CalendarTodayIcon },
       // { id: 2, to: '/players', name: 'Играчи' }
     ];
     this.adminRoutes = [

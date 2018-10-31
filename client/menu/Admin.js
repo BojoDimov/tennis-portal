@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Toolbar from '@material-ui/core/Toolbar';
 import Hidden from '@material-ui/core/Hidden';
 import Button from '@material-ui/core/Button';
+import Drawer from '@material-ui/core/Drawer';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
 import IconButton from '@material-ui/core/IconButton';
 import SettingsIcon from '@material-ui/icons/Settings';
@@ -52,7 +53,7 @@ class Admin extends React.Component {
           </IconButton>
         </Hidden>
 
-        <SwipeableDrawer
+        <Drawer
           anchor="right"
           open={this.state.drawerOpen}
           onClose={() => this.setState({ drawerOpen: false })}
@@ -65,15 +66,25 @@ class Admin extends React.Component {
             onClick={() => this.setState({ drawerOpen: false })}
             onKeyDown={() => this.setState({ drawerOpen: false })}
           >
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
+              <Hidden mdUp>
+                <IconButton color="primary" onClick={() => this.setState({ drawerOpen: false })}>
+                  <MenuIcon />
+                </IconButton>
+              </Hidden>
+            </div>
             <Hidden mdUp >
               <List>
                 {routes.map(route => {
                   return (
-                    <ListItem key={route.id} button>
-                      <Link to={route.to}>
+                    <Link to={route.to} key={route.id}>
+                      <ListItem button>
+                        {route.Icon && <ListItemIcon>
+                          <route.Icon />
+                        </ListItemIcon>}
                         <ListItemText primary={route.name} />
-                      </Link>
-                    </ListItem>
+                      </ListItem>
+                    </Link>
                   );
                 })}
               </List>
@@ -103,7 +114,7 @@ class Admin extends React.Component {
               </a>
             </List>
           </div>
-        </SwipeableDrawer>
+        </Drawer>
       </Toolbar>
     );
   }
