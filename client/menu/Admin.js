@@ -68,7 +68,7 @@ class Admin extends React.Component {
           >
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
               <Hidden mdUp>
-                <IconButton color="primary" onClick={() => this.setState({ drawerOpen: false })}>
+                <IconButton onClick={() => this.setState({ drawerOpen: false })}>
                   <MenuIcon />
                 </IconButton>
               </Hidden>

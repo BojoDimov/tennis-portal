@@ -67,7 +67,7 @@ class Guest extends React.Component {
           >
             <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
               <Hidden mdUp>
-                <IconButton color="primary" onClick={() => this.setState({ drawerOpen: false })}>
+                <IconButton onClick={() => this.setState({ drawerOpen: false })}>
                   <MenuIcon />
                 </IconButton>
               </Hidden>
@@ -93,7 +93,6 @@ class Guest extends React.Component {
                 </ListItemIcon>
                 <ListItemText primary="Вход" onClick={() => dispatchEvent('menu-login')} />
               </ListItem>
-
             </List>
           </div>
         </Drawer>
@@ -101,5 +100,4 @@ class Guest extends React.Component {
     );
   }
 }
-
-export default Guest;
+export default Guest;            

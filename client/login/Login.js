@@ -55,7 +55,7 @@ class Login extends React.Component {
     const { classes } = this.props;
 
     return (
-      <form className={classes.form}>
+      <form className={classes.form} onKeyDown={e => e.key === 'Enter' ? this.login() : null}>
         <TextField
           label="Email"
           fullWidth={true}
