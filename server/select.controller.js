@@ -1,9 +1,10 @@
 const router = require('express').Router();
 const {
   Users,
-  sequelize
+  Courts,
+  Sequelize
 } = require('./db');
-const Op = sequelize.Op;
+const Op = Sequelize.Op;
 
 const selectUsers = async (request, response) => {
   const filter = request.body;
@@ -38,6 +39,39 @@ const selectUsers = async (request, response) => {
   });
 }
 
+const selectCourts = async (request, response) => {
+  const filter = request.body;
+  const options = {
+    order: [['id', 'asc']],
+    limit: filter.limit,
+    offset: filter.offset,
+    where: {
+      isActive: true
+    }
+  };
+
+  if (filter.searchTerm)
+    options.where = {
+      name: {
+        [Op.iLike]: '%' + filter.searchTerm + '%'
+      },
+      isActive: true
+    };
+
+  const result = await Courts.findAndCountAll(options);
+
+  return response.json({
+    totalCount: result.count,
+    items: result.rows.map(item => {
+      return {
+        value: item.id,
+        label: item.name
+      }
+    })
+  });
+}
+
+router.post('/courts', selectCourts);
 router.post('/users', selectUsers);
 
 module.exports = router;

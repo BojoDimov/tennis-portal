@@ -66,11 +66,9 @@ class Subscriptions extends React.Component {
     return {
       hour: '',
       courtId: '',
-      court: {},
-      seasonId: '',
+      seasonId: this.state.currentSeason.id,
       season: this.state.currentSeason,
       userId: '',
-      user: {}
     }
   }
 
@@ -124,14 +122,14 @@ class Subscriptions extends React.Component {
                     <TableCell>{getHour(subscription.hour)} - {getHour(subscription.hour + 1)}</TableCell>
                     <TableCell>{subscription.unplayedHours}</TableCell>
                     <TableCell>
-                      <Button
+                      {/* <Button
                         variant="text"
                         color="primary"
                         size="small"
                         onClick={() => this.setState({ editSubscription: this.prepareForEdit(subscription) })}
                       >
                         <BuildIcon />
-                      </Button>
+                      </Button> */}
 
                       <Button
                         variant="text"
@@ -198,11 +196,9 @@ class EditSubscription extends React.Component {
       id: null,
       hour: '',
       courtId: '',
-      court: {},
       seasonId: '',
       season: {},
-      userId: '',
-      user: {}
+      userId: ''
     }
   }
 
@@ -234,6 +230,7 @@ class EditSubscription extends React.Component {
 
   render() {
     const model = this.state;
+
     return (
       <div style={{ display: 'flex', flexDirection: 'column', marginTop: '1rem' }}>
         <Typography variant="caption">
@@ -243,9 +240,9 @@ class EditSubscription extends React.Component {
 
         <AsyncSelect
           label="Потребител"
-          value={model.userId}
+          value={model.user}
           query="users"
-          onChange={userId => this.setState({ userId })}
+          onChange={user => this.setState({ user, userId: user.value })}
         />
 
         <TextField
@@ -255,18 +252,11 @@ class EditSubscription extends React.Component {
           fullWidth={true}
         />
 
-        <TextField
+        <AsyncSelect
           label="Корт"
-          value="Корт 1"
-          onChange={e => this.setState({ courtId: e.target.value })}
-          fullWidth={true}
-        />
-
-        <TextField
-          label="Потребител"
-          value="Scra"
-          onChange={e => this.setState({ userId: e.target.value })}
-          fullWidth={true}
+          value={model.court}
+          query="courts"
+          onChange={court => this.setState({ court, courtId: court.value })}
         />
 
         <div>

@@ -3,7 +3,9 @@ const {
   Seasons,
   Courts,
   Reservations,
+  ReservationPayments,
   Users,
+  sequelize,
   Sequelize
 } = require('../db');
 const Op = Sequelize.Op;
@@ -96,11 +98,20 @@ class ScheduleService {
   }
 
   async updateReservation(id, model) {
-    const reservation = await Reservations.findById(id, { include: ['payments'] });
-    if (!reservation)
-      throw { name: 'NotFound' };
+    return await sequelize.transaction(async (trn) => {
+      const reservation = await Reservations.findById(id, { include: ['payments'] });
+      if (!reservation)
+        throw { name: 'NotFound' };
 
-    return await reservation.update(model);
+      const added = model.payments.filter(e => !e.id);
+      const changed = reservation.payments.filter(e => model.payments.find(p => p.id == e.id));
+      const deleted = reservation.payments.filter(e => !model.payments.find(p => p.id == e.id));
+
+      await ReservationPayments.bulkCreate(added, { transaction: trn });
+      await Promise.all(changed.map(payment => payment.update(model.payments.find(e => e.id == payment.id), { transaction: trn })));
+      await ReservationPayments.destroy({ where: { id: deleted.map(e => e.id) }, transaction: trn });
+      return await reservation.update(model, { transaction: trn });
+    });
   }
 
   cancelReservation(id, userId) {

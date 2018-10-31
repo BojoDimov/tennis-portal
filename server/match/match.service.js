@@ -1,5 +1,4 @@
 const {
-  sequelize,
   Matches,
   Sets,
   Teams,

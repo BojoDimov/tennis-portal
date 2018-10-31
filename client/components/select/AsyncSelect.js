@@ -63,7 +63,6 @@ export class AsyncSelect extends React.Component {
           <Select
             classes={classes}
             styles={selectStyles}
-            isClearable={true}
             components={SelectComponents}
             value={value}
             options={this.state.items}

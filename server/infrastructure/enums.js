@@ -58,6 +58,7 @@ module.exports = {
     COMPETITOR: 'competitor',
     ELDER_GROUP: 'elder',
     TOURNAMENT: 'tournament',
-    SERVICE: 'service'
+    SERVICE: 'service',
+    SUBSCRIPTION: 'subscription'
   }
 }

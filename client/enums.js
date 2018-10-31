@@ -58,7 +58,8 @@ export const ReservationType = {
   COMPETITOR: 'competitor',
   ELDER_GROUP: 'elder',
   TOURNAMENT: 'tournament',
-  SERVICE: 'service'
+  SERVICE: 'service',
+  SUBSCRIPTION: 'subscription'
 };
 
 export const EnumLocalization = {
@@ -75,7 +76,8 @@ export const EnumLocalization = {
     COMPETITOR: 'Съзтезател',
     ELDER_GROUP: 'Групи за възрастни',
     TOURNAMENT: 'Турнир',
-    SERVICE: 'Служебен час'
+    SERVICE: 'Служебен час',
+    SUBSCRIPTION: 'Абонамент'
   },
   'Status': {
     DRAFT: 'чернова',

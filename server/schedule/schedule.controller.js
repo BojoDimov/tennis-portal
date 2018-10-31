@@ -67,10 +67,9 @@ const createReservation = async (req, res, next) => {
 
 const updateReservation = async (req, res, next) => {
   const model = req.body;
-  model.userId = req.user.id;
 
   try {
-    const reservation = await ScheduleService.updateReservation(req.params.id, req.body);
+    const reservation = await ScheduleService.updateReservation(req.params.id, model);
     return res.json(reservation);
   }
   catch (e) {

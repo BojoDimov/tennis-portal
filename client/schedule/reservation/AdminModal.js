@@ -107,7 +107,7 @@ class AdminModal extends React.Component {
             <span
               style={{ cursor: 'pointer', margin: '.5rem 0 0' }}
               onClick={() => {
-                reservation.payments.push({ type: "", amount: "" });
+                reservation.payments.push({ type: "", amount: "", reservationId: reservation.id });
                 this.setState({ reservation: reservation });
               }}
             >

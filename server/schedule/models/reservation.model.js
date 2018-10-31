@@ -13,7 +13,8 @@ module.exports = (db, Sequelize) => {
         ReservationType.COMPETITOR,
         ReservationType.ELDER_GROUP,
         ReservationType.TOURNAMENT,
-        ReservationType.SERVICE
+        ReservationType.SERVICE,
+        ReservationType.SUBSCRIPTION
       ]
     },
     hour: { type: Sequelize.INTEGER, allowNull: false },
@@ -21,6 +22,14 @@ module.exports = (db, Sequelize) => {
   });
 
   Reservations.associate = function (models) {
+    models.Reservations.belongsTo(models.Seasons, {
+      as: 'season',
+      foreignKey: {
+        name: 'seasonId',
+        allowNull: true
+      }
+    });
+
     models.Reservations.belongsTo(models.Courts, {
       as: 'court',
       foreignKey: {

@@ -108,6 +108,8 @@ class Schedule extends React.Component {
       hour: hour,
       court: court,
       courtId: court.id,
+      season: this.state.season,
+      seasonId: this.state.season.id,
       info: '',
       type: '',
       payments: []

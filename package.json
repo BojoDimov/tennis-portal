@@ -24,6 +24,7 @@
     "css-loader": "0.28.11",
     "dotenv": "^6.1.0",
     "express": "^4.16.3",
+    "moment": "^2.22.2",
     "ncp": "^2.0.0",
     "node-sass": "^4.9.3",
     "passport": "^0.4.0",
