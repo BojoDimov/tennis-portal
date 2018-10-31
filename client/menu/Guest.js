@@ -5,8 +5,10 @@ import Hidden from '@material-ui/core/Hidden';
 import Button from '@material-ui/core/Button';
 import Drawer from '@material-ui/core/Drawer';
 import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
@@ -54,7 +56,7 @@ class Guest extends React.Component {
           anchor="right"
           open={this.state.drawerOpen}
           onClose={() => this.setState({ drawerOpen: false })}
-          onOpen={() => this.setState({ drawerOpen: true })}
+        // onOpen={() => this.setState({ drawerOpen: true })}
         >
           <div
             style={{ width: '250px' }}
@@ -63,19 +65,35 @@ class Guest extends React.Component {
             onClick={() => this.setState({ drawerOpen: false })}
             onKeyDown={() => this.setState({ drawerOpen: false })}
           >
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1rem' }}>
+              <Hidden mdUp>
+                <IconButton color="primary" onClick={() => this.setState({ drawerOpen: false })}>
+                  <MenuIcon />
+                </IconButton>
+              </Hidden>
+            </div>
+
             <List>
               {routes.map(route => {
                 return (
-                  <ListItem key={route.id} button>
-                    <Link to={route.to}>
+                  <Link to={route.to} key={route.id}>
+                    <ListItem button>
+                      {route.Icon && <ListItemIcon>
+                        <route.Icon />
+                      </ListItemIcon>}
                       <ListItemText primary={route.name} />
-                    </Link>
-                  </ListItem>
+                    </ListItem>
+                  </Link>
                 );
               })}
+
               <ListItem button>
+                <ListItemIcon>
+                  <ExitToAppIcon />
+                </ListItemIcon>
                 <ListItemText primary="Вход" onClick={() => dispatchEvent('menu-login')} />
               </ListItem>
+
             </List>
           </div>
         </Drawer>

@@ -57,7 +57,7 @@ class Admin extends React.Component {
           anchor="right"
           open={this.state.drawerOpen}
           onClose={() => this.setState({ drawerOpen: false })}
-          onOpen={() => this.setState({ drawerOpen: true })}
+        // onOpen={() => this.setState({ drawerOpen: true })}
         >
           <div
             className={classes.list}
