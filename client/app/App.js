@@ -34,6 +34,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+    document.body.classList.add('background');
     catchEvent('not-found', () => this.props.history.replace('/oops'));
     catchEvent('login', () => this.setState({
       applicationMode: UserService.isAdmin() ? ApplicationMode.ADMIN : ApplicationMode.USER
