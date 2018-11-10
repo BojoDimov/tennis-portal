@@ -1,26 +1,17 @@
+const { SubscriptionType } = require('../infrastructure/enums');
+
 module.exports = (db, Sequelize) => {
   const Subscriptions = db.define("Subscriptions", {
-    hour: { type: Sequelize.INTEGER, allowNull: false },
-    unplayedHours: { type: Sequelize.INTEGER, allowNull: false, defaultValue: 0 }
+    totalHours: { type: Sequelize.INTEGER, allowNull: false },
+    usedHours: { type: Sequelize.INTEGER, allowNull: false, defaultValue: 0 },
+    type: {
+      type: Sequelize.ENUM,
+      allowNull: false,
+      values: [SubscriptionType.ZONE_1, SubscriptionType.ZONE_2]
+    }
   });
 
   Subscriptions.associate = function (models) {
-    models.Subscriptions.belongsTo(models.Users, {
-      as: 'user',
-      foreignKey: {
-        name: 'userId',
-        allowNull: false
-      }
-    });
-
-    models.Subscriptions.belongsTo(models.Courts, {
-      as: 'court',
-      foreignKey: {
-        name: 'courtId',
-        allowNull: false
-      }
-    });
-
     models.Subscriptions.belongsTo(models.Seasons, {
       as: 'season',
       foreignKey: {
@@ -29,10 +20,18 @@ module.exports = (db, Sequelize) => {
       }
     });
 
-    models.Subscriptions.hasMany(models.Reservations, {
-      as: 'reservations',
+    models.Subscriptions.belongsTo(models.Users, {
+      as: 'administrator',
       foreignKey: {
-        name: 'subscriptionId',
+        name: 'administratorId',
+        allowNull: false
+      }
+    });
+
+    models.Subscriptions.belongsTo(models.Users, {
+      as: 'customer',
+      foreignKey: {
+        name: 'customerId',
         allowNull: true
       }
     });

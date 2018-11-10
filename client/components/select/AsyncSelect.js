@@ -42,7 +42,7 @@ export class AsyncSelect extends React.Component {
   }
 
   render() {
-    const { classes, theme, value, onChange, label } = this.props;
+    const { classes, theme, value, onChange, label, isClearable } = this.props;
 
     const selectStyles = {
       input: base => ({
@@ -61,6 +61,7 @@ export class AsyncSelect extends React.Component {
         <pre>limit       : {this.state.limit}</pre> */}
         <NoSsr>
           <Select
+            isClearable={isClearable}
             classes={classes}
             styles={selectStyles}
             components={SelectComponents}

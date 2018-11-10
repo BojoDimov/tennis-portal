@@ -1,12 +1,8 @@
 const moment = require('moment');
 const {
-  Reservations,
-  ReservationPayments,
   Seasons,
-  Courts,
   Subscriptions,
   Users,
-  sequelize,
   Sequelize
 } = require('../db');
 const Op = Sequelize.Op;
@@ -24,7 +20,7 @@ class SubscriptionService {
           [Op.gte]: today
         }
       },
-      include: this.includeAll()
+      include: this.includeSubs()
     });
   }
 
@@ -36,119 +32,103 @@ class SubscriptionService {
           [Op.lt]: today
         }
       },
-      include: this.includeAll()
+      include: this.includeSubs()
     });
   }
 
-  async createSubscription(model) {
-    return await sequelize.transaction(async trn => {
-      const existing = await Reservations.findAll({
-        where: {
-          courtId: model.courtId,
-          hour: model.hour,
-          date: {
-            [Op.gte]: model.season.seasonStart,
-            [Op.lte]: model.season.seasonEnd
-          }
-        }
-      });
-
-      if (existing.length > 0)
-        throw { name: 'DomainActionError', error: existing };
-
-      model.reservations = this.generateReservations(model);
-      const subscription = await Subscriptions.create(model, {
-        include: ['reservations'],
-        transaction: trn
-      });
-      return subscription;
+  async get(id) {
+    return await Subscriptions.findById(id, {
+      include: [
+        { model: Seasons, as: 'season' },
+        { model: Users, as: 'administrator', attributes: ['id', 'name', 'email', 'telephone'] },
+        { model: Users, as: 'customer', attributes: ['id', 'name', 'email', 'telephone'] }
+      ]
     });
   }
 
-  async updateSubscription(id, model) {
-    // const subscription = await Subscriptions.findById(id);
-    // if (!subscription)
-    //   throw { name: 'NotFound' };
-
-    // return await subscription.update(model);
-    throw { name: 'NotImplemented' };
+  async create(model) {
+    return await Subscriptions.create(model);
   }
 
-  async removeSubscription(id) {
-    return await sequelize.transaction(async (trn) => {
-      const subscription = await Subscriptions.findById(id, {
-        include: [
-          'season',
-          {
-            model: Reservations,
-            as: 'reservations',
-            include: ['payments']
-          }
-        ]
-      });
-
-      if (!subscription)
-        throw { name: 'NotFound' };
-
-      const payments = subscription.reservations.reduce((acc, curr) => acc.concat(curr.payments), []);
-      await ReservationPayments.destroy({ where: { id: payments.map(p => p.id) } });
-      await Reservations.destroy({ where: { id: subscription.reservations.map(r => r.id) } });
-      await Subscriptions.destroy({ where: { id: subscription.id } });
-    });
+  async update(subscription, model) {
+    return await subscription.update(model);
   }
 
-  async addUnplayedHour(id) {
-    const subscription = await Subscriptions.findById(id);
-    if (!subscription)
-      throw { name: 'NotFound' };
+  // async removeSubscription(id) {
+  //   return await sequelize.transaction(async (trn) => {
+  //     const subscription = await Subscriptions.findById(id, {
+  //       include: [
+  //         'season',
+  //         {
+  //           model: Reservations,
+  //           as: 'reservations',
+  //           include: ['payments']
+  //         }
+  //       ]
+  //     });
 
-    return await subscription.update({ unplayedHours: subscription.unplayedHours + 1 });
-  }
+  //     if (!subscription)
+  //       throw { name: 'NotFound' };
 
-  async useUnplayedHour(id) {
-    const subscription = await Subscriptions.findById(id);
-    if (!subscription)
-      throw { name: 'NotFound' };
+  //     const payments = subscription.reservations.reduce((acc, curr) => acc.concat(curr.payments), []);
+  //     await ReservationPayments.destroy({ where: { id: payments.map(p => p.id) } });
+  //     await Reservations.destroy({ where: { id: subscription.reservations.map(r => r.id) } });
+  //     await Subscriptions.destroy({ where: { id: subscription.id } });
+  //   });
+  // }
 
-    return await subscription.update({ unplayedHours: subscription.unplayedHours - 1 });
-  }
+  // async addUnplayedHour(id, transaction) {
+  //   const subscription = await Subscriptions.findById(id);
+  //   if (!subscription)
+  //     throw { name: 'NotFound' };
 
-  generateReservations(subscription) {
-    const dates = getDateRange(moment(subscription.season.seasonStart), moment(subscription.season.seasonEnd));
-    return dates.map(date => {
-      return {
-        userId: subscription.userId,
-        seasonId: subscription.seasonId,
-        courtId: subscription.courtId,
-        hour: subscription.hour,
-        date: date,
-        type: ReservationType.SUBSCRIPTION
-      }
-    });
-  }
+  //   return await subscription.update({ unplayedHours: subscription.unplayedHours + 1 });
+  // }
 
-  includeAll() {
+  // async useUnplayedHour(id) {
+  //   const subscription = await Subscriptions.findById(id);
+  //   if (!subscription)
+  //     throw { name: 'NotFound' };
+
+  //   return await subscription.update({ unplayedHours: subscription.unplayedHours - 1 });
+  // }
+
+  // generateReservations(subscription) {
+  //   const dates = getDateRange(moment(subscription.season.seasonStart), moment(subscription.season.seasonEnd));
+  //   return dates.map(date => {
+  //     return {
+  //       userId: subscription.userId,
+  //       seasonId: subscription.seasonId,
+  //       courtId: subscription.courtId,
+  //       hour: subscription.hour,
+  //       date: date,
+  //       type: ReservationType.SUBSCRIPTION
+  //     }
+  //   });
+  // }
+
+  includeSubs() {
     return [
       {
         model: Subscriptions,
         as: 'subscriptions',
         include: [
-          { model: Users, as: 'user', attributes: ['id', 'name', 'email', 'telephone'] },
-          { model: Courts, as: 'court' }
+          { model: Users, as: 'administrator', attributes: ['id', 'name', 'email', 'telephone'] },
+          { model: Users, as: 'customer', attributes: ['id', 'name', 'email', 'telephone'] }
         ]
       }
     ]
   }
 }
 
-function getDateRange(startDate, endDate) {
-  const result = [];
-  var current = startDate
-  while (current <= endDate) {
-    result.push(current.format('YYYY-MM-DD'));
-    current.add(1, 'days');
-  }
-  return result;
-}
+// function getDateRange(startDate, endDate) {
+//   const result = [];
+//   var current = startDate
+//   while (current <= endDate) {
+//     result.push(current.format('YYYY-MM-DD'));
+//     current.add(1, 'days');
+//   }
+//   return result;
+// }
 
 module.exports = new SubscriptionService();

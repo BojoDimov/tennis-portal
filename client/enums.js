@@ -45,39 +45,50 @@ export const PlayStyle = {
 };
 
 export const ReservationPayment = {
-  CASH: 'cash',
   SODEXO: 'sodexo',
   MULTISPORT: 'multisport',
-  COMPETITOR: 'competitor'
+  CASH: 'cash',
+  SUBS_ZONE_1: 'zone1',
+  SUBS_ZONE_2: 'zone2'
 }
 
 export const ReservationType = {
   GUEST: 'guest',
-  TENNIS_SCHOOL: 'school',
   USER: 'user',
+  SUBSCRIPTION: 'subscription',
   COMPETITOR: 'competitor',
   ELDER_GROUP: 'elder',
+  TENNIS_SCHOOL: 'school',
   TOURNAMENT: 'tournament',
   SERVICE: 'service',
-  SUBSCRIPTION: 'subscription'
+};
+
+export const SubscriptionType = {
+  ZONE_1: 'zone1',
+  ZONE_2: 'zone2'
 };
 
 export const EnumLocalization = {
   'ReservationPayment': {
     CASH: 'В брой',
-    SODEXO: 'Карта "Судексо"',
+    SODEXO: 'Карта "Содексо"',
     MULTISPORT: 'Карта "Мултиспорт"',
-    COMPETITOR: 'Съзтезател'
+    SUBS_ZONE_1: 'Абонамент "ЗОНА 1"',
+    SUBS_ZONE_2: 'Абонамент "ЗОНА 2"'
   },
   'ReservationType': {
-    GUEST: 'Гост',
+    GUEST: 'Гости',
+    USER: 'Потребители',
+    SUBSCRIPTION: 'Абонати',
+    COMPETITOR: 'Съзтезатели',
     TENNIS_SCHOOL: 'Тенис училище',
-    USER: 'Потребител',
-    COMPETITOR: 'Съзтезател',
     ELDER_GROUP: 'Групи за възрастни',
     TOURNAMENT: 'Турнир',
-    SERVICE: 'Служебен час',
-    SUBSCRIPTION: 'Абонамент'
+    SERVICE: 'Неработещо игрище',
+  },
+  'SubscriptionType': {
+    ZONE_1: 'ЗОНА 1',
+    ZONE_2: 'ЗОНА 2'
   },
   'Status': {
     DRAFT: 'чернова',

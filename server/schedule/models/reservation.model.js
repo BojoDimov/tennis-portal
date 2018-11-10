@@ -47,9 +47,17 @@ module.exports = (db, Sequelize) => {
     });
 
     models.Reservations.belongsTo(models.Users, {
-      as: 'user',
+      as: 'administrator',
       foreignKey: {
-        name: 'userId',
+        name: 'administratorId',
+        allowNull: true
+      }
+    });
+
+    models.Reservations.belongsTo(models.Users, {
+      as: 'customer',
+      foreignKey: {
+        name: 'customerId',
         allowNull: true
       }
     });

@@ -8,11 +8,13 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import ClearIcon from '@material-ui/icons/Clear';
 
 import QueryService from '../../services/query.service';
 import EnumSelect from '../../components/EnumSelect';
+import AsyncSelect from '../../components/select/AsyncSelect';
 import { ReservationPayment, ReservationType } from '../../enums';
 import { getHour } from '../../utils';
 
@@ -23,18 +25,39 @@ class AdminModal extends React.Component {
       reservation: {
         court: {},
         type: '',
-        payments: []
+        payments: [],
+        administrator: {},
+        customer: {}
       }
     }
 
     this.handleChange = (prop) => (e) => {
-      this.state.reservation[prop] = e.target.value;
-      this.setState({ reservation: this.state.reservation });
+      const reservation = this.state.reservation;
+      reservation[prop] = e.target.value;
+      if (prop == 'type') {
+        reservation.customer = null;
+        reservation.customerId = null;
+      }
+
+      this.setState({ reservation });
     }
 
     this.handlePaymentChange = (prop, index) => (e) => {
       this.state.reservation.payments[index][prop] = e.target.value;
       this.setState({ reservation: this.state.reservation });
+    }
+
+    this.handleUserSelect = (user) => {
+      const reservation = this.state.reservation;
+      if (!user) {
+        reservation.customer = null;
+        reservation.customerId = null;
+      }
+      else {
+        reservation.customer = user;
+        reservation.customerId = user.value;
+      }
+      this.setState({ reservation });
     }
   }
 
@@ -67,6 +90,16 @@ class AdminModal extends React.Component {
       .catch(err => console.log('Found some ERRORS:', err));
   }
 
+  addPayment() {
+    const reservation = this.state.reservation;
+    reservation.payments.push({
+      type: "",
+      amount: null,
+      reservationId: reservation.id
+    });
+    this.setState({ reservation });
+  }
+
   render() {
     const { isOpen, onClose } = this.props;
     const { reservation } = this.state;
@@ -86,13 +119,10 @@ class AdminModal extends React.Component {
             Час:
             <Typography>{getHour(reservation.hour)} - {getHour(reservation.hour + 1)}</Typography>
           </Typography>
-          {reservation.user && <Typography variant="caption">
-            Резервирал:
-            <Typography style={{ display: 'flex' }}>
-              {reservation.user.name}
-              {reservation.user.isAdmin && <Typography style={{ marginLeft: '.5rem' }} variant="caption">(Администратор)</Typography>}
-            </Typography>
-          </Typography>}
+          <Typography variant="caption">
+            Администрирал:
+            <Typography>{reservation.administrator.name}</Typography>
+          </Typography>
 
           <EnumSelect
             label="Вид резервация:"
@@ -102,17 +132,24 @@ class AdminModal extends React.Component {
             EnumValues={ReservationType}
             EnumName="ReservationType" />
 
+          {(reservation.type == ReservationType.USER
+            || reservation.type == ReservationType.SUBSCRIPTION)
+            && <AsyncSelect
+              isClearable={true}
+              label="Потребител"
+              value={reservation.customer}
+              query="users"
+              onChange={this.handleUserSelect}
+            />}
+
           <Typography variant="subheading" style={{ marginTop: '1rem', alignItems: 'center', display: 'flex' }}>
             Плащания
-            <span
-              style={{ cursor: 'pointer', margin: '.5rem 0 0' }}
-              onClick={() => {
-                reservation.payments.push({ type: "", amount: "", reservationId: reservation.id });
-                this.setState({ reservation: reservation });
-              }}
+            <IconButton
+              color="primary"
+              onClick={() => this.addPayment()}
             >
-              <AddIcon color="primary" />
-            </span>
+              <AddIcon />
+            </IconButton>
           </Typography>
 
           {reservation.payments && reservation.payments.map((payment, index) => {
@@ -126,7 +163,7 @@ class AdminModal extends React.Component {
                   EnumValues={ReservationPayment}
                   EnumName="ReservationPayment" />
 
-                <TextField
+                {payment.type == ReservationPayment.CASH && <TextField
                   style={{ marginLeft: '1rem', marginRight: '1rem' }}
                   label="Стойност"
                   value={payment.amount}
@@ -134,7 +171,8 @@ class AdminModal extends React.Component {
                     endAdornment: <InputAdornment position="end">Лв</InputAdornment>
                   }}
                   onChange={this.handlePaymentChange('amount', index)}
-                />
+                />}
+
                 <span style={{ cursor: 'pointer' }} onClick={() => {
                   this.state.reservation.payments.splice(index, 1);
                   this.setState({ reservation: this.state.reservation });

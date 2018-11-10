@@ -8,7 +8,8 @@ module.exports = (db, Sequelize) => {
         ReservationPayment.SODEXO,
         ReservationPayment.MULTISPORT,
         ReservationPayment.CASH,
-        ReservationPayment.COMPETITOR
+        ReservationPayment.SUBS_ZONE_1,
+        ReservationPayment.SUBS_ZONE_2
       ]
     },
     amount: { type: Sequelize.DECIMAL(10, 2), allowNull: true }

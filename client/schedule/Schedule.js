@@ -57,6 +57,7 @@ class Schedule extends React.Component {
     super(props);
     const today = new Date();
     this.state = {
+      administrator: UserService.getUser(),
       counter: 0,
       season: {},
       courts: [],
@@ -110,6 +111,7 @@ class Schedule extends React.Component {
       courtId: court.id,
       season: this.state.season,
       seasonId: this.state.season.id,
+      administrator: this.state.administrator,
       info: '',
       type: '',
       payments: []

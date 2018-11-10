@@ -49,16 +49,22 @@ module.exports = {
     SODEXO: 'sodexo',
     MULTISPORT: 'multisport',
     CASH: 'cash',
-    COMPETITOR: 'competitor'
+    SUBS_ZONE_1: 'zone1',
+    SUBS_ZONE_2: 'zone2'
   },
   ReservationType: {
     GUEST: 'guest',
-    TENNIS_SCHOOL: 'school',
     USER: 'user',
+    SUBSCRIPTION: 'subscription',
+
     COMPETITOR: 'competitor',
     ELDER_GROUP: 'elder',
+    TENNIS_SCHOOL: 'school',
     TOURNAMENT: 'tournament',
-    SERVICE: 'service',
-    SUBSCRIPTION: 'subscription'
+    SERVICE: 'service'
+  },
+  SubscriptionType: {
+    ZONE_1: 'zone1',
+    ZONE_2: 'zone2'
   }
 }

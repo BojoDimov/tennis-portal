@@ -1,15 +1,17 @@
+const moment = require('moment');
 const { ReservationType } = require('../infrastructure/enums');
 const {
   Seasons,
   Courts,
   Reservations,
   ReservationPayments,
+  Subscriptions,
   Users,
   sequelize,
   Sequelize
 } = require('../db');
 const Op = Sequelize.Op;
-
+const SubscriptionService = require('../subscription/subscription.service');
 class ScheduleService {
   getSeasons() {
     return Seasons.findAll();
@@ -33,7 +35,8 @@ class ScheduleService {
       include: [
         'court',
         'payments',
-        { model: Users, as: 'user', attributes: ['id', 'name', 'email', 'isAdmin'] }
+        { model: Users, as: 'administrator', attributes: ['id', 'name', 'email', 'isAdmin'] },
+        { model: Users, as: 'customer', attributes: ['id', 'name', 'email', 'isAdmin'] }
       ]
     });
   }
@@ -114,13 +117,117 @@ class ScheduleService {
     });
   }
 
-  cancelReservation(id, userId) {
-    return Reservations.destroy({ where: { id, userId }, include: ['payments'] });
+  async cancelReservation(reservation) {
+    return await sequelize.transaction(async trn => {
+      // const reservation = await Reservations.findById(id, {
+      //   include: [
+      //     { model: Subscriptions, as: 'subscription' },
+      //     { model: Seasons, as: 'season' }
+      //   ]
+      // });
+
+      let allowedDiff = process.env.CANCEL_RES_ALLOWED_DIFF;
+      if (reservation.type == ReservationType.SUBSCRIPTION)
+        allowedDiff = process.env.CUSTOM_ALLOWED_DIFF;
+
+      if (!reservation)
+        throw { name: 'NotFound' };
+
+      if (diff(
+        moment(),
+        moment(reservation.date).set('hour', reservation.hour),
+        reservation.season.workingHoursStart,
+        reservation.season.workingHoursEnd
+      ) < allowedDiff)
+        throw { name: 'DomainActionError' };
+
+      return Reservations.destroy({ where: { id, userId }, include: ['payments'] });
+    });
   }
 
-  deleteReservation(id) {
-    return Reservations.destroy({ where: { id }, include: ['payments'] });
+  async cancelReservationV2(reservation) {
+    let allowedDiff = process.env.CANCEL_RES_ALLOWED_DIFF;
+    if (reservation.type == ReservationType.SUBSCRIPTION)
+      allowedDiff = process.env.CUSTOM_ALLOWED_DIFF;
+
+    if (!reservation)
+      throw { name: 'NotFound' };
+
+    if (diff(
+      moment(),
+      moment(reservation.date).set('hour', reservation.hour),
+      reservation.season.workingHoursStart,
+      reservation.season.workingHoursEnd
+    ) < allowedDiff)
+      throw { name: 'DomainActionError' };
+
+
+    //DO NOT DESTROY
+    //SET TO INACTIVE
+    //SET SUBSCRIPTION HOURS ACCORDING TO PAYMENTS
+
+    return await Reservations.destroy({ where: { id: reservation.id }, include: ['payments'] });
   }
+
+  // async deleteReservation(id) {
+  //   return await sequelize.transaction(async trn => {
+  //     const reservation = await Reservations.findById(id, {
+  //       include: [
+  //         { model: Subscriptions, as: 'subscription' }
+  //       ]
+  //     });
+
+  //     if (!reservation)
+  //       throw { name: 'NotFound' };
+
+  //     if (reservation.subscription) {
+  //       reservation.subscription.unplayedHours += 1;
+  //       await reservation.subscription.save({ transaction: trn });
+  //     }
+
+  //     return Reservations.destroy({ where: { id }, include: ['payments'] });
+  //   });
+  // }
+}
+
+//closed hours in interval
+//'end' is always within working hours
+//'start' can be anytime
+//ws  = work start
+//we  = work end
+//nws = next work start
+//nwe = next work end
+//clh = closed hours per 24h
+//c1  = from current time to next work start
+//c2  = from current time to next work end
+//dd  = day difference between first work start and last work start
+function chii(start, end, ws, we) {
+  if (start.isAfter(end, 'hour'))
+    return 0;
+
+  let nws = moment(start).set('hour', ws).startOf('hour');
+  let nwe = moment(start).set('hour', we).startOf('hour');
+  let c2 = 0;
+
+  if (start.isBetween(nws, nwe, 'hour'))
+    c2 = nwe.diff(start, 'hour');
+
+  if (nws.isBefore(start, 'hour'))
+    nws.add(1, 'day');
+
+  if (nws.isAfter(end, 'hour'))
+    return 0;
+
+  const c1 = nws.diff(moment(start), 'hour') - c2;
+  const clh = 24 - we + ws;
+  const dd = moment(end).diff(nws.set('hour', ws), 'days');
+  return c1 + dd * clh;
+}
+
+function diff(start, end, ws, we) {
+  start = moment(start);
+  end = moment(end);
+  return end.diff(start, 'hour') - chii(start, end, ws, we);
 }
 
 module.exports = new ScheduleService();

@@ -54,7 +54,14 @@ const updateCourt = (req, res, next) => {
 
 const createReservation = async (req, res, next) => {
   const model = req.body;
-  model.userId = (req.user || { id: null }).id;
+  const user = req.user;
+
+  if (user.isAdmin)
+    model.administratorId = user.id;
+  else {
+    model.customerId = user.id;
+    model.administratorId = null;
+  }
 
   try {
     const reservation = await ScheduleService.createReservation(model, req.user);
@@ -100,7 +107,7 @@ router.post('/courts', adminIdentity, createCourt);
 router.post('/courts/:id', adminIdentity, updateCourt);
 
 router.post('/reservations/filter', getReservations);
-router.post('/reservations', identity, createReservation);
+router.post('/reservations', auth, createReservation);
 router.post('/reservations/:id', adminIdentity, updateReservation);
 router.delete('/reservations/:id/cancel', identity, cancelReservation);
 router.delete('/reservations/:id', adminIdentity, deleteReservation);
