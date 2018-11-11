@@ -105,11 +105,11 @@ class Admin extends React.Component {
                 );
               })}
               <a>
-                <ListItem button>
+                <ListItem button onClick={() => UserService.logout()} >
                   <ListItemIcon>
                     <PowerSettingsNewIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Изход" onClick={() => UserService.logout()} />
+                  <ListItemText primary="Изход" />
                 </ListItem>
               </a>
             </List>

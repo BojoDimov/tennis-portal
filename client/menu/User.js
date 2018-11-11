@@ -75,8 +75,8 @@ class User extends React.Component {
               </List>
               <Divider />
               <List>
-                <ListItem button>
-                  <ListItemText primary="Изход" onClick={() => UserService.logout()} />
+                <ListItem button onClick={() => UserService.logout()} >
+                  <ListItemText primary="Изход" />
                 </ListItem>
               </List>
             </div>
