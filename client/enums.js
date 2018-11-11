@@ -86,6 +86,10 @@ export const EnumLocalization = {
     TOURNAMENT: 'Турнир',
     SERVICE: 'Неработещо игрище',
   },
+  'CustomReservationType': {
+    USER: 'Резервация',
+    SUBSCRIPTION: 'Абонамент'
+  },
   'SubscriptionType': {
     ZONE_1: 'ЗОНА 1',
     ZONE_2: 'ЗОНА 2'

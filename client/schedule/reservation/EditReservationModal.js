@@ -119,10 +119,10 @@ class EditReservationModal extends React.Component {
             Час:
             <Typography>{getHour(reservation.hour)} - {getHour(reservation.hour + 1)}</Typography>
           </Typography>
-          <Typography variant="caption">
+          {reservation.administrator && <Typography variant="caption">
             Администрирал:
             <Typography>{reservation.administrator.name}</Typography>
-          </Typography>
+          </Typography>}
 
           <EnumSelect
             label="Вид резервация:"

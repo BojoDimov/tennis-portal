@@ -4,6 +4,8 @@ const auth = require('../infrastructure/middlewares/auth');
 const identity = require('../infrastructure/middlewares/identity');
 const adminIdentity = require('../infrastructure/middlewares/adminIdentity');
 
+const { ReservationType } = require('../infrastructure/enums');
+
 const getSeasons = (_, res) => {
   return ScheduleService
     .getSeasons(true)
@@ -61,6 +63,8 @@ const createReservation = async (req, res, next) => {
   else {
     model.customerId = user.id;
     model.administratorId = null;
+    model.payments = [];
+    model.type = ReservationType.USER;
   }
 
   try {

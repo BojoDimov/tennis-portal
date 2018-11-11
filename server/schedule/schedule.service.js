@@ -81,10 +81,7 @@ class ScheduleService {
     return entity.update(model);
   }
 
-  async createReservation(model, user) {
-    if (!user || !user.isAdmin)
-      model.payments = [];
-
+  async createReservation(model) {
     const existing = await Reservations
       .findOne({
         where: {

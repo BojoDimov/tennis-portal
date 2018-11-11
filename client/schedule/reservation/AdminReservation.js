@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 import EditReservationModal from './EditReservationModal';
 import * as ReservationStyles from './styles';
+import { ReservationType } from '../../enums';
 import L10n from '../../components/L10n';
 
 class AdminReservation extends React.Component {
@@ -28,7 +29,12 @@ class AdminReservation extends React.Component {
           onClick={() => this.setState({ modal: true })}
         >
           {reservation.customer && <span>{reservation.customer.name}</span>}
-          {!reservation.customer && <L10n type="ReservationType">{reservation.type}</L10n>}
+          {!reservation.customer && <L10n
+            type={ReservationType}
+            translate="ReservationType"
+          >
+            {reservation.type}
+          </L10n>}
         </TableCell>
 
         <EditReservationModal
