@@ -116,13 +116,6 @@ class ScheduleService {
 
   async cancelReservation(reservation) {
     return await sequelize.transaction(async trn => {
-      // const reservation = await Reservations.findById(id, {
-      //   include: [
-      //     { model: Subscriptions, as: 'subscription' },
-      //     { model: Seasons, as: 'season' }
-      //   ]
-      // });
-
       let allowedDiff = process.env.CANCEL_RES_ALLOWED_DIFF;
       if (reservation.type == ReservationType.SUBSCRIPTION)
         allowedDiff = process.env.CUSTOM_ALLOWED_DIFF;
@@ -138,32 +131,8 @@ class ScheduleService {
       ) < allowedDiff)
         throw { name: 'DomainActionError' };
 
-      return Reservations.destroy({ where: { id, userId }, include: ['payments'] });
+      await reservation.update({ isActive: false }, { transaction: trn });
     });
-  }
-
-  async cancelReservationV2(reservation) {
-    let allowedDiff = process.env.CANCEL_RES_ALLOWED_DIFF;
-    if (reservation.type == ReservationType.SUBSCRIPTION)
-      allowedDiff = process.env.CUSTOM_ALLOWED_DIFF;
-
-    if (!reservation)
-      throw { name: 'NotFound' };
-
-    if (diff(
-      moment(),
-      moment(reservation.date).set('hour', reservation.hour),
-      reservation.season.workingHoursStart,
-      reservation.season.workingHoursEnd
-    ) < allowedDiff)
-      throw { name: 'DomainActionError' };
-
-
-    //DO NOT DESTROY
-    //SET TO INACTIVE
-    //SET SUBSCRIPTION HOURS ACCORDING TO PAYMENTS
-
-    return await Reservations.destroy({ where: { id: reservation.id }, include: ['payments'] });
   }
 
   // async deleteReservation(id) {

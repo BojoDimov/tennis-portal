@@ -18,7 +18,8 @@ module.exports = (db, Sequelize) => {
       ]
     },
     hour: { type: Sequelize.INTEGER, allowNull: false },
-    date: { type: Sequelize.DATEONLY, allowNull: false }
+    date: { type: Sequelize.DATEONLY, allowNull: false },
+    isActive: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: true }
   });
 
   Reservations.associate = function (models) {
