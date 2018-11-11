@@ -34,6 +34,17 @@ const remove = (req, res, next) => {
     .catch(err => next(err, req, res, null));
 }
 
+const activate = async (req, res, next) => {
+  try {
+    await UserService.activateUser(req.query.token);
+    return res.json({});
+  }
+  catch (err) {
+    return next(err, req, res, null);
+  }
+}
+
+router.get('/activation', activate);
 router.get('/', auth, getAll);
 router.post('/:id', update);
 router.post('/', create);

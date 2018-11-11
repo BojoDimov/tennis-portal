@@ -11,7 +11,8 @@ const {
   Tokens,
   Teams,
   UserActivationCodes,
-  sequelize
+  sequelize,
+  Sequelize
 } = require('../db');
 
 
@@ -85,8 +86,6 @@ class UserService {
     model.passwordSalt = crypto.randomBytes(16).toString('hex').slice(16);
     hash.update(model.passwordSalt + model.password);
     model.passwordHash = hash.digest('hex').slice(40);
-    //TODO: remove this after email service is implemented
-    model.isActive = true;
     return model;
   }
 
@@ -202,6 +201,26 @@ class UserService {
       include: [
         { model: Users, as: 'user', attributes: ['id', 'name', 'email', 'gender', 'birthDate', 'isAdmin'] }
       ]
+    });
+  }
+
+  async activateUser(token) {
+    return await sequelize.transaction(async trn => {
+      const uac = await UserActivationCodes.findOne({
+        where: {
+          token: token,
+          expires: {
+            [Sequelize.Op.gte]: new Date()
+          }
+        },
+        include: ['user']
+      });
+
+      if (!uac)
+        throw { name: 'DomainActionError' };
+
+      await UserActivationCodes.destroy({ where: { id: uac.id }, transaction: trn });
+      return await uac.user.update({ isActive: true }, { transaction: trn });
     });
   }
 }

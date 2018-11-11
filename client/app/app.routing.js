@@ -11,6 +11,7 @@ import Users from '../admin/Users';
 import Subscriptions from '../admin/Subscriptions';
 import NavigationModel from '../menu/navigation.model';
 import UserService from '../services/user.service';
+import AccountActivation from '../login/Activation';
 import Recovery from '../login/Recovery';
 import { ApplicationMode } from '../enums';
 
@@ -46,7 +47,8 @@ const AppRouting = () => (
         );
       })}
       <Route path="/oops" component={NotFoundPage} />
-      <Route path="/recovery" component={Recovery} />
+      <Route path="/account/activation" render={(props) => <AccountActivation {...props} />} />
+      <Route path="/account/recovery" component={Recovery} />
       <Route exact path="/">
         <Redirect to="/schedule" />
       </Route>
