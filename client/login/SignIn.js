@@ -68,7 +68,7 @@ class SignIn extends React.Component {
         <Dialog
           open={open}
           fullScreen={fullScreen}
-          onClose={() => this.setState({ open: false })}
+          onClose={() => this.setState({ open: false, index: 0 })}
           aria-labelledby="login-dialog"
         >
           <DialogTitle id="login-dialog"
@@ -85,7 +85,7 @@ class SignIn extends React.Component {
               <Tab label="Вход" key="1" />
               <Tab label="Регистрация" key="2" />
             </Tabs>
-            <span className={classes.closeBtn} onClick={() => this.setState({ open: false })}>
+            <span className={classes.closeBtn} onClick={() => this.setState({ open: false, index: 0 })}>
               <ClearIcon />
             </span>
           </DialogTitle>
@@ -96,7 +96,7 @@ class SignIn extends React.Component {
               index={index}
               onChangeIndex={(index) => this.handleTabChange(null, index)}
             >
-              <Login onClose={() => this.setState({ open: false })} />
+              <Login onClose={() => this.setState({ open: false, index: 0 })} />
               <Registration onSuccess={this.handleRegistration} />
             </SwipeableViews>
           </DialogContent>

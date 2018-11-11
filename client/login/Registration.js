@@ -60,105 +60,33 @@ class RegistrationStepper extends React.Component {
 
     return (
       <React.Fragment>
-        <Stepper
-          nonLinear
-          activeStep={activeStep}
-          orientation="vertical"
-        >
-          <Step>
-            <StepLabel
-              style={{ cursor: 'pointer' }}
-              onClick={this.changeStep(0)}
-              completed={completed[0]}
-              error={errors.email.length
-                + errors.password.length
-                + errors.confirmPassword.length > 0}
-            >
-              Данни за акаунт
-            </StepLabel>
-            <StepContent>
-              <UserModel.UserAccountData
-                user={user}
-                errors={errors}
-                onChange={this.handleChange} />
 
-              <StepActions
-                activeStep={activeStep}
-                finalStep={2}
-                className={classes.action}
-                changeStep={this.changeStep} />
-            </StepContent>
-          </Step>
-          <Step>
-            <StepLabel
-              style={{ cursor: 'pointer' }}
-              completed={completed[1]}
-              onClick={this.changeStep(1)}
-              error={errors.firstName.length
-                + errors.lastName.length
-                + errors.telephone.length
-                + errors.gender.length
-                + errors.birthDate.length > 0}
-            >
-              Основни данни за играч
-            </StepLabel>
-            <StepContent>
-              <UserModel.UserPlayerMainData
-                user={user}
-                errors={errors}
-                onChange={this.handleChange} />
+        <UserModel.UserAccountData
+          user={user}
+          errors={errors}
+          onChange={this.handleChange} />
 
-              <StepActions
-                activeStep={activeStep}
-                finalStep={2}
-                className={classes.action}
-                changeStep={this.changeStep} />
-            </StepContent>
-          </Step>
-          <Step>
-            <StepLabel
-              style={{ cursor: 'pointer' }}
-              onClick={this.changeStep(2)}
-              completed={completed[2]}
-              error={errors.startedPlaying.length
-                + errors.playStyle.length
-                + errors.courtType.length
-                + errors.backhandType.length > 0}
-            >
-              Допълнителни данни за играч
-            </StepLabel>
-            <StepContent>
-              <UserModel.UserPlayerSecondaryData
-                user={user}
-                errors={errors}
-                onChange={this.handleChange} />
+        <UserModel.UserPlayerMainData
+          user={user}
+          errors={errors}
+          onChange={this.handleChange} />
 
-              <StepActions
-                activeStep={activeStep}
-                finalStep={2}
-                className={classes.action}
-                changeStep={this.changeStep} />
-            </StepContent>
-          </Step>
-        </Stepper>
+        {/* <UserModel.UserPlayerSecondaryData
+          user={user}
+          errors={errors}
+          onChange={this.handleChange} /> */}
 
-        {activeStep === 3 && <div>
+        <div style={{ margin: '1rem 0' }}>
           <em>
-            Натискайки бутонът "Регистрация" Вие се съгласявате да получавате съобщения относно
-            статуса на турнири за които сте записани, както и при нужда да бъдете потърсени по
-            телефонния номер който сте задали.
+            Натискайки бутонът "Регистрация", Вие се съгласявате при нужда да бъдете потърсени по
+            телефонния номер, който сте предоставили.
           </em>
           <div className={classes.action}>
-            <Button variant="outlined" color="primary" size="small" onClick={this.changeStep(0)}>
-              Промяна
-          </Button>
-
-            <Button style={{ marginLeft: '.3rem' }} variant="contained" size="small" color="primary" onClick={() => this.register()}>
+            <Button style={{ marginRight: '.3rem', padding: '0 2rem' }} variant="contained" size="small" color="primary" onClick={() => this.register()}>
               Регистрация
-          </Button>
+            </Button>
           </div>
         </div>
-        }
       </React.Fragment>
     );
   }
@@ -196,3 +124,112 @@ class StepActions extends React.Component {
 
 
 export default withStyles(styles)(RegistrationStepper);
+
+// render() {
+//   const { user, activeStep, completed, errors } = this.state;
+//   const { classes } = this.props;
+
+//   return (
+//     <React.Fragment>
+//       <Stepper
+//         nonLinear
+//         activeStep={activeStep}
+//         orientation="vertical"
+//       >
+//         <Step>
+//           <StepLabel
+//             style={{ cursor: 'pointer' }}
+//             onClick={this.changeStep(0)}
+//             completed={completed[0]}
+//             error={errors.email.length
+//               + errors.password.length
+//               + errors.confirmPassword.length > 0}
+//           >
+//             Данни за акаунт
+//             </StepLabel>
+//           <StepContent>
+//             <UserModel.UserAccountData
+//               user={user}
+//               errors={errors}
+//               onChange={this.handleChange} />
+
+//             <StepActions
+//               activeStep={activeStep}
+//               finalStep={2}
+//               className={classes.action}
+//               changeStep={this.changeStep} />
+//           </StepContent>
+//         </Step>
+//         <Step>
+//           <StepLabel
+//             style={{ cursor: 'pointer' }}
+//             completed={completed[1]}
+//             onClick={this.changeStep(1)}
+//             error={errors.firstName.length
+//               + errors.lastName.length
+//               + errors.telephone.length
+//               + errors.gender.length
+//               + errors.birthDate.length > 0}
+//           >
+//             Основни данни за играч
+//             </StepLabel>
+//           <StepContent>
+//             <UserModel.UserPlayerMainData
+//               user={user}
+//               errors={errors}
+//               onChange={this.handleChange} />
+
+//             <StepActions
+//               activeStep={activeStep}
+//               finalStep={2}
+//               className={classes.action}
+//               changeStep={this.changeStep} />
+//           </StepContent>
+//         </Step>
+//         <Step>
+//           <StepLabel
+//             style={{ cursor: 'pointer' }}
+//             onClick={this.changeStep(2)}
+//             completed={completed[2]}
+//             error={errors.startedPlaying.length
+//               + errors.playStyle.length
+//               + errors.courtType.length
+//               + errors.backhandType.length > 0}
+//           >
+//             Допълнителни данни за играч
+//             </StepLabel>
+//           <StepContent>
+//             <UserModel.UserPlayerSecondaryData
+//               user={user}
+//               errors={errors}
+//               onChange={this.handleChange} />
+
+//             <StepActions
+//               activeStep={activeStep}
+//               finalStep={2}
+//               className={classes.action}
+//               changeStep={this.changeStep} />
+//           </StepContent>
+//         </Step>
+//       </Stepper>
+
+//       {activeStep === 3 && <div>
+//         <em>
+//           Натискайки бутонът "Регистрация" Вие се съгласявате да получавате съобщения относно
+//           статуса на турнири за които сте записани, както и при нужда да бъдете потърсени по
+//           телефонния номер който сте задали.
+//           </em>
+//         <div className={classes.action}>
+//           <Button variant="outlined" color="primary" size="small" onClick={this.changeStep(0)}>
+//             Промяна
+//           </Button>
+
+//           <Button style={{ marginLeft: '.3rem' }} variant="contained" size="small" color="primary" onClick={() => this.register()}>
+//             Регистрация
+//           </Button>
+//         </div>
+//       </div>
+//       }
+//     </React.Fragment>
+//   );
+// }

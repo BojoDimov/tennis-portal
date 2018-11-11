@@ -109,8 +109,8 @@ class UserService {
     if (!model.firstName) errors.firstName.push('required');
     if (!model.lastName) errors.lastName.push('required');
     if (!model.telephone) errors.telephone.push('required');
-    if (!model.birthDate) errors.birthDate.push('required');
-    if (!model.gender) errors.gender.push('required');
+    //if (!model.birthDate) errors.birthDate.push('required');
+    //if (!model.gender) errors.gender.push('required');
 
     if (!isEditMode) {
       const existingEmail = await Users.findOne({ where: { email: model.email } });

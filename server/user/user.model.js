@@ -15,10 +15,10 @@ module.exports = (db, Sequelize) => {
 
     //user required information
     name: { type: Sequelize.STRING, allowNull: false },
-    birthDate: { type: Sequelize.DATEONLY, allowNull: false },
+    birthDate: { type: Sequelize.DATEONLY, allowNull: true },
     telephone: { type: Sequelize.STRING, allowNull: false },
     gender: {
-      type: Sequelize.ENUM, allowNull: false,
+      type: Sequelize.ENUM, allowNull: true,
       values: [Gender.MALE, Gender.FEMALE]
     },
 

@@ -131,6 +131,23 @@ class UserModel {
           onChange={onChange('lastName')}
         />
 
+        <TextField
+          label="Телефон"
+          required={true}
+          fullWidth={true}
+          value={user.telephone}
+          error={errors.telephone.length > 0}
+          helperText={this.composeErrors(errors, 'telephone')}
+          onChange={onChange('telephone')}
+        />
+      </React.Fragment>
+    );
+  }
+
+  UserPlayerSecondaryData(props) {
+    const { user, onChange, errors } = props;
+    return (
+      <React.Fragment>
         <DatePicker
           autoOk
           openToYearSelection
@@ -145,16 +162,6 @@ class UserModel {
           onChange={onChange('birthDate', true)}
         />
 
-        <TextField
-          label="Телефон"
-          required={true}
-          fullWidth={true}
-          value={user.telephone}
-          error={errors.telephone.length > 0}
-          helperText={this.composeErrors(errors, 'telephone')}
-          onChange={onChange('telephone')}
-        />
-
         <EnumSelect
           label="Пол"
           value={user.gender}
@@ -164,14 +171,7 @@ class UserModel {
           onChange={onChange('gender')}
           EnumValues={Gender}
           EnumName="Gender" />
-      </React.Fragment>
-    );
-  }
 
-  UserPlayerSecondaryData(props) {
-    const { user, onChange, errors } = props;
-    return (
-      <React.Fragment>
         <TextField
           id="startedPlaying"
           label="Започнах да играя през"
@@ -219,7 +219,7 @@ const UET = {
   email: {
     required: 'Задължително поле',
     invalid: 'Невалиден имейл',
-    unique: 'Имаме такъв вече'
+    unique: 'Съществува потребител с такъв имейл'
   },
   password: {
     required: 'Задължително поле',
@@ -240,12 +240,12 @@ const UET = {
     invalid: 'Невалиден телефонен номер'
   },
   gender: {
-    required: 'Задължително поле',
+    //required: 'Задължително поле',
     invalid: 'Невалиден пол'
   },
   birthDate: {
     invalid: 'Невалидна дата на раждане',
-    required: 'Задължително поле',
+    //required: 'Задължително поле',
   },
   startedPlaying: {
     invalid: 'Невалидна година',

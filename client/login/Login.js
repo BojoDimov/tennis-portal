@@ -12,8 +12,8 @@ const styles = (theme) => ({
   form: {
     display: 'flex',
     flexDirection: 'column',
-    width: 250,
-    margin: '1.5rem auto'
+    //width: 250,
+    //margin: '1.5rem auto'
   },
   link: {
     color: theme.palette.primary.main,
@@ -71,11 +71,13 @@ class Login extends React.Component {
           onChange={this.handleChange('password')}
         />
 
-        <Button variant="contained" color="primary" size="large" style={{ marginTop: '1rem' }}
-          onClick={() => this.login()}
-        >
-          Вход
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <Button variant="contained" color="primary" size="small" style={{ marginTop: '1rem', padding: '0 4rem' }}
+            onClick={() => this.login()}
+          >
+            Вход
         </Button>
+        </div>
         <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center' }}>
           <Link to="/recovery" className={classes.link} onClick={this.props.onClose}>
             Забравена парола?
