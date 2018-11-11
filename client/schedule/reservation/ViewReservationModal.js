@@ -6,6 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
+import { withStyles } from '@material-ui/core/styles';
 
 import QueryService from '../../services/query.service';
 import { getHour } from '../../utils';
@@ -27,7 +28,7 @@ class ViewReservationModal extends React.Component {
   }
 
   render() {
-    const { reservation, isOpen, onClose } = this.props;
+    const { reservation, isOpen, onClose, classes } = this.props;
 
     return (
       <Dialog open={isOpen} onClose={onClose}>
@@ -55,20 +56,20 @@ class ViewReservationModal extends React.Component {
           </Typography>}
         </DialogContent>
 
-        {!reservation.id && <DialogActions>
-          <Button variant="contained" color="primary" onClick={() => this.makeReservation()}>
+        {!reservation.id && <DialogActions className={classes.btnContainer}>
+          <Button variant="contained" color="primary" className={classes.btn} onClick={() => this.makeReservation()}>
             Резервиране
           </Button>
-          <Button variant="outlined" color="primary" onClick={onClose}>
+          <Button variant="outlined" color="primary" className={classes.btn} onClick={onClose}>
             Отказ
           </Button>
         </DialogActions>}
 
-        {reservation.id && <DialogActions>
-          <Button variant="outlined" color="secondary" onClick={() => this.cancelReservation()}>
+        {reservation.id && <DialogActions className={classes.btnContainer}>
+          <Button variant="outlined" color="secondary" className={classes.btn} onClick={() => this.cancelReservation()}>
             Отмяна на резервацията
           </Button>
-          <Button variant="contained" color="secondary" onClick={onClose}>
+          <Button variant="contained" color="secondary" className={classes.btn} onClick={onClose}>
             Отказ
           </Button>
         </DialogActions>}
@@ -77,4 +78,19 @@ class ViewReservationModal extends React.Component {
   }
 }
 
-export default ViewReservationModal;
+const styles = (theme) => ({
+  btnContainer: {
+    [theme.breakpoints.down('sm')]: {
+      display: 'flex',
+      flexDirection: 'column'
+    }
+  },
+  btn: {
+    [theme.breakpoints.down('sm')]: {
+      marginBottom: '.3rem',
+      width: '100%'
+    }
+  }
+});
+
+export default withStyles(styles)(ViewReservationModal);
