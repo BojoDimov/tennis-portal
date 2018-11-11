@@ -67,7 +67,8 @@ class UserService {
     model.lastName = model.lastName.trim();
     model.telephone = model.telephone.trim();
     model.startedPlaying = model.startedPlaying ? parseInt(model.startedPlaying) : null;
-    model.birthDate = new Date(model.birthDate);
+    model.birthDate = model.birthDate ? new Date(model.birthDate) : null;
+    model.gender = model.gender || null;
     model.playStyle = model.playStyle || null;
     model.courtType = model.courtType || null;
     model.backhandType = model.backhandType || null;

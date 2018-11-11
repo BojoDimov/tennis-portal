@@ -66,5 +66,16 @@ module.exports = {
   SubscriptionType: {
     ZONE_1: 'zone1',
     ZONE_2: 'zone2'
+  },
+  EmailType: {
+    REGISTRATION: 'registration',
+    PASSWORD_RECOVERY: 'recovery',
+    RESERVATION_CANCELED: 'reservation_cancel'
+  },
+  EmailStatus: {
+    UNSENT: 'unsent',
+    PENDING: 'pending',
+    SENT: 'sent',
+    FAILED: 'failed'
   }
 }

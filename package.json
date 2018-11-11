@@ -28,6 +28,7 @@
     "moment": "^2.22.2",
     "ncp": "^2.0.0",
     "node-sass": "^4.9.3",
+    "nodemailer": "^4.6.8",
     "passport": "^0.4.0",
     "passport-http-bearer": "^1.0.1",
     "pg": "^7.4.3",

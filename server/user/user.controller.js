@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const auth = require('../infrastructure/middlewares/auth');
 const UserService = require('./user.service');
+const EmailService = require('../emails/email.service');
 
 const getAll = (req, res, next) => {
   return UserService
@@ -8,11 +9,15 @@ const getAll = (req, res, next) => {
     .then(e => res.json(e));
 }
 
-const create = (req, res, next) => {
-  return UserService
-    .create(req.body)
-    .then(e => res.json(e))
-    .catch(err => next(err, req, res, null));
+const create = async (req, res, next) => {
+  try {
+    const user = await UserService.create(req.body);
+    await EmailService.createRegistrationEmail(user);
+    return res.json(user);
+  }
+  catch (err) {
+    return next(err, req, res, null);
+  }
 }
 
 const update = (req, res, next) => {

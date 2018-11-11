@@ -34,6 +34,7 @@ const db = {
   Files: sequelize.import('./infrastructure/models/file.model.js'),
   SmtpCredentials: sequelize.import('./infrastructure/models/smtp.model.js'),
   UserActivationCodes: sequelize.import('./infrastructure/models/uac.model.js'),
+  Emails: sequelize.import('./emails/email.model.js'),
 
   Seasons: sequelize.import('./schedule/models/season.model.js'),
   Courts: sequelize.import('./schedule/models/court.model.js'),
