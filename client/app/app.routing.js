@@ -12,7 +12,8 @@ import Subscriptions from '../admin/Subscriptions';
 import NavigationModel from '../menu/navigation.model';
 import UserService from '../services/user.service';
 import AccountActivation from '../login/Activation';
-import Recovery from '../login/Recovery';
+import RecoveryStep1 from '../login/RecoveryStep1';
+import RecoveryStep2 from '../login/RecoveryStep2';
 import { ApplicationMode } from '../enums';
 
 const routeMapping = {
@@ -48,7 +49,8 @@ const AppRouting = () => (
       })}
       <Route path="/oops" component={NotFoundPage} />
       <Route path="/account/activation" render={(props) => <AccountActivation {...props} />} />
-      <Route path="/account/recovery" component={Recovery} />
+      <Route path="/recovery/step1" render={(props) => <RecoveryStep1 {...props} />} />
+      <Route path="/recovery/step2" render={(props) => <RecoveryStep2 {...props} />} />
       <Route exact path="/">
         <Redirect to="/schedule" />
       </Route>

@@ -79,7 +79,7 @@ class Login extends React.Component {
         </Button>
         </div>
         <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center' }}>
-          <Link to="/recovery" className={classes.link} onClick={this.props.onClose}>
+          <Link to="/recovery/step1" className={classes.link} onClick={this.props.onClose}>
             Забравена парола?
         </Link>
         </div>

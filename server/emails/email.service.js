@@ -8,7 +8,8 @@ const { EmailType, EmailStatus } = require('../infrastructure/enums');
 
 const footer = `
 <br>
----------------------------------------------------------------
+<br>
+--------------------------------------
 <br>
 Този имейл е автоматично генериран, моля не изпращайте отговор.
 <br>
@@ -41,7 +42,37 @@ class EmailService {
 
     email = await Emails.create(email);
     await UserActivationCodes.create({ userId: model.id, token, expires });
+    await this.processEmail(email);
+  }
 
+  async createRecoveryEmail(model) {
+    let token = crypto.randomBytes(16).toString('hex');
+    let url = `http://${process.env.CLIENT_HOST}/recovery/step2?token=${token}`;
+    let expires = new Date();
+    expires.setHours(expires.getHours() + 24);
+
+    let email = {
+      to: model.email,
+      type: EmailType.REGISTRATION,
+      status: EmailStatus.PENDING,
+      subject: 'Забравена парола за Тенис клуб Диана',
+      body: `
+      Здравейте,
+      <br>
+      За вашият акаунт в Тенис клуб Диана беше заявен код за възстановяване на забравена парола.
+      <br>
+      Моля последвайте следният 
+      <a href="${url}">линк</a>
+      за да изберете нова парола за своя акаунт.
+      ` + footer
+    };
+
+    email = await Emails.create(email);
+    await UserActivationCodes.create({ userId: model.id, token, expires });
+    await this.processEmail(email);
+  }
+
+  async processEmail(email) {
     try {
       await this.sendEmail(email);
       await email.update({ status: EmailStatus.SENT });

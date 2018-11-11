@@ -44,7 +44,36 @@ const activate = async (req, res, next) => {
   }
 }
 
+const issueRecoveryEmail = async (req, res, next) => {
+  const user = await UserService.getByEmail(req.query.email);
+  if (!user)
+    return next({
+      name: 'DomainActionError',
+      error: { message: 'Невалиден имейл.' }
+    }, req, res, null);
+
+  try {
+    await EmailService.createRecoveryEmail(user);
+    return res.json({});
+  }
+  catch (err) {
+    return next(err, req, res, null);
+  }
+}
+
+const recoverAccount = async (req, res, next) => {
+  try {
+    await UserService.recoverPassword(req.body);
+    return res.json({});
+  }
+  catch (err) {
+    return next(err, req, res, null);
+  }
+}
+
 router.get('/activation', activate);
+router.get('/recovery/step1', issueRecoveryEmail);
+router.post('/recovery/step2', recoverAccount);
 router.get('/', auth, getAll);
 router.post('/:id', update);
 router.post('/', create);

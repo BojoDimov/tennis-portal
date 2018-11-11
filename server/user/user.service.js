@@ -27,6 +27,10 @@ class UserService {
       });
   }
 
+  async getByEmail(email) {
+    return await Users.findOne({ where: { email } });
+  }
+
   async create(model) {
     model = this.trim(model);
     model = await this.validate(model, false);
@@ -81,12 +85,15 @@ class UserService {
       + ' ' +
       model.lastName.charAt(0).toUpperCase() + model.lastName.substr(1);
 
-    const crypto = require('crypto');
+    this.encryptPassword(model, model.password);
+    return model;
+  }
+
+  encryptPassword(model, password) {
     let hash = crypto.createHash('sha256');
     model.passwordSalt = crypto.randomBytes(16).toString('hex').slice(16);
-    hash.update(model.passwordSalt + model.password);
+    hash.update(model.passwordSalt + password);
     model.passwordHash = hash.digest('hex').slice(40);
-    return model;
   }
 
   async validate(model, isEditMode = false) {
@@ -171,6 +178,7 @@ class UserService {
   }
 
   delete(id) {
+    //REFACTOR THIS USING DESTROY + INCLUDE
     return sequelize.transaction((trn) => {
       return Promise
         .all([
@@ -221,6 +229,35 @@ class UserService {
 
       await UserActivationCodes.destroy({ where: { id: uac.id }, transaction: trn });
       return await uac.user.update({ isActive: true }, { transaction: trn });
+    });
+  }
+
+  async recoverPassword(model) {
+    return await sequelize.transaction(async trn => {
+      const uac = await UserActivationCodes.findOne({
+        where: {
+          token: model.token,
+          expires: {
+            [Sequelize.Op.gte]: new Date()
+          }
+        },
+        include: ['user']
+      });
+
+      model.password = model.password.trim();
+      model.confirmPassword = model.confirmPassword.trim();
+      if (!model.password || !model.confirmPassword || model.password != model.confirmPassword)
+        throw { name: 'DomainActionError', error: { message: 'Моля проверете изписването на паролите.' } };
+
+      if (model.password.length < 6)
+        throw { name: 'DomainActionError', error: { message: 'Новата ви парола трябва да бъде от поне 6 символа.' } };
+
+      if (!uac)
+        throw { name: 'DomainActionError', error: { message: 'Кодът за възстановяване е с изтекъл срок или е невалиден.' } };
+
+      await UserActivationCodes.destroy({ where: { id: uac.id }, transaction: trn });
+      this.encryptPassword(uac.user, model.password);
+      await uac.user.save({ transaction: trn });
     });
   }
 }

@@ -43,7 +43,7 @@ class AccountActivation extends React.Component {
           <Typography align="center" variant="headline">Активация на акунт</Typography>
           {this.state.success && <Typography align="center" variant="subheading" color="primary" className={classes.success}>
             Активацията на Вашият акаунт беше успешна!
-        </Typography>}
+          </Typography>}
 
           {this.state.success && <Typography align="center" variant="headline" style={{ fontWeight: 700, fontSize: '1.3em' }}>{this.state.timer}</Typography>}
 
