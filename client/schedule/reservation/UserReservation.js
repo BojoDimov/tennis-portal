@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 import ViewReservationModal from './ViewReservationModal';
 import * as ReservationStyles from './styles';
+import L10n from '../../components/L10n';
 
 class UserReservation extends React.Component {
   constructor(props) {
@@ -27,7 +28,7 @@ class UserReservation extends React.Component {
           className={type}
           onClick={() => this.setState({ modal: true })}
         >
-          {reservation.id && <span>{reservation.type}</span>}
+          {reservation.id && <L10n type="ReservationType">{reservation.type}</L10n>}
         </TableCell>
 
         <ViewReservationModal
