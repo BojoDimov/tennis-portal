@@ -8,44 +8,26 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
 
 import QueryService from '../../services/query.service';
-import { ReservationType, ApplicationMode } from '../../enums';
 import { getHour } from '../../utils';
 
-class UserReservationModal extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      reservation: {
-        court: {}
-      }
-    };
-  }
 
-  componentDidMount() {
-    this.setState({ reservation: this.props.reservation });
-  }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.reservation != this.props.reservation)
-      this.setState({ reservation: this.props.reservation });
-  }
-
-  action() {
-    const model = this.state.reservation;
-    if (this.props.mode == ApplicationMode.GUEST)
-      model.type = ReservationType.GUEST;
-    else
-      model.type = ReservationType.USER;
-
+class ViewReservationModal extends React.Component {
+  makeReservation() {
     return QueryService
-      .post(`/schedule/reservations`, model)
+      .post(`/schedule/reservations`, this.props.reservation)
+      .then(_ => this.props.onAction())
+      .catch(err => console.log('Found some ERRORS:', err));
+  }
+
+  cancelReservation() {
+    return QueryService
+      .delete(`/schedule/reservations/${this.props.reservation.id}/cancel`)
       .then(_ => this.props.onAction())
       .catch(err => console.log('Found some ERRORS:', err));
   }
 
   render() {
-    const { isOpen, onClose } = this.props;
-    const { reservation } = this.state;
+    const { reservation, isOpen, onClose } = this.props;
 
     return (
       <Dialog open={isOpen} onClose={onClose}>
@@ -62,22 +44,37 @@ class UserReservationModal extends React.Component {
             Час:
             <Typography>{getHour(reservation.hour)} - {getHour(reservation.hour + 1)}</Typography>
           </Typography>
-          <Typography variant="caption">
+          {!reservation.id && <Typography variant="caption">
             Поради възможността от възникване на премествания, запазването на
             корт не ви гарантира на 100%, че ще играете точно на този корт.
-          </Typography>
+          </Typography>}
+          {reservation.id && <Typography variant="caption">
+            Имате право да откажете резервацията до 8 часа преди уреченият час.
+            След това системата отчита вашият час като използван и трябва да го заплатите.
+            Ако имате абонамент, часът ще ви се брои като отигран.
+          </Typography>}
         </DialogContent>
-        <DialogActions>
-          <Button variant="contained" color="primary" onClick={() => this.action()}>
+
+        {!reservation.id && <DialogActions>
+          <Button variant="contained" color="primary" onClick={() => this.makeReservation()}>
             Резервиране
           </Button>
           <Button variant="outlined" color="primary" onClick={onClose}>
             Отказ
           </Button>
-        </DialogActions>
+        </DialogActions>}
+
+        {reservation.id && <DialogActions>
+          <Button variant="outlined" color="secondary" onClick={() => this.cancelReservation()}>
+            Отмяна на резервацията
+          </Button>
+          <Button variant="contained" color="secondary" onClick={onClose}>
+            Отказ
+          </Button>
+        </DialogActions>}
       </Dialog>
     );
   }
 }
 
-export default UserReservationModal;
+export default ViewReservationModal;

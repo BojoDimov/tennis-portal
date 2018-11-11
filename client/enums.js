@@ -77,12 +77,12 @@ export const EnumLocalization = {
     SUBS_ZONE_2: 'Абонамент "ЗОНА 2"'
   },
   'ReservationType': {
-    GUEST: 'Гости',
-    USER: 'Потребители',
-    SUBSCRIPTION: 'Абонати',
+    GUEST: 'Гост',
+    USER: 'Потребител',
+    SUBSCRIPTION: 'Абонат',
     COMPETITOR: 'Съзтезатели',
     TENNIS_SCHOOL: 'Тенис училище',
-    ELDER_GROUP: 'Групи за възрастни',
+    ELDER_GROUP: 'Група за възрастни',
     TOURNAMENT: 'Турнир',
     SERVICE: 'Неработещо игрище',
   },

@@ -18,7 +18,7 @@ import AsyncSelect from '../../components/select/AsyncSelect';
 import { ReservationPayment, ReservationType } from '../../enums';
 import { getHour } from '../../utils';
 
-class AdminModal extends React.Component {
+class EditReservationModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -223,4 +223,4 @@ class AdminModal extends React.Component {
   }
 }
 
-export default AdminModal;
+export default EditReservationModal;
