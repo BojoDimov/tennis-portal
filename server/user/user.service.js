@@ -20,6 +20,7 @@ class UserService {
   getAll() {
     return Users
       .findAll({
+        include: ['subscriptions'],
         attributes: {
           exclude: ['passwordHash', 'passwordSalt']
         },

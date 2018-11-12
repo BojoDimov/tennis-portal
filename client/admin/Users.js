@@ -7,17 +7,24 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemIcon from '@material-ui/core/ListItemIcon';
+import ListItemText from '@material-ui/core/ListItemText';
+import Divider from '@material-ui/core/Divider';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
+import IconButton from '@material-ui/core/IconButton';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
 import DoneIcon from '@material-ui/icons/Done';
 import BuildIcon from '@material-ui/icons/Build';
 import Paper from '@material-ui/core/Paper';
 
-import EditUser from './EditUser';
 import QueryService from '../services/query.service';
 import UserModel from '../users/user.model';
-
+import UserDetailsModal from './UserDetailsModal';
+import UserSubscriptionsModal from './UserSubscriptionsModal';
 
 class Users extends React.Component {
   constructor(props) {
@@ -27,7 +34,8 @@ class Users extends React.Component {
       usersFilter: '',
       page: 0,
       rowsPerPage: 5,
-      editUser: null
+      editUser: null,
+      subsUser: null
     };
   }
 
@@ -72,78 +80,111 @@ class Users extends React.Component {
     const users = this.filterUsers(usersFilter);
 
     return (
-      <div style={{ margin: '1rem', display: 'flex', flexDirection: 'column' }}>
-        <Paper style={{ margin: '1rem 0', padding: '1rem', backgroundColor: 'whitesmoke' }}>
+      <div className="container">
+        <Paper style={{ padding: '1rem' }}>
           <Typography variant="headline">Потребители</Typography>
-          <div style={{ width: '320px' }}>
-            <Button variant="contained" color="primary" size="small" onClick={() => this.setState({ editUser: UserModel.get() })}>
-              Нов потребител
+          <Button variant="contained" color="primary" size="small" onClick={() => this.setState({ editUser: UserModel.get() })}>
+            Нов потребител
           </Button>
-          </div>
+          <TextField
+            label="Търсене по име"
+            value={usersFilter}
+            fullWidth={true}
+            onChange={(e) => this.setState({ usersFilter: e.target.value })}
+          />
 
-          {editUser && <EditUser user={editUser} onSave={() => this.getData()} onCancel={() => this.setState({ editUser: null })} />}
+          <UserDetailsModal
+            user={this.state.editUser}
+            isOpen={this.state.editUser != null}
+            onClose={() => this.setState({ editUser: null })}
+          />
 
-          <div style={{ marginBottom: '1rem', width: '320px' }}>
-            <TextField
-              label="Търсене по име"
-              value={usersFilter}
-              fullWidth={true}
-              onChange={(e) => this.setState({ usersFilter: e.target.value })}
-            />
-          </div>
-        </Paper>
+          <UserSubscriptionsModal
+            user={this.state.subsUser}
+            isOpen={this.state.subsUser != null}
+            onClose={() => this.setState({ subsUser: null })}
+          />
 
-
-        <Table style={{ backgroundColor: 'whitesmoke' }}>
-          <TableHead>
-            <TableRow>
-              <TableCell>Име</TableCell>
-              <TableCell>Създаден</TableCell>
-              <TableCell padding="none">Активен</TableCell>
-              <TableCell padding="none">Администратор</TableCell>
-              <TableCell padding="none"></TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {users.map((user, index) => {
-              return (
-                <TableRow key={user.id}>
-                  <TableCell>
-                    <Link to={`/users/${user.id}`}>
-                      <Typography variant="body2">{user.name}</Typography>
-                    </Link>
-                    <Typography style={{ fontStyle: 'italic' }}>
-                      {user.email}
-                    </Typography>
-                  </TableCell>
-
-                  <TableCell>{new Date(user.createdAt).toLocaleDateString()}</TableCell>
-                  <TableCell padding="none">{user.isActive && <DoneIcon color="action" />}</TableCell>
-                  <TableCell padding="none">{user.isAdmin && <DoneIcon color="action" />}</TableCell>
-                  <TableCell padding="none">
-                    <Button
-                      variant="text"
-                      color="primary"
-                      size="small"
-                      onClick={() => this.setState({ editUser: this.prepareForEdit(user) })}
-                    >
-                      <BuildIcon />
-                    </Button>
-
-                    <Button
-                      variant="text"
-                      color="secondary"
-                      size="small"
-                      onClick={() => this.remove(index)}
-                    >
-                      <DeleteForeverIcon />
-                    </Button>
-                  </TableCell>
+          <Hidden xsDown>
+            <Table padding="none">
+              <TableHead>
+                <TableRow>
+                  <TableCell>Име</TableCell>
+                  <TableCell>Създаден</TableCell>
+                  <TableCell>Активен</TableCell>
+                  <TableCell>Администратор</TableCell>
+                  <TableCell></TableCell>
                 </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
+              </TableHead>
+              <TableBody>
+                {users.map((user, index) => {
+                  return (
+                    <TableRow key={user.id}>
+                      <TableCell>
+                        <Link to={`/users/${user.id}`}>
+                          <Typography variant="body2">{user.name}</Typography>
+                        </Link>
+                        <Typography style={{ fontStyle: 'italic' }}>
+                          {user.email}
+                        </Typography>
+                      </TableCell>
+
+                      <TableCell>{new Date(user.createdAt).toLocaleDateString()}</TableCell>
+                      <TableCell>{user.isActive && <DoneIcon color="action" />}</TableCell>
+                      <TableCell>{user.isAdmin && <DoneIcon color="action" />}</TableCell>
+                      <TableCell>
+                        <IconButton color="primary" onClick={() => this.setState({ editUser: this.prepareForEdit(user) })}>
+                          <BuildIcon />
+                        </IconButton>
+                        <IconButton color="primary" onClick={() => this.setState({ subsUser: user })}>
+                          <DescriptionOutlinedIcon />
+                        </IconButton>
+                        <IconButton color="secondary" onClick={() => this.remove(index)}>
+                          <DeleteForeverIcon />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </Hidden>
+
+          <Hidden mdUp>
+            <List>
+              {users.map((user, index) => {
+                return (
+                  <React.Fragment>
+                    <ListItem style={{ padding: '0', justifyContent: 'space-between' }}>
+                      <div>
+                        <Link to={`/users/${user.id}`}>
+                          <Typography variant="body2">{user.name}</Typography>
+                        </Link>
+                        <Typography style={{ fontStyle: 'italic' }}>
+                          {user.email}
+                        </Typography>
+                      </div>
+
+                      <div>
+                        <IconButton color="primary" onClick={() => this.setState({ editUser: this.prepareForEdit(user) })}>
+                          <BuildIcon />
+                        </IconButton>
+                        <IconButton color="primary" onClick={() => this.setState({ subsUser: user })}>
+                          <DescriptionOutlinedIcon />
+                        </IconButton>
+                        <IconButton color="secondary" onClick={() => this.remove(index)}>
+                          <DeleteForeverIcon />
+                        </IconButton>
+                      </div>
+                    </ListItem>
+                    <Divider />
+                  </React.Fragment>
+                );
+              })}
+            </List>
+          </Hidden>
+
+        </Paper>
       </div>
     );
   }

@@ -42,5 +42,16 @@ module.exports = (db, Sequelize) => {
     isActive: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false }
   });
 
+
+  Users.associate = function (models) {
+    models.Users.hasMany(models.Subscriptions, {
+      as: 'subscriptions',
+      foreignKey: {
+        name: 'customerId',
+        allowNull: false
+      }
+    });
+  }
+
   return Users;
 }
