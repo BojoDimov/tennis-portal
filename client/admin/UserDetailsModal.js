@@ -6,6 +6,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 import withMobileDialog from '@material-ui/core/withMobileDialog';
 import { withStyles } from '@material-ui/core/styles';
 
@@ -47,7 +50,7 @@ class UserDetailsModal extends React.Component {
         .catch(err => this.setState({ errors: err }));
     else
       return QueryService
-        .post(`/users`, model)
+        .post(`/users`, user)
         .then(_ => this.props.onChange())
         .catch(err => this.setState({ errors: err }));
   }
@@ -71,6 +74,16 @@ class UserDetailsModal extends React.Component {
           </DialogContentText>
         </DialogTitle>
         <DialogContent>
+          <FormControlLabel
+            control={
+              <Switch
+                color="primary"
+                checked={user.isActive}
+                onClick={() => this.handleChange('isActive', true)(!user.isActive)}
+              />
+            }
+            label={user.isActive ? 'Активен' : 'Неактивен'}
+          />
 
           {user.id && <Typography variant="caption">
             E-mail

@@ -10,12 +10,13 @@ import TableRow from '@material-ui/core/TableRow';
 import TablePagination from '@material-ui/core/TablePagination';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import Button from '@material-ui/core/Button';
+import Tooltip from '@material-ui/core/Tooltip';
+import Zoom from '@material-ui/core/Zoom';
 import TextField from '@material-ui/core/TextField';
 import IconButton from '@material-ui/core/IconButton';
+import EditIcon from '@material-ui/icons/Edit';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import DescriptionOutlinedIcon from '@material-ui/icons/DescriptionOutlined';
 import DoneIcon from '@material-ui/icons/Done';
@@ -150,20 +151,27 @@ class Users extends React.Component {
                       <TableCell style={{ textAlign: 'center' }}>{user.isActive && <DoneIcon color="action" />}</TableCell>
                       <TableCell style={{ textAlign: 'center' }}>{user.isAdmin && <DoneIcon color="action" />}</TableCell>
                       <TableCell>
-                        <IconButton color="primary" onClick={() => this.setState({ editUser: this.prepareForEdit(user) })}>
-                          <BuildIcon />
-                        </IconButton>
-                        <IconButton color="primary" onClick={() => this.setState({ subsUser: user })}>
-                          <DescriptionOutlinedIcon />
-                        </IconButton>
+                        <Tooltip title="редакция" placement="top-start" TransitionComponent={Zoom} enterDelay={500}>
+                          <IconButton color="primary" onClick={() => this.setState({ editUser: this.prepareForEdit(user) })}>
+                            {/* <BuildIcon /> */}
+                            <EditIcon />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="абонаменти" placement="top-start" TransitionComponent={Zoom} enterDelay={500}>
+                          <IconButton color="primary" onClick={() => this.setState({ subsUser: user })}>
+                            <DescriptionOutlinedIcon />
+                          </IconButton>
+                        </Tooltip>
                         <ConfirmationDialog
                           title="Изтриване на потребител"
                           body={<Typography>Сигурни ли сте че искате да изтриете {user.name}</Typography>}
                           onAccept={() => this.remove(index)}
                         >
-                          <IconButton color="secondary">
-                            <DeleteForeverIcon />
-                          </IconButton>
+                          <Tooltip title="изтриване" placement="top-start" TransitionComponent={Zoom} enterDelay={500}>
+                            <IconButton color="secondary">
+                              <DeleteForeverIcon />
+                            </IconButton>
+                          </Tooltip>
                         </ConfirmationDialog>
                       </TableCell>
                     </TableRow>

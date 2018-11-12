@@ -50,7 +50,6 @@ class UserModel {
     if (errors[name].length > 0)
       return <span>
         {errors[name].map((err, i) => {
-          console.log(`Err: ${name} - ${err} - ${UET}`);
           return (
             <span
               key={i}
@@ -240,12 +239,12 @@ const UET = {
     invalid: 'Невалиден телефонен номер'
   },
   gender: {
-    //required: 'Задължително поле',
+    required: 'Задължително поле',
     invalid: 'Невалиден пол'
   },
   birthDate: {
     invalid: 'Невалидна дата на раждане',
-    //required: 'Задължително поле',
+    required: 'Задължително поле',
   },
   startedPlaying: {
     invalid: 'Невалидна година',
