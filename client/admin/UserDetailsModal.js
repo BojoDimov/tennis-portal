@@ -6,6 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
+import withMobileDialog from '@material-ui/core/withMobileDialog';
 import { withStyles } from '@material-ui/core/styles';
 
 import QueryService from '../services/query.service';
@@ -42,21 +43,28 @@ class UserDetailsModal extends React.Component {
     if (user.id)
       return QueryService
         .post(`/users/${user.id}`, user)
-        .then(_ => this.onChange())
+        .then(_ => this.props.onChange())
         .catch(err => this.setState({ errors: err }));
     else
       return QueryService
         .post(`/users`, model)
-        .then(_ => this.onChange())
+        .then(_ => this.props.onChange())
         .catch(err => this.setState({ errors: err }));
   }
 
   render() {
-    const { isOpen, onClose, classes } = this.props;
+    const { isOpen, onClose, classes, fullScreen } = this.props;
     const { user, errors } = this.state;
+    if (!this.props.user)
+      return null;
 
     return (
-      <Dialog open={isOpen} onClose={onClose} classes={{ paper: classes.root }}>
+      <Dialog
+        open={isOpen}
+        onClose={onClose}
+        fullScreen={fullScreen}
+        classes={{ paper: classes.root }}
+      >
         <DialogTitle>
           <DialogContentText variant="headline">
             {user.name || 'Нов потребител'}
@@ -104,4 +112,6 @@ const styles = (theme) => ({
   }
 });
 
-export default withStyles(styles)(UserDetailsModal);
+export default withStyles(styles)(
+  withMobileDialog({ breakpoint: 'xs' })(UserDetailsModal)
+);

@@ -7,6 +7,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import TablePagination from '@material-ui/core/TablePagination';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -21,6 +22,7 @@ import DoneIcon from '@material-ui/icons/Done';
 import BuildIcon from '@material-ui/icons/Build';
 import Paper from '@material-ui/core/Paper';
 
+import ConfirmationDialog from '../components/ConfirmationDialog';
 import QueryService from '../services/query.service';
 import UserModel from '../users/user.model';
 import UserDetailsModal from './UserDetailsModal';
@@ -30,16 +32,22 @@ class Users extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      currentSeason: null,
+      page: 0,
+      rowsPerPage: 10,
       users: [],
       usersFilter: '',
       page: 0,
-      rowsPerPage: 5,
       editUser: null,
       subsUser: null
     };
   }
 
   componentDidMount() {
+    QueryService
+      .get('/schedule/config')
+      .then(({ season }) => this.setState({ currentSeason: season }));
+
     this.getData();
   }
 
@@ -76,7 +84,7 @@ class Users extends React.Component {
   }
 
   render() {
-    const { usersFilter, editUser, editUserErrors } = this.state;
+    const { usersFilter, page, rowsPerPage } = this.state;
     const users = this.filterUsers(usersFilter);
 
     return (
@@ -96,12 +104,21 @@ class Users extends React.Component {
           <UserDetailsModal
             user={this.state.editUser}
             isOpen={this.state.editUser != null}
+            onChange={() => {
+              this.setState({ editUser: null })
+              this.getData();
+            }}
             onClose={() => this.setState({ editUser: null })}
           />
 
           <UserSubscriptionsModal
             user={this.state.subsUser}
+            season={this.state.currentSeason}
             isOpen={this.state.subsUser != null}
+            onChange={() => {
+              this.setState({ subsUser: null })
+              this.getData();
+            }}
             onClose={() => this.setState({ subsUser: null })}
           />
 
@@ -111,13 +128,13 @@ class Users extends React.Component {
                 <TableRow>
                   <TableCell>Име</TableCell>
                   <TableCell>Създаден</TableCell>
-                  <TableCell>Активен</TableCell>
-                  <TableCell>Администратор</TableCell>
+                  <TableCell style={{ textAlign: 'center' }}>Активен</TableCell>
+                  <TableCell style={{ textAlign: 'center' }}>Администратор</TableCell>
                   <TableCell></TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {users.map((user, index) => {
+                {users.slice(page * rowsPerPage, (page + 1) * rowsPerPage).map((user, index) => {
                   return (
                     <TableRow key={user.id}>
                       <TableCell>
@@ -130,8 +147,8 @@ class Users extends React.Component {
                       </TableCell>
 
                       <TableCell>{new Date(user.createdAt).toLocaleDateString()}</TableCell>
-                      <TableCell>{user.isActive && <DoneIcon color="action" />}</TableCell>
-                      <TableCell>{user.isAdmin && <DoneIcon color="action" />}</TableCell>
+                      <TableCell style={{ textAlign: 'center' }}>{user.isActive && <DoneIcon color="action" />}</TableCell>
+                      <TableCell style={{ textAlign: 'center' }}>{user.isAdmin && <DoneIcon color="action" />}</TableCell>
                       <TableCell>
                         <IconButton color="primary" onClick={() => this.setState({ editUser: this.prepareForEdit(user) })}>
                           <BuildIcon />
@@ -139,22 +156,39 @@ class Users extends React.Component {
                         <IconButton color="primary" onClick={() => this.setState({ subsUser: user })}>
                           <DescriptionOutlinedIcon />
                         </IconButton>
-                        <IconButton color="secondary" onClick={() => this.remove(index)}>
-                          <DeleteForeverIcon />
-                        </IconButton>
+                        <ConfirmationDialog
+                          title="Изтриване на потребител"
+                          body={<Typography>Сигурни ли сте че искате да изтриете {user.name}</Typography>}
+                          onAccept={() => this.remove(index)}
+                        >
+                          <IconButton color="secondary">
+                            <DeleteForeverIcon />
+                          </IconButton>
+                        </ConfirmationDialog>
                       </TableCell>
                     </TableRow>
                   );
                 })}
               </TableBody>
             </Table>
+            <TablePagination
+              component="div"
+              count={users.length}
+              rowsPerPage={rowsPerPage}
+              rowsPerPageOptions={[10, 25, 50]}
+              labelRowsPerPage="Покажи:"
+              labelDisplayedRows={({ from, to, count }) => `${from}-${to} от ${count}`}
+              page={page}
+              onChangePage={(e, page) => this.setState({ page })}
+              onChangeRowsPerPage={e => this.setState({ rowsPerPage: e.target.value, page: 0 })}
+            />
           </Hidden>
 
-          <Hidden mdUp>
+          <Hidden smUp>
             <List>
               {users.map((user, index) => {
                 return (
-                  <React.Fragment>
+                  <React.Fragment key={index}>
                     <ListItem style={{ padding: '0', justifyContent: 'space-between' }}>
                       <div>
                         <Link to={`/users/${user.id}`}>
@@ -172,9 +206,15 @@ class Users extends React.Component {
                         <IconButton color="primary" onClick={() => this.setState({ subsUser: user })}>
                           <DescriptionOutlinedIcon />
                         </IconButton>
-                        <IconButton color="secondary" onClick={() => this.remove(index)}>
-                          <DeleteForeverIcon />
-                        </IconButton>
+                        <ConfirmationDialog
+                          title="Изтриване на потребител"
+                          body={<Typography>Сигурни ли сте че искате да изтриете {user.name}</Typography>}
+                          onAccept={() => this.remove(index)}
+                        >
+                          <IconButton color="secondary">
+                            <DeleteForeverIcon />
+                          </IconButton>
+                        </ConfirmationDialog>
                       </div>
                     </ListItem>
                     <Divider />
