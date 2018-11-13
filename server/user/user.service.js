@@ -8,6 +8,7 @@ const {
 
 const {
   Users,
+  Subscriptions,
   Tokens,
   Teams,
   UserActivationCodes,
@@ -20,11 +21,19 @@ class UserService {
   getAll() {
     return Users
       .findAll({
-        include: ['subscriptions'],
+        include: [
+          {
+            model: Subscriptions,
+            as: 'subscriptions',
+            include: ['season']
+          }
+        ],
         attributes: {
           exclude: ['passwordHash', 'passwordSalt']
         },
-        order: [['name', 'asc']]
+        order: [
+          'name',
+          [{ model: Subscriptions, as: 'subscriptions' }, 'createdAt', 'desc']]
       });
   }
 
