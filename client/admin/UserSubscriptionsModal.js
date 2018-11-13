@@ -213,7 +213,6 @@ class Subscription extends React.Component {
               Тип абонамент:
               <Typography>
                 <L10n
-                  style={{ marginLeft: '.3rem' }}
                   type={SubscriptionType}
                   translate="SubscriptionType"
                 >

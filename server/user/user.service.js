@@ -25,7 +25,10 @@ class UserService {
           {
             model: Subscriptions,
             as: 'subscriptions',
-            include: ['season']
+            include: [
+              'season',
+              { model: Users, as: 'administrator', attributes: ['id', 'name'] }
+            ]
           }
         ],
         attributes: {
