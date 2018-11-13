@@ -21,6 +21,9 @@ class AdminReservation extends React.Component {
     if (reservation.id)
       type = classes.reserved;
 
+    if (reservation.type == ReservationType.SERVICE)
+      type = classes.unavaliable;
+
     return (
       <React.Fragment>
         <TableCell
@@ -64,6 +67,13 @@ const styles = (theme) => ({
     ...ReservationStyles.button,
     backgroundColor: theme.palette.secondary.light,
     color: theme.palette.secondary.contrastText,
+  },
+  unavaliable: {
+    ...ReservationStyles.cell,
+    cursor: 'pointer',
+    color: theme.palette.secondary.main,
+    fontWeight: '700',
+    background: 'url(assets/empty.png)'
   }
 });
 
