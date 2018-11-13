@@ -190,6 +190,7 @@ class Schedule extends React.Component {
                           <Reservation
                             mode={mode}
                             key={court.id}
+                            season={this.state.season}
                             reservation={this.getReservation(hour, court)}
                             onChange={_ => this.getData(date)}
                           />

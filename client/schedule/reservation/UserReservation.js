@@ -64,6 +64,13 @@ const styles = (theme) => ({
     ...ReservationStyles.button,
     backgroundColor: theme.palette.primary.light,
     color: theme.palette.primary.contrastText,
+  },
+  unavaliable: {
+    ...ReservationStyles.cell,
+    background: 'url(assets/empty.png)',
+    '&:hover': {
+      cursor: 'not-allowed'
+    }
   }
 });
 

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { ApplicationMode } from '../../enums';
+import { ApplicationMode, ReservationType } from '../../enums';
 import UserService from '../../services/user.service';
 import AdminReservation from './AdminReservation';
 import UserReservation from './UserReservation';
@@ -21,15 +21,22 @@ class Reservation extends React.Component {
 
   render() {
     const { reservation, mode } = this.props;
+    const available = reservation.hour <= reservation.court.workingHoursEnd - 1
+      && reservation.hour >= reservation.court.workingHoursStart;
 
-    if (mode == ApplicationMode.ADMIN)
+    if (!available)
+      return <GuestReservation {...this.props} available={available} />;
+
+    else if (mode == ApplicationMode.ADMIN)
       return <AdminReservation {...this.props} />;
 
-    else if (this.state.userId && (!reservation.id || reservation.customerId == this.state.userId))
-      return <UserReservation {...this.props} />;
+    else if (!this.state.userId
+      || (reservation.customerId && reservation.customerId != this.state.userId)
+      || reservation.type == ReservationType.SERVICE)
+      return <GuestReservation {...this.props} available={available} />;
 
     else
-      return <GuestReservation {...this.props} />;
+      return <UserReservation {...this.props} available={available} />;
   }
 }
 
