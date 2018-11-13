@@ -54,6 +54,10 @@ class SubscriptionService {
     return await subscription.update(model);
   }
 
+  async remove(id) {
+    return await Subscriptions.destroy({ where: { id } });
+  }
+
   // async removeSubscription(id) {
   //   return await sequelize.transaction(async (trn) => {
   //     const subscription = await Subscriptions.findById(id, {

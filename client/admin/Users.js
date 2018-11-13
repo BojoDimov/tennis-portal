@@ -72,6 +72,14 @@ class Users extends React.Component {
     return user;
   }
 
+  updateSubscriptions(user, subscriptions) {
+    console.log('calling update subscriptions', subscriptions);
+    const index = this.state.users.findIndex(e => e.id == user.id);
+    const users = this.state.users;
+    users[index].subscriptions = subscriptions;
+    this.setState({ users, subsUser: users[index] });
+  }
+
   remove(index) {
     const users = this.state.users;
 
@@ -116,10 +124,7 @@ class Users extends React.Component {
             user={this.state.subsUser}
             season={this.state.currentSeason}
             isOpen={this.state.subsUser != null}
-            onChange={() => {
-              this.setState({ subsUser: null })
-              this.getData();
-            }}
+            onChange={(subscriptions) => this.updateSubscriptions(this.state.subsUser, subscriptions)}
             onClose={() => this.setState({ subsUser: null })}
           />
 

@@ -12,12 +12,12 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import withMobileDialog from '@material-ui/core/withMobileDialog';
 import TextField from '@material-ui/core/TextField';
+import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { withStyles } from '@material-ui/core/styles';
 
 import UserService from '../services/user.service';
 import L10n from '../components/L10n';
 import QueryService from '../services/query.service';
-import UserModel from '../users/user.model';
 import { SubscriptionType } from '../enums';
 import ConfirmationDialog from '../components/ConfirmationDialog';
 import EnumSelect from '../components/EnumSelect';
@@ -30,16 +30,18 @@ class UserSubscriptionsModal extends React.Component {
       subscriptions: []
     };
 
-    this.handleChange = (index) => (prop) => (e) => {
+    this.handleChange = (index) => (newValue) => {
       const subscriptions = this.state.subscriptions;
-      subscriptions[index][prop] = e.target.value;
+      subscriptions[index] = newValue
       this.setState({ subscriptions });
+      this.props.onChange(subscriptions);
     }
 
     this.handleDelete = (index) => () => {
       const subscriptions = this.state.subscriptions;
       subscriptions.splice(index, 1);
       this.setState({ subscriptions });
+      this.props.onChange(subscriptions);
     }
   }
 
@@ -54,11 +56,11 @@ class UserSubscriptionsModal extends React.Component {
     });
   }
 
-  save() {
-  }
-
   addSubscription() {
     const { subscriptions } = this.state;
+    if (subscriptions.length > 0 && !subscriptions[0].id)
+      return;
+
     subscriptions.unshift({
       customerId: this.props.user.id,
       season: this.props.season,
@@ -100,7 +102,7 @@ class UserSubscriptionsModal extends React.Component {
           </Button>
 
           {subscriptions.map((sub, index) => <Subscription
-            key={index}
+            key={sub.id || 0}
             model={sub}
             onChange={this.handleChange(index)}
             onDelete={this.handleDelete(index)}
@@ -110,11 +112,12 @@ class UserSubscriptionsModal extends React.Component {
         </DialogContent>
 
         <DialogActions className={classes.btnContainer}>
-          <Button variant="contained" color="primary" className={classes.btn} onClick={() => this.save()}>
+          {/* <Button variant="contained" color="primary" className={classes.btn} onClick={() => this.save()}>
             Запис
-          </Button>
-          <Button variant="outlined" color="primary" className={classes.btn} onClick={onClose}>
-            Отказ
+          </Button> */}
+          <Button variant="outlined" color="primary" size="small" className={classes.btn} onClick={onClose}>
+            <ArrowBackIcon />
+            Назад
           </Button>
         </DialogActions>
       </Dialog>
@@ -123,12 +126,71 @@ class UserSubscriptionsModal extends React.Component {
 }
 
 class Subscription extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      administrator: {},
+      season: {},
+      type: '',
+      totalHours: 0,
+      usedHours: 0,
+      isEditMode: false,
+      expanded: false
+    }
+  }
+
+  componentDidMount() {
+    this.setState({
+      ...JSON.parse(JSON.stringify(this.props.model)),
+      isEditMode: !this.props.model.id,
+      expanded: !this.props.model.id
+    });
+  }
+
+  save() {
+    let query = null
+    if (this.state.id)
+      query = QueryService
+        .post(`/subscriptions/${this.state.id}`, this.state);
+    else
+      query = QueryService
+        .post(`/subscriptions`, this.state)
+
+    return query
+      .then(e => {
+        this.props.onChange(e);
+        this.setState({ ...e, isEditMode: false });
+      })
+      .catch(err => this.setState({ errors: err }));
+  }
+
+  remove() {
+    return QueryService
+      .delete(`/subscriptions/${this.state.id}`)
+      .then(_ => this.props.onDelete())
+      .catch(err => this.setState({ errors: err }));
+  }
+
+  cancelEdit() {
+    console.log(this.state);
+    if (!this.state.id)
+      return this.props.onDelete();
+    else
+      return this.setState({
+        ...JSON.parse(JSON.stringify(this.props.model)),
+        isEditMode: false
+      });
+  }
+
   render() {
-    const { model, onChange, onDelete } = this.props;
+    const model = this.state;
 
     return (
-      <ExpansionPanel defaultExpanded={!model.id}>
-        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+      <ExpansionPanel expanded={model.expanded}>
+        <ExpansionPanelSummary
+          expandIcon={<ExpandMoreIcon />}
+          onClick={() => this.setState({ expanded: !model.expanded })}
+        >
           <Typography color="primary" style={{ flexBasis: '50%' }}>
             Абонамент
             <L10n
@@ -144,48 +206,108 @@ class Subscription extends React.Component {
         <ExpansionPanelDetails style={{ flexDirection: 'column' }}>
           <Typography variant="caption">
             Администрирал:
-          <Typography>{model.administrator.name}</Typography>
+            <Typography>{model.administrator.name}</Typography>
           </Typography>
 
-          <EnumSelect
-            label="Тип абонамент"
-            value={model.type}
-            fullWidth={true}
-            onChange={onChange('type')}
-            EnumValues={SubscriptionType}
-            EnumName="SubscriptionType"
-          />
+          {!this.state.isEditMode && <React.Fragment>
+            <Typography variant="caption">
+              Тип абонамент:
+              <Typography>
+                <L10n
+                  style={{ marginLeft: '.3rem' }}
+                  type={SubscriptionType}
+                  translate="SubscriptionType"
+                >
+                  {model.type}
+                </L10n>
+              </Typography>
+            </Typography>
 
-          <TextField
-            label="Общо часове"
-            type="number"
-            value={model.totalHours}
-            onChange={onChange('totalHours')}
-            fullWidth={true}
-          />
+            <Typography variant="caption">
+              Общо часове:
+              <Typography>{model.totalHours}</Typography>
+            </Typography>
 
-          <TextField
-            label="Изиграни часове"
-            type="number"
-            value={model.usedHours}
-            onChange={onChange('usedHours')}
-            fullWidth={true}
-          />
+            <Typography variant="caption">
+              Изиграни часове:
+              <Typography>{model.usedHours}</Typography>
+            </Typography>
+          </React.Fragment>}
 
-          <ConfirmationDialog
-            title="Изтриване на абонамент"
-            body={<Typography>Сигурни ли сте че искате да изтриете абонамента</Typography>}
-            onAccept={onDelete}
-            style={{ marginTop: '.5rem' }}
-          >
+          {this.state.isEditMode && <React.Fragment>
+            <EnumSelect
+              label="Тип абонамент"
+              value={model.type}
+              fullWidth={true}
+              onChange={(e) => this.setState({ type: e.target.value })}
+              EnumValues={SubscriptionType}
+              EnumName="SubscriptionType"
+            />
+
+            <TextField
+              label="Общо часове"
+              type="number"
+              value={model.totalHours}
+              onChange={(e) => this.setState({ totalHours: e.target.value })}
+              fullWidth={true}
+            />
+
+            <TextField
+              label="Изиграни часове"
+              type="number"
+              value={model.usedHours}
+              onChange={(e) => this.setState({ usedHours: e.target.value })}
+              fullWidth={true}
+            />
+          </React.Fragment>}
+
+          {this.state.isEditMode && <div style={{ marginTop: '.5rem' }}>
             <Button
               variant="contained"
-              color="secondary"
+              color="primary"
               size="small"
+              style={{ marginRight: '.3rem' }}
+              onClick={() => this.save()}
             >
-              Изтриване
+              Запис
             </Button>
-          </ConfirmationDialog>
+
+            <Button
+              variant="outlined"
+              color="primary"
+              size="small"
+              onClick={() => this.cancelEdit()}
+            >
+              Отказ
+            </Button>
+          </div>}
+
+          {!this.state.isEditMode && <div style={{ marginTop: '.5rem' }}>
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              style={{ marginRight: '.3rem' }}
+              onClick={() => this.setState({ isEditMode: true })}
+            >
+              Редакция
+            </Button>
+
+            <ConfirmationDialog
+              title="Изтриване на абонамент"
+              body={<Typography>Сигурни ли сте че искате да изтриете абонамента</Typography>}
+              onAccept={() => this.remove()}
+              style={{ marginTop: '.5rem' }}
+            >
+              <Button
+                variant="contained"
+                color="secondary"
+                size="small"
+              >
+                Изтриване
+            </Button>
+            </ConfirmationDialog>
+          </div>}
         </ExpansionPanelDetails>
       </ExpansionPanel>
     );
