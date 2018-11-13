@@ -172,7 +172,6 @@ class Subscription extends React.Component {
   }
 
   cancelEdit() {
-    console.log(this.state);
     if (!this.state.id)
       return this.props.onDelete();
     else

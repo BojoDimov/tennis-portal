@@ -73,7 +73,6 @@ class Users extends React.Component {
   }
 
   updateSubscriptions(user, subscriptions) {
-    console.log('calling update subscriptions', subscriptions);
     const index = this.state.users.findIndex(e => e.id == user.id);
     const users = this.state.users;
     users[index].subscriptions = subscriptions;
