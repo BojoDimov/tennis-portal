@@ -2,14 +2,19 @@ const router = require('express').Router();
 const {
   Users,
   Courts,
+  Subscriptions,
   Sequelize
 } = require('./db');
 const Op = Sequelize.Op;
 
 const selectUsers = async (request, response) => {
   const filter = request.body;
+  const query = request.query;
+
   const options = {
+    include: [],
     order: [['name', 'asc']],
+    attributes: ['id', 'name', 'email'],
     limit: filter.limit,
     offset: filter.offset
   };
@@ -26,16 +31,35 @@ const selectUsers = async (request, response) => {
       }
     };
 
+  if (query.seasonId) {
+    options.include.push({
+      model: Subscriptions,
+      as: 'subscriptions',
+      where: {
+        seasonId: query.seasonId
+      }
+    });
+
+    options.order.push(
+      [{ model: Subscriptions, as: 'subscriptions' }, 'createdAt', 'desc']
+    );
+  }
+
   const result = await Users.findAndCountAll(options);
+
+  // return response.json({
+  //   totalCount: result.count,
+  //   items: result.rows.map(item => {
+  //     return {
+  //       value: item.id,
+  //       label: `${item.name} (${item.email})`
+  //     }
+  //   })
+  // });
 
   return response.json({
     totalCount: result.count,
-    items: result.rows.map(item => {
-      return {
-        value: item.id,
-        label: `${item.name} (${item.email})`
-      }
-    })
+    options: result.rows
   });
 }
 

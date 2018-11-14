@@ -14,7 +14,7 @@ export class AsyncSelect extends React.Component {
       searchTerm: '',
       limit: 25,
       defaultLimit: 25,
-      items: [],
+      options: [],
       totalCount: null
     };
   }
@@ -24,13 +24,13 @@ export class AsyncSelect extends React.Component {
   }
 
   load(loadMore) {
-    const { items, totalCount, searchTerm, defaultLimit } = this.state;
+    const { options, totalCount, searchTerm, defaultLimit } = this.state;
     let limit = this.state.limit;
 
     if (loadMore)
       limit += defaultLimit;
 
-    if (loadMore && items.length == totalCount)
+    if (loadMore && options.length == totalCount)
       return;
 
     QueryService
@@ -42,7 +42,19 @@ export class AsyncSelect extends React.Component {
   }
 
   render() {
-    const { classes, theme, value, onChange, label, isClearable } = this.props;
+    const {
+      disableClear,
+      disableSearch,
+      label,
+      value,
+      query,
+      getOptionLabel,
+      getOptionValue,
+      noOptionsMessage,
+      onChange,
+
+      classes, theme
+    } = this.props;
 
     const selectStyles = {
       input: base => ({
@@ -54,26 +66,39 @@ export class AsyncSelect extends React.Component {
       }),
     };
 
+    let _getOptionLabel = getOptionLabel || ((option) => option.name);
+    let _getOptionValue = getOptionValue || ((option) => option.id);
+    let _noOptionsMessage = noOptionsMessage || (() => "Няма елементи в колекцията");
+
     return (
       <div className={classes.root}>
-        {/* <pre>item   count: {this.state.items.length}</pre>
+        {/* <pre>item   count: {this.state.options.length}</pre>
         <pre>total  count: {this.state.totalCount}</pre>
         <pre>limit       : {this.state.limit}</pre> */}
         <NoSsr>
           <Select
-            isClearable={isClearable}
-            classes={classes}
-            styles={selectStyles}
-            components={SelectComponents}
+            isClearable={!disableClear}
+            isSearchable={!disableSearch}
+            textFieldProps={{
+              label,
+              InputLabelProps: {
+                shrink: Boolean(value)
+              }
+            }}
             value={value}
-            options={this.state.items}
+            options={this.state.options}
+            getOptionLabel={_getOptionLabel}
+            getOptionValue={_getOptionValue}
+            noOptionsMessage={_noOptionsMessage}
             onChange={onChange}
             onInputChange={value => {
               this.setState({ searchTerm: value.trim() });
               this.load();
             }}
-            placeholder={label}
             onMenuScrollToBottom={() => this.load(true)}
+            classes={classes}
+            styles={selectStyles}
+            components={SelectComponents}
           />
         </NoSsr>
       </div>
@@ -84,17 +109,14 @@ export class AsyncSelect extends React.Component {
 const customStyles = {
   root: {
     flexGrow: 1,
-    margin: 0
+    margin: 0,
+    cursor: 'pointer'
   }
 };
 
 const augmentedStyles = (theme) => {
   const original = styles(theme);
   const result = { ...original, ...customStyles };
-  // console.log('Original styles', original);
-  // console.log('Custom styles', customStyles);
-  // console.log('Resulting styles', result);
-
   return result;
 }
 

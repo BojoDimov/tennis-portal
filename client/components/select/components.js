@@ -69,17 +69,19 @@ export function Option(props) {
   );
 }
 
-export function Placeholder(props) {
-  return (
-    <Typography
-      color="textSecondary"
-      className={props.selectProps.classes.placeholder}
-      {...props.innerProps}
-    >
-      {props.children}
-    </Typography>
-  );
-}
+// export function Placeholder(props) {
+//   return (
+//     <Typography
+//       color="textSecondary"
+//       className={props.selectProps.classes.placeholder}
+//       {...props.innerProps}
+//     >
+//       {props.children}
+//     </Typography>
+//   );
+// }
+
+export const Placeholder = () => null;
 
 export function SingleValue(props) {
   return (

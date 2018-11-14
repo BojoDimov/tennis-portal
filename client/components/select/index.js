@@ -8,11 +8,19 @@ import styles from './styles';
 
 class SingleSelect extends React.Component {
   render() {
-    const { classes, theme, items, value, onChange, placeholder } = this.props;
-    const _items = items.map(item => ({
-      value: item.id,
-      label: item.name
-    }));
+    const {
+      disableClear,
+      disableSearch,
+      label,
+      value,
+      options,
+      getOptionLabel,
+      getOptionValue,
+      noOptionsMessage,
+      onChange,
+
+      classes, theme
+    } = this.props;
 
     const selectStyles = {
       input: base => ({
@@ -24,18 +32,31 @@ class SingleSelect extends React.Component {
       }),
     };
 
+    let _getOptionLabel = getOptionLabel || ((option) => option.name);
+    let _getOptionValue = getOptionValue || ((option) => option.id);
+    let _noOptionsMessage = noOptionsMessage || (() => "Няма елементи в колекцията");
+
     return (
       <div className={classes.root}>
         <NoSsr>
           <Select
+            isClearable={!disableClear}
+            isSearchable={!disableSearch}
+            textFieldProps={{
+              label,
+              InputLabelProps: {
+                shrink: Boolean(value)
+              }
+            }}
+            value={value}
+            options={options}
+            getOptionLabel={_getOptionLabel}
+            getOptionValue={_getOptionValue}
+            noOptionsMessage={_noOptionsMessage}
+            onChange={onChange}
             classes={classes}
             styles={selectStyles}
-            options={_items}
-            isClearable={true}
             components={SelectComponents}
-            value={value}
-            onChange={onChange}
-            placeholder={placeholder}
           />
         </NoSsr>
       </div>
@@ -48,4 +69,18 @@ SingleSelect.propTypes = {
   theme: PropTypes.object.isRequired,
 };
 
-export default withStyles(styles, { withTheme: true })(SingleSelect);
+const customStyles = {
+  root: {
+    flexGrow: 1,
+    margin: 0,
+    cursor: 'pointer'
+  }
+};
+
+const augmentedStyles = (theme) => {
+  const original = styles(theme);
+  const result = { ...original, ...customStyles };
+  return result;
+}
+
+export default withStyles(augmentedStyles, { withTheme: true })(SingleSelect);
