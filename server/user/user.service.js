@@ -32,11 +32,12 @@ class UserService {
           }
         ],
         attributes: {
-          exclude: ['passwordHash', 'passwordSalt']
+          exclude: ['passwordHash', 'passwordSalt', 'birthDate', 'gender']
         },
         order: [
           'name',
-          [{ model: Subscriptions, as: 'subscriptions' }, 'createdAt', 'desc']]
+          [{ model: Subscriptions, as: 'subscriptions' }, 'createdAt', 'desc']
+        ]
       });
   }
 

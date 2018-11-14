@@ -14,8 +14,10 @@ import ClearIcon from '@material-ui/icons/Clear';
 
 import QueryService from '../../services/query.service';
 import EnumSelect from '../../components/EnumSelect';
+import SingleSelect from '../../components/select';
 import AsyncSelect from '../../components/select/AsyncSelect';
-import { ReservationPayment, ReservationType } from '../../enums';
+import { ReservationPayment, ReservationType, SubscriptionType } from '../../enums';
+import { l10n_text } from '../../components/L10n';
 import { getHour } from '../../utils';
 
 class EditReservationModal extends React.Component {
@@ -42,22 +44,22 @@ class EditReservationModal extends React.Component {
       this.setState({ reservation });
     }
 
+    this.handleCustomChange = (prop) => (value) => {
+      const reservation = this.state.reservation;
+      reservation[prop] = value;
+
+      if (prop == 'customer' && value)
+        reservation.customerId = value.id
+
+      if (prop == 'customer' && !value)
+        reservation.customerId = null;
+
+      this.setState({ reservation });
+    }
+
     this.handlePaymentChange = (prop, index) => (e) => {
       this.state.reservation.payments[index][prop] = e.target.value;
       this.setState({ reservation: this.state.reservation });
-    }
-
-    this.handleUserSelect = (user) => {
-      const reservation = this.state.reservation;
-      if (!user) {
-        reservation.customer = null;
-        reservation.customerId = null;
-      }
-      else {
-        reservation.customer = user;
-        reservation.customerId = user.value;
-      }
-      this.setState({ reservation });
     }
   }
 
@@ -132,14 +134,31 @@ class EditReservationModal extends React.Component {
             EnumValues={ReservationType}
             EnumName="ReservationType" />
 
-          {(reservation.type == ReservationType.USER
-            || reservation.type == ReservationType.SUBSCRIPTION)
+          {reservation.type == ReservationType.USER
             && <AsyncSelect
               isClearable={true}
               label="Потребител"
               value={reservation.customer}
               query="users"
-              onChange={this.handleUserSelect}
+              onChange={this.handleCustomChange('customer')}
+            />}
+
+          {reservation.type == ReservationType.SUBSCRIPTION
+            && <AsyncSelect
+              label="Потребител"
+              value={reservation.customer}
+              query={`users?seasonId=${reservation.seasonId}`}
+              onChange={this.handleCustomChange('customer')}
+            />}
+
+          {reservation.type == ReservationType.SUBSCRIPTION && reservation.customer
+            && <SingleSelect
+              label="Абонамент"
+              value={reservation.subscription}
+              options={reservation.customer.subscriptions}
+              getOptionLabel={(option) =>
+                `Абонамент ${l10n_text(option.type, SubscriptionType, "SubscriptionType")}`}
+              onChange={this.handleCustomChange('subscription')}
             />}
 
           <Typography variant="subheading" style={{ marginTop: '1rem', alignItems: 'center', display: 'flex' }}>
