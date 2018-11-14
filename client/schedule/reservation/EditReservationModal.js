@@ -64,12 +64,14 @@ class EditReservationModal extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({ reservation: this.props.reservation });
+    const { reservation } = this.props;
+    this.setState({ reservation: JSON.parse(JSON.stringify(reservation)) });
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.reservation != this.props.reservation)
-      this.setState({ reservation: this.props.reservation });
+    const { reservation } = this.props;
+    if (prevProps.reservation != reservation)
+      this.setState({ reservation: JSON.parse(JSON.stringify(reservation)) });
   }
 
   action() {
