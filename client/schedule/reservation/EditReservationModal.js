@@ -156,8 +156,10 @@ class EditReservationModal extends React.Component {
               label="Абонамент"
               value={reservation.subscription}
               options={reservation.customer.subscriptions}
-              getOptionLabel={(option) =>
-                `Абонамент ${l10n_text(option.type, SubscriptionType, "SubscriptionType")}`}
+              formatOptionLabel={(option) => <Typography component="span">
+                Абонамент {l10n_text(option.type, SubscriptionType, "SubscriptionType")}
+                <Typography component="span" variant="caption">{option.usedHours}/{option.totalHours}</Typography>
+              </Typography>}
               onChange={this.handleCustomChange('subscription')}
             />}
 

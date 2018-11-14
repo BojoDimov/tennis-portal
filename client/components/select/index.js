@@ -16,6 +16,7 @@ class SingleSelect extends React.Component {
       options,
       getOptionLabel,
       getOptionValue,
+      formatOptionLabel,
       noOptionsMessage,
       onChange,
 
@@ -52,6 +53,7 @@ class SingleSelect extends React.Component {
             options={options}
             getOptionLabel={_getOptionLabel}
             getOptionValue={_getOptionValue}
+            formatOptionLabel={formatOptionLabel}
             noOptionsMessage={_noOptionsMessage}
             onChange={onChange}
             classes={classes}
