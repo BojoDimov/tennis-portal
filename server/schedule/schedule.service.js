@@ -1,5 +1,5 @@
 const moment = require('moment');
-const { ReservationType } = require('../infrastructure/enums');
+const { ReservationType, ReservationPayment } = require('../infrastructure/enums');
 const {
   Seasons,
   Courts,
@@ -12,6 +12,7 @@ const {
 } = require('../db');
 const Op = Sequelize.Op;
 const SubscriptionService = require('../subscription/subscription.service');
+
 class ScheduleService {
   getSeasons() {
     return Seasons.findAll();
@@ -31,13 +32,20 @@ class ScheduleService {
 
   getReservations(date) {
     return Reservations.findAll({
-      where: { date: date },
+      where: {
+        date: date,
+        isActive: true
+      },
       include: [
         'court',
-        'payments',
+        {
+          model: ReservationPayments, as: 'payments', include: [
+            { model: Subscriptions, as: 'subscription', include: ['season'] }
+          ]
+        },
         { model: Users, as: 'administrator', attributes: ['id', 'name', 'email', 'isAdmin'] },
         { model: Users, as: 'customer', attributes: ['id', 'name', 'email', 'isAdmin'] },
-        { model: Subscriptions, as: 'subscription' }
+        { model: Subscriptions, as: 'subscription', include: ['season'] }
       ]
     });
   }
@@ -82,79 +90,343 @@ class ScheduleService {
     return entity.update(model);
   }
 
+  //Throws:
+  //exist
+  //typeRequired
+  //customerRequired
+  //subscriptionRequired
+  //usedHoursExceedTotalHours
+  //paymentSubscriptionRequired
+  //typeSubscriptionAndHasPaymentSubscription
   async createReservation(model) {
-    const existing = await Reservations
-      .findOne({
-        where: {
-          date: model.date,
-          hour: model.hour,
-          courtId: model.courtId
+    let transaction;
+    try {
+      transaction = await sequelize.transaction({ autocommit: false });
+      const existing = await Reservations
+        .findOne({
+          where: {
+            date: model.date,
+            hour: model.hour,
+            courtId: model.courtId,
+            isActive: true
+          }
+        });
+
+      if (existing)
+        throw { name: 'DomainActionError', error: ['exist'] };
+
+      this.validateReservation(model);
+      await this.handlePayments(model, transaction);
+
+      if (model.type == ReservationType.SUBSCRIPTION) {
+        //increment subscription
+        const subscription = await Subscriptions.findById(model.subscriptionId, {
+          lock: transaction.LOCK.UPDATE,
+          transaction
+        });
+
+        subscription.usedHours++;
+        if (subscription.usedHours > subscription.totalHours)
+          throw { name: 'DomainActionError', error: ['usedHoursExceedTotalHours'] };
+        await subscription.save({ transaction });
+      }
+
+      const created = await Reservations.create(model, { transaction });
+      await transaction.commit();
+      return created;
+    }
+    catch (err) {
+      await transaction.rollback();
+      throw err;
+    }
+  }
+
+  //this may be a little unnecessary,
+  //so i am using less restricting version of this.
+  async loadReservationIsolationLocks(id, transaction) {
+    const reservation = await Reservations.findById(id, {
+      include: [
+        'subscription',
+        {
+          model: ReservationPayments,
+          as: 'payments',
+          include: [
+            {
+              model: Subscriptions,
+              as: 'subscription',
+              lock: {
+                level: transaction.LOCK.UPDATE,
+                of: Subscriptions
+              }
+            }
+          ]
+        }
+      ],
+      lock: {
+        level: transaction.LOCK.UPDATE,
+        of: Subscriptions
+      }
+    });
+
+    if (!reservation)
+      throw { name: 'NotFound' };
+
+    return reservation;
+  }
+
+  async loadReservation(id, transaction) {
+    const reservation = await Reservations.findById(id, {
+      include: [
+        'subscription',
+        'season',
+        {
+          model: ReservationPayments,
+          as: 'payments',
+          include: ['subscription']
+        }
+      ],
+      transaction
+    });
+
+    if (!reservation)
+      throw { name: 'NotFound' };
+    return reservation;
+  }
+
+  //Throws:
+  //typeRequired
+  //customerRequired
+  //subscriptionRequired
+  //usedHoursExceedTotalHours
+  //paymentSubscriptionRequired
+  //typeSubscriptionAndHasPaymentSubscription
+  async updateReservation(id, model) {
+    let transaction;
+    try {
+      transaction = await sequelize.transaction({ autocommit: false });
+      const reservation = await this.loadReservation(id, transaction);
+      this.validateReservation(model);
+      await this.handlePayments(model, transaction);
+
+      if (model.type == ReservationType.SUBSCRIPTION) {
+        if (reservation.type == ReservationType.SUBSCRIPTION) {
+          if (model.subscriptionId != reservation.subscriptionId) {
+            //increment new subscription
+            //decrement existing subscription
+            const subscription = await Subscriptions.findById(model.subscriptionId, {
+              lock: transaction.LOCK.UPDATE,
+              transaction
+            });
+
+            subscription.usedHours++;
+            reservation.subscription.usedHours--;
+            if (subscription.usedHours > subscription.totalHours)
+              throw { name: 'DomainActionError', error: ['usedHoursExceedTotalHours'] };
+            await subscription.save({ transaction });
+            await reservation.subscription.save({ transaction });
+          }
+        }
+        else {
+          //increment subscription
+          const subscription = await Subscriptions.findById(model.subscriptionId, {
+            lock: transaction.LOCK.UPDATE,
+            transaction
+          });
+
+          subscription.usedHours++;
+          if (subscription.usedHours > subscription.totalHours)
+            throw { name: 'DomainActionError', error: ['usedHoursExceedTotalHours'] };
+          await subscription.save({ transaction });
+        }
+      }
+
+      if (reservation.type == ReservationType.SUBSCRIPTION) {
+        //decrement subscription
+        reservation.subscription.usedHours--;
+        await reservation.subscription.save({ transaction });
+      }
+
+      const updated = await reservation.update(model, { transaction });
+      await transaction.commit();
+      return updated;
+    }
+    catch (err) {
+      await transaction.rollback();
+      throw err;
+    }
+  }
+
+  //Throws:
+  //maxAllowedTimeDiff
+  async cancelReservation(id) {
+    let transaction;
+    try {
+      transaction = await sequelize.transaction();
+      const reservation = await this.loadReservation(id, transaction);
+      this.validateCanBeCanceled(reservation);
+
+      if (reservation.type == ReservationType.SUBSCRIPTION) {
+        //decrement subscription
+        reservation.subscription.usedHours--;
+        await reservation.subscription.save({ transaction });
+      }
+
+      reservation.payments.forEach(async payment => {
+        if (payment.type == ReservationPayment.SUBS_ZONE_1 || payment.type == ReservationPayment.SUBS_ZONE_2) {
+          //decrement subscription
+          payment.subscription.usedHours--;
+          await payment.subscription.save({ transaction });
         }
       });
 
-    if (existing)
-      throw { name: 'DomainActionError', error: 'Reservation already exists' };
-
-    return await Reservations.create(model, { include: ['payments'] });
+      const updated = await reservation.update({ isActive: false }, { transaction });
+      await transaction.commit();
+      return updated;
+    }
+    catch (err) {
+      await transaction.rollback();
+      throw err;
+    }
   }
 
-  async updateReservation(id, model) {
-    return await sequelize.transaction(async (trn) => {
-      const reservation = await Reservations.findById(id, { include: ['payments'] });
-      if (!reservation)
-        throw { name: 'NotFound' };
+  //Throws:
+  //usedHoursExceedTotalHours
+  async handlePayments(reservation, transaction) {
+    for (const payment of reservation.payments) {
+      //handle created and updated
+      if (payment.id) {
+        //update payment
+        const existingPayment = await ReservationPayments.findById(payment.id, { include: ['subscription'] });
+        if (payment.type == ReservationPayment.SUBS_ZONE_1 || payment.type == ReservationPayment.SUBS_ZONE_2) {
+          const subscription = await Subscriptions.findById(payment.subscriptionId, { transaction });
 
-      const added = model.payments.filter(e => !e.id);
-      const changed = reservation.payments.filter(e => model.payments.find(p => p.id == e.id));
-      const deleted = reservation.payments.filter(e => !model.payments.find(p => p.id == e.id));
+          if (existingPayment.type == ReservationPayment.SUBS_ZONE_1 || existingPayment.type == ReservationPayment.SUBS_ZONE_2) {
+            if (subscription.id != existingPayment.subscriptionId) {
+              //both existing and new payments are subscription
+              //increment new payment subscription
+              //decrement existing payment subscription
+              subscription.usedHours++;
+              existingPayment.subscription.usedHours--;
+              if (subscription.usedHours > subscription.totalHours)
+                throw { name: 'DomainActionError', error: ['usedHoursExceedTotalHours'] };
+              await subscription.save({ transaction });
+              await existingPayment.subscription.save({ transaction });
+            }
+            else {
+              //payment subscription hasnt changed
+              //do nothing
+            }
+          }
+          else {
+            //existing payment wasn't subscription, now it is
+            //increment new payment subscription
+            subscription.usedHours++;
+            if (subscription.usedHours > subscription.totalHours)
+              throw { name: 'DomainActionError', error: ['usedHoursExceedTotalHours'] };
+            await subscription.save({ transaction });
+          }
+        }
 
-      await ReservationPayments.bulkCreate(added, { transaction: trn });
-      await Promise.all(changed.map(payment => payment.update(model.payments.find(e => e.id == payment.id), { transaction: trn })));
-      await ReservationPayments.destroy({ where: { id: deleted.map(e => e.id) }, transaction: trn });
-      return await reservation.update(model, { transaction: trn });
-    });
+        if (existingPayment.type == ReservationPayment.SUBS_ZONE_1 || existingPayment.type == ReservationPayment.SUBS_ZONE_2) {
+          //existing payment was subsciption, now it isn't
+          //decrement existing payment subscription
+          existingPayment.subscription.usedHours--;
+          await existingPayment.subscription.save({ transaction });
+        }
+
+        await existingPayment.update(payment, { transaction });
+      }
+      else {
+        //create payment
+        if (payment.type == ReservationPayment.SUBS_ZONE_1 || payment.type == ReservationPayment.SUBS_ZONE_2) {
+          //new payment has subscription
+          //increment subscription
+          const subscription = await Subscriptions.findById(payment.subscriptionId, { transaction });
+
+          subscription.usedHours++;
+          if (subscription.usedHours > subscription.totalHours)
+            throw { name: 'DomainActionError', error: ['usedHoursExceedTotalHours'] };
+          await subscription.save({ transaction });
+        }
+
+        await ReservationPayments.create(payment, { transaction });
+      }
+    }
+
+    //handle deleted
+    if (reservation.id) {
+      const deleted = await ReservationPayments.findAll({
+        where: {
+          id: {
+            [Op.notIn]: reservation.payments.filter(p => p.id).map(p => p.id)
+          },
+          reservationId: reservation.id
+        },
+        include: ['subscription'],
+        transaction
+      });
+
+      for (const payment of deleted) {
+        if (payment.type == ReservationPayment.SUBS_ZONE_1 || payment.type == ReservationPayment.SUBS_ZONE_2) {
+          //payment has subscription
+          //decrement subscription
+          payment.subscription.usedHours--;
+          await payment.subscription.save({ transaction });
+        }
+
+        await payment.destroy({ transaction });
+      }
+    }
   }
 
-  async cancelReservation(reservation) {
-    return await sequelize.transaction(async trn => {
-      let allowedDiff = process.env.CANCEL_RES_ALLOWED_DIFF;
-      if (reservation.type == ReservationType.SUBSCRIPTION)
-        allowedDiff = process.env.CUSTOM_ALLOWED_DIFF;
+  //Throws:
+  //typeRequired
+  //customerRequired
+  //subscriptionRequired
+  //paymentSubscriptionRequired
+  //typeSubscriptionAndHasPaymentSubscription
+  validateReservation(reservation) {
+    const errors = [];
 
-      if (!reservation)
-        throw { name: 'NotFound' };
+    if (!reservation.type)
+      errors.push('typeRequired');
 
-      if (diff(
-        moment(),
-        moment(reservation.date).set('hour', reservation.hour),
-        reservation.season.workingHoursStart,
-        reservation.season.workingHoursEnd
-      ) < allowedDiff)
-        throw { name: 'DomainActionError' };
+    if ((reservation.type == ReservationType.USER || reservation.type == ReservationType.SUBSCRIPTION)
+      && !reservation.customerId)
+      errors.push('customerRequired');
 
-      await reservation.update({ isActive: false }, { transaction: trn });
-    });
+    if (reservation.type == ReservationType.SUBSCRIPTION && !reservation.subscription)
+      errors.push('subscriptionRequired');
+
+    if (reservation.payments.find(p =>
+      (p.type == ReservationPayment.SUBS_ZONE_1 || p.type == ReservationPayment.SUBS_ZONE_2)
+      && !p.subscription))
+      errors.push('paymentSubscriptionRequired');
+
+    if (reservation.type == ReservationType.SUBSCRIPTION
+      && reservation.payments.find(p =>
+        (p.type == ReservationPayment.SUBS_ZONE_1 || p.type == ReservationPayment.SUBS_ZONE_2)))
+      errors.push('typeSubscriptionAndHasPaymentSubscription');
+
+    if (errors.length > 0)
+      throw { name: 'DomainActionError', error: errors };
   }
 
-  // async deleteReservation(id) {
-  //   return await sequelize.transaction(async trn => {
-  //     const reservation = await Reservations.findById(id, {
-  //       include: [
-  //         { model: Subscriptions, as: 'subscription' }
-  //       ]
-  //     });
+  //Throws:
+  //maxAllowedTimeDiff
+  validateCanBeCanceled(reservation) {
+    let allowedDiff = process.env.CANCEL_RES_ALLOWED_DIFF;
+    if (reservation.type == ReservationType.SUBSCRIPTION)
+      allowedDiff = process.env.CUSTOM_ALLOWED_DIFF;
 
-  //     if (!reservation)
-  //       throw { name: 'NotFound' };
-
-  //     if (reservation.subscription) {
-  //       reservation.subscription.unplayedHours += 1;
-  //       await reservation.subscription.save({ transaction: trn });
-  //     }
-
-  //     return Reservations.destroy({ where: { id }, include: ['payments'] });
-  //   });
-  // }
+    if (diff(
+      moment(),
+      moment(reservation.date).set('hour', reservation.hour),
+      reservation.season.workingHoursStart,
+      reservation.season.workingHoursEnd
+    ) < allowedDiff)
+      throw { name: 'DomainActionError', error: ['maxAllowedTimeDiff'] };
+  }
 }
 
 //closed hours in interval

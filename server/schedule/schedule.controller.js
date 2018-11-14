@@ -78,6 +78,8 @@ const createReservation = async (req, res, next) => {
 
 const updateReservation = async (req, res, next) => {
   const model = req.body;
+  model.administrator = req.user;
+  model.administratorId = req.user.id;
 
   try {
     const reservation = await ScheduleService.updateReservation(req.params.id, model);
@@ -88,16 +90,14 @@ const updateReservation = async (req, res, next) => {
   }
 }
 
-const cancelReservation = (req, res, next) => {
-  return ScheduleService
-    .cancelReservation(req.params.id, req.user.id)
-    .then(_ => res.json(null));
-}
-
-const deleteReservation = (req, res, next) => {
-  return ScheduleService
-    .deleteReservation(req.params.id)
-    .then(_ => res.json({}));
+const cancelReservation = async (req, res, next) => {
+  try {
+    await ScheduleService.cancelReservation(req.params.id);
+    return res.json({});
+  }
+  catch (err) {
+    return next(err, req, res, null);
+  }
 }
 
 router.get('/config', getCurrentConfig);
@@ -113,7 +113,6 @@ router.post('/courts/:id', adminIdentity, updateCourt);
 router.post('/reservations/filter', getReservations);
 router.post('/reservations', auth, createReservation);
 router.post('/reservations/:id', adminIdentity, updateReservation);
-router.delete('/reservations/:id/cancel', identity, cancelReservation);
-router.delete('/reservations/:id', adminIdentity, deleteReservation);
+router.delete('/reservations/:id/cancel', auth, cancelReservation);
 
 module.exports = router;

@@ -23,6 +23,14 @@ module.exports = (db, Sequelize) => {
         allowNull: false
       }
     });
+
+    models.ReservationPayments.belongsTo(models.Subscriptions, {
+      as: 'subscription',
+      foreignKey: {
+        name: 'subscriptionId',
+        allowNull: true
+      }
+    });
   }
 
   return ReservationPayments;

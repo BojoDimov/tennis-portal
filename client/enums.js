@@ -73,8 +73,8 @@ export const EnumLocalization = {
     CASH: 'В брой',
     SODEXO: 'Карта "Содексо"',
     MULTISPORT: 'Карта "Мултиспорт"',
-    SUBS_ZONE_1: 'Абонамент "ЗОНА 1"',
-    SUBS_ZONE_2: 'Абонамент "ЗОНА 2"'
+    SUBS_ZONE_1: 'Отиграване на абонамент "ЗОНА 1"',
+    SUBS_ZONE_2: 'Отиграване на абонамент "ЗОНА 2"'
   },
   'ReservationType': {
     GUEST: 'Гост',

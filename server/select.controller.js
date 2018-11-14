@@ -1,7 +1,6 @@
 const router = require('express').Router();
 const {
   Users,
-  Courts,
   Subscriptions,
   Sequelize
 } = require('./db');
@@ -40,16 +39,6 @@ const selectUsers = async (request, response) => {
       }
     });
 
-    // if (filter.season) {
-    //   options.include.push({
-    //     model: Subscriptions,
-    //     as: 'subscriptions',
-    //     where: {
-    //       seasonId: filter.season.id
-    //     },
-    //     required: filter.season.required
-    //   });
-
     options.order.push(
       [{ model: Subscriptions, as: 'subscriptions' }, 'createdAt', 'desc']
     );
@@ -77,6 +66,14 @@ const selectSubscriptions = async (request, response) => {
   if (filter.seasonId)
     options.where.seasonId = filter.seasonId;
 
+  if (filter.type)
+    options.where.type = filter.type;
+
+  if (filter.onlyAvailable)
+    options.where.usedHours = {
+      [Op.lt]: Sequelize.col('totalHours')
+    };
+
   const result = await Subscriptions.findAndCountAll(options);
 
   return response.json({
@@ -85,39 +82,6 @@ const selectSubscriptions = async (request, response) => {
   });
 }
 
-// const selectCourts = async (request, response) => {
-//   const filter = request.body;
-//   const options = {
-//     order: [['id', 'asc']],
-//     limit: filter.limit,
-//     offset: filter.offset,
-//     where: {
-//       isActive: true
-//     }
-//   };
-
-//   if (filter.searchTerm)
-//     options.where = {
-//       name: {
-//         [Op.iLike]: '%' + filter.searchTerm + '%'
-//       },
-//       isActive: true
-//     };
-
-//   const result = await Courts.findAndCountAll(options);
-
-//   return response.json({
-//     totalCount: result.count,
-//     items: result.rows.map(item => {
-//       return {
-//         value: item.id,
-//         label: item.name
-//       }
-//     })
-//   });
-// }
-
-// router.post('/courts', selectCourts);
 router.post('/users', selectUsers);
 router.post('/subscriptions', selectSubscriptions);
 

@@ -27,10 +27,12 @@ class EditReservationModal extends React.Component {
       reservation: {
         court: {},
         type: '',
+        season: {},
         payments: [],
         administrator: {},
         customer: {}
-      }
+      },
+      errors: []
     }
 
     this.handleChange = (prop) => (e) => {
@@ -42,7 +44,7 @@ class EditReservationModal extends React.Component {
       }
 
       this.setState({ reservation });
-    }
+    };
 
     this.handleCustomChange = (prop) => (value) => {
       const reservation = this.state.reservation;
@@ -54,44 +56,68 @@ class EditReservationModal extends React.Component {
       if (prop == 'customer' && !value)
         reservation.customerId = null;
 
+      if (prop == 'subscription' && value)
+        reservation.subscriptionId = value.id;
+
+      if (prop == 'subscription' && !value)
+        reservation.subscriptionId = null;
+
       this.setState({ reservation });
-    }
+    };
 
     this.handlePaymentChange = (prop, index) => (e) => {
       this.state.reservation.payments[index][prop] = e.target.value;
       this.setState({ reservation: this.state.reservation });
-    }
+    };
+
+    this.handlePaymentSubscriptionChange = (index) => (value) => {
+      this.state.reservation.payments[index].subscription = value;
+      if (value)
+        this.state.reservation.payments[index].subscriptionId = value.id;
+      else
+        this.state.reservation.payments[index].subscriptionId = null;
+      this.setState({ reservation: this.state.reservation });
+    };
   }
 
   componentDidMount() {
     const { reservation } = this.props;
-    this.setState({ reservation: JSON.parse(JSON.stringify(reservation)) });
+    this.setState({ reservation: JSON.parse(JSON.stringify(reservation)), errors: [] });
   }
 
   componentDidUpdate(prevProps) {
     const { reservation } = this.props;
     if (prevProps.reservation != reservation)
-      this.setState({ reservation: JSON.parse(JSON.stringify(reservation)) });
+      this.setState({ reservation: JSON.parse(JSON.stringify(reservation)), errors: [] });
   }
 
   action() {
     if (this.state.reservation.id)
       return QueryService
         .post(`/schedule/reservations/${this.state.reservation.id}`, this.state.reservation)
-        .then(_ => this.props.onAction())
-        .catch(err => console.log('Found some ERRORS:', err));
+        .then(_ => {
+          this.setState({ errors: [] });
+          this.props.onAction()
+        })
+        .catch(err => this.setState({ errors: err }));
     else
       return QueryService
         .post(`/schedule/reservations`, this.state.reservation)
-        .then(_ => this.props.onAction())
-        .catch(err => console.log('Found some ERRORS:', err));
+        .then(_ => {
+          this.setState({ errors: [] });
+          this.props.onAction()
+        })
+        .catch(err => this.setState({ errors: err }));
   }
 
-  remove() {
+  cancelReservation() {
     return QueryService
-      .delete(`/schedule/reservations/${this.state.reservation.id}`)
-      .then(_ => this.props.onAction())
-      .catch(err => console.log('Found some ERRORS:', err));
+      .delete(`/schedule/reservations/${this.state.reservation.id}/cancel`)
+      .then(_ => {
+        this.setState({ errors: [] });
+        this.props.onAction()
+      })
+      .catch(err => this.setState({ errors: err }));
   }
 
   addPayment() {
@@ -185,7 +211,8 @@ class EditReservationModal extends React.Component {
 
           {reservation.payments && reservation.payments.map((payment, index) => {
             return (
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }} key={index}>
+              <div style={{ display: 'flex', flexDirection: 'column', borderBottom: '1px solid darkgrey' }} key={index}>
+
                 <EnumSelect
                   style={{ width: '100px' }}
                   label="Вид плащане"
@@ -194,22 +221,54 @@ class EditReservationModal extends React.Component {
                   EnumValues={ReservationPayment}
                   EnumName="ReservationPayment" />
 
-                {payment.type == ReservationPayment.CASH && <TextField
-                  style={{ marginLeft: '1rem', marginRight: '1rem' }}
-                  label="Стойност"
-                  value={payment.amount}
-                  InputProps={{
-                    endAdornment: <InputAdornment position="end">Лв</InputAdornment>
-                  }}
-                  onChange={this.handlePaymentChange('amount', index)}
-                />}
+                {payment.type == ReservationPayment.CASH
+                  && <TextField
+                    label="Стойност"
+                    value={payment.amount}
+                    InputProps={{
+                      endAdornment: <InputAdornment position="end">Лв</InputAdornment>
+                    }}
+                    onChange={this.handlePaymentChange('amount', index)}
+                  />}
 
-                <span style={{ cursor: 'pointer' }} onClick={() => {
+                {(payment.type == ReservationPayment.SUBS_ZONE_1 || payment.type == ReservationPayment.SUBS_ZONE_2)
+                  && reservation.customer
+                  && <AsyncSelect
+                    disableSearch={true}
+                    label="Абонамент"
+                    value={payment.subscription}
+                    query="subscriptions"
+                    filter={{
+                      seasonId: reservation.seasonId,
+                      userId: reservation.customerId,
+                      type: payment.type,
+                      onlyAvailable: true
+                    }}
+                    noOptionsMessage={() => 'Няма абонаменти с часове за отиграване'}
+                    formatOptionLabel={(option) => <Typography component="span">
+                      Абонамент {l10n_text(option.type, SubscriptionType, "SubscriptionType")}
+                      <Typography component="span" variant="caption" style={{ display: 'inline', marginLeft: '1rem' }}>{option.season.name}</Typography>
+                      <Typography component="span" variant="caption">{option.usedHours}/{option.totalHours}</Typography>
+                    </Typography>}
+                    onChange={this.handlePaymentSubscriptionChange(index)}
+                  />}
+
+                {/* <span style={{ cursor: 'pointer' }} onClick={() => {
                   this.state.reservation.payments.splice(index, 1);
                   this.setState({ reservation: this.state.reservation });
                 }}>
                   <ClearIcon style={{ color: 'darkred' }} />
-                </span>
+                </span> */}
+                <div style={{ margin: '1rem 0 .3rem 0' }}>
+                  <Button variant="contained" color="secondary" size="small"
+                    onClick={() => {
+                      this.state.reservation.payments.splice(index, 1);
+                      this.setState({ reservation: this.state.reservation });
+                    }}
+                  >
+                    Изтриване
+                </Button>
+                </div>
               </div>
             );
           })}
@@ -225,6 +284,15 @@ class EditReservationModal extends React.Component {
             onChange={this.handleChange('info')}
           />
 
+          {this.state.errors && this.state.errors.length > 0
+            && <div style={{ margin: '1rem 0', color: 'red' }}>
+              {this.state.errors.map((err, index) => {
+                return (
+                  <div key={index}><em>{index + 1}. {ErrorTexts[err]}</em></div>
+                );
+              })}
+            </div>}
+
         </DialogContent>
         <DialogActions>
           <Button
@@ -237,9 +305,9 @@ class EditReservationModal extends React.Component {
           {this.state.reservation.id && <Button
             variant="contained"
             color="secondary"
-            onClick={() => this.remove()}
+            onClick={() => this.cancelReservation()}
           >
-            Изтриване
+            Отмяна на резервацията
           </Button>}
           <Button
             variant="outlined"
@@ -253,5 +321,15 @@ class EditReservationModal extends React.Component {
     );
   }
 }
+
+const ErrorTexts = {
+  'exist': 'Резервация за този ден, час и корт вече съществува.',
+  'typeRequired': '"Вид резервация" е задължително поле',
+  'customerRequired': '"Потребител" е задължително поле, когато вид резервация е "Абонат" или "Потребител".',
+  'subscriptionRequired': '"Абонамент" е задължително поле, когато вид резервация е "Абонат".',
+  'usedHoursExceedTotalHours': 'Абонаментът няма свободни часове',
+  'paymentSubscriptionRequired': '"Абонамент" е задължително поле, когато вид плащане е "Отиграване на абонамент".',
+  'typeSubscriptionAndHasPaymentSubscription': 'Не може едновременно вид резервация да е "Абонат" и да има вид плащане "Отиграване на абонамент".'
+};
 
 export default EditReservationModal;
