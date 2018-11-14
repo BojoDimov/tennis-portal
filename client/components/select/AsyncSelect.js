@@ -90,7 +90,7 @@ export class AsyncSelect extends React.Component {
             textFieldProps={{
               label,
               InputLabelProps: {
-                shrink: Boolean(value)
+                shrink: Boolean(value) || Boolean(this.state.searchTerm)
               }
             }}
             value={value}

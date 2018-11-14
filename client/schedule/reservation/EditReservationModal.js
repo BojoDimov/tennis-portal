@@ -329,7 +329,8 @@ const ErrorTexts = {
   'subscriptionRequired': '"Абонамент" е задължително поле, когато вид резервация е "Абонат".',
   'usedHoursExceedTotalHours': 'Абонаментът няма свободни часове',
   'paymentSubscriptionRequired': '"Абонамент" е задължително поле, когато вид плащане е "Отиграване на абонамент".',
-  'typeSubscriptionAndHasPaymentSubscription': 'Не може едновременно вид резервация да е "Абонат" и да има вид плащане "Отиграване на абонамент".'
+  'typeSubscriptionAndHasPaymentSubscription': 'Не може едновременно вид резервация да е "Абонат" и да има вид плащане "Отиграване на абонамент".',
+  'maxAllowedTimeDiff': 'Резервацията не може да бъде отказана, защото остават по-малко часове от минимално допустимите часове за отказ.'
 };
 
 export default EditReservationModal;
