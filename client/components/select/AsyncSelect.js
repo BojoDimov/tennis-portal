@@ -23,6 +23,11 @@ export class AsyncSelect extends React.Component {
     this.load();
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.filter != this.props.filter)
+      this.load();
+  }
+
   load(loadMore) {
     const { options, totalCount, searchTerm, defaultLimit } = this.state;
     let limit = this.state.limit;
@@ -35,6 +40,7 @@ export class AsyncSelect extends React.Component {
 
     QueryService
       .post(`/select/${this.props.query}`, {
+        ...this.props.filter,
         searchTerm,
         limit
       })
@@ -48,8 +54,10 @@ export class AsyncSelect extends React.Component {
       label,
       value,
       query,
+      filter,
       getOptionLabel,
       getOptionValue,
+      formatOptionLabel,
       noOptionsMessage,
       onChange,
 
@@ -89,6 +97,7 @@ export class AsyncSelect extends React.Component {
             options={this.state.options}
             getOptionLabel={_getOptionLabel}
             getOptionValue={_getOptionValue}
+            formatOptionLabel={formatOptionLabel}
             noOptionsMessage={_noOptionsMessage}
             onChange={onChange}
             onInputChange={value => {

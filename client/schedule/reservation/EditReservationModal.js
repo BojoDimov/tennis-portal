@@ -149,17 +149,25 @@ class EditReservationModal extends React.Component {
             && <AsyncSelect
               label="Потребител"
               value={reservation.customer}
-              query={`users?seasonId=${reservation.seasonId}`}
+              // query={`users?seasonId=${reservation.seasonId}`}
+              query="users"
               onChange={this.handleCustomChange('customer')}
             />}
 
           {reservation.type == ReservationType.SUBSCRIPTION && reservation.customer
-            && <SingleSelect
+            && <AsyncSelect
+              disableSearch={true}
               label="Абонамент"
               value={reservation.subscription}
-              options={reservation.customer.subscriptions}
+              query="subscriptions"
+              filter={{
+                seasonId: reservation.seasonId,
+                userId: reservation.customerId
+              }}
+              noOptionsMessage={() => 'Няма регистрирани абонаменти'}
               formatOptionLabel={(option) => <Typography component="span">
                 Абонамент {l10n_text(option.type, SubscriptionType, "SubscriptionType")}
+                <Typography component="span" variant="caption" style={{ display: 'inline', marginLeft: '1rem' }}>{option.season.name}</Typography>
                 <Typography component="span" variant="caption">{option.usedHours}/{option.totalHours}</Typography>
               </Typography>}
               onChange={this.handleCustomChange('subscription')}

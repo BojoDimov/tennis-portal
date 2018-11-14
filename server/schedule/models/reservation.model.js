@@ -62,6 +62,14 @@ module.exports = (db, Sequelize) => {
         allowNull: true
       }
     });
+
+    models.Reservations.belongsTo(models.Subscriptions, {
+      as: 'subscription',
+      foreignKey: {
+        name: 'subscriptionId',
+        allowNull: true
+      }
+    });
   }
 
   return Reservations;

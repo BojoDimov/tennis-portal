@@ -36,7 +36,8 @@ class ScheduleService {
         'court',
         'payments',
         { model: Users, as: 'administrator', attributes: ['id', 'name', 'email', 'isAdmin'] },
-        { model: Users, as: 'customer', attributes: ['id', 'name', 'email', 'isAdmin'] }
+        { model: Users, as: 'customer', attributes: ['id', 'name', 'email', 'isAdmin'] },
+        { model: Subscriptions, as: 'subscription' }
       ]
     });
   }
