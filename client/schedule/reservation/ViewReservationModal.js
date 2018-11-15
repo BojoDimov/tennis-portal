@@ -13,18 +13,24 @@ import { getHour } from '../../utils';
 
 
 class ViewReservationModal extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      errors: []
+    }
+  }
   makeReservation() {
     return QueryService
       .post(`/schedule/reservations`, this.props.reservation)
       .then(_ => this.props.onAction())
-      .catch(err => console.log('Found some ERRORS:', err));
+      .catch(err => this.setState({ errors: err }));
   }
 
   cancelReservation() {
     return QueryService
       .delete(`/schedule/reservations/${this.props.reservation.id}/cancel`)
       .then(_ => this.props.onAction())
-      .catch(err => console.log('Found some ERRORS:', err));
+      .catch(err => this.setState({ errors: err }));
   }
 
   render() {
@@ -54,6 +60,15 @@ class ViewReservationModal extends React.Component {
             След това системата отчита вашият час като използван и трябва да го заплатите.
             Ако имате абонамент, часът ще ви се брои като отигран.
           </Typography>}
+
+          {this.state.errors && this.state.errors.length > 0
+            && <div style={{ margin: '1rem 0', color: 'red' }}>
+              {this.state.errors.map((err, index) => {
+                return (
+                  <div key={index}><em>{index + 1}. {ErrorTexts[err]}</em></div>
+                );
+              })}
+            </div>}
         </DialogContent>
 
         {!reservation.id && <DialogActions className={classes.btnContainer}>
@@ -77,6 +92,12 @@ class ViewReservationModal extends React.Component {
     );
   }
 }
+
+const ErrorTexts = {
+  'exist': 'Резервация за този ден, час и корт вече съществува.',
+  'maxAllowedTimeDiff': 'Резервацията не може да бъде отказана, защото остават по-малко часове от минимално допустимите часове за отказ.',
+  'reservationInThePast': 'Часът за тази резервация вече е минал.'
+};
 
 const styles = (theme) => ({
   btnContainer: {

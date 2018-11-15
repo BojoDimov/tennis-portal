@@ -112,6 +112,12 @@ class ScheduleService {
   //paymentSubscriptionRequired
   //typeSubscriptionAndHasPaymentSubscription
   async createReservation(model) {
+    const now = moment().startOf('hour');
+    const resMoment = moment(model.date).set('hour', model.hour).startOf('hour');
+
+    if (now.isAfter(resMoment))
+      throw { name: 'DomainActionError', error: ['reservationInThePast'] }
+
     let transaction;
     try {
       transaction = await sequelize.transaction({ autocommit: false });
