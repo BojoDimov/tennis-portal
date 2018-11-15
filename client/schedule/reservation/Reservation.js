@@ -27,20 +27,19 @@ class Reservation extends React.Component {
     if (!available)
       return <GuestReservation {...this.props} available={available} />;
 
-    else if (mode == ApplicationMode.ADMIN)
+    if (mode == ApplicationMode.ADMIN)
       return <AdminReservation {...this.props} />;
 
-    else if (this.state.userId && !reservation.id)
-      return <UserReservation {...this.props} />
-
-    else if (reservation.type != ReservationType.USER && reservation.type != ReservationType.SUBSCRIPTION)
+    if (mode == ApplicationMode.GUEST)
       return <GuestReservation {...this.props} available={available} />
 
-    else if (this.state.userId && reservation.customerId && this.state.userId == reservation.customerId)
+    if (!reservation.id)
       return <UserReservation {...this.props} />
 
-    else
-      return <GuestReservation {...this.props} available={available} />;
+    if (reservation.customerId && reservation.customerId == this.state.userId)
+      return <UserReservation {...this.props} />
+
+    return <GuestReservation {...this.props} available={available} />;
   }
 }
 
