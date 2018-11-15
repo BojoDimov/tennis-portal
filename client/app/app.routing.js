@@ -23,8 +23,9 @@ const routeMapping = {
   '/admin/courts': Courts,
   '/admin/seasons': Seasons,
   '/admin/users': Users,
-  '/admin/subscriptions': Subscriptions,
-  '/admin/config': NotFoundPage
+  // '/admin/subscriptions': Subscriptions,
+  // '/admin/config': NotFoundPage,
+  '/account': UserProfile
 };
 
 const AppRouting = () => (
@@ -41,13 +42,19 @@ const AppRouting = () => (
 
       {NavigationModel.routes.map(route => {
         return (
-          <Route key={route.id} path={route.to} component={routeMapping[route.to]} />
+          <Route key={route.id} path={route.to} component={routeMapping[route.to]} mode={mode} />
         );
       })}
 
       {mode == ApplicationMode.ADMIN && NavigationModel.adminRoutes.map(route => {
         return (
-          <Route key={route.id} path={route.to} component={routeMapping[route.to]} />
+          <Route key={route.id} path={route.to} component={routeMapping[route.to]} mode={mode} />
+        );
+      })}
+
+      {mode == ApplicationMode.USER && NavigationModel.userRoutes.map(route => {
+        return (
+          <Route key={route.id} path={route.to} component={routeMapping[route.to]} mode={mode} />
         );
       })}
 

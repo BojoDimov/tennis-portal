@@ -19,6 +19,7 @@ import Reservation from './reservation/Reservation';
 import ShuffleItem from './reservation/ShuffleItem';
 import Calendar from './calendar/Calendar';
 import Legend from './Legend';
+import ConfirmationDialog from '../components/ConfirmationDialog';
 import { getHour } from '../utils';
 import { ApplicationMode } from '../enums';
 
@@ -195,11 +196,15 @@ class Schedule extends React.Component {
                 && <React.Fragment>
                   {this.state.shuffle
                     && <React.Fragment>
-                      <Button variant="contained" color="primary"
-                        onClick={() => this.shuffle()}
+                      <ConfirmationDialog
+                        title="Разместване на резервации"
+                        body={<Typography>Сигурни ли сте че искате да направите разместването?</Typography>}
+                        onAccept={() => this.shuffle()}
                       >
-                        Запис
+                        <Button variant="contained" color="primary">
+                          Запис
                       </Button>
+                      </ConfirmationDialog>
                       <Button variant="outlined" color="primary"
                         style={{ marginLeft: '.3rem' }}
                         onClick={() => this.setState({ shuffle: null, shuffleErrors: null })}

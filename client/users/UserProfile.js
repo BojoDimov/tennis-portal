@@ -8,6 +8,7 @@ import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 
+import UserService from '../services/user.service';
 import QueryService from '../services/query.service';
 import { l10n_text } from '../components/L10n';
 import { ReservationType, SubscriptionType } from '../enums';
@@ -17,6 +18,7 @@ class UserProfile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      loggedInUser: UserService.getUser(),
       user: {},
       subscriptions: null,
       reservations: null,
@@ -30,8 +32,9 @@ class UserProfile extends React.Component {
   }
 
   getData() {
+    const id = this.props.match.params.id || this.state.loggedInUser.id;
     return QueryService
-      .get(`/users/${this.props.match.params.id}`)
+      .get(`/users/${id}`)
       .then(e => this.setState(e));
   }
 
@@ -64,25 +67,28 @@ class UserProfile extends React.Component {
               {resCollapsed && <ExpandLessIcon />}
               {!resCollapsed && <ExpandMoreIcon />}
             </Typography>
-            {resCollapsed && <List>
-              {reservations.map(reservation => {
-                return (
-                  <Typography classes={{ root: classes.listItemRoot }} key={reservation.id}>
-                    {l10n_text(reservation.type, ReservationType, "CustomReservationType")}
-                    <Typography component="span" variant="caption" style={{ display: 'inline', marginLeft: '1rem' }}>{reservation.court.name}</Typography>
-                    {!reservation.isActive && <Typography component="span" color="secondary">ОТМЕНЕНО</Typography>}
-                    <Typography component="span" variant="caption">
-                      {reservation.season.name}
-                      <span style={{ marginLeft: '1rem' }}>{new Date(reservation.date).toLocaleDateString()}</span>
-                      <span style={{ marginLeft: '1rem' }}>
-                        {getHour(reservation.hour)} - {getHour(reservation.hour + 1)}
-                      </span>
-                    </Typography>
-                  </Typography>
-                );
-              })}
-            </List>}
-            {reservations.length == 0 && <Typography variant="caption">Няма регистрирани резервации.</Typography>}
+            {resCollapsed
+              && <React.Fragment>
+                <List>
+                  {reservations.map(reservation => {
+                    return (
+                      <Typography classes={{ root: classes.listItemRoot }} key={reservation.id}>
+                        {l10n_text(reservation.type, ReservationType, "CustomReservationType")}
+                        <Typography component="span" variant="caption" style={{ display: 'inline', marginLeft: '1rem' }}>{reservation.court.name}</Typography>
+                        {!reservation.isActive && <Typography component="span" color="secondary">ОТМЕНЕНО</Typography>}
+                        <Typography component="span" variant="caption">
+                          {reservation.season.name}
+                          <span style={{ marginLeft: '1rem' }}>{new Date(reservation.date).toLocaleDateString()}</span>
+                          <span style={{ marginLeft: '1rem' }}>
+                            {getHour(reservation.hour)} - {getHour(reservation.hour + 1)}
+                          </span>
+                        </Typography>
+                      </Typography>
+                    );
+                  })}
+                </List>
+                {reservations.length == 0 && <Typography variant="caption">Няма регистрирани резервации.</Typography>}
+              </React.Fragment>}
           </CardContent>
         </Card>}
 
@@ -97,18 +103,21 @@ class UserProfile extends React.Component {
               {subsCollapsed && <ExpandLessIcon />}
               {!subsCollapsed && <ExpandMoreIcon />}
             </Typography>
-            {subsCollapsed && <List>
-              {subscriptions.map(subscription => {
-                return (
-                  <Typography classes={{ root: classes.listItemRoot }} key={subscription.id}>
-                    Абонамент {l10n_text(subscription.type, SubscriptionType, "SubscriptionType")}
-                    <Typography component="span" variant="caption" style={{ display: 'inline', marginLeft: '1rem' }}>{subscription.season.name}</Typography>
-                    <Typography component="span" variant="caption">{subscription.usedHours}/{subscription.totalHours}</Typography>
-                  </Typography>
-                );
-              })}
-            </List>}
-            {subscriptions.length == 0 && <Typography variant="caption">Няма регистрирани абонаменти.</Typography>}
+            {subsCollapsed
+              && <React.Fragment>
+                <List>
+                  {subscriptions.map(subscription => {
+                    return (
+                      <Typography classes={{ root: classes.listItemRoot }} key={subscription.id}>
+                        Абонамент {l10n_text(subscription.type, SubscriptionType, "SubscriptionType")}
+                        <Typography component="span" variant="caption" style={{ display: 'inline', marginLeft: '1rem' }}>{subscription.season.name}</Typography>
+                        <Typography component="span" variant="caption">{subscription.usedHours}/{subscription.totalHours}</Typography>
+                      </Typography>
+                    );
+                  })}
+                </List>
+                {subscriptions.length == 0 && <Typography variant="caption">Няма регистрирани абонаменти.</Typography>}
+              </React.Fragment>}
           </CardContent>
         </Card>}
       </div>
