@@ -55,9 +55,12 @@ class UserReservation extends React.Component {
 const styles = (theme) => ({
   free: {
     ...ReservationStyles.cell,
-    ...ReservationStyles.button,
     backgroundColor: '#fff',
     color: theme.palette.primary.main,
+    '&:hover': {
+      backgroundColor: '#F3FBF0',
+      cursor: 'pointer',
+    }
   },
   reserved: {
     ...ReservationStyles.cell,
