@@ -9,6 +9,8 @@ import TableCell from '@material-ui/core/TableCell';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { withStyles } from '@material-ui/core/styles';
+import ReplayIcon from '@material-ui/icons/Replay';
+import { Button } from '@material-ui/core';
 
 import QueryService from '../services/query.service';
 import UserService from '../services/user.service';
@@ -145,7 +147,14 @@ class Schedule extends React.Component {
             />
 
             <Legend />
-
+            <div>
+              <Button variant="outlined" color="primary" size="small"
+                onClick={() => this.getData(date)}
+              >
+                <ReplayIcon />
+                <span style={{ marginLeft: '.3rem' }}>Презареди</span>
+              </Button>
+            </div>
             <div style={{ overflowX: 'auto', scrollBehavior: 'smooth' }} ref={ref => this.tableRef = ref}>
 
               <div ref={ref => this.btnContainerRef = ref} style={{ display: 'none' }}>
