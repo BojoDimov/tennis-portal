@@ -10,11 +10,9 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
-import ClearIcon from '@material-ui/icons/Clear';
 
 import QueryService from '../../services/query.service';
 import EnumSelect from '../../components/EnumSelect';
-import SingleSelect from '../../components/select';
 import AsyncSelect from '../../components/select/AsyncSelect';
 import { ReservationPayment, ReservationType, SubscriptionType } from '../../enums';
 import { l10n_text } from '../../components/L10n';
@@ -162,23 +160,31 @@ class EditReservationModal extends React.Component {
             EnumValues={ReservationType}
             EnumName="ReservationType" />
 
-          {reservation.type == ReservationType.USER
+          {(reservation.type == ReservationType.USER || reservation.type == ReservationType.SUBSCRIPTION)
             && <AsyncSelect
-              isClearable={true}
               label="Потребител"
               value={reservation.customer}
               query="users"
+              noOptionsMessage={() => 'Няма намерени потребители'}
+              formatOptionLabel={(option) => <Typography component="span">
+                {option.name}
+                <Typography component="span" variant="caption">{option.email}</Typography>
+              </Typography>}
               onChange={this.handleCustomChange('customer')}
             />}
 
-          {reservation.type == ReservationType.SUBSCRIPTION
+          {/* {reservation.type == ReservationType.SUBSCRIPTION
             && <AsyncSelect
               label="Потребител"
               value={reservation.customer}
-              // query={`users?seasonId=${reservation.seasonId}`}
               query="users"
+              noOptionsMessage={() => 'Няма намерени потребители'}
+              formatOptionLabel={(option) => <Typography component="span">
+                {option.name}
+                <Typography component="span" variant="caption">{option.email}</Typography>
+              </Typography>}
               onChange={this.handleCustomChange('customer')}
-            />}
+            />} */}
 
           {reservation.type == ReservationType.SUBSCRIPTION && reservation.customer
             && <AsyncSelect
