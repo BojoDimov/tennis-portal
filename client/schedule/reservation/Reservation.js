@@ -30,7 +30,7 @@ class Reservation extends React.Component {
     else if (mode == ApplicationMode.ADMIN)
       return <AdminReservation {...this.props} />;
 
-    else if (!reservation.id)
+    else if (this.state.userId && !reservation.id)
       return <UserReservation {...this.props} />
 
     else if (reservation.type != ReservationType.USER && reservation.type != ReservationType.SUBSCRIPTION)
