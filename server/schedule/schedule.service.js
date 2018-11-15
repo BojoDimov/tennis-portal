@@ -50,6 +50,19 @@ class ScheduleService {
     });
   }
 
+  async getReservationsByUserId(userId) {
+    return await Reservations.findAll({
+      where: {
+        customerId: userId
+      },
+      include: [
+        { model: Courts, as: 'court', attributes: ['id', 'name'] },
+        { model: Seasons, as: 'season', attributes: ['id', 'name'] }
+      ],
+      order: [['date', 'desc'], ['hour', 'desc']]
+    });
+  }
+
   async getCurrentConfig() {
     let today = new Date();
 

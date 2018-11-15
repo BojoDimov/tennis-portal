@@ -11,6 +11,7 @@ import Users from '../admin/Users';
 import Subscriptions from '../admin/Subscriptions';
 import NavigationModel from '../menu/navigation.model';
 import UserService from '../services/user.service';
+import UserProfile from '../users/UserProfile';
 import AccountActivation from '../login/Activation';
 import RecoveryStep1 from '../login/RecoveryStep1';
 import RecoveryStep2 from '../login/RecoveryStep2';
@@ -37,16 +38,22 @@ const AppRouting = () => (
       {/* <Route path="/schedule/admin" component={ScheduleAdmin} /> */}
       {/* <Route path="/schedule" component={Schedule} />
       <Route path="/admin" component={ScheduleAdmin} /> */}
+
       {NavigationModel.routes.map(route => {
         return (
           <Route key={route.id} path={route.to} component={routeMapping[route.to]} />
         );
       })}
+
       {mode == ApplicationMode.ADMIN && NavigationModel.adminRoutes.map(route => {
         return (
           <Route key={route.id} path={route.to} component={routeMapping[route.to]} />
         );
       })}
+
+      {(mode == ApplicationMode.USER || mode == ApplicationMode.ADMIN)
+        && <Route path="/users/:id" render={(props) => <UserProfile {...props} mode={mode} />} />}
+
       <Route path="/oops" component={NotFoundPage} />
       <Route path="/account/activation" render={(props) => <AccountActivation {...props} />} />
       <Route path="/recovery/step1" render={(props) => <RecoveryStep1 {...props} />} />

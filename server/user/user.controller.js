@@ -2,6 +2,8 @@ const router = require('express').Router();
 const auth = require('../infrastructure/middlewares/auth');
 const UserService = require('./user.service');
 const EmailService = require('../emails/email.service');
+const SubscriptionService = require('../subscription/subscription.service');
+const ScheduleService = require('../schedule/schedule.service');
 
 const getAll = (req, res, next) => {
   return UserService
@@ -71,6 +73,24 @@ const recoverAccount = async (req, res, next) => {
   }
 }
 
+const collect = async (req, res) => {
+  const identity = req.user;
+  const userId = req.params.id;
+  let user = await UserService.getById(userId),
+    reservations,
+    subscriptions;
+
+  if (identity && (identity.id == userId || identity.isAdmin)) {
+    subscriptions = await SubscriptionService.getByUserId(userId);
+    reservations = await ScheduleService.getReservationsByUserId(userId);
+  }
+
+  return res.json({
+    user, reservations, subscriptions
+  });
+}
+
+router.get('/:id', auth, collect);
 router.get('/activation', activate);
 router.get('/recovery/step1', issueRecoveryEmail);
 router.post('/recovery/step2', recoverAccount);

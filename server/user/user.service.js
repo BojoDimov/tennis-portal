@@ -41,6 +41,14 @@ class UserService {
       });
   }
 
+  async getById(userId) {
+    return await Users.findById(userId, {
+      attributes: {
+        exclude: ['passwordHash', 'passwordSalt', 'birthDate', 'gender', 'isActive', 'isAdmin']
+      },
+    });
+  }
+
   async getByEmail(email) {
     return await Users.findOne({ where: { email } });
   }
