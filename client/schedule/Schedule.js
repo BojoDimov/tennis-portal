@@ -10,14 +10,17 @@ import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { withStyles } from '@material-ui/core/styles';
 import ReplayIcon from '@material-ui/icons/Replay';
+import ShuffleIcon from '@material-ui/icons/Shuffle';
 import { Button } from '@material-ui/core';
 
 import QueryService from '../services/query.service';
 import UserService from '../services/user.service';
 import Reservation from './reservation/Reservation';
+import ShuffleItem from './reservation/ShuffleItem';
 import Calendar from './calendar/Calendar';
 import Legend from './Legend';
 import { getHour } from '../utils';
+import { ApplicationMode } from '../enums';
 
 const scrollButton = (theme) => ({
   zIndex: 1100,
@@ -64,7 +67,8 @@ class Schedule extends React.Component {
       season: {},
       courts: [],
       reservations: [],
-      date: new Date(today.getFullYear(), today.getMonth(), today.getDate())
+      date: new Date(today.getFullYear(), today.getMonth(), today.getDate()),
+      shuffle: null
     };
 
     const rootRef = document.getElementById('root');
@@ -105,6 +109,37 @@ class Schedule extends React.Component {
     return (existing || this.constructReservation(this.state.date, hour, court));
   }
 
+  shuffle() {
+    const shuffle = this.state.shuffle;
+    if (!shuffle || shuffle.length < 2)
+      return;
+
+    this.setState({ shuffleErrors: null });
+
+    return QueryService
+      .post('/schedule/shuffle', shuffle)
+      .then(_ => {
+        this.getData(this.state.date);
+        this.setState({ shuffle: null });
+      })
+      .catch(err => this.setState({ shuffleErrors: err }));
+  }
+
+  shuffleOnSelect(item) {
+    //console.log('select', item);
+    const shuffle = this.state.shuffle;
+    shuffle.unshift(item);
+    shuffle.splice(2, 1);
+    this.setState({ shuffle });
+  }
+
+  shuffleOnUnselect(index) {
+    //console.log('unselect', index);
+    const shuffle = this.state.shuffle;
+    shuffle.splice(index, 1);
+    this.setState({ shuffle });
+  }
+
   constructReservation(date, hour, court) {
     return {
       date: date,
@@ -141,7 +176,7 @@ class Schedule extends React.Component {
             <Calendar
               value={date}
               onChange={value => {
-                this.setState({ date: value });
+                this.setState({ date: value, shuffle: null });
                 this.getData(value);
               }}
             />
@@ -149,12 +184,43 @@ class Schedule extends React.Component {
             <Legend />
             <div>
               <Button variant="outlined" color="primary" size="small"
+                style={{ marginRight: '.3rem' }}
                 onClick={() => this.getData(date)}
               >
                 <ReplayIcon />
                 <span style={{ marginLeft: '.3rem' }}>Презареди</span>
               </Button>
+
+              {mode == ApplicationMode.ADMIN
+                && <React.Fragment>
+                  {this.state.shuffle
+                    && <React.Fragment>
+                      <Button variant="contained" color="primary"
+                        onClick={() => this.shuffle()}
+                      >
+                        Запис
+                      </Button>
+                      <Button variant="outlined" color="primary"
+                        style={{ marginLeft: '.3rem' }}
+                        onClick={() => this.setState({ shuffle: null, shuffleErrors: null })}
+                      >
+                        Отказ
+                      </Button>
+                    </React.Fragment>}
+                  {!this.state.shuffle && <Button variant="outlined" color="primary" size="small" onClick={() => this.setState({ shuffle: [] })}>
+                    <ShuffleIcon />
+                    Разместване
+                  </Button>}
+                </React.Fragment>}
             </div>
+
+            {this.state.shuffleErrors
+              && <div style={{ margin: '1rem 0', color: 'red' }}>
+                <span><em>{ErrorTexts[this.state.shuffleErrors.message]}</em></span>
+              </div>}
+
+
+
             <div style={{ overflowX: 'auto', scrollBehavior: 'smooth' }} ref={ref => this.tableRef = ref}>
 
               <div ref={ref => this.btnContainerRef = ref} style={{ display: 'none' }}>
@@ -195,15 +261,29 @@ class Schedule extends React.Component {
                         >
                           {getHour(hour)}
                         </TableCell>
-                        {courts.map(court =>
-                          <Reservation
-                            mode={mode}
-                            key={court.id}
-                            season={this.state.season}
-                            reservation={this.getReservation(hour, court)}
-                            onChange={_ => this.getData(date)}
-                          />
-                        )}
+
+                        {courts.map(court => {
+                          if (!this.state.shuffle)
+                            return (
+                              <Reservation
+                                mode={mode}
+                                key={court.id}
+                                season={this.state.season}
+                                reservation={this.getReservation(hour, court)}
+                                onChange={_ => this.getData(date)}
+                              />
+                            );
+                          else
+                            return (
+                              <ShuffleItem
+                                key={court.id}
+                                shuffle={this.state.shuffle}
+                                reservation={this.getReservation(hour, court)}
+                                onSelect={(e) => this.shuffleOnSelect(e)}
+                                onUnselect={(e) => this.shuffleOnUnselect(e)}
+                              />
+                            )
+                        })}
                       </TableRow>
                     );
                   })}
@@ -222,5 +302,10 @@ function getRange(start, end) {
     return [];
   return [...new Array(end - start + 1).keys()].map(e => e + start);
 }
+
+const ErrorTexts = {
+  'invalid': 'Моля изберете две полета за резервация',
+  'invalidTime': 'Не може да резмествате вече минали резервации'
+};
 
 export default withStyles(styles)(Schedule);

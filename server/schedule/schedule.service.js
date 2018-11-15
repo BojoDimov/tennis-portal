@@ -302,6 +302,52 @@ class ScheduleService {
     }
   }
 
+  async shuffleReservation(reservation1, reservation2, admin) {
+    if (!reservation1 || !reservation2)
+      throw { name: 'DomainActionError', error: { message: 'invalid' } };
+
+    const now = moment().startOf('hour');
+    const res1Moment = moment(reservation1.date).set('hour', reservation1.hour).startOf('hour');
+    const res2Moment = moment(reservation2.date).set('hour', reservation2.hour).startOf('hour');
+
+    if (res1Moment.diff(now, 'hour') < 0 || res2Moment.diff(now, 'hour') < 0)
+      throw { name: 'DomainActionError', error: { message: 'invalidTime' } };
+
+    let transaction;
+    try {
+      transaction = await sequelize.transaction();
+      if (reservation1.id)
+        reservation1 = await Reservations.findById(reservation1.id);
+
+      if (reservation2.id)
+        reservation2 = await Reservations.findById(reservation2.id);
+
+      let temp1 = {
+        hour: reservation1.hour,
+        courtId: reservation1.courtId,
+        administratorId: admin.id
+      };
+
+      let temp2 = {
+        hour: reservation2.hour,
+        courtId: reservation2.courtId,
+        administratorId: admin.id
+      };
+
+      if (reservation1.id)
+        await reservation1.update(temp2, { transaction });
+
+      if (reservation2.id)
+        await reservation2.update(temp1, { transaction });
+
+      return await transaction.commit();
+    }
+    catch (err) {
+      await transaction.rollback();
+      throw err;
+    }
+  }
+
   //Throws:
   //usedHoursExceedTotalHours
   async handlePayments(reservation, transaction) {

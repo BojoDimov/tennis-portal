@@ -100,6 +100,17 @@ const cancelReservation = async (req, res, next) => {
   }
 }
 
+const shuffleReservation = async (req, res, next) => {
+  const admin = req.user;
+  try {
+    await ScheduleService.shuffleReservation(req.body[0], req.body[1], admin);
+    return res.json({});
+  }
+  catch (err) {
+    return next(err, req, res, null);
+  }
+}
+
 router.get('/config', getCurrentConfig);
 router.get('/seasons', adminIdentity, getSeasons);
 router.get('/courts', adminIdentity, getCourts);
@@ -114,5 +125,6 @@ router.post('/reservations/filter', getReservations);
 router.post('/reservations', auth, createReservation);
 router.post('/reservations/:id', adminIdentity, updateReservation);
 router.delete('/reservations/:id/cancel', auth, cancelReservation);
+router.post('/shuffle', adminIdentity, shuffleReservation);
 
 module.exports = router;
