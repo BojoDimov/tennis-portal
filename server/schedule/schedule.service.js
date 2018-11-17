@@ -135,7 +135,6 @@ class ScheduleService {
         throw { name: 'DomainActionError', error: ['exist'] };
 
       this.validateReservation(model);
-      await this.handlePayments(model, transaction);
 
       if (model.type == ReservationType.SUBSCRIPTION) {
         //increment subscription
@@ -151,6 +150,9 @@ class ScheduleService {
       }
 
       const created = await Reservations.create(model, { transaction });
+      created.payments = model.payments;
+      await this.handlePayments(created, true, transaction);
+
       await transaction.commit();
       return created;
     }
@@ -225,7 +227,6 @@ class ScheduleService {
       transaction = await sequelize.transaction({ autocommit: false });
       const reservation = await this.loadReservation(id, transaction);
       this.validateReservation(model);
-      await this.handlePayments(model, transaction);
 
       if (model.type == ReservationType.SUBSCRIPTION) {
         if (reservation.type == ReservationType.SUBSCRIPTION) {
@@ -266,6 +267,9 @@ class ScheduleService {
       }
 
       const updated = await reservation.update(model, { transaction });
+      updated.payments = model.payments;
+      await this.handlePayments(updated, false, transaction);
+
       await transaction.commit();
       return updated;
     }
@@ -356,7 +360,33 @@ class ScheduleService {
 
   //Throws:
   //usedHoursExceedTotalHours
-  async handlePayments(reservation, transaction) {
+  async handlePayments(reservation, isNewReservation, transaction) {
+    //handle deleted
+    if (!isNewReservation) {
+      const deleted = await ReservationPayments.findAll({
+        where: {
+          id: {
+            [Op.notIn]: reservation.payments.filter(p => p.id).map(p => p.id)
+          },
+          reservationId: reservation.id
+        },
+        include: ['subscription'],
+        transaction
+      });
+
+      for (const payment of deleted) {
+        if (payment.type == ReservationPayment.SUBS_ZONE_1 || payment.type == ReservationPayment.SUBS_ZONE_2) {
+          //payment has subscription
+          //decrement subscription
+          payment.subscription.usedHours--;
+          await payment.subscription.save({ transaction });
+        }
+
+        await payment.destroy({ transaction });
+      }
+    }
+
+    //handle create and update
     for (const payment of reservation.payments) {
       //handle created and updated
       if (payment.id) {
@@ -414,32 +444,8 @@ class ScheduleService {
           await subscription.save({ transaction });
         }
 
+        payment.reservationId = reservation.id;
         await ReservationPayments.create(payment, { transaction });
-      }
-    }
-
-    //handle deleted
-    if (reservation.id) {
-      const deleted = await ReservationPayments.findAll({
-        where: {
-          id: {
-            [Op.notIn]: reservation.payments.filter(p => p.id).map(p => p.id)
-          },
-          reservationId: reservation.id
-        },
-        include: ['subscription'],
-        transaction
-      });
-
-      for (const payment of deleted) {
-        if (payment.type == ReservationPayment.SUBS_ZONE_1 || payment.type == ReservationPayment.SUBS_ZONE_2) {
-          //payment has subscription
-          //decrement subscription
-          payment.subscription.usedHours--;
-          await payment.subscription.save({ transaction });
-        }
-
-        await payment.destroy({ transaction });
       }
     }
   }
