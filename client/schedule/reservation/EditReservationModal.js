@@ -120,10 +120,10 @@ class EditReservationModal extends React.Component {
 
   addPayment() {
     const reservation = this.state.reservation;
-    reservation.payments.push({
+    reservation.payments.unshift({
       type: "",
       amount: null,
-      reservationId: reservation.id
+      reservationId: reservation.id || 0
     });
     this.setState({ reservation });
   }
