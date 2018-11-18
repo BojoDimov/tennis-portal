@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React from 'react';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
@@ -17,7 +18,7 @@ import QueryService from '../services/query.service';
 import UserService from '../services/user.service';
 import Reservation from './reservation/Reservation';
 import ShuffleItem from './reservation/ShuffleItem';
-import Calendar from './calendar/Calendar';
+import Calendar from '../components/calendar/Calendar';
 import Legend from './Legend';
 import ConfirmationDialog from '../components/ConfirmationDialog';
 import { getHour } from '../utils';
@@ -61,14 +62,13 @@ const styles = (theme) => ({
 class Schedule extends React.Component {
   constructor(props) {
     super(props);
-    const today = new Date();
     this.state = {
       administrator: UserService.getUser(),
       counter: 0,
       season: {},
       courts: [],
       reservations: [],
-      date: new Date(today.getFullYear(), today.getMonth(), today.getDate()),
+      date: moment().startOf('date'),
       shuffle: null
     };
 
@@ -94,19 +94,16 @@ class Schedule extends React.Component {
 
   getData(date) {
     return QueryService
-      .post(`/schedule/reservations/filter`, { date })
+      .post(`/schedule/reservations/filter`, { date: date.format('YYYY-MM-DD') })
       .then(reservations => this.setState({ reservations }));
   }
 
   getReservation(hour, court) {
     const sameReservation = (e) => {
-      const d = new Date(e.date);
       return e.courtId == court.id && e.hour == hour
-        && d.getFullYear() == this.state.date.getFullYear()
-        && d.getMonth() == this.state.date.getMonth();
     };
-    const existing = this.state.reservations.find(e => sameReservation(e));
 
+    const existing = this.state.reservations.find(e => sameReservation(e));
     return (existing || this.constructReservation(this.state.date, hour, court));
   }
 
@@ -172,13 +169,13 @@ class Schedule extends React.Component {
         {mode => <div className="container">
           <Paper style={{ padding: '1rem' }}>
             <Typography align="center" variant="headline" gutterBottom={true}>
-              График - {this.state.date.toLocaleDateString()}
+              График - {date.format('DD.MM.YYYY')}
             </Typography>
             <Calendar
               value={date}
-              onChange={value => {
-                this.setState({ date: value, shuffle: null });
-                this.getData(value);
+              onChange={date => {
+                this.setState({ date, shuffle: null });
+                this.getData(date);
               }}
             />
 

@@ -1,9 +1,9 @@
+import moment from 'moment';
 import React from 'react';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import { withStyles } from '@material-ui/core/styles';
-
 import UserService from '../../services/user.service';
 import DateComponent from './DateComponent';
 
@@ -28,12 +28,12 @@ const styles = (theme) => ({
 
 class Calendar extends React.Component {
   constructor(props) {
-    const today = new Date();
     super(props);
+    const today = moment().startOf('date');
     this.state = {
-      year: today.getFullYear(),
-      month: today.getMonth(),
-      day: today.getDate()
+      year: today.get('year'),
+      month: today.get('month'),
+      day: today.get('date')
     };
     this.years = [2016, 2017, 2018, 2019];
     this.monts = ['Януари', 'Февруари', 'Март', 'Април', 'Май', 'Юни', 'Юли', 'Август', 'Септември', 'Октомври', 'Ноември', 'Декември'];
@@ -41,9 +41,9 @@ class Calendar extends React.Component {
 
   componentDidMount() {
     this.setState({
-      year: this.props.value.getFullYear(),
-      month: this.props.value.getMonth(),
-      day: this.props.value.getDate()
+      year: this.props.value.get('year'),
+      month: this.props.value.get('month'),
+      day: this.props.value.get('date')
     });
   }
 

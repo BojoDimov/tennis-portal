@@ -1,3 +1,4 @@
+import moment from 'moment';
 import React from 'react';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -144,7 +145,7 @@ class DateComponent extends React.Component {
         value={this.state.selected}
         onChange={(_, value) => {
           this.setState({ selected: value });
-          onChange(new Date(year, month, value + 1));
+          onChange(moment({ year, month, date: value + 1 }));
         }}
         scrollable
         scrollButtons="on">
