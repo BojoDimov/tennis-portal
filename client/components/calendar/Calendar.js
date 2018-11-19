@@ -33,10 +33,19 @@ class Calendar extends React.Component {
     this.state = {
       year: today.get('year'),
       month: today.get('month'),
-      day: today.get('date')
+      day: today.get('date'),
+      date: today
     };
     this.years = [2016, 2017, 2018, 2019];
     this.monts = ['Януари', 'Февруари', 'Март', 'Април', 'Май', 'Юни', 'Юли', 'Август', 'Септември', 'Октомври', 'Ноември', 'Декември'];
+
+    this.handleChange = (prop) => (e) => {
+      const state = this.state;
+      state[prop] = e.target.value;
+      this.setState(state);
+      if (this.props.emitDateOnAnyChange)
+        this.props.onChange(moment(state.today).set(prop, state[prop]));
+    }
   }
 
   componentDidMount() {
@@ -57,7 +66,7 @@ class Calendar extends React.Component {
           <FormControl className={classes.formControl}>
             <Select
               value={month}
-              onChange={e => this.setState({ month: e.target.value })}
+              onChange={this.handleChange('month')}
             >
               {this.monts.map((month, index) => {
                 return (
@@ -69,7 +78,7 @@ class Calendar extends React.Component {
           <FormControl className={classes.formControl}>
             <Select
               value={year}
-              onChange={e => this.setState({ year: e.target.value })}
+              onChange={this.handleChange('year')}
             >
               {this.years.map(year => {
                 return (
@@ -87,7 +96,10 @@ class Calendar extends React.Component {
             day={day}
             availiableDaysAhead={14}
             mode={mode}
-            onChange={onChange}
+            onChange={(date) => {
+              this.setState({ date });
+              return onChange(date);
+            }}
           />}
         </UserService.WithApplicationMode>
       </div>

@@ -67,16 +67,19 @@ class DateComponent extends React.Component {
   componentDidUpdate(prevProps) {
     if (prevProps.month != this.props.month || prevProps.year != this.props.year) {
       if (this.state.previousSelected
-        && this.state.previousSelected.getFullYear() == this.props.year
-        && this.state.previousSelected.getMonth() == this.props.month)
+        && this.state.previousSelected.get('year') == this.props.year
+        && this.state.previousSelected.get('month') == this.props.month) {
+        this.props.onChange(this.state.previousSelected)
         this.setState({
-          selected: this.state.previousSelected.getDate() - 1,
+          selected: this.state.previousSelected.get('date') - 1,
           previousSelected: null
         });
+      }
+
       else if (this.state.previousSelected == null)
         this.setState({
           selected: false,
-          previousSelected: new Date(prevProps.year, prevProps.month, this.state.selected + 1)
+          previousSelected: moment({ year: prevProps.year, month: prevProps.month, date: this.state.selected + 1 })
         });
       else
         this.setState({ selected: false });
