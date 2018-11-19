@@ -34,9 +34,10 @@ class EnumSelect extends React.Component {
             <em>{label}</em>
           </MenuItem>
           {Object.keys(EnumValues).map((key, i) => {
+            console.log(EnumLocalization[EnumName], EnumValues[key]);
             return (
               <MenuItem key={i} value={EnumValues[key]}>
-                {EnumLocalization[EnumName][EnumName[key]]}
+                {EnumLocalization[EnumName][EnumValues[key]]}
               </MenuItem>
             );
           })}
