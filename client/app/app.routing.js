@@ -7,6 +7,7 @@ import Editions from '../editions';
 import Schedule from '../schedule/Schedule';
 import Courts from '../admin/Courts';
 import Seasons from '../admin/Seasons';
+import Statistics from '../statistics/Statistics';
 import Users from '../admin/Users';
 import Subscriptions from '../admin/Subscriptions';
 import NavigationModel from '../menu/navigation.model';
@@ -23,6 +24,7 @@ const routeMapping = {
   '/admin/courts': Courts,
   '/admin/seasons': Seasons,
   '/admin/users': Users,
+  '/admin/statistics': Statistics,
   // '/admin/subscriptions': Subscriptions,
   // '/admin/config': NotFoundPage,
   '/account': UserProfile

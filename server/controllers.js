@@ -11,5 +11,6 @@ router.use('/login', require('./user/login.controller'));
 router.use('/users', require('./user/user.controller'));
 router.use('/schedule', require('./schedule/schedule.controller'));
 router.use('/subscriptions', adminIdentity, require('./subscription/subscription.controller'));
+router.use('/statistics', require('./statistics.controller'));
 
 module.exports = router;
