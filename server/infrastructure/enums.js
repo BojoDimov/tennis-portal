@@ -77,5 +77,9 @@ module.exports = {
     PENDING: 'pending',
     SENT: 'sent',
     FAILED: 'failed'
+  },
+  StatisticsType: {
+    MONTHLY: 'month',
+    DAILY: 'day'
   }
 }

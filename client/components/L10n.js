@@ -10,8 +10,9 @@ class L10n extends React.Component {
 
 export function l10n_text(value, type, translate) {
   const l10n = EnumLocalization[translate];
-  const l10key = Object.keys(type).find(key => type[key] === value);
-  return l10n[l10key];
+  //const l10key = Object.keys(type).find(key => type[key] === value);
+  //return l10n[l10key];
+  return l10n[value];
 }
 
 export default L10n;

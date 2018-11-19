@@ -68,54 +68,63 @@ export const SubscriptionType = {
   ZONE_2: 'zone2'
 };
 
+export const StatisticsType = {
+  MONTHLY: 'month',
+  DAILY: 'day'
+};
+
 export const EnumLocalization = {
+  'StatisticsType': {
+    [StatisticsType.MONTHLY]: 'Месечна',
+    [StatisticsType.DAILY]: 'Дневна'
+  },
   'ReservationPayment': {
-    CASH: 'В брой',
-    SODEXO: 'Карта "Содексо"',
-    MULTISPORT: 'Карта "Мултиспорт"',
-    SUBS_ZONE_1: 'Отиграване на абонамент "ЗОНА 1"',
-    SUBS_ZONE_2: 'Отиграване на абонамент "ЗОНА 2"'
+    [ReservationPayment.CASH]: 'В брой',
+    [ReservationPayment.SODEXO]: 'Карта "Содексо"',
+    [ReservationPayment.MULTISPORT]: 'Карта "Мултиспорт"',
+    [ReservationPayment.SUBS_ZONE_1]: 'Отиграване на абонамент "ЗОНА 1"',
+    [ReservationPayment.SUBS_ZONE_2]: 'Отиграване на абонамент "ЗОНА 2"'
   },
   'ReservationType': {
-    GUEST: 'Гост',
-    USER: 'Потребител',
-    SUBSCRIPTION: 'Абонат',
-    COMPETITOR: 'Съзтезатели',
-    TENNIS_SCHOOL: 'Тенис училище',
-    ELDER_GROUP: 'Група за възрастни',
-    TOURNAMENT: 'Турнир',
-    SERVICE: 'Неработещо игрище',
+    [ReservationType.GUEST]: 'Гост',
+    [ReservationType.USER]: 'Потребител',
+    [ReservationType.SUBSCRIPTION]: 'Абонат',
+    [ReservationType.COMPETITOR]: 'Съзтезатели',
+    [ReservationType.TENNIS_SCHOOL]: 'Тенис училище',
+    [ReservationType.ELDER_GROUP]: 'Група за възрастни',
+    [ReservationType.TOURNAMENT]: 'Турнир',
+    [ReservationType.SERVICE]: 'Неработещо игрище',
   },
   'CustomReservationType': {
-    USER: 'Резервация',
-    SUBSCRIPTION: 'Абонамент'
+    [CustomReservationType.USER]: 'Резервация',
+    [CustomReservationType.SUBSCRIPTION]: 'Абонамент'
   },
   'SubscriptionType': {
-    ZONE_1: 'ЗОНА 1',
-    ZONE_2: 'ЗОНА 2'
+    [SubscriptionType.ZONE_1]: 'ЗОНА 1',
+    [SubscriptionType.ZONE_2]: 'ЗОНА 2'
   },
   'Status': {
-    DRAFT: 'чернова',
-    PUBLISHED: 'публикуван',
-    FINALIZED: 'приключен',
-    INACTIVE: 'неактивен'
+    [Status.DRAFT]: 'чернова',
+    [Status.PUBLISHED]: 'публикуван',
+    [Status.FINALIZED]: 'приключен',
+    [Status.INACTIVE]: 'неактивен'
   },
   'Gender': {
-    MALE: 'Мъж',
-    FEMALE: 'Жена'
+    [Gender.MALE]: 'Мъж',
+    [Gender.FEMALE]: 'Жена'
   },
   'CourtType': {
-    CLAY: 'клей',
-    HARD: 'твърда настилка',
-    GRASS: 'трева',
-    INDOOR: 'на закрито'
+    [CourtType.CLAY]: 'клей',
+    [CourtType.HARD]: 'твърда настилка',
+    [CourtType.GRASS]: 'трева',
+    [CourtType.INDOOR]: 'на закрито'
   },
   'BackhandType': {
-    ONE: 'с една ръка',
-    TWO: 'с две ръце'
+    [BackhandType.ONE]: 'с една ръка',
+    [BackhandType.TWO]: 'с две ръце'
   },
   'PlayStyle': {
-    LEFT: 'лява ръка',
-    RIGHT: 'дясна ръка'
+    [PlayStyle.LEFT]: 'лява ръка',
+    [PlayStyle.RIGHT]: 'дясна ръка'
   }
 };
