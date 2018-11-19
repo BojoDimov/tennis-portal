@@ -33,7 +33,6 @@ class AdminReservation extends React.Component {
         >
           {reservation.customer && <span>{reservation.customer.name}</span>}
           {!reservation.customer && <L10n
-            type={ReservationType}
             translate="ReservationType"
           >
             {reservation.type}

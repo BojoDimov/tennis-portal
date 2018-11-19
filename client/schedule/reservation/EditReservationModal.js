@@ -14,7 +14,7 @@ import AddIcon from '@material-ui/icons/Add';
 import QueryService from '../../services/query.service';
 import EnumSelect from '../../components/EnumSelect';
 import AsyncSelect from '../../components/select/AsyncSelect';
-import { ReservationPayment, ReservationType, SubscriptionType } from '../../enums';
+import { ReservationPayment, ReservationType } from '../../enums';
 import { l10n_text } from '../../components/L10n';
 import { getHour } from '../../utils';
 
@@ -198,7 +198,7 @@ class EditReservationModal extends React.Component {
               }}
               noOptionsMessage={() => 'Няма регистрирани абонаменти'}
               formatOptionLabel={(option) => <Typography component="span">
-                Абонамент {l10n_text(option.type, SubscriptionType, "SubscriptionType")}
+                Абонамент {l10n_text(option.type, "SubscriptionType")}
                 <Typography component="span" variant="caption" style={{ display: 'inline', marginLeft: '1rem' }}>{option.season.name}</Typography>
                 <Typography component="span" variant="caption">{option.usedHours}/{option.totalHours}</Typography>
               </Typography>}
@@ -252,7 +252,7 @@ class EditReservationModal extends React.Component {
                     }}
                     noOptionsMessage={() => 'Няма абонаменти с часове за отиграване'}
                     formatOptionLabel={(option) => <Typography component="span">
-                      Абонамент {l10n_text(option.type, SubscriptionType, "SubscriptionType")}
+                      Абонамент {l10n_text(option.type, "SubscriptionType")}
                       <Typography component="span" variant="caption" style={{ display: 'inline', marginLeft: '1rem' }}>{option.season.name}</Typography>
                       <Typography component="span" variant="caption">{option.usedHours}/{option.totalHours}</Typography>
                     </Typography>}

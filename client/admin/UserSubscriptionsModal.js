@@ -194,7 +194,6 @@ class Subscription extends React.Component {
             Абонамент
             <L10n
               style={{ marginLeft: '.3rem' }}
-              type={SubscriptionType}
               translate="SubscriptionType"
             >
               {model.type}
@@ -213,7 +212,6 @@ class Subscription extends React.Component {
               Тип абонамент:
               <Typography>
                 <L10n
-                  type={SubscriptionType}
                   translate="SubscriptionType"
                 >
                   {model.type}

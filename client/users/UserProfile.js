@@ -11,7 +11,6 @@ import { withStyles } from '@material-ui/core/styles';
 import UserService from '../services/user.service';
 import QueryService from '../services/query.service';
 import { l10n_text } from '../components/L10n';
-import { ReservationType, SubscriptionType } from '../enums';
 import { getHour } from '../utils';
 
 class UserProfile extends React.Component {
@@ -73,7 +72,7 @@ class UserProfile extends React.Component {
                   {reservations.map(reservation => {
                     return (
                       <Typography classes={{ root: classes.listItemRoot }} key={reservation.id}>
-                        {l10n_text(reservation.type, ReservationType, "CustomReservationType")}
+                        {l10n_text(reservation.type, "CustomReservationType")}
                         <Typography component="span" variant="caption" style={{ display: 'inline', marginLeft: '1rem' }}>{reservation.court.name}</Typography>
                         {!reservation.isActive && <Typography component="span" color="secondary">ОТМЕНЕНО</Typography>}
                         <Typography component="span" variant="caption">
@@ -109,7 +108,7 @@ class UserProfile extends React.Component {
                   {subscriptions.map(subscription => {
                     return (
                       <Typography classes={{ root: classes.listItemRoot }} key={subscription.id}>
-                        Абонамент {l10n_text(subscription.type, SubscriptionType, "SubscriptionType")}
+                        Абонамент {l10n_text(subscription.type, "SubscriptionType")}
                         <Typography component="span" variant="caption" style={{ display: 'inline', marginLeft: '1rem' }}>{subscription.season.name}</Typography>
                         <Typography component="span" variant="caption">{subscription.usedHours}/{subscription.totalHours}</Typography>
                       </Typography>

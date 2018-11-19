@@ -53,7 +53,7 @@ class ShuffleItem extends React.Component {
     return (
       <TableCell padding="none" className={type} onClick={() => this.select()}>
         {type != classes.free
-          && <span>{l10n_text(reservation.type, ReservationType, "ReservationType")}</span>}
+          && <span>{l10n_text(reservation.type, "ReservationType")}</span>}
       </TableCell>
     );
   }
