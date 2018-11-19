@@ -44,7 +44,7 @@ class Calendar extends React.Component {
       state[prop] = e.target.value;
       this.setState(state);
       if (this.props.emitDateOnAnyChange)
-        this.props.onChange(moment(state.today).set(prop, state[prop]));
+        this.props.onChange(moment(state.date).set(prop, state[prop]));
     }
   }
 
