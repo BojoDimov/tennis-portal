@@ -96,8 +96,8 @@ export const EnumLocalization = {
     [ReservationType.SERVICE]: 'Неработещо игрище',
   },
   'CustomReservationType': {
-    [CustomReservationType.USER]: 'Резервация',
-    [CustomReservationType.SUBSCRIPTION]: 'Абонамент'
+    [ReservationType.USER]: 'Резервация',
+    [ReservationType.SUBSCRIPTION]: 'Абонамент'
   },
   'SubscriptionType': {
     [SubscriptionType.ZONE_1]: 'ЗОНА 1',
