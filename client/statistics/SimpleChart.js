@@ -173,4 +173,8 @@ export class SvgBarplot extends React.Component {
   }
 }
 
+
+{/* <SimpleChart data={data} classifier={ReservationPayment} localization={EnumLocalization['ReservationPayment']} />
+<SvgBarplot data={data} classifier={ReservationPayment} localization={EnumLocalization['ReservationPayment']} /> */}
+
 export default SimpleChart;
