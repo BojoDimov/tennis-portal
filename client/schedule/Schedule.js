@@ -140,7 +140,7 @@ class Schedule extends React.Component {
 
   constructReservation(date, hour, court) {
     return {
-      date: date,
+      date: date.format('YYYY-MM-DD'),
       hour: hour,
       court: court,
       courtId: court.id,
