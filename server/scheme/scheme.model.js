@@ -1,5 +1,5 @@
 const { Status, SchemeType } = require('../infrastructure/enums');
-const moment = require('moment');
+const moment = require('moment-timezone');
 
 module.exports = (db, Sequelize) => {
   const Schemes = db.define('Schemes', {

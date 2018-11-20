@@ -49,6 +49,7 @@
     "d3": "^5.7.0",
     "date-fns": "^2.0.0-alpha.16",
     "material-ui-pickers": "^1.0.0-rc.14",
+    "moment-timezone": "^0.5.23",
     "react": "16.4.2",
     "react-dom": "16.4.2",
     "react-router": "^4.3.1",

@@ -1,4 +1,4 @@
-const moment = require('moment');
+const moment = require('moment-timezone');
 const router = require('express').Router();
 const auth = require('./infrastructure/middlewares/auth');
 

@@ -1,4 +1,6 @@
 require('dotenv').config();
+const moment = require('moment-timezone');
+moment.tz.setDefault("Europe/Sofia");
 const path = require('path');
 const express = require('express');
 const cors = require('cors');
