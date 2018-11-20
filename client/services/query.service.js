@@ -68,7 +68,7 @@ class QueryService {
       throw null;
     if (res.status === 401) {
       window.localStorage.setItem('token', null);
-      window.location.replace('login');
+      window.location.replace('/');
     }
     else return res;
   }

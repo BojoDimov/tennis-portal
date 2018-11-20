@@ -70,6 +70,7 @@ const AppRouting = () => (
       <Route exact path="/">
         <Redirect to="/schedule" />
       </Route>
+      <Route component={NotFoundPage} />
     </Switch>
     }
   </UserService.WithApplicationMode>
