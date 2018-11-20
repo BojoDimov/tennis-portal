@@ -1,6 +1,6 @@
 const { Logs } = require('../../db');
 
-module.exports = (err, req, res) => {
+module.exports = (err, req, res, next) => {
   if (err.name === 'SequelizeValidationError') {
     const result = {}
     err.errors.forEach(e => result[e.path] = e.message);
@@ -48,5 +48,5 @@ module.exports = (err, req, res) => {
       query: JSON.stringify(req.query),
       error: JSON.stringify(err)
     })
-    .then(() => res.status(500).send({ message: 'Internal server error' }));
+    .then(() => res.status(500));
 }

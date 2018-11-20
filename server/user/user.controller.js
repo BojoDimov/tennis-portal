@@ -14,8 +14,14 @@ const getAll = (req, res, next) => {
 const create = async (req, res, next) => {
   try {
     const user = await UserService.create(req.body);
-    await EmailService.createRegistrationEmail(user);
-    return res.json(user);
+
+    //sink in email service errors
+    try {
+      await EmailService.createRegistrationEmail(user);
+    }
+    catch (err) { }
+
+    return res.json({});
   }
   catch (err) {
     return next(err, req, res, null);
@@ -25,7 +31,7 @@ const create = async (req, res, next) => {
 const update = (req, res, next) => {
   return UserService
     .update(req.params.id, req.body)
-    .then(e => res.json(e))
+    .then(_ => res.json({}))
     .catch(err => next(err, req, res, null));
 }
 

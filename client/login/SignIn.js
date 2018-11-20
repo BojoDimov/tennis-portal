@@ -112,8 +112,15 @@ class SignIn extends React.Component {
           aria-labelledby="successful-registration"
         >
           <DialogContent>
-            <Typography variant="headline" color="primary">Регистрацията Ви беше успешна!</Typography>
-            <Typography>На зададеният от Вас имейл е изпратено съобщение с което може да си активирате акаунта</Typography>
+            <Typography variant="headline" color="primary" align="center">
+              Регистрацията Ви беше успешна!
+            </Typography>
+            <Typography variant="subheading" align="center">
+              На зададеният от Вас имейл е изпратено съобщение, с което може да активирате вашият акаунт.</Typography>
+            <Typography variant="caption" color="secondary" align="center">
+              В случай, че не получавате имейл за активация, моля потърсете някой
+              от администраторите на системата, който да активира вашият акаунт.
+            </Typography>
           </DialogContent>
           <DialogActions style={{ justifyContent: 'center' }}>
             <Button variant="contained" color="primary" size="small"
