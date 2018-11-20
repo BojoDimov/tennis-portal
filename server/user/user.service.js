@@ -63,10 +63,11 @@ class UserService {
   async update(id, model) {
     model = this.trim(model);
     await this.validate(model, true);
-    const user = await Users.findById(id);
+    const user = await Users.findById(id, { attributes: { exclude: ['passwordHash', 'passwordSalt'] } });
     if (!user)
       throw { name: 'NotFound' };
     return await user.update({
+      isActive: model.isActive,
       name: model.firstName.charAt(0).toUpperCase() + model.firstName.substr(1)
         + ' ' +
         model.lastName.charAt(0).toUpperCase() + model.lastName.substr(1),
@@ -199,17 +200,20 @@ class UserService {
     return model;
   }
 
-  delete(id) {
-    //REFACTOR THIS USING DESTROY + INCLUDE
-    return sequelize.transaction((trn) => {
-      return Promise
-        .all([
-          Users.destroy({ where: { id: id }, transaction: trn }),
-          Teams.destroy({ where: { user1Id: id, user2Id: null }, transaction: trn }),
-          Tokens.destroy({ where: { userId: id }, transaction: trn }),
-          UserActivationCodes.destroy({ where: { userId: id }, transaction: trn })
-        ]);
-    });
+  async delete(id) {
+    let transaction;
+    try {
+      transaction = await sequelize.transaction();
+      await UserActivationCodes.destroy({ where: { userId: id }, transaction });
+      await Tokens.destroy({ where: { userId: id }, transaction });
+      await Teams.destroy({ where: { user1Id: id, user2Id: null }, transaction });
+      await Users.destroy({ where: { id: id }, transaction });
+      await transaction.commit();
+    }
+    catch (err) {
+      await transaction.rollback();
+      throw err;
+    }
   }
 
   async issueToken(id, ip) {
