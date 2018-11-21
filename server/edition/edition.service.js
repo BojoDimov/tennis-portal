@@ -1,27 +1,34 @@
 const { Editions, sequelize } = require('../db');
 
 class EditionsService {
-  getAll() {
-    return Editions
-      .findAll({
-        where: {
-          isActive: true
-        },
-        include: [{ all: true }]
-      });
+  async filter() {
+    return await Editions.findAll({
+      include: ['tournament', 'schemes'],
+      order: [['date', 'desc']]
+    });
   }
 
-  get(id) {
-    return Editions
-      .findById(id, {
-        include: [{ all: true }]
-      });
+  async get(id) {
+    const edition = await Editions.findById(id, {
+      include: ['tournament', 'schemes']
+    });
+    if (!edition)
+      throw { name: 'NotFound' };
+    return edition;
   }
 
-  remove(id) {
-    return this
-      .get(id)
-      .then(edition => edition.update({ isActive: false }));
+  async create(model) {
+    return await Editions.create(model);
+  }
+
+  async update(id, model) {
+    const edition = this.get(id);
+    return await edition.update(model);
+  }
+
+  async remove(id) {
+    const edition = this.get(id);
+    return await edition.destroy();
   }
 }
 

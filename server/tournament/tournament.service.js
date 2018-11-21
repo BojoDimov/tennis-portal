@@ -1,18 +1,29 @@
-const { Tournaments, sequelize } = require('../db');
+const { Tournaments } = require('../db');
 
 class TournamentsService {
-  getAll() {
-    return Tournaments
-      .findAll({
-        include: [{ all: true }]
-      });
+  async filter() {
+    return await Tournaments.findAll();
   }
 
-  get(id) {
-    return Tournaments
-      .findById(id, {
-        include: [{ all: true }]
-      });
+  async get(id) {
+    const tournament = await Tournaments.findById(id);
+    if (!tournament)
+      throw { name: 'NotFound' };
+    return tournament;
+  }
+
+  async create(model) {
+    return await Tournaments.create(model);
+  }
+
+  async update(id, model) {
+    const tournament = this.get(id);
+    return await tournament.update(model);
+  }
+
+  async remove(id) {
+    const tournament = this.get(id);
+    return await tournament.destroy();
   }
 }
 
