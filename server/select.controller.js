@@ -2,6 +2,7 @@ const router = require('express').Router();
 const {
   Users,
   Subscriptions,
+  Tournaments,
   Sequelize
 } = require('./db');
 const Op = Sequelize.Op;
@@ -82,7 +83,21 @@ const selectSubscriptions = async (request, response) => {
   });
 }
 
+const selectTournament = async (request, response) => {
+  const options = {
+    where: {},
+    order: [['createdAt', 'desc']]
+  };
+
+  const result = await Tournaments.findAndCountAll(options);
+  return response.json({
+    totalCount: result.count,
+    options: result.rows
+  });
+}
+
 router.post('/users', selectUsers);
 router.post('/subscriptions', selectSubscriptions);
+router.post('/tournaments', selectTournament);
 
 module.exports = router;

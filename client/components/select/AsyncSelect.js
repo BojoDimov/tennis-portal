@@ -7,7 +7,7 @@ import styles from './styles';
 
 import QueryService from '../../services/query.service';
 
-export class AsyncSelect extends React.Component {
+class AsyncSelect extends React.Component {
   constructor(props) {
     super(props);
     this.state = {

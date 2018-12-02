@@ -3,7 +3,7 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 
 import NotFoundPage from './NotFoundPage';
 import Schemes from '../schemes';
-import Editions from '../editions';
+import Editions from '../editions/new/EditionsRoot';
 import Schedule from '../schedule/Schedule';
 import Courts from '../admin/Courts';
 import Seasons from '../admin/Seasons';
@@ -36,7 +36,7 @@ const AppRouting = () => (
       {/* <Route path="/users" component={Users} /> */}
       {/* <Route path="/news" component={News} /> */}
       {/* <Route path="/tournaments" component={null} /> */}
-      {/* <Route path="/editions" component={Editions} /> */}
+      <Route path="/editions" component={Editions} />
       {/* <Route path="/schemes" component={Schemes} /> */}
       {/* <Route path="/schedule/admin" component={ScheduleAdmin} /> */}
       {/* <Route path="/schedule" component={Schedule} />

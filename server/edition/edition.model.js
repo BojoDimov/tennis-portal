@@ -5,13 +5,12 @@ module.exports = (db, Sequelize) => {
     .define('Editions', {
       name: { type: Sequelize.STRING, allowNull: false },
       info: Sequelize.TEXT,
-      startDate: Sequelize.DATEONLY,
-      endDate: Sequelize.DATEONLY,
+      startDate: Sequelize.STRING,
+      endDate: Sequelize.STRING,
       status: {
         type: Sequelize.ENUM, allowNull: false,
         values: [Status.DRAFT, Status.PUBLISHED, Status.FINALIZED, Status.INACTIVE]
-      },
-      isActive: { type: Sequelize.BOOLEAN, defaultValue: true, allowNull: false }
+      }
     });
 
   Editions.associate = (models) => {

@@ -12,13 +12,19 @@ class EditionsDesktopView extends React.Component {
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>waddup</TableCell>
+            <TableCell>Лига</TableCell>
+            <TableCell>Турнир</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          <TableRow>
-            <TableCell>konichiwa</TableCell>
-          </TableRow>
+          {editions.map(edition => {
+            return (
+              <TableRow key={edition.id}>
+                <TableCell>{edition.tournament.name}</TableCell>
+                <TableCell>{edition.name}</TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     );

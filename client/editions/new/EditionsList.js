@@ -7,17 +7,20 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
+import TournamentFormModal from '../../tournaments/TournamentFormModal';
 import EditionFormModal from './EditionFormModal';
 import EditionsDesktopView from './EditionsDesktopView';
+import EditionsMobileView from './EditionsMobileView';
 import editionsViewActions from './EditionsViewActions';
-import QueryService from '../services/query.service';
+import QueryService from '../../services/query.service';
 
 class EditionsList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       editions: [],
-      editionModel: null
+      editionModel: null,
+      tournamentModel: null
     }
 
     this.handleOpenModal = (editionModel) => {
@@ -40,7 +43,7 @@ class EditionsList extends React.Component {
   }
 
   render() {
-    const { editions, editionModel } = this.state;
+    const { editions, editionModel, tournamentModel } = this.state;
     const actions = editionsViewActions(this.handleOpenModal, this.handleRemoveEdition);
 
     return (
@@ -51,6 +54,32 @@ class EditionsList extends React.Component {
             onChange={() => console.log('change')}
             onClose={() => this.setState({ editionModel: null })}
           />}
+
+        {tournamentModel
+          && <TournamentFormModal
+            model={tournamentModel}
+            onChange={() => this.setState({ tournamentModel: null })}
+            onClose={() => this.setState({ tournamentModel: null })}
+          />}
+
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          onClick={() => this.setState({ tournamentModel: { name: '', info: '', thumbnailId: null } })}
+        >
+          Нова Лига
+        </Button>
+
+        <Button
+          style={{ marginLeft: '.3rem' }}
+          variant="contained"
+          color="primary"
+          size="small"
+          onClick={() => this.setState({ editionModel: { name: '', info: '', startDate: null, endDate: null } })}
+        >
+          Нов Турнир
+        </Button>
 
         <ExpansionPanel>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>

@@ -7,21 +7,16 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import withMobileDialog from '@material-ui/core/withMobileDialog';
-import DatePicker from 'material-ui-pickers/DatePicker';
 import { withStyles } from '@material-ui/core/styles';
 
-import QueryService from '../../services/query.service';
-import AsyncSelect from '../../components/select/AsyncSelect';
-import EnumSelectToggle from '../../components/EnumSelectToggle';
+import EnumSelectToggle from '../components/EnumSelectToggle';
+import QueryService from '../services/query.service';
 
-class EditionFormModal extends React.Component {
+class TournamentFormModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      model: {
-        startDate: null,
-        endDate: null
-      },
+      model: {},
       errors: []
     }
 
@@ -32,20 +27,6 @@ class EditionFormModal extends React.Component {
       model[prop] = e.target.value;
       this.setState({ model });
     }
-
-    this.handleCustomChange = (prop) => (value) => {
-      const model = this.state.model;
-      model[prop] = value;
-
-      if (prop == 'tournament') {
-        if (value)
-          model.tournamentId = value.id;
-        else
-          model.tournamentId = null;
-      }
-
-      this.setState({ model });
-    };
   }
 
   componentDidMount() {
@@ -60,7 +41,7 @@ class EditionFormModal extends React.Component {
   save() {
     const model = this.state.model;
     return QueryService
-      .post(`/editions/${model.id ? model.id : ''}`, model)
+      .post(`/tournaments/${model.id ? model.id : ''}`, model)
       .then(e => this.props.onChange(e));
   }
 
@@ -76,7 +57,7 @@ class EditionFormModal extends React.Component {
         classes={{ paper: classes.root }}
       >
         <DialogTitle>
-          <Typography component="span" variant="headline">Форма за издание на турнир</Typography>
+          <Typography component="span" variant="headline">Създаване/промяна на лига</Typography>
         </DialogTitle>
         <DialogContent>
           <EnumSelectToggle
@@ -85,20 +66,8 @@ class EditionFormModal extends React.Component {
             onChange={this.handleChange('status')}
           />
 
-          <AsyncSelect
-            label="Лига"
-            value={model.tournament}
-            query="tournaments"
-            noOptionsMessage={() => 'Няма намерени лиги'}
-            formatOptionLabel={(option) => <Typography component="span">
-              {option.name}
-              <Typography component="span" variant="caption" >{option.info}</Typography>
-            </Typography>}
-            onChange={this.handleCustomChange('tournament')}
-          />
-
           <TextField
-            label="Име на изданието"
+            label="Име на лигата"
             value={model.name}
             fullWidth={true}
             onChange={this.handleChange('name')}
@@ -111,27 +80,6 @@ class EditionFormModal extends React.Component {
             fullWidth={true}
             onChange={this.handleChange('info')}
           />
-
-          <DatePicker
-            autoOk
-            label="Начало на турнира"
-            labelFunc={(date) => date ? new Date(date).toLocaleDateString() : ''}
-            clearable
-            fullWidth={true}
-            value={model.startDate}
-            onChange={this.handleCustomChange('startDate')}
-          />
-
-          <DatePicker
-            autoOk
-            label="Край на турнира"
-            labelFunc={(date) => date ? new Date(date).toLocaleDateString() : ''}
-            clearable
-            fullWidth={true}
-            value={model.endDate}
-            onChange={this.handleCustomChange('endDate')}
-          />
-
         </DialogContent>
 
         <DialogActions className={classes.btnContainer}>
@@ -162,15 +110,9 @@ const styles = (theme) => ({
       marginBottom: '.3rem',
       width: '100%'
     }
-  },
-  truncateInfo: {
-    width: '100px',
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis'
   }
 });
 
 export default withStyles(styles)(
-  withMobileDialog({ breakpoint: 'xs' })(EditionFormModal)
+  withMobileDialog({ breakpoint: 'xs' })(TournamentFormModal)
 );
