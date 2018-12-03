@@ -5,6 +5,8 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
+import QueryService from '../../services/query.service';
+
 class EditionsDesktopView extends React.Component {
   render() {
     const { editions } = this.props;
@@ -20,7 +22,11 @@ class EditionsDesktopView extends React.Component {
           {editions.map(edition => {
             return (
               <TableRow key={edition.id}>
-                <TableCell>{edition.tournament.name}</TableCell>
+                <TableCell >
+                  {edition.tournament.thumbnail
+                    && <DisplayImage image={edition.tournament.thumbnail} style={{ maxWidth: '50px', marginRight: '.5rem' }} />}
+                  <span style={{ verticalAlign: 'super' }}>{edition.tournament.name}</span>
+                </TableCell>
                 <TableCell>{edition.name}</TableCell>
               </TableRow>
             );
@@ -29,6 +35,14 @@ class EditionsDesktopView extends React.Component {
       </Table>
     );
   }
+}
+
+const DisplayImage = ({ image, style }) => {
+  const buffer = image.content.data;
+  const b64 = new Buffer(buffer).toString('base64')
+  const mimeType = image.mimeType;
+
+  return <img src={`data:${mimeType};base64,${b64}`} style={style} />
 }
 
 export default EditionsDesktopView;

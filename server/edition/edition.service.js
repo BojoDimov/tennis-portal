@@ -1,10 +1,19 @@
-const { Editions, sequelize } = require('../db');
+const { Tournaments, Editions, Files, sequelize } = require('../db');
 const moment = require('moment-timezone');
 
 class EditionsService {
   async filter() {
     return await Editions.findAll({
-      include: ['tournament', 'schemes'],
+      include: [
+        {
+          model: Tournaments,
+          as: 'tournament',
+          include: [
+            { model: Files, as: 'thumbnail', required: false }
+          ]
+        },
+        'schemes'
+      ],
       order: [['id', 'desc']]
     });
   }

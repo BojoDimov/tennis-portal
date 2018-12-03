@@ -2,11 +2,11 @@ const { Tournaments } = require('../db');
 const { Status } = require('../infrastructure/enums');
 class TournamentsService {
   async filter() {
-    return await Tournaments.findAll();
+    return await Tournaments.findAll({ include: ['thumbnail'] });
   }
 
   async get(id) {
-    const tournament = await Tournaments.findById(id);
+    const tournament = await Tournaments.findById(id, { include: ['thumbnail'] });
     if (!tournament)
       throw { name: 'NotFound' };
     return tournament;

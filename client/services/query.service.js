@@ -6,6 +6,25 @@ class QueryService {
     this.backend = (window.configuration || Configuration).backend;
   }
 
+  uploadFile(content) {
+    let data = new FormData();
+    data.append('file', content);
+
+    let options = {
+      method: 'POST',
+      mode: 'cors',
+      body: data
+    }
+
+    return fetch(this.backend + '/files', options)
+      .then(res => this.errorHandling(res))
+      .then(res => res.json());
+  }
+
+  getFileUrl(fileId) {
+    return `${this.backend}/files/${fileId}`;
+  }
+
   get(resource) {
     let options = {
       method: 'GET',

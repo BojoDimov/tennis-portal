@@ -8,10 +8,9 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import withMobileDialog from '@material-ui/core/withMobileDialog';
-import PhotoIcon from '@material-ui/icons/Photo';
 import { withStyles } from '@material-ui/core/styles';
 
-import FileUpload from '../components/FileUpload';
+import ImageField from '../components/ImageField';
 import EnumSelectToggle from '../components/EnumSelectToggle';
 import QueryService from '../services/query.service';
 
@@ -29,6 +28,25 @@ class TournamentFormModal extends React.Component {
       const model = this.state.model;
       model[prop] = e.target.value;
       this.setState({ model });
+    }
+
+    this.handleThumbnail = (e) => {
+      const model = this.state.model;
+
+      if (!e || !e.target.files || !e.target.files[0]) {
+        model.thumbnail = null;
+        model.thumbnailId = null;
+        this.setState({ model });
+        return;
+      }
+
+      return QueryService
+        .uploadFile(e.target.files[0])
+        .then(file => {
+          model.thumbnail = file;
+          model.thumbnailId = file.id;
+          this.setState({ model });
+        });
     }
   }
 
@@ -70,10 +88,12 @@ class TournamentFormModal extends React.Component {
           />
 
           <Typography variant="caption" style={{ marginTop: '.5rem' }}>Лого</Typography>
-          <FileUpload onChange={e => console.log(e.target.files)} style={{ marginTop: '.5rem' }} >
-            <PhotoIcon color="primary" style={{ fontSize: '2rem', cursor: 'pointer' }} />
-            {model.thumbnailId && null}
-          </FileUpload>
+          <ImageField
+            value={model.thumbnail}
+            onChange={this.handleThumbnail}
+            style={{ marginTop: '.5rem' }}
+            imageStyle={{ maxWidth: '50px' }}
+          />
 
           <TextField
             label="Име на лигата"
