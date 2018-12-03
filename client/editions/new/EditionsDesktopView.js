@@ -23,9 +23,11 @@ class EditionsDesktopView extends React.Component {
             return (
               <TableRow key={edition.id}>
                 <TableCell >
-                  {edition.tournament.thumbnail
-                    && <DisplayImage image={edition.tournament.thumbnail} style={{ maxWidth: '50px', marginRight: '.5rem' }} />}
-                  <span style={{ verticalAlign: 'super' }}>{edition.tournament.name}</span>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    {edition.tournament.thumbnail
+                      && <DisplayImage image={edition.tournament.thumbnail} style={{ maxWidth: '50px', marginRight: '.5rem' }} />}
+                    {edition.tournament.name}
+                  </div>
                 </TableCell>
                 <TableCell>{edition.name}</TableCell>
               </TableRow>
