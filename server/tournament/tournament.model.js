@@ -8,6 +8,7 @@ module.exports = (db, Sequelize) => {
       type: Sequelize.ENUM, allowNull: false,
       values: [Status.DRAFT, Status.PUBLISHED, Status.FINALIZED, Status.INACTIVE]
     },
+    thumbnailId: Sequelize.INTEGER,
     isActive: { type: Sequelize.BOOLEAN, defaultValue: true, allowNull: false }
   });
 

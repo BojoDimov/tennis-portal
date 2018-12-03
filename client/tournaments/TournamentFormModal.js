@@ -1,5 +1,6 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -7,8 +8,10 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import withMobileDialog from '@material-ui/core/withMobileDialog';
+import PhotoIcon from '@material-ui/icons/Photo';
 import { withStyles } from '@material-ui/core/styles';
 
+import FileUpload from '../components/FileUpload';
 import EnumSelectToggle from '../components/EnumSelectToggle';
 import QueryService from '../services/query.service';
 
@@ -65,6 +68,12 @@ class TournamentFormModal extends React.Component {
             enumName="Status"
             onChange={this.handleChange('status')}
           />
+
+          <Typography variant="caption" style={{ marginTop: '.5rem' }}>Лого</Typography>
+          <FileUpload onChange={e => console.log(e.target.files)} style={{ marginTop: '.5rem' }} >
+            <PhotoIcon color="primary" style={{ fontSize: '2rem', cursor: 'pointer' }} />
+            {model.thumbnailId && null}
+          </FileUpload>
 
           <TextField
             label="Име на лигата"
