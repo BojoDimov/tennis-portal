@@ -39,6 +39,8 @@ class EditReservationModal extends React.Component {
       if (prop == 'type') {
         reservation.customer = null;
         reservation.customerId = null;
+        reservation.subscription = null;
+        reservation.subscriptionId = null;
       }
 
       this.setState({ reservation });
@@ -46,19 +48,20 @@ class EditReservationModal extends React.Component {
 
     this.handleCustomChange = (prop) => (value) => {
       const reservation = this.state.reservation;
-      reservation[prop] = value;
 
-      if (prop == 'customer' && value)
-        reservation.customerId = value.id
-
-      if (prop == 'customer' && !value)
-        reservation.customerId = null;
-
-      if (prop == 'subscription' && value)
-        reservation.subscriptionId = value.id;
-
-      if (prop == 'subscription' && !value)
+      if (prop == 'customer') {
+        reservation.customer = null;
+        reservation.customerId = (value || { id: null }).id;
+        reservation.subscription = null;
         reservation.subscriptionId = null;
+      }
+
+      if (prop == 'subscription') {
+        reservation.subscription = null;
+        reservation.subscriptionId = (value || { id: null }).id;
+      }
+
+      reservation[prop] = value;
 
       this.setState({ reservation });
     };

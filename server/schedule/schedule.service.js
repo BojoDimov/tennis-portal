@@ -245,6 +245,9 @@ class ScheduleService {
             await subscription.save({ transaction });
             await reservation.subscription.save({ transaction });
           }
+          else {
+            //they are the same, do nothing
+          }
         }
         else {
           //increment subscription
@@ -259,11 +262,13 @@ class ScheduleService {
           await subscription.save({ transaction });
         }
       }
-
-      if (reservation.type == ReservationType.SUBSCRIPTION) {
-        //decrement subscription
-        reservation.subscription.usedHours--;
-        await reservation.subscription.save({ transaction });
+      else {
+        //we are changing from subscribed reservation to other type
+        if (reservation.type == ReservationType.SUBSCRIPTION) {
+          //decrement existing subscription
+          reservation.subscription.usedHours--;
+          await reservation.subscription.save({ transaction });
+        }
       }
 
       const updated = await reservation.update(model, { transaction });
