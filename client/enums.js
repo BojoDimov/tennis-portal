@@ -47,6 +47,7 @@ export const PlayStyle = {
 export const ReservationPayment = {
   SODEXO: 'sodexo',
   MULTISPORT: 'multisport',
+  ABK: 'abk',
   CASH: 'cash',
   SUBS_ZONE_1: 'zone1',
   SUBS_ZONE_2: 'zone2'
@@ -82,6 +83,7 @@ export const EnumLocalization = {
     [ReservationPayment.CASH]: 'В брой',
     [ReservationPayment.SODEXO]: 'Карта "Содексо"',
     [ReservationPayment.MULTISPORT]: 'Карта "Мултиспорт"',
+    [ReservationPayment.ABK]: 'Абонаментна карта (АБК)',
     [ReservationPayment.SUBS_ZONE_1]: 'Отиграване на абонамент "ЗОНА 1"',
     [ReservationPayment.SUBS_ZONE_2]: 'Отиграване на абонамент "ЗОНА 2"'
   },
