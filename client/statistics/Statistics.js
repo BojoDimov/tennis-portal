@@ -83,6 +83,8 @@ class StatisticsRoot extends React.Component {
               label2="Регистрирани плащания"
               classifier={ReservationPayment}
               translation="ReservationPayment"
+              customFn={paymentsAmountAccumulator}
+              customValueSuffix=" лв."
               data={reduceToPayments(data)} />
           </div>
         </Paper>
@@ -93,6 +95,12 @@ class StatisticsRoot extends React.Component {
 
 function reduceToPayments(data) {
   return data.reduce((acc, curr) => acc.concat(curr.payments), []);
+}
+
+function paymentsAmountAccumulator(current, payment) {
+  if (payment.amount)
+    return (current || 0) + parseFloat(payment.amount);
+  else return current;
 }
 
 export default StatisticsRoot;

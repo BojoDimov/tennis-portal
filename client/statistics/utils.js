@@ -119,21 +119,24 @@ export function transformToUserPlayedHours(data) {
   return Object.keys(users).map(key => users[key]);
 }
 
-export function transformByClassifier(data, classifier) {
+export function transformByClassifier(data, classifier, customFn = () => null) {
   const result = {};
+  const customValue = {};
 
   Object.keys(classifier).forEach(key => {
     result[classifier[key]] = 0
   });
 
   data.forEach(e => {
-    result[e.type]++
+    result[e.type]++;
+    customValue[e.type] = customFn(customValue[e.type], e);
   });
 
   return Object.keys(result).map(key => {
     return {
       key,
-      count: result[key]
+      count: result[key],
+      custom: customValue[key]
     }
   });
 }

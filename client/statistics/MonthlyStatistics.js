@@ -72,8 +72,8 @@ export class StatisticByClassifier extends React.Component {
   }
 
   render() {
-    const { data, classifier, translation, label1, label2 } = this.props;
-    const transformed = transformByClassifier(data, classifier);
+    const { data, classifier, translation, label1, label2, customFn, customValueSuffix } = this.props;
+    const transformed = transformByClassifier(data, classifier, customFn || (() => null));
     orderData(transformed, this.state.order);
 
     return (
@@ -91,7 +91,10 @@ export class StatisticByClassifier extends React.Component {
             return (
               <TableRow key={e.key}>
                 <TableCell>{l10n_text(e.key, translation)}</TableCell>
-                <TableCell>{e.count}</TableCell>
+                <TableCell>
+                  {e.count}
+                  {e.custom && <span style={{ marginLeft: '.3rem' }}>({e.custom}{customValueSuffix})</span>}
+                </TableCell>
               </TableRow>
             );
           })}
