@@ -426,12 +426,14 @@ class ScheduleService {
             await subscription.save({ transaction });
           }
         }
-
-        if (existingPayment.type == ReservationPayment.SUBS_ZONE_1 || existingPayment.type == ReservationPayment.SUBS_ZONE_2) {
-          //existing payment was subsciption, now it isn't
-          //decrement existing payment subscription
-          existingPayment.subscription.usedHours--;
-          await existingPayment.subscription.save({ transaction });
+        else {
+          //this should only be executed if we are not of subscription type now
+          if (existingPayment.type == ReservationPayment.SUBS_ZONE_1 || existingPayment.type == ReservationPayment.SUBS_ZONE_2) {
+            //existing payment was subsciption, now it isn't
+            //decrement existing payment subscription
+            existingPayment.subscription.usedHours--;
+            await existingPayment.subscription.save({ transaction });
+          }
         }
 
         await existingPayment.update(payment, { transaction });
