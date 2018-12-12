@@ -5,51 +5,6 @@ import Tab from '@material-ui/core/Tab';
 import { withStyles } from '@material-ui/core/styles';
 import { ApplicationMode } from '../../enums';
 
-const styles = (theme) => {
-  return {
-    tabsRoot: {
-    },
-    tab: {
-      backgroundColor: 'white',
-      color: theme.palette.primary.dark,
-      [theme.breakpoints.down('xl')]: {
-        width: '60px',
-        minWidth: '0px',
-        minHeight: '0px',
-        fontWeight: 700,
-        border: '.5px solid lightgrey',
-      }
-    },
-    selectedTab: {
-      backgroundColor: theme.palette.primary.main,
-      color: theme.palette.primary.contrastText,
-      border: 'none'
-    },
-    todayTab: {
-      backgroundColor: theme.palette.secondary.main,
-      color: theme.palette.primary.contrastText,
-      border: 'none'
-    },
-    disabledTab: {
-      color: 'grey',
-      fontWeight: 500,
-      backgroundColor: 'whitesmoke'
-    },
-    tabsScroller: {
-      [theme.breakpoints.up('md')]: {
-        overflow: 'hidden'
-      }
-    },
-    tabsIndicator: {
-      backgroundColor: theme.palette.primary.main
-    },
-    tabsScrollButtons: {
-      color: theme.palette.primary.main,
-      flexBasis: '30px'
-    }
-  };
-};
-
 class DateComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -87,8 +42,7 @@ class DateComponent extends React.Component {
   }
 
   getLabel(day) {
-    let date = new Date();
-    date.setDate(day);
+    let date = new Date(this.props.year, this.props.month, day);
 
     return (
       <div>
@@ -174,5 +128,50 @@ class DateComponent extends React.Component {
     );
   }
 }
+
+const styles = (theme) => {
+  return {
+    tabsRoot: {
+    },
+    tab: {
+      backgroundColor: 'white',
+      color: theme.palette.primary.dark,
+      [theme.breakpoints.down('xl')]: {
+        width: '60px',
+        minWidth: '0px',
+        minHeight: '0px',
+        fontWeight: 700,
+        border: '.5px solid lightgrey',
+      }
+    },
+    selectedTab: {
+      backgroundColor: theme.palette.primary.main,
+      color: theme.palette.primary.contrastText,
+      border: 'none'
+    },
+    todayTab: {
+      backgroundColor: theme.palette.secondary.main,
+      color: theme.palette.primary.contrastText,
+      border: 'none'
+    },
+    disabledTab: {
+      color: 'grey',
+      fontWeight: 500,
+      backgroundColor: 'whitesmoke'
+    },
+    tabsScroller: {
+      [theme.breakpoints.up('md')]: {
+        overflow: 'hidden'
+      }
+    },
+    tabsIndicator: {
+      backgroundColor: theme.palette.primary.main
+    },
+    tabsScrollButtons: {
+      color: theme.palette.primary.main,
+      flexBasis: '30px'
+    }
+  };
+};
 
 export default withStyles(styles)(DateComponent);
