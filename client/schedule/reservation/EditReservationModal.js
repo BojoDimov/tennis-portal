@@ -10,6 +10,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
+import { withStyles } from '@material-ui/core/styles';
 
 import QueryService from '../../services/query.service';
 import EnumSelect from '../../components/EnumSelect';
@@ -132,11 +133,11 @@ class EditReservationModal extends React.Component {
   }
 
   render() {
-    const { isOpen, onClose } = this.props;
+    const { isOpen, onClose, classes } = this.props;
     const { reservation } = this.state;
 
     return (
-      <Dialog open={isOpen} onClose={onClose} fullWidth={true}>
+      <Dialog open={isOpen} onClose={onClose} fullWidth={true} classes={{ paper: classes.root }}>
         <DialogTitle>
           <DialogContentText variant="headline">
             Резервация на
@@ -176,19 +177,6 @@ class EditReservationModal extends React.Component {
               onChange={this.handleCustomChange('customer')}
             />}
 
-          {/* {reservation.type == ReservationType.SUBSCRIPTION
-            && <AsyncSelect
-              label="Потребител"
-              value={reservation.customer}
-              query="users"
-              noOptionsMessage={() => 'Няма намерени потребители'}
-              formatOptionLabel={(option) => <Typography component="span">
-                {option.name}
-                <Typography component="span" variant="caption">{option.email}</Typography>
-              </Typography>}
-              onChange={this.handleCustomChange('customer')}
-            />} */}
-
           {reservation.type == ReservationType.SUBSCRIPTION && reservation.customer
             && <AsyncSelect
               disableSearch={true}
@@ -220,7 +208,7 @@ class EditReservationModal extends React.Component {
 
           {reservation.payments && reservation.payments.map((payment, index) => {
             return (
-              <div style={{ display: 'flex', flexDirection: 'column', borderBottom: '1px solid darkgrey' }} key={index}>
+              <div className={classes.paymentCell} key={index}>
 
                 <EnumSelect
                   style={{ width: '100px' }}
@@ -275,7 +263,7 @@ class EditReservationModal extends React.Component {
                       this.setState({ reservation: this.state.reservation });
                     }}
                   >
-                    Изтриване
+                    Премахване
                 </Button>
                 </div>
               </div>
@@ -343,4 +331,20 @@ const ErrorTexts = {
   'reservationInThePast': 'Часът за тази резервация вече е минал.'
 };
 
-export default EditReservationModal;
+const styles = (theme) => ({
+  root: {
+    [theme.breakpoints.up('sm')]: {
+      width: '800px'
+    }
+  },
+  paymentCell: {
+    display: 'flex',
+    flexDirection: 'column',
+    border: `1px solid ${theme.palette.primary.light}`,
+    padding: '1rem',
+    marginBottom: '1rem',
+    borderRadius: '5%'
+  }
+});
+
+export default withStyles(styles)(EditReservationModal);
