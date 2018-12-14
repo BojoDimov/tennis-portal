@@ -506,6 +506,10 @@ class ScheduleService {
   //Throws:
   //maxAllowedTimeDiff
   validateCanBeCanceled(reservation) {
+    if (reservation.type == ReservationType.TOURNAMENT
+      || reservation.type == ReservationType.SERVICE)
+      return;
+
     let allowedDiff = process.env.CANCEL_RES_ALLOWED_DIFF;
     if (reservation.type == ReservationType.SUBSCRIPTION)
       allowedDiff = process.env.CUSTOM_ALLOWED_DIFF;
