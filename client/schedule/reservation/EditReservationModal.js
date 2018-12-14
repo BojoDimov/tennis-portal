@@ -203,7 +203,7 @@ class EditReservationModal extends React.Component {
               formatOptionLabel={(option) => <Typography component="span">
                 Абонамент {l10n_text(option.type, "SubscriptionType")}
                 <Typography component="span" variant="caption" style={{ display: 'inline', marginLeft: '1rem' }}>{option.season.name}</Typography>
-                <Typography component="span" variant="caption">{option.usedHours}/{option.totalHours}</Typography>
+                <Typography component="span" variant="caption">{option.remainingHours} оставащи часа</Typography>
               </Typography>}
               onChange={this.handleCustomChange('subscription')}
             />}
@@ -257,7 +257,7 @@ class EditReservationModal extends React.Component {
                     formatOptionLabel={(option) => <Typography component="span">
                       Абонамент {l10n_text(option.type, "SubscriptionType")}
                       <Typography component="span" variant="caption" style={{ display: 'inline', marginLeft: '1rem' }}>{option.season.name}</Typography>
-                      <Typography component="span" variant="caption">{option.usedHours}/{option.totalHours}</Typography>
+                      <Typography component="span" variant="caption">{option.remainingHours} оставащи часа</Typography>
                     </Typography>}
                     onChange={this.handlePaymentSubscriptionChange(index)}
                   />}
@@ -336,7 +336,7 @@ const ErrorTexts = {
   'typeRequired': '"Вид резервация" е задължително поле',
   'customerRequired': '"Потребител" е задължително поле, когато вид резервация е "Абонат" или "Потребител".',
   'subscriptionRequired': '"Абонамент" е задължително поле, когато вид резервация е "Абонат".',
-  'usedHoursExceedTotalHours': 'Абонаментът няма свободни часове',
+  'usedHoursExceedTotalHours': 'Абонаментът няма оставащи часове',
   'paymentSubscriptionRequired': '"Абонамент" е задължително поле, когато вид плащане е "Отиграване на абонамент".',
   'typeSubscriptionAndHasPaymentSubscription': 'Не може едновременно вид резервация да е "Абонат" и да има вид плащане "Отиграване на абонамент".',
   'maxAllowedTimeDiff': 'Резервацията не може да бъде отказана, защото остават по-малко часове от минимално допустимите часове за отказ.',

@@ -143,8 +143,9 @@ class ScheduleService {
           transaction
         });
 
-        subscription.usedHours++;
-        if (subscription.usedHours > subscription.totalHours)
+        //subscription.usedHours++;
+        subscription.remainingHours--;
+        if (subscription.remainingHours < 0)
           throw { name: 'DomainActionError', error: ['usedHoursExceedTotalHours'] };
         await subscription.save({ transaction });
       }
@@ -238,9 +239,11 @@ class ScheduleService {
               transaction
             });
 
-            subscription.usedHours++;
-            reservation.subscription.usedHours--;
-            if (subscription.usedHours > subscription.totalHours)
+            //subscription.usedHours++;
+            //reservation.subscription.usedHours--;
+            subscription.remainingHours--;
+            reservation.subscription.remainingHours++;
+            if (subscription.remainingHours < 0)
               throw { name: 'DomainActionError', error: ['usedHoursExceedTotalHours'] };
             await subscription.save({ transaction });
             await reservation.subscription.save({ transaction });
@@ -256,8 +259,9 @@ class ScheduleService {
             transaction
           });
 
-          subscription.usedHours++;
-          if (subscription.usedHours > subscription.totalHours)
+          //subscription.usedHours++;
+          subscription.remainingHours--;
+          if (subscription.remainingHours < 0)
             throw { name: 'DomainActionError', error: ['usedHoursExceedTotalHours'] };
           await subscription.save({ transaction });
         }
@@ -266,7 +270,8 @@ class ScheduleService {
         //we are changing from subscribed reservation to other type
         if (reservation.type == ReservationType.SUBSCRIPTION) {
           //decrement existing subscription
-          reservation.subscription.usedHours--;
+          //reservation.subscription.usedHours--;
+          reservation.subscription.remainingHours++;
           await reservation.subscription.save({ transaction });
         }
       }
@@ -295,14 +300,16 @@ class ScheduleService {
 
       if (reservation.type == ReservationType.SUBSCRIPTION) {
         //decrement subscription
-        reservation.subscription.usedHours--;
+        //reservation.subscription.usedHours--;
+        reservation.subscription.remainingHours++;
         await reservation.subscription.save({ transaction });
       }
 
       reservation.payments.forEach(async payment => {
         if (payment.type == ReservationPayment.SUBS_ZONE_1 || payment.type == ReservationPayment.SUBS_ZONE_2) {
           //decrement subscription
-          payment.subscription.usedHours--;
+          //payment.subscription.usedHours--;
+          payment.subscription.remainingHours++;
           await payment.subscription.save({ transaction });
         }
       });
@@ -383,7 +390,8 @@ class ScheduleService {
         if (payment.type == ReservationPayment.SUBS_ZONE_1 || payment.type == ReservationPayment.SUBS_ZONE_2) {
           //payment has subscription
           //decrement subscription
-          payment.subscription.usedHours--;
+          //payment.subscription.usedHours--;
+          payment.subscription.remainingHours++;
           await payment.subscription.save({ transaction });
         }
 
@@ -405,9 +413,11 @@ class ScheduleService {
               //both existing and new payments are subscription
               //increment new payment subscription
               //decrement existing payment subscription
-              subscription.usedHours++;
-              existingPayment.subscription.usedHours--;
-              if (subscription.usedHours > subscription.totalHours)
+              //subscription.usedHours++;
+              //existingPayment.subscription.usedHours--;
+              subscription.remainingHours--;
+              existingPayment.subscription.remainingHours++;
+              if (subscription.remainingHours < 0)
                 throw { name: 'DomainActionError', error: ['usedHoursExceedTotalHours'] };
               await subscription.save({ transaction });
               await existingPayment.subscription.save({ transaction });
@@ -420,8 +430,9 @@ class ScheduleService {
           else {
             //existing payment wasn't subscription, now it is
             //increment new payment subscription
-            subscription.usedHours++;
-            if (subscription.usedHours > subscription.totalHours)
+            //subscription.usedHours++;
+            subscription.remainingHours--;
+            if (subscription.remainingHours < 0)
               throw { name: 'DomainActionError', error: ['usedHoursExceedTotalHours'] };
             await subscription.save({ transaction });
           }
@@ -431,7 +442,8 @@ class ScheduleService {
           if (existingPayment.type == ReservationPayment.SUBS_ZONE_1 || existingPayment.type == ReservationPayment.SUBS_ZONE_2) {
             //existing payment was subsciption, now it isn't
             //decrement existing payment subscription
-            existingPayment.subscription.usedHours--;
+            // existingPayment.subscription.usedHours--;
+            existingPayment.subscription.remainingHours++;
             await existingPayment.subscription.save({ transaction });
           }
         }
@@ -445,8 +457,9 @@ class ScheduleService {
           //increment subscription
           const subscription = await Subscriptions.findById(payment.subscriptionId, { transaction });
 
-          subscription.usedHours++;
-          if (subscription.usedHours > subscription.totalHours)
+          // subscription.usedHours++;
+          subscription.remainingHours--;
+          if (subscription.remainingHours < 0)
             throw { name: 'DomainActionError', error: ['usedHoursExceedTotalHours'] };
           await subscription.save({ transaction });
         }

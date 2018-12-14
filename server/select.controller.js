@@ -70,8 +70,8 @@ const selectSubscriptions = async (request, response) => {
     options.where.type = filter.type;
 
   if (filter.onlyAvailable)
-    options.where.usedHours = {
-      [Op.lt]: Sequelize.col('totalHours')
+    options.where.remainingHours = {
+      [Op.gte]: 0
     };
 
   const result = await Subscriptions.findAndCountAll(options);

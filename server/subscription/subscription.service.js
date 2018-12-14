@@ -59,10 +59,19 @@ class SubscriptionService {
   }
 
   async create(model) {
-    return await Subscriptions.create(model);
+    model.remainingHours = model.totalHours;
+    let created = await Subscriptions.create(model);
+    return await Subscriptions.findById(created.id, {
+      include: [
+        'season',
+        { model: Users, as: 'administrator', attributes: ['id', 'name'] },
+        { model: Users, as: 'customer', attributes: ['id', 'name'] }
+      ]
+    });
   }
 
   async update(subscription, model) {
+    model.remainingHours = model.remainingHours + parseInt(model.totalHours) - parseInt(subscription.totalHours);
     return await subscription.update(model);
   }
 
