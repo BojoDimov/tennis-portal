@@ -223,7 +223,7 @@ class EditReservationModal extends React.Component {
                     label="Стойност"
                     value={payment.amount}
                     InputProps={{
-                      endAdornment: <InputAdornment position="end">Лв</InputAdornment>
+                      endAdornment: <InputAdornment position="end">Лв.</InputAdornment>
                     }}
                     onChange={this.handlePaymentChange('amount', index)}
                   />}

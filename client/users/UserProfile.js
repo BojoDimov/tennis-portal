@@ -63,6 +63,9 @@ class UserProfile extends React.Component {
               onClick={() => this.setState({ resCollapsed: !resCollapsed })}
             >
               <span>Резервации</span>
+              <Typography component="em">
+                Дължим брой часове: {user.reservationDebt}
+              </Typography>
               {resCollapsed && <ExpandLessIcon />}
               {!resCollapsed && <ExpandMoreIcon />}
             </Typography>
@@ -99,6 +102,9 @@ class UserProfile extends React.Component {
               onClick={() => this.setState({ subsCollapsed: !subsCollapsed })}
             >
               <span>Абонаменти</span>
+              <Typography component="em">
+                Дължим членски внос: {user.subscriptionDebt}лв.
+              </Typography>
               {subsCollapsed && <ExpandLessIcon />}
               {!subsCollapsed && <ExpandMoreIcon />}
             </Typography>

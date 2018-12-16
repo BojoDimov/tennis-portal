@@ -68,16 +68,13 @@ class UserService {
       throw { name: 'NotFound' };
     return await user.update({
       isActive: model.isActive,
+      email: model.email,
       name: model.firstName.charAt(0).toUpperCase() + model.firstName.substr(1)
         + ' ' +
         model.lastName.charAt(0).toUpperCase() + model.lastName.substr(1),
-      birthDate: model.birthDate,
       telephone: model.telephone,
-      gender: model.gender,
-      startedPlaying: model.startedPlaying,
-      backhandType: model.backhandType,
-      courtType: model.courtType,
-      playStyle: model.playStyle
+      reservationDebt: model.reservationDebt,
+      subscriptionDebt: model.subscriptionDebt
     });
   }
 

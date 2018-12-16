@@ -85,13 +85,14 @@ class UserDetailsModal extends React.Component {
             label={user.isActive ? 'Активен' : 'Неактивен'}
           />
 
-          {user.id && <Typography variant="caption">
-            E-mail
-            <Typography>{user.email}</Typography>
-          </Typography>}
-
-          {!user.id && <UserModel.UserAccountData user={user} onChange={this.handleChange} errors={errors} />}
+          <UserModel.UserAccountData user={user} onChange={this.handleChange} errors={errors} />
           <UserModel.UserPlayerMainData user={user} onChange={this.handleChange} errors={errors} />
+
+          <Typography
+            style={{ margin: '1rem 0 .3rem 0' }}
+            variant="subheading"
+            color="primary">Допълнителна информация за акаунт</Typography>
+          <UserModel.UserAccountSecondaryData user={user} onChange={this.handleChange} errors={errors} />
         </DialogContent>
 
         <DialogActions className={classes.btnContainer}>
