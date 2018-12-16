@@ -81,7 +81,7 @@ class EditionsList extends React.Component {
           Нов Турнир
         </Button>
 
-        <ExpansionPanel>
+        <ExpansionPanel defaultExpanded={true}>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
             <Typography variant="headline">Турнири</Typography>
           </ExpansionPanelSummary>

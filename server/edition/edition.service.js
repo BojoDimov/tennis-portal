@@ -8,9 +8,7 @@ class EditionsService {
         {
           model: Tournaments,
           as: 'tournament',
-          include: [
-            { model: Files, as: 'thumbnail', required: false }
-          ]
+          include: ['thumbnail']
         },
         'schemes'
       ],
@@ -20,7 +18,14 @@ class EditionsService {
 
   async get(id) {
     const edition = await Editions.findById(id, {
-      include: ['tournament', 'schemes']
+      include: [
+        {
+          model: Tournaments,
+          as: 'tournament',
+          include: ['thumbnail']
+        },
+        'schemes'
+      ]
     });
     if (!edition)
       throw { name: 'NotFound' };

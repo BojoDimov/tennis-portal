@@ -71,7 +71,7 @@ class Editions extends React.Component {
           <Button variant="contained" size="small" color="primary">Добави издание</Button>
           <Button variant="contained" size="small" color="primary">Добави турнир</Button>
         </div>}
-        <ExpansionPanel>
+        <ExpansionPanel defaultExpanded={true}>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
             <Typography className={classes.heading}>Предстоящи турнири</Typography>
           </ExpansionPanelSummary>

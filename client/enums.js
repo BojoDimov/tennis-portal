@@ -74,6 +74,10 @@ export const StatisticsType = {
 };
 
 export const EnumLocalization = {
+  'SchemeType': {
+    [SchemeType.ELIMINATION]: 'Елиминации',
+    [SchemeType.GROUP]: 'Групи'
+  },
   'StatisticsType': {
     [StatisticsType.MONTHLY]: 'Месечна',
     [StatisticsType.DAILY]: 'Дневна'
