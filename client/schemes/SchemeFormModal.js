@@ -80,7 +80,7 @@ class SchemeFormModal extends React.Component {
   }
 
   save() {
-    const model = this.state.model;
+    const model = Object.assign({}, this.state.model, { edition: null });
     return QueryService
       .post(`/schemes/${model.id ? model.id : ''}`, model)
       .then(e => this.props.onChange(e));

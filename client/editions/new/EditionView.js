@@ -12,6 +12,7 @@ import CardContent from '@material-ui/core/CardContent';
 import { SchemeType } from '../../enums';
 import EditionFormModal from './EditionFormModal';
 import SchemeFormModal from '../../schemes/SchemeFormModal';
+import SchemeDetails from '../../schemes/components/SchemeDetails';
 import DisplayImage from '../../components/DisplayImage';
 import QueryService from '../../services/query.service';
 
@@ -48,6 +49,7 @@ class EditionView extends React.Component {
         femaleTeams: false,
         mixedTeams: false,
         schemeType: SchemeType.ELIMINATION,
+        hasGroupPhase: false,
         groupPhase: null,
         groupPhaseId: null,
         ageFrom: '',
@@ -124,6 +126,14 @@ class EditionView extends React.Component {
             </div>
           </CardContent>
         </Card>
+
+        {edition.schemes.map(scheme => {
+          return <SchemeDetails
+            scheme={scheme}
+            CardProps={{
+              style: { marginTop: '.8rem' }
+            }} />
+        })}
       </div>
     );
   }

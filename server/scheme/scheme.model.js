@@ -44,42 +44,42 @@ module.exports = (db, Sequelize) => {
     isActive: { type: Sequelize.BOOLEAN, defaultValue: true, allowNull: false }
   }, {
       validate: {
-        mixedSingleTeams() {
-          if (this.singleTeams && this.mixedTeams)
-            throw new Error('Cannot have mixed teams when the scheme is for single teams');
-        },
-        ageFromTo() {
-          if (this.ageFrom && this.ageTo && this.ageFrom > this.ageTo)
-            throw new Error('Age from must be <= Age to');
-        },
-        registrationStartEnd() {
-          if (new Date(this.registrationStart) > new Date(this.registrationEnd))
-            throw new Error('Registration start date cannot be after registration end date');
-        },
-        tournamentDate() {
-          if (this.date < new Date(this.registrationStart))
-            throw new Error('Tournament start cannot be before registration start date');
-        },
-        schemeFormat() {
-          if (!this.maleTeams && !this.femaleTeams && !this.mixedTeams)
-            throw new Error('');
-        },
-        eTeamCount() {
-          if (this.schemeType == ELIMINATION && !this.maxPlayerCount)
-            throw new Error();
-        },
-        gCount() {
-          if (this.schemeType == GROUP && !this.groupCount)
-            throw new Error();
-        },
-        rrTeamCount() {
-          if (this.schemeType == GROUP && !this.teamsPerGroup)
-            throw new Error();
-        },
-        groupPhase() {
-          if (!this.groupPhaseId && this.hasGroupPhase)
-            throw new Error();
-        }
+        // mixedSingleTeams() {
+        //   if (this.singleTeams && this.mixedTeams)
+        //     throw new Error('Cannot have mixed teams when the scheme is for single teams');
+        // },
+        // ageFromTo() {
+        //   if (this.ageFrom && this.ageTo && this.ageFrom > this.ageTo)
+        //     throw new Error('Age from must be <= Age to');
+        // },
+        // registrationStartEnd() {
+        //   if (new Date(this.registrationStart) > new Date(this.registrationEnd))
+        //     throw new Error('Registration start date cannot be after registration end date');
+        // },
+        // tournamentDate() {
+        //   if (this.date < new Date(this.registrationStart))
+        //     throw new Error('Tournament start cannot be before registration start date');
+        // },
+        // schemeFormat() {
+        //   if (!this.maleTeams && !this.femaleTeams && !this.mixedTeams)
+        //     throw new Error('');
+        // },
+        // eTeamCount() {
+        //   if (this.schemeType == ELIMINATION && !this.maxPlayerCount)
+        //     throw new Error();
+        // },
+        // gCount() {
+        //   if (this.schemeType == GROUP && !this.groupCount)
+        //     throw new Error();
+        // },
+        // rrTeamCount() {
+        //   if (this.schemeType == GROUP && !this.teamsPerGroup)
+        //     throw new Error();
+        // },
+        // groupPhase() {
+        //   if (!this.groupPhaseId && this.hasGroupPhase)
+        //     throw new Error();
+        // }
       }
     });
 

@@ -86,13 +86,15 @@ class EditionsList extends React.Component {
             <Typography variant="headline">Турнири</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails>
-            <Hidden smDown>
-              <EditionsDesktopView editions={editions} actions={actions} />
-            </Hidden>
 
-            <Hidden mdUp>
+            {editions.length == 0 && <Typography variant="caption">Няма регистрирани турнири</Typography>}
+            {editions.length > 0 && <Hidden smDown>
+              <EditionsDesktopView editions={editions} actions={actions} />
+            </Hidden>}
+
+            {editions.length > 0 && <Hidden mdUp>
               <EditionsMobileView editions={editions} actions={actions} />
-            </Hidden>
+            </Hidden>}
           </ExpansionPanelDetails>
         </ExpansionPanel>
       </div>
