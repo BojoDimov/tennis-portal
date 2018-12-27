@@ -107,6 +107,7 @@ class AsyncSelect extends React.Component {
             onMenuScrollToBottom={() => this.load(true)}
             classes={classes}
             styles={selectStyles}
+            menuPlacement="auto"
             components={SelectComponents}
           />
         </NoSsr>

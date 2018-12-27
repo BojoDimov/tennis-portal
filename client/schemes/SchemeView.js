@@ -9,17 +9,20 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import UserService from '../services/user.service';
 import QueryService from '../services/query.service';
 import EnrollmentsComponent from './components/Enrollments';
+import SchemeFormModal from './SchemeFormModal';
 import SchemeDetails from './components/SchemeDetails';
+import SchemeDetailsActions from './components/SchemeDetailsActions';
 import MatchesList from './components/MatchesList';
-import SchemeActions from './components/SchemeActions';
 
 class SchemeView extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      scheme: {},
-      isAdmin: UserService.isAdmin()
+      scheme: {
+        edition: {}
+      },
+      schemeModel: null
     }
   }
 
@@ -29,22 +32,41 @@ class SchemeView extends React.Component {
 
   getData() {
     const { id } = this.props.match.params;
-
     return QueryService
       .get(`/schemes/${id}`)
       .then(e => this.setState({ scheme: e }));
   }
 
+  deleteScheme() {
+    return QueryService.delete(`/schemes/${this.state.scheme.id}`)
+      .then()
+  }
+
   render() {
-    const { scheme, isAdmin, menuAnchor } = this.state;
+    const { scheme, schemeModel } = this.state;
+    const actions = <SchemeDetailsActions scheme={scheme} />
 
     return (
       <div className="container">
-        {isAdmin && <SchemeActions />}
+        {schemeModel
+          && <SchemeFormModal
+            model={schemeModel}
+            onChange={() => {
+              this.setState({ schemeModel: null });
+              this.getData();
+            }}
+            onClose={() => this.setState({ schemeModel: null })}
+          />}
 
-        <SchemeDetails scheme={scheme} />
+        <div style={{ margin: '.5rem 0' }}>
+          <Button variant="contained" color="primary" size="small" onClick={() => this.setState({ schemeModel: scheme })}>Промяна</Button>
+          <Button variant="contained" color="secondary" size="small" style={{ marginLeft: '.3rem' }}>Изтриване</Button>
+        </div>
 
-        <ExpansionPanel>
+        <SchemeDetails scheme={scheme} actions={actions} enableEditionLink />
+        <EnrollmentsComponent schemeId={scheme.id} style={{ marginTop: '1rem' }} />
+
+        {/* <ExpansionPanel>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
             <Typography variant="title">Групова фаза</Typography>
           </ExpansionPanelSummary>
@@ -54,11 +76,10 @@ class SchemeView extends React.Component {
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
             <Typography variant="title">Елиминация</Typography>
           </ExpansionPanelSummary>
-        </ExpansionPanel>
+        </ExpansionPanel> */}
 
-        <EnrollmentsComponent schemeId={scheme.id} />
-
-        <MatchesList schemeId={scheme.id} />
+        {/*
+        <MatchesList schemeId={scheme.id} /> */}
       </div>
     );
   }

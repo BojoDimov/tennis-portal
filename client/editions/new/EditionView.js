@@ -8,11 +8,13 @@ import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import IconButton from '@material-ui/core/IconButton';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
+import { withStyles } from '@material-ui/core/styles';
 
 import { SchemeType } from '../../enums';
 import EditionFormModal from './EditionFormModal';
 import SchemeFormModal from '../../schemes/SchemeFormModal';
 import SchemeDetails from '../../schemes/components/SchemeDetails';
+import SchemeDetailsActions from '../../schemes/components/SchemeDetailsActions';
 import DisplayImage from '../../components/DisplayImage';
 import QueryService from '../../services/query.service';
 
@@ -69,6 +71,7 @@ class EditionView extends React.Component {
 
   render() {
     const { edition, editionModel, schemeModel } = this.state;
+    const { classes } = this.props;
 
     return (
       <div className="container">
@@ -100,7 +103,7 @@ class EditionView extends React.Component {
         <Card>
           <CardContent>
             <Typography variant="headline">
-              Турнир {edition.name}
+              {edition.name}
             </Typography>
             <Typography variant="caption">{edition.info}</Typography>
 
@@ -127,16 +130,37 @@ class EditionView extends React.Component {
           </CardContent>
         </Card>
 
-        {edition.schemes.map(scheme => {
-          return <SchemeDetails
-            scheme={scheme}
-            CardProps={{
-              style: { marginTop: '.8rem' }
-            }} />
-        })}
+        <div className={classes.schemesRoot}>
+          {edition.schemes.map(scheme => {
+            const actions = <SchemeDetailsActions scheme={scheme} enableViewLink />;
+            return <SchemeDetails
+              scheme={scheme}
+              actions={actions}
+              CardProps={{
+                className: classes.schemesItem
+              }} />
+          })}
+        </div>
       </div>
     );
   }
 }
 
-export default EditionView;
+const styles = (theme) => ({
+  schemesRoot: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginTop: '.3rem'
+  },
+  schemesItem: {
+    width: '49.5%',
+    marginBottom: '.3rem',
+    paddingBottom: '0',
+    [theme.breakpoints.down('xs')]: {
+      width: '100%'
+    }
+  }
+});
+
+export default withStyles(styles)(EditionView);

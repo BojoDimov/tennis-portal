@@ -67,6 +67,7 @@ router.post('/', create);
 router.get('/:id', get);
 router.post('/:id', update);
 router.delete('/:id', remove);
+router.use('/:id/enrollments', include, require('../enrollment/enrollment.controller'));
 
 // router.get('/', getAll);
 // router.get('/:id', get);

@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const {
   Users,
+  Teams,
   Subscriptions,
   Tournaments,
   Sequelize
@@ -53,6 +54,33 @@ const selectUsers = async (request, response) => {
   });
 }
 
+const selectTeams = async (request, response) => {
+  const filter = request.body;
+  const options = {
+    include: [
+      { model: Users, as: 'user1', attributes: ['id', 'name', 'email'] },
+      { model: Users, as: 'user2', attributes: ['id', 'name', 'email'] }
+    ]
+  }
+
+  if (filter.singleTeams)
+    options.where = {
+      user2Id: null
+    };
+  else
+    options.where = {
+      user2Id: {
+        [Op.not]: null
+      }
+    };
+
+  const result = await Teams.findAndCountAll(options);
+  return response.json({
+    totalCount: result.count,
+    options: result.rows
+  })
+}
+
 const selectSubscriptions = async (request, response) => {
   const filter = request.body;
   const options = {
@@ -97,6 +125,7 @@ const selectTournament = async (request, response) => {
 }
 
 router.post('/users', selectUsers);
+router.post('/teams', selectTeams);
 router.post('/subscriptions', selectSubscriptions);
 router.post('/tournaments', selectTournament);
 

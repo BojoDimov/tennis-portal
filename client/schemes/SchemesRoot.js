@@ -1,6 +1,5 @@
 import React from 'react';
 import { Switch, Route } from 'react-router-dom';
-import Schemes from './Schemes';
 import SchemeView from './SchemeView';
 
 class SchemesRoot extends React.Component {
@@ -11,11 +10,6 @@ class SchemesRoot extends React.Component {
           path="/schemes/:id"
           render={(props) => <SchemeView {...props} />}
         />
-        {/* <Route
-          exact
-          path="/editions/"
-          render={(props) => <Editions {...props} />}
-        /> */}
       </Switch>
     );
   }

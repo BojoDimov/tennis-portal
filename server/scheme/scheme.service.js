@@ -10,7 +10,11 @@ class SchemeService {
   }
 
   async get(id) {
-
+    return await Schemes.findById(id, {
+      include: [
+        'edition'
+      ]
+    });
   }
 
   async create(model) {
