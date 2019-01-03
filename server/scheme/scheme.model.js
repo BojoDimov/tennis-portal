@@ -12,23 +12,12 @@ module.exports = (db, Sequelize) => {
     mixedTeams: { type: Sequelize.BOOLEAN, allowNull: false },
     ageFrom: Sequelize.INTEGER,
     ageTo: Sequelize.INTEGER,
+    seed: Sequelize.INTEGER,
     maxPlayerCount: Sequelize.INTEGER,
     groupCount: Sequelize.INTEGER,
     teamsPerGroup: Sequelize.INTEGER,
-    registrationStart: {
-      type: Sequelize.DATE,
-      allowNull: false,
-      // get: function () {
-      //   return moment(this.getDataValue('registrationStart')).format('YYYY-MM-DDTHH:mm');
-      // }
-    },
-    registrationEnd: {
-      type: Sequelize.DATE,
-      allowNull: false,
-      // get: function () {
-      //   return moment(this.getDataValue('registrationEnd')).format('YYYY-MM-DDTHH:mm');
-      // }
-    },
+    registrationStart: { type: Sequelize.DATE, allowNull: false, },
+    registrationEnd: { type: Sequelize.DATE, allowNull: false },
     hasGroupPhase: { type: Sequelize.BOOLEAN, allowNull: false },
     status: {
       type: Sequelize.ENUM, allowNull: false,

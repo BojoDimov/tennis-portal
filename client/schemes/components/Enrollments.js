@@ -25,34 +25,29 @@ class EnrollmentsComponent extends React.Component {
     this.state = {
       openTeamModal: false,
       enrolled: [],
-      queued: [],
       isAdmin: true
     }
   }
 
-  componentDidMount() {
-    this.getData();
-  }
-
   componentDidUpdate(prevProps) {
-    if (prevProps.schemeId != this.props.schemeId)
+    if (prevProps.scheme != this.props.scheme)
       this.getData();
   }
 
   getData() {
-    const { schemeId } = this.props;
+    const { scheme } = this.props;
 
     QueryService
-      .get(`/schemes/${schemeId}/enrollments`)
-      .then(e => this.setState(e));
+      .get(`/schemes/${scheme.id}/enrollments`)
+      .then(e => this.setState({ enrolled: e }));
   }
 
   add(team) {
-    const { schemeId } = this.props;
+    const { scheme } = this.props;
     return QueryService
-      .post(`/schemes/${schemeId}/enrollments`, {
+      .post(`/schemes/${scheme.id}/enrollments`, {
         teamId: team.id,
-        schemeId: schemeId,
+        schemeId: scheme.id,
         user1Id: team.user1Id,
         user2Id: team.user2Id
       })
@@ -63,18 +58,16 @@ class EnrollmentsComponent extends React.Component {
   }
 
   removeEnrollment(id) {
-    const { schemeId } = this.props;
+    const { scheme } = this.props;
 
     return QueryService
-      .delete(`/schemes/${schemeId}/enrollments/${id}`)
+      .delete(`/schemes/${scheme.id}/enrollments/${id}`)
       .then(() => this.getData());
   }
 
   render() {
     const { enrolled, queued, isAdmin, openTeamModal } = this.state;
-    const { classes } = this.props;
-    const seed = 3;
-    const count = 5;
+    const { scheme, classes } = this.props;
 
     return (
       <ExpansionPanel style={{ marginTop: '1rem' }}>
@@ -110,13 +103,13 @@ class EnrollmentsComponent extends React.Component {
 
               {enrolled.map((enrollment, index) => {
                 let borderClass = classes.default;
-                if (index < seed)
+                if (index < scheme.seed)
                   borderClass = classes.seed;
-                if (index + 1 == seed)
+                if (index + 1 == scheme.seed)
                   borderClass = classes.seedDivider;
-                if (index + 1 == count)
+                if (index + 1 == scheme.maxPlayerCount)
                   borderClass = classes.enrolledDivider;
-                if (index + 1 > count)
+                if (index + 1 > scheme.maxPlayerCount)
                   borderClass = classes.enrolled;
 
                 return (
@@ -132,10 +125,13 @@ class EnrollmentsComponent extends React.Component {
                             <Typography variant="body2">{enrollment.team.user2.name}</Typography>
                           </Link>}
                       </TableCell>
-                      {enrollment.team.rankings[0] &&
+                      <TableCell padding="dense">
+                        <Typography variant="caption">няма</Typography>
+                      </TableCell>
+                      {/* {enrollment.team.rankings && enrollment.team.rankings[0] &&
                         <TableCell>{enrollment.team.rankings[0].points}</TableCell>}
-                      {!enrollment.team.rankings[0] &&
-                        <TableCell><Typography variant="caption">няма</Typography></TableCell>}
+                      {(!enrollment.team.rankings || !enrollment.team.rankings[0]) &&
+                        <TableCell><Typography variant="caption">няма</Typography></TableCell>} */}
                       {isAdmin && <TableCell padding="none">
                         <Button variant="text" color="secondary" size="small"
                           onClick={() => this.removeEnrollment(enrollment.id)}
@@ -147,30 +143,6 @@ class EnrollmentsComponent extends React.Component {
                   </React.Fragment>
                 );
               })}
-
-              {queued.map((enrollment, index) => {
-                return (
-                  <React.Fragment key={enrollment.id}>
-                    <TableRow>
-                      <TableCell padding="none">{enrolled.length + index + 1}</TableCell>
-                      <TableCell>{enrollment.team.user1.name}</TableCell>
-                      {enrollment.team.rankings[0] &&
-                        <TableCell padding="dense">{enrollment.team.rankings[0].points}</TableCell>}
-                      {!enrollment.team.rankings[0] &&
-                        <TableCell padding="dense"><Typography variant="caption">няма</Typography></TableCell>}
-                      {isAdmin && <TableCell padding="none">
-                        <Button variant="text" color="primary" size="small"
-                          style={{ color: 'darkred' }}
-                          onClick={() => this.removeEnrollment(enrollment.id)}
-                        >
-                          <DeleteForeverIcon />
-                        </Button>
-                      </TableCell>}
-                    </TableRow>
-                  </React.Fragment>
-                );
-              })}
-
             </TableBody>
           </Table>
         </ExpansionPanelDetails>

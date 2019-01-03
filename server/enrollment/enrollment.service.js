@@ -59,10 +59,7 @@ class EnrollmentService {
         this.getPlayersInQueue(scheme)
       ])
       .then(([p, q]) => {
-        return {
-          enrolled: p,
-          queued: q
-        };
+        return (p || []).concat((q || []));
       });
   }
 

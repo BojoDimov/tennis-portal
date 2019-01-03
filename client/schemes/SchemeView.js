@@ -64,7 +64,7 @@ class SchemeView extends React.Component {
         </div>
 
         <SchemeDetails scheme={scheme} actions={actions} enableEditionLink />
-        <EnrollmentsComponent schemeId={scheme.id} style={{ marginTop: '1rem' }} />
+        <EnrollmentsComponent scheme={scheme} style={{ marginTop: '1rem' }} />
 
         {/* <ExpansionPanel>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>

@@ -109,9 +109,9 @@ export const EnumLocalization = {
   },
   'Status': {
     [Status.DRAFT]: 'чернова',
-    [Status.PUBLISHED]: 'публикуван',
-    [Status.FINALIZED]: 'приключен',
-    [Status.INACTIVE]: 'неактивен'
+    [Status.PUBLISHED]: 'публикувано',
+    [Status.FINALIZED]: 'приключено',
+    [Status.INACTIVE]: 'неактивно'
   },
   'Gender': {
     [Gender.MALE]: 'Мъж',

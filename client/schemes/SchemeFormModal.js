@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import withMobileDialog from '@material-ui/core/withMobileDialog';
 import DatePicker from 'material-ui-pickers/DatePicker';
+import DateTimePicker from 'material-ui-pickers/DateTimePicker';
 
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -66,6 +67,7 @@ class SchemeFormModal extends React.Component {
       }
 
       model[prop] = value;
+      console.log(value);
       this.setState({ model });
     };
   }
@@ -110,6 +112,7 @@ class SchemeFormModal extends React.Component {
           <TextField
             label="Име на схемата"
             value={model.name}
+            required
             fullWidth={true}
             onChange={this.handleChange('name')}
           />
@@ -122,7 +125,19 @@ class SchemeFormModal extends React.Component {
             onChange={this.handleChange('info')}
           />
 
-          <FormControl fullWidth={true}>
+          <EnumSelect
+            label="Тип схема"
+            value={model.schemeType}
+            required
+            fullWidth={true}
+            onChange={e => this.handleCustomChange('schemeType')(e.target.value)}
+            EnumValues={SchemeType}
+            EnumName="SchemeType"
+          />
+
+          <Typography variant="headline" style={{ marginTop: '2rem' }}>Параметри</Typography>
+
+          <FormControl fullWidth={true} required>
             <InputLabel>Формат</InputLabel>
             <Select
               onChange={e => this.handleCustomChange('singleTeams')(e.target.value)}
@@ -154,6 +169,7 @@ class SchemeFormModal extends React.Component {
             }
             label="Жени"
           />
+
           {!model.singleTeams && <FormControlLabel
             control={
               <Checkbox
@@ -166,20 +182,12 @@ class SchemeFormModal extends React.Component {
             label="Микс"
           />}
 
-          <EnumSelect
-            label="Тип схема"
-            value={model.schemeType}
-            fullWidth={true}
-            onChange={e => this.handleCustomChange('schemeType')(e.target.value)}
-            EnumValues={SchemeType}
-            EnumName="SchemeType"
-          />
-
           {model.schemeType == SchemeType.ELIMINATION
             && <TextField
               label="Брой играчи"
               value={model.maxPlayerCount}
               type="number"
+              required={true}
               fullWidth={true}
               onChange={this.handleChange('maxPlayerCount')}
             />}
@@ -189,6 +197,7 @@ class SchemeFormModal extends React.Component {
               label="Брой групи"
               value={model.groupCount}
               type="number"
+              required={true}
               fullWidth={true}
               onChange={this.handleChange('groupCount')}
             />}
@@ -198,9 +207,18 @@ class SchemeFormModal extends React.Component {
               label="Брой играчи в група"
               value={model.teamsPerGroup}
               type="number"
+              required={true}
               fullWidth={true}
               onChange={this.handleChange('teamsPerGroup')}
             />}
+
+          <TextField
+            label="Брой поставени играчи"
+            value={model.seed}
+            type="number"
+            fullWidth={true}
+            onChange={this.handleChange('seed')}
+          />
 
           <TextField
             label="Възраст От"
@@ -218,15 +236,44 @@ class SchemeFormModal extends React.Component {
             onChange={this.handleChange('ageTo')}
           />
 
+
+          <Typography variant="headline" style={{ marginTop: '2rem' }}>Дати</Typography>
+
           <DatePicker
             autoOk
             label="Дата на схемата"
             labelFunc={(date) => date ? moment(model.date).format('DD.MM.YYYY') : ''}
             clearable
+            required={true}
             fullWidth={true}
             value={model.date}
             onChange={this.handleCustomChange('date')}
           />
+
+          <DateTimePicker
+            label="Начало на регистрациите"
+            labelFunc={(date) => date ? moment(model.registrationStart).format('DD.MM.YYYY  HH:mm') : ''}
+            clearable
+            ampm={false}
+            required={true}
+            fullWidth={true}
+            value={model.registrationStart}
+            onChange={this.handleCustomChange('registrationStart')}
+          />
+
+          <DateTimePicker
+            label="Край на регистрациите"
+            labelFunc={(date) => date ? moment(model.registrationEnd).format('DD.MM.YYYY  HH:mm') : ''}
+            clearable
+            ampm={false}
+            required={true}
+            fullWidth={true}
+            value={model.registrationEnd}
+            onChange={this.handleCustomChange('registrationEnd')}
+          />
+
+
+          <Typography variant="headline" style={{ marginTop: '2rem' }}>Точки</Typography>
 
           <TextField
             label="Точки за участие"

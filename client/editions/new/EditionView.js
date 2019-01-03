@@ -60,8 +60,8 @@ class EditionView extends React.Component {
         groupCount: '',
         teamsPerGroup: '',
         date: null,
-        registrationStartDate: null,
-        registrationEndDate: null,
+        registrationStart: null,
+        registrationEnd: null,
         pPoints: 1,
         wPoints: 15,
         cPoints: 20

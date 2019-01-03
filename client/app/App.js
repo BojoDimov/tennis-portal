@@ -2,6 +2,7 @@ import React from 'react';
 import { BrowserRouter, withRouter } from 'react-router-dom';
 import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
 import DateFnsUtils from 'material-ui-pickers/utils/date-fns-utils';
+import MomentFnsUtils from 'material-ui-pickers/utils/moment-utils';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { withStyles } from '@material-ui/core/styles';
 import { MuiThemeProvider } from '@material-ui/core/styles';

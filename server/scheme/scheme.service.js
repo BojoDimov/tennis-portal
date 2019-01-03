@@ -19,26 +19,40 @@ class SchemeService {
 
   async create(model) {
     this.formatModel(model);
+    this.validateModel(model);
+    this.processModel(model);
+
     return await Schemes.create(model);
   }
 
-  formatModel(model) {
-    model.maxPlayerCount = parseInt(model.maxPlayerCount);
-    model.date = new Date('2018-12-20')
-    model.registrationStart = new Date('2018-12-15');
-    model.registrationEnd = new Date('2018-12-17');
-    model.ageFrom = model.ageFrom ? model.ageFrom : null;
-    model.ageTo = model.ageTo ? model.ageTo : null;
-    model.groupCount = model.groupCount || null;
-    model.teamsPerGroup = model.teamsPerGroup || null;
-  }
+  async update(scheme, model) {
+    this.formatModel(model);
+    this.validateModel(model);
+    this.processModel(model);
 
-  async update(id, model) {
-
+    return await scheme.update(model);
   }
 
   async remove(id) {
 
+  }
+
+  formatModel(model) {
+    model.ageFrom = parseInt(model.ageFrom) || null;
+    model.ageTo = parseInt(model.ageFrom) || null;
+    model.maxPlayerCount = parseInt(model.maxPlayerCount) || null;
+    model.groupCount = parseInt(model.groupCount) || null;
+    model.teamsPerGroup = parseInt(model.teamsPerGroup) || null;
+    model.seed = parseInt(model.seed) || null;
+  }
+
+  validateModel(model) {
+
+  }
+
+  processModel(model) {
+    if (model.schemeType == SchemeType.GROUP)
+      model.maxPlayerCount = model.groupCount * model.teamsPerGroup;
   }
 }
 

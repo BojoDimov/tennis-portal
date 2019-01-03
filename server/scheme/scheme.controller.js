@@ -34,7 +34,8 @@ const create = async (req, res, next) => {
 
 const update = async (req, res, next) => {
   try {
-    await SchemeService.get(req.params.id, req.body);
+    const scheme = await SchemeService.get(req.params.id);
+    await SchemeService.update(scheme, req.body);
     return res.json({});
   }
   catch (err) {

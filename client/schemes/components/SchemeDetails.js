@@ -34,7 +34,7 @@ class SchemeDetails extends React.Component {
             >
               Регистрация от
               <Typography>
-                {moment(scheme.registrationStart).format('DD.MM.YYYY')}
+                {moment(scheme.registrationStart).format('DD.MM.YYYY / HH:mm')}
               </Typography>
             </Typography>
             <Typography
@@ -43,7 +43,7 @@ class SchemeDetails extends React.Component {
             >
               Регистрация до
               <Typography>
-                {moment(scheme.registrationEnd).format('DD.MM.YYYY')}
+                {moment(scheme.registrationEnd).format('DD.MM.YYYY / HH:mm')}
               </Typography>
             </Typography>
           </div>
