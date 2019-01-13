@@ -48,6 +48,7 @@ module.exports = {
   ReservationPayment: {
     SODEXO: 'sodexo',
     MULTISPORT: 'multisport',
+    ABK: 'abk',
     CASH: 'cash',
     SUBS_ZONE_1: 'zone1',
     SUBS_ZONE_2: 'zone2'

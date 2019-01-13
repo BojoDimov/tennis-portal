@@ -101,7 +101,7 @@ router.get('/activation', activate);
 router.get('/recovery/step1', issueRecoveryEmail);
 router.post('/recovery/step2', recoverAccount);
 router.get('/', auth, getAll);
-router.post('/:id', update);
+router.post('/:id', auth, update);
 router.post('/', create);
 router.delete('/:id', auth, remove);
 

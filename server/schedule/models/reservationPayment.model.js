@@ -7,6 +7,7 @@ module.exports = (db, Sequelize) => {
       values: [
         ReservationPayment.SODEXO,
         ReservationPayment.MULTISPORT,
+        ReservationPayment.ABK,
         ReservationPayment.CASH,
         ReservationPayment.SUBS_ZONE_1,
         ReservationPayment.SUBS_ZONE_2

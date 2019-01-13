@@ -37,9 +37,14 @@ module.exports = (db, Sequelize) => {
       values: [CourtType.CLAY, CourtType.GRASS, CourtType.HARD, CourtType.INDOOR]
     },
 
+    //debts information
+    subscriptionDebt: { type: Sequelize.INTEGER, allowNull: false, defaultValue: 0 },
+    reservationDebt: { type: Sequelize.DECIMAL(10, 2), allowNull: false, defaultValue: 0 },
+
     //system properties
     isAdmin: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false },
-    isActive: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false }
+    isActive: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false },
+    isSuperAdmin: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false }
   });
 
 

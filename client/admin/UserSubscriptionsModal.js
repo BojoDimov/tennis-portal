@@ -67,7 +67,7 @@ class UserSubscriptionsModal extends React.Component {
       seasonId: this.props.season.id,
       administrator: this.state.administrator,
       totalHours: 0,
-      usedHours: 0,
+      remainingHours: 0,
       type: ''
     });
 
@@ -133,7 +133,7 @@ class Subscription extends React.Component {
       season: {},
       type: '',
       totalHours: 0,
-      usedHours: 0,
+      remainingHours: 0,
       isEditMode: false,
       expanded: false
     }
@@ -225,8 +225,8 @@ class Subscription extends React.Component {
             </Typography>
 
             <Typography variant="caption">
-              Изиграни часове:
-              <Typography>{model.usedHours}</Typography>
+              Оставащи часове
+              <Typography>{model.remainingHours}</Typography>
             </Typography>
           </React.Fragment>}
 
@@ -248,13 +248,10 @@ class Subscription extends React.Component {
               fullWidth={true}
             />
 
-            <TextField
-              label="Изиграни часове"
-              type="number"
-              value={model.usedHours}
-              onChange={(e) => this.setState({ usedHours: e.target.value })}
-              fullWidth={true}
-            />
+            <Typography variant="caption" style={{ marginTop: '.5rem' }}>
+              Оставащи часове (ще бъде обновено след запис)
+              <Typography>{model.remainingHours}</Typography>
+            </Typography>
           </React.Fragment>}
 
           {this.state.isEditMode && <div style={{ marginTop: '.5rem' }}>

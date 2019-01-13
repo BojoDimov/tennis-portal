@@ -3,7 +3,7 @@ const { SubscriptionType } = require('../infrastructure/enums');
 module.exports = (db, Sequelize) => {
   const Subscriptions = db.define("Subscriptions", {
     totalHours: { type: Sequelize.INTEGER, allowNull: false },
-    usedHours: { type: Sequelize.INTEGER, allowNull: false, defaultValue: 0 },
+    remainingHours: { type: Sequelize.INTEGER, allowNull: false, defaultValue: 0 },
     type: {
       type: Sequelize.ENUM,
       allowNull: false,

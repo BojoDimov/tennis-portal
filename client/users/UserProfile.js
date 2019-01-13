@@ -63,6 +63,9 @@ class UserProfile extends React.Component {
               onClick={() => this.setState({ resCollapsed: !resCollapsed })}
             >
               <span>Резервации</span>
+              <Typography component="em">
+                Дължим брой часове: {user.reservationDebt}
+              </Typography>
               {resCollapsed && <ExpandLessIcon />}
               {!resCollapsed && <ExpandMoreIcon />}
             </Typography>
@@ -99,6 +102,9 @@ class UserProfile extends React.Component {
               onClick={() => this.setState({ subsCollapsed: !subsCollapsed })}
             >
               <span>Абонаменти</span>
+              <Typography component="em">
+                Дължим членски внос: {user.subscriptionDebt}лв.
+              </Typography>
               {subsCollapsed && <ExpandLessIcon />}
               {!subsCollapsed && <ExpandMoreIcon />}
             </Typography>
@@ -110,7 +116,7 @@ class UserProfile extends React.Component {
                       <Typography classes={{ root: classes.listItemRoot }} key={subscription.id}>
                         Абонамент {l10n_text(subscription.type, "SubscriptionType")}
                         <Typography component="span" variant="caption" style={{ display: 'inline', marginLeft: '1rem' }}>{subscription.season.name}</Typography>
-                        <Typography component="span" variant="caption">{subscription.usedHours}/{subscription.totalHours}</Typography>
+                        <Typography component="span" variant="caption">{subscription.remainingHours} оставащи часове</Typography>
                       </Typography>
                     );
                   })}

@@ -1,5 +1,6 @@
 import React from 'react';
 import TextField from '@material-ui/core/TextField';
+import InputAdornment from '@material-ui/core/InputAdornment';
 import DatePicker from 'material-ui-pickers/DatePicker';
 
 import EnumSelect from '../components/EnumSelect';
@@ -8,6 +9,7 @@ import { Gender, CourtType, PlayStyle, BackhandType } from '../enums';
 class UserModel {
   constructor(props) {
     this.UserAccountData = this.UserAccountData.bind(this);
+    this.UserAccountSecondaryData = this.UserAccountSecondaryData.bind(this);
     this.UserPlayerMainData = this.UserPlayerMainData.bind(this);
     this.UserPlayerSecondaryData = this.UserPlayerSecondaryData.bind(this);
   }
@@ -25,7 +27,9 @@ class UserModel {
       startedPlaying: '',
       playStyle: '',
       courtType: '',
-      backhandType: ''
+      backhandType: '',
+      reservationDebt: 0,
+      subscriptionDebt: 0
     };
   }
 
@@ -42,7 +46,9 @@ class UserModel {
       startedPlaying: [],
       playStyle: [],
       courtType: [],
-      backhandType: []
+      backhandType: [],
+      reservationDebt: [],
+      subscriptionDebt: []
     };
   }
 
@@ -79,7 +85,7 @@ class UserModel {
           onChange={onChange('email')}
         />
 
-        <TextField
+        {!user.id && <TextField
           id="password"
           label="Парола"
           type="password"
@@ -89,9 +95,9 @@ class UserModel {
           error={errors.password.length > 0}
           helperText={this.composeErrors(errors, 'password')}
           onChange={onChange('password')}
-        />
+        />}
 
-        <TextField
+        {!user.id && <TextField
           id="confirmPassword"
           label="Повтори парола"
           type="password"
@@ -101,7 +107,40 @@ class UserModel {
           error={errors.confirmPassword.length > 0}
           helperText={this.composeErrors(errors, 'confirmPassword')}
           onChange={onChange('confirmPassword')}
+        />}
+      </React.Fragment>
+    );
+  }
+
+  UserAccountSecondaryData(props) {
+    const { user, onChange, errors } = props;
+    return (
+      <React.Fragment>
+        <TextField
+          id="reservationDebt"
+          label="Дължим брой часове"
+          type="number"
+          value={user.reservationDebt}
+          fullWidth={true}
+          error={errors.reservationDebt.length > 0}
+          helperText={this.composeErrors(errors, 'reservationDebt')}
+          onChange={onChange('reservationDebt')}
         />
+
+        <TextField
+          id="reservationDebt"
+          label="Дължим членски внос"
+          type="number"
+          value={user.subscriptionDebt}
+          fullWidth={true}
+          InputProps={{
+            endAdornment: <InputAdornment position="end">Лв.</InputAdornment>
+          }}
+          error={errors.subscriptionDebt.length > 0}
+          helperText={this.composeErrors(errors, 'subscriptionDebt')}
+          onChange={onChange('subscriptionDebt')}
+        />
+
       </React.Fragment>
     );
   }
