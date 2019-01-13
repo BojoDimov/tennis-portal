@@ -63,16 +63,23 @@ const include = async (req, res, next) => {
   }
 }
 
+const drawBracket = async (req, res, next) => {
+  try {
+    await SchemeService.drawBracket(req.scheme);
+    return res.json({});
+  }
+  catch (err) {
+    return next(err, req, res, null);
+  }
+}
+
 router.post('/filter', filter);
 router.post('/', create);
 router.get('/:id', get);
 router.post('/:id', update);
 router.delete('/:id', remove);
+router.get('/:id/drawBracket', include, drawBracket);
 router.use('/:id/enrollments', include, require('../enrollment/enrollment.controller'));
-
-// router.get('/', getAll);
-// router.get('/:id', get);
-// router.use('/:id/enrollments', includeScheme, require('../enrollment/enrollment.controller'));
-// router.use('/:id/matches', includeScheme, require('../match/match.controller'));
+router.use('/:id/matches', include, require('../match/match.controller'));
 
 module.exports = router;

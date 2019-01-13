@@ -11,6 +11,9 @@ class SchemeDetailsActions extends React.Component {
           <Link to={`/schemes/${scheme.id}`}>
             <Button color="primary">Преглед</Button>
           </Link>}
+        <Link to={`/schemes/${scheme.id}/elimination`}>
+          <Button color="primary">Схема</Button>
+        </Link>
         <Button color="primary">Записване</Button>
         <Button color="secondary">Отписване</Button>
       </React.Fragment>

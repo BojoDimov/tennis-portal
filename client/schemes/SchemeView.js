@@ -42,6 +42,11 @@ class SchemeView extends React.Component {
       .then()
   }
 
+  drawBracket() {
+    return QueryService.get(`/schemes/${this.state.scheme.id}/drawBracket`)
+      .then();
+  }
+
   render() {
     const { scheme, schemeModel } = this.state;
     const actions = <SchemeDetailsActions scheme={scheme} />
@@ -60,6 +65,7 @@ class SchemeView extends React.Component {
 
         <div style={{ margin: '.5rem 0' }}>
           <Button variant="contained" color="primary" size="small" onClick={() => this.setState({ schemeModel: scheme })}>Промяна</Button>
+          <Button variant="contained" color="primary" size="small" onClick={() => this.drawBracket()} style={{ marginLeft: '.3rem' }}>Изтегляне</Button>
           <Button variant="contained" color="secondary" size="small" style={{ marginLeft: '.3rem' }}>Изтриване</Button>
         </div>
 

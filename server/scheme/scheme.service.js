@@ -1,8 +1,13 @@
 const {
   sequelize,
-  Schemes
+  Schemes,
+  Matches,
+  Groups,
+  GroupTeams
 } = require('../db');
 const { SchemeType } = require('../infrastructure/enums');
+const Enrollments = require('../enrollment/enrollment.service');
+const Bracket = require('./bracketFunctions');
 
 class SchemeService {
   async filter() {
@@ -53,6 +58,23 @@ class SchemeService {
   processModel(model) {
     if (model.schemeType == SchemeType.GROUP)
       model.maxPlayerCount = model.groupCount * model.teamsPerGroup;
+  }
+
+  async drawBracket(scheme) {
+    const teams = await Enrollments.getPlayers(scheme);
+
+    if (scheme.schemeType == SchemeType.ELIMINATION) {
+      let matches = Bracket.drawEliminations(scheme, scheme.seed, teams)
+      return await Matches.bulkCreate(matches);
+    }
+    else if (scheme.schemeType == SchemeType.GROUP) {
+      let groups = Bracket.drawGroups(scheme, scheme.seed, teams);
+      return Promise.all(groups.map(group => Groups.create(group, {
+        include: [
+          { model: GroupTeams, as: 'teams' }
+        ]
+      })));
+    }
   }
 }
 
