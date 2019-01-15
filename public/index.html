@@ -1,31 +1,48 @@
 <!DOCTYPE html>
-<html>
+<html lang="bg">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <title>Diana Tennis Club</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <link rel="shortcut icon" href="%PUBLIC_URL%/assets/tennis-ball.png" />
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300&amp;subset=cyrillic">
-  <link rel="stylesheet" type="text/css" href="css/loading-indicator.css">
-  <link rel="stylesheet" type="text/css" href="css/basic.css">
   <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+
+  <link rel="stylesheet" type="text/css" href="%PUBLIC_URL%/css/loading-indicator.css">
+  <link rel="stylesheet" type="text/css" href="%PUBLIC_URL%/css/basic.css">
+  <title>Тенис клуб Диана</title>
+  <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
 </head>
 
 <body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
   <div id="root">
     <div id="circle">
       <div class="c1"></div>
       <div class="c2"></div>
       <div class="c3"></div>
-      <img src="assets/tennis-ball.png" />
+      <img src="%PUBLIC_URL%/assets/tennis-ball.png" />
     </div>
   </div>
-  <noscript>
-    You need to enable JavaScript to run this app.
-  </noscript>
-  <script src="configuration.js"></script>
-  <script src="bundle.js"></script>
-  <script src="../dist/bundle.js"></script>
+  <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
 </body>
 
 </html>

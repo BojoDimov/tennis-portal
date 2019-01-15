@@ -1,16 +1,13 @@
 import React from 'react';
-import { BrowserRouter, withRouter } from 'react-router-dom';
-import MuiPickersUtilsProvider from 'material-ui-pickers/utils/MuiPickersUtilsProvider';
+import { withRouter } from 'react-router-dom';
+import MuiPickersUtilsProvider from 'material-ui-pickers/MuiPickersUtilsProvider';
 import DateFnsUtils from 'material-ui-pickers/utils/date-fns-utils';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import { withStyles } from '@material-ui/core/styles';
 import { MuiThemeProvider } from '@material-ui/core/styles';
 
-import Home from './Home';
 import AppRouting from './app.routing';
 import SignIn from '../login/SignIn';
 import Navigation from '../menu/Navigation';
-import { dispatchEvent, catchEvent } from '../services/events.service';
+import { catchEvent } from '../services/events.service';
 import UserService from '../services/user.service';
 import NavigationModel from '../menu/navigation.model';
 import { ApplicationMode } from '../enums';

@@ -116,7 +116,8 @@ class DateComponent extends React.Component {
               classes={{
                 root: rootClass,
                 selected: classes.selectedTab,
-                disabled: classes.disabledTab
+                disabled: classes.disabledTab,
+                labelContainer: classes.labelContainer
               }}
               disabled={this.isDisabled(day)}
               key={day}
@@ -132,6 +133,9 @@ class DateComponent extends React.Component {
 const styles = (theme) => {
   return {
     tabsRoot: {
+    },
+    labelContainer: {
+      padding: '.5rem 0'
     },
     tab: {
       backgroundColor: 'white',
