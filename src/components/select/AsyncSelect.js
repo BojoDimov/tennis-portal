@@ -7,7 +7,7 @@ import styles from './styles';
 
 import QueryService from '../../services/query.service';
 
-export class AsyncSelect extends React.Component {
+class AsyncSelect extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -107,6 +107,7 @@ export class AsyncSelect extends React.Component {
             onMenuScrollToBottom={() => this.load(true)}
             classes={classes}
             styles={selectStyles}
+            menuPlacement="auto"
             components={SelectComponents}
           />
         </NoSsr>

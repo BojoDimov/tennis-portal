@@ -1,18 +1,30 @@
-const { Tournaments, sequelize } = require('../db');
-
+const { Tournaments } = require('../db');
+const { Status } = require('../infrastructure/enums');
 class TournamentsService {
-  getAll() {
-    return Tournaments
-      .findAll({
-        include: [{ all: true }]
-      });
+  async filter() {
+    return await Tournaments.findAll({ include: ['thumbnail'] });
   }
 
-  get(id) {
-    return Tournaments
-      .findById(id, {
-        include: [{ all: true }]
-      });
+  async get(id) {
+    const tournament = await Tournaments.findById(id, { include: ['thumbnail'] });
+    if (!tournament)
+      throw { name: 'NotFound' };
+    return tournament;
+  }
+
+  async create(model) {
+    model.status = Status.DRAFT;
+    return await Tournaments.create(model);
+  }
+
+  async update(id, model) {
+    const tournament = this.get(id);
+    return await tournament.update(model);
+  }
+
+  async remove(id) {
+    const tournament = this.get(id);
+    return await tournament.destroy();
   }
 }
 

@@ -11,5 +11,15 @@ module.exports = (db, Sequelize) => {
     isActive: { type: Sequelize.BOOLEAN, defaultValue: true, allowNull: false }
   });
 
+  Tournaments.associate = function (models) {
+    models.Tournaments.belongsTo(models.Files, {
+      as: 'thumbnail',
+      foreignKey: {
+        name: 'thumbnailId',
+        allowNull: true
+      }
+    });
+  }
+
   return Tournaments;
 }

@@ -111,7 +111,7 @@ export function MultiValue(props) {
 
 export function Menu(props) {
   return (
-    <Paper square className={props.selectProps.classes.paper} {...props.innerProps}>
+    <Paper className={props.selectProps.classes.paper} {...props.innerProps} style={{ marginTop: '0' }}>
       {props.children}
     </Paper>
   );

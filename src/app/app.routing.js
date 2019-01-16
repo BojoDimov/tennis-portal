@@ -2,14 +2,14 @@ import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
 import NotFoundPage from './NotFoundPage';
-import Schemes from '../schemes';
-import Editions from '../editions';
+import SchemesRoot from '../schemes/SchemesRoot';
+import EliminationBracket from '../schemes/brackets/EliminationBracket';
+import EditionsRoot from '../editions/new/EditionsRoot';
 import Schedule from '../schedule/Schedule';
 import Courts from '../admin/Courts';
 import Seasons from '../admin/Seasons';
 import Statistics from '../statistics/Statistics';
 import Users from '../admin/Users';
-import Subscriptions from '../admin/Subscriptions';
 import NavigationModel from '../menu/navigation.model';
 import UserService from '../services/user.service';
 import UserProfile from '../users/UserProfile';
@@ -25,22 +25,17 @@ const routeMapping = {
   '/admin/seasons': Seasons,
   '/admin/users': Users,
   '/admin/statistics': Statistics,
-  // '/admin/subscriptions': Subscriptions,
-  // '/admin/config': NotFoundPage,
   '/account': UserProfile
 };
 
 const AppRouting = () => (
   <UserService.WithApplicationMode>
     {mode => <Switch>
-      {/* <Route path="/users" component={Users} /> */}
       {/* <Route path="/news" component={News} /> */}
       {/* <Route path="/tournaments" component={null} /> */}
-      {/* <Route path="/editions" component={Editions} /> */}
-      {/* <Route path="/schemes" component={Schemes} /> */}
-      {/* <Route path="/schedule/admin" component={ScheduleAdmin} /> */}
-      {/* <Route path="/schedule" component={Schedule} />
-      <Route path="/admin" component={ScheduleAdmin} /> */}
+      <Route path="/editions" component={EditionsRoot} />
+      <Route path="/schemes" component={SchemesRoot} />
+      <Route path="/schemes/:id/elimination" component={EliminationBracket} />
 
       {NavigationModel.routes.map(route => {
         return (

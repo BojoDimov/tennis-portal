@@ -13,118 +13,81 @@ import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import { withStyles } from '@material-ui/core/styles';
-import SingleSelect from '../../components/select';
 
+import SelectTeamModal from './SelectTeamModal';
 import QueryService from '../../services/query.service';
 import UserService from '../../services/user.service';
-
-const styles = (theme) => ({
-  root: {
-    marginLeft: 0
-  },
-  seedDivider: {
-    borderBottom: '2px solid lightgreen'
-  },
-  enrolledDivider: {
-    borderBottom: '2px solid lightcoral'
-  },
-  default: {}
-});
+import { lighten } from '@material-ui/core/styles/colorManipulator';
 
 class EnrollmentsComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      teams: [],
-      selectedTeam: null,
+      openTeamModal: false,
       enrolled: [],
-      queued: [],
-      isAdmin: UserService.isAdmin()
+      isAdmin: true
     }
   }
 
-  componentDidMount() {
-    if (this.state.isAdmin)
-      this.getSelectData();
-  }
-
   componentDidUpdate(prevProps) {
-    if (prevProps.schemeId != this.props.schemeId)
+    if (prevProps.scheme != this.props.scheme)
       this.getData();
   }
 
   getData() {
-    const { schemeId } = this.props;
+    const { scheme } = this.props;
 
     QueryService
-      .get(`/schemes/${schemeId}/enrollments`)
-      .then(e => this.setState(e));
+      .get(`/schemes/${scheme.id}/enrollments`)
+      .then(e => this.setState({ enrolled: e }));
   }
 
-  getSelectData() {
-    QueryService
-      .get(`/teams`)
-      .then(e => this.setState({ teams: this.mapTeams(e) }));
-  }
-
-  addEnrollment() {
-    const { schemeId } = this.props;
-    const { selectedTeam, teams } = this.state;
-    let newTeam = teams.find(e => e.id == selectedTeam.value);
-
+  add(team) {
+    const { scheme } = this.props;
     return QueryService
-      .post(`/schemes/${schemeId}/enrollments`, {
-        teamId: newTeam.id,
-        schemeId: schemeId,
-        user1Id: newTeam.user1Id,
-        user2Id: newTeam.user2Id
+      .post(`/schemes/${scheme.id}/enrollments`, {
+        teamId: team.id,
+        schemeId: scheme.id,
+        user1Id: team.user1Id,
+        user2Id: team.user2Id
       })
-      .then(e => this.getData());
+      .then(e => {
+        this.setState({ openTeamModal: false });
+        this.getData();
+      });
   }
 
   removeEnrollment(id) {
-    const { schemeId } = this.props;
+    const { scheme } = this.props;
 
     return QueryService
-      .delete(`/schemes/${schemeId}/enrollments/${id}`)
+      .delete(`/schemes/${scheme.id}/enrollments/${id}`)
       .then(() => this.getData());
   }
 
-  mapTeams(teams) {
-    return teams.map(team => {
-      return {
-        id: team.id,
-        name: `${team.user1.name}${team.user2 ? ` + ${team.user2.name}` : ''}`
-      }
-    });
-  }
-
   render() {
-    const { enrolled, queued, isAdmin, teams, selectedTeam } = this.state;
-    const { classes } = this.props;
-    const seed = 3;
-    const count = 5;
+    const { enrolled, queued, isAdmin, openTeamModal } = this.state;
+    const { scheme, classes } = this.props;
 
     return (
-      <ExpansionPanel>
+      <ExpansionPanel style={{ marginTop: '1rem' }}>
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           <Typography variant="title">Играчи</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails style={{ flexDirection: 'column' }}>
-          {isAdmin && <div>
-            <SingleSelect
-              classes={{ root: classes.root }}
-              placeholder="Избор на отбор"
-              items={teams}
-              value={selectedTeam}
-              onChange={e => this.setState({ selectedTeam: e })}
+
+          <div>
+            <SelectTeamModal
+              open={openTeamModal}
+              onChange={(team) => this.add(team)}
+              onClose={() => this.setState({ openTeamModal: false })}
             />
             <Button variant="outlined" color="primary" size="small"
-              onClick={() => this.addEnrollment()}
+              onClick={() => this.setState({ openTeamModal: true })}
             >
               Добави
             </Button>
-          </div>}
+          </div>
 
           <Table>
             <TableHead>
@@ -137,12 +100,17 @@ class EnrollmentsComponent extends React.Component {
               </TableRow>
             </TableHead>
             <TableBody>
+
               {enrolled.map((enrollment, index) => {
                 let borderClass = classes.default;
-                if (index + 1 == seed)
+                if (index < scheme.seed)
+                  borderClass = classes.seed;
+                if (index + 1 == scheme.seed)
                   borderClass = classes.seedDivider;
-                if (index + 1 == count)
+                if (index + 1 == scheme.maxPlayerCount)
                   borderClass = classes.enrolledDivider;
+                if (index + 1 > scheme.maxPlayerCount)
+                  borderClass = classes.enrolled;
 
                 return (
                   <React.Fragment key={enrollment.id}>
@@ -157,36 +125,15 @@ class EnrollmentsComponent extends React.Component {
                             <Typography variant="body2">{enrollment.team.user2.name}</Typography>
                           </Link>}
                       </TableCell>
-                      {enrollment.team.rankings[0] &&
+                      <TableCell padding="dense">
+                        <Typography variant="caption">няма</Typography>
+                      </TableCell>
+                      {/* {enrollment.team.rankings && enrollment.team.rankings[0] &&
                         <TableCell>{enrollment.team.rankings[0].points}</TableCell>}
-                      {!enrollment.team.rankings[0] &&
-                        <TableCell><Typography variant="caption">няма</Typography></TableCell>}
+                      {(!enrollment.team.rankings || !enrollment.team.rankings[0]) &&
+                        <TableCell><Typography variant="caption">няма</Typography></TableCell>} */}
                       {isAdmin && <TableCell padding="none">
-                        <Button variant="text" color="primary" size="small"
-                          style={{ color: 'darkred' }}
-                          onClick={() => this.removeEnrollment(enrollment.id)}
-                        >
-                          <DeleteForeverIcon />
-                        </Button>
-                      </TableCell>}
-                    </TableRow>
-                  </React.Fragment>
-                );
-              })}
-
-              {queued.map((enrollment, index) => {
-                return (
-                  <React.Fragment key={enrollment.id}>
-                    <TableRow>
-                      <TableCell padding="none">{enrolled.length + index + 1}</TableCell>
-                      <TableCell>{enrollment.team.user1.name}</TableCell>
-                      {enrollment.team.rankings[0] &&
-                        <TableCell padding="dense">{enrollment.team.rankings[0].points}</TableCell>}
-                      {!enrollment.team.rankings[0] &&
-                        <TableCell padding="dense"><Typography variant="caption">няма</Typography></TableCell>}
-                      {isAdmin && <TableCell padding="none">
-                        <Button variant="text" color="primary" size="small"
-                          style={{ color: 'darkred' }}
+                        <Button variant="text" color="secondary" size="small"
                           onClick={() => this.removeEnrollment(enrollment.id)}
                         >
                           <DeleteForeverIcon />
@@ -202,6 +149,28 @@ class EnrollmentsComponent extends React.Component {
       </ExpansionPanel>
     )
   }
+}
+
+const styles = (theme) => {
+  console.log(theme);
+  return ({
+    root: {
+      marginLeft: 0
+    },
+    seedDivider: {
+      backgroundColor: lighten(theme.palette.primary.main, .9),
+      borderBottom: `2px solid ${theme.palette.primary.light}`
+    },
+    enrolledDivider: {
+      borderBottom: `2px solid ${theme.palette.secondary.light}`
+    },
+    seed: {
+      backgroundColor: lighten(theme.palette.primary.main, .9)
+    },
+    enrolled: {
+      backgroundColor: lighten(theme.palette.secondary.main, .9),
+    }
+  });
 }
 
 export default withStyles(styles)(EnrollmentsComponent);

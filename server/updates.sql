@@ -6,6 +6,8 @@ Alter table "Reservations"
 add "isActive" boolean not null default false;
 update "Users" set "isActive"= true;
 
+update "Users" set "isActive"= true;
+
 --update 2
 --add 'abk' to reservationPaymentEnum
 alter table "Subscriptions"
@@ -19,3 +21,14 @@ alter table "Users"
 add "subscriptionDebt" int not null default 0,
 add "reservationDebt" int not null default 0,
 add "isSuperAdmin" boolean not null default false;
+
+--------------UPDATE 3-------------
+-------Tournaments, Schemes--------
+alter table "Schemes"
+add "seed" int;
+
+alter table "Schemes"
+alter "registrationStart" type varchar(255);
+
+alter table "Schemes"
+alter "registrationEnd" type varchar(255);

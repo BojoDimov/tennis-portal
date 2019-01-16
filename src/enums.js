@@ -75,6 +75,10 @@ export const StatisticsType = {
 };
 
 export const EnumLocalization = {
+  'SchemeType': {
+    [SchemeType.ELIMINATION]: 'Елиминации',
+    [SchemeType.GROUP]: 'Групи'
+  },
   'StatisticsType': {
     [StatisticsType.MONTHLY]: 'Месечна',
     [StatisticsType.DAILY]: 'Дневна'
@@ -107,9 +111,9 @@ export const EnumLocalization = {
   },
   'Status': {
     [Status.DRAFT]: 'чернова',
-    [Status.PUBLISHED]: 'публикуван',
-    [Status.FINALIZED]: 'приключен',
-    [Status.INACTIVE]: 'неактивен'
+    [Status.PUBLISHED]: 'публикувано',
+    [Status.FINALIZED]: 'приключено',
+    [Status.INACTIVE]: 'неактивно'
   },
   'Gender': {
     [Gender.MALE]: 'Мъж',

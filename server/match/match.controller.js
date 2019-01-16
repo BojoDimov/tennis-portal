@@ -24,7 +24,19 @@ const remove = (req, res, next) => {
 
 }
 
-router.get('/', getAll);
+const getEliminationMatches = async (req, res, next) => {
+  const matches = await MatchesService.getEliminationMatches(req.scheme);
+  return res.json(matches);
+}
+
+const getGroupMatches = async (req, res, next) => {
+  const matches = await MatchesService.getGroupMatches(req.scheme);
+  return res.json(matches);
+}
+
+
+router.get('/elimination', getEliminationMatches);
+router.get('/groups', getGroupMatches);
 router.get('/:id', get);
 router.post('/', create);
 router.post('/:id', update);
