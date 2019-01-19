@@ -9,8 +9,7 @@ class EditionsService {
           model: Tournaments,
           as: 'tournament',
           include: ['thumbnail']
-        },
-        'schemes'
+        }
       ],
       order: [['id', 'desc']]
     });
