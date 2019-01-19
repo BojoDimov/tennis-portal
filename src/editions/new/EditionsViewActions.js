@@ -8,14 +8,16 @@ export default function generateActions(onChange, onRemove) {
     render() {
       const { edition } = this.props;
 
-      <span>
-        <Button onClick={onChange(edition)}>
-          Редакция
+      return (
+        <span>
+          <Button onClick={onChange(edition)}>
+            Редакция
         </Button>
-        <Button onClick={onRemove(edition)}>
-          Изтриване
+          <Button onClick={onRemove(edition)}>
+            Изтриване
         </Button>
-      </span>
+        </span>
+      );
     }
   }
 }

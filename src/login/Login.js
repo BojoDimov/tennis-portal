@@ -31,7 +31,8 @@ class Login extends React.Component {
     super(props);
     this.state = {
       email: '',
-      password: ''
+      password: '',
+      hasError: false
     };
 
     this.handleChange = (name) => (event) => {
@@ -48,7 +49,10 @@ class Login extends React.Component {
         UserService.login(token);
         this.props.onClose();
       })
-      .catch(err => console.log('There have been an error:', err));
+      .catch(() => {
+        this.setState({ hasError: true });
+        //setTimeout(() => this.setState({ hasError: false }), 10 * 1000);
+      });
   }
 
   render() {
@@ -78,12 +82,12 @@ class Login extends React.Component {
             Вход
         </Button>
         </div>
-        <div style={{ marginTop: '1rem', display: 'flex', justifyContent: 'center' }}>
+        {this.state.hasError && <em style={{ color: 'red', marginTop: '.5rem' }}>Невалидна комбинация от потребителско име и парола</em>}
+        <div style={{ marginTop: '.5rem', display: 'flex', justifyContent: 'center' }}>
           <Link to="/recovery/step1" className={classes.link} onClick={this.props.onClose}>
             Забравена парола?
         </Link>
         </div>
-
       </form>
     );
   }
