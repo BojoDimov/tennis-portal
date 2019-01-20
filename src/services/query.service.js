@@ -89,7 +89,7 @@ class QueryService {
       window.localStorage.setItem('token', null);
       window.location.replace('/');
     }
-    else return res;
+    else return res || null;
   }
 
   notFoundHandling(item) {
