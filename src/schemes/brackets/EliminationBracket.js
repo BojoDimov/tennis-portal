@@ -5,6 +5,7 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Zoom from '@material-ui/core/Zoom';
 import './styles.scss';
 
+import QueryService from '../../services/query.service';
 import MatchFormModal from '../components/MatchFormModal';
 const rounds = [[1, 2, 3, 4, 5, 6, 7, 8], [1, 2, 3, 4], [1, 2], [1]];
 
@@ -12,12 +13,22 @@ class EliminationBracket extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      matchModel: null
+      matchModel: null,
+      matches: []
     }
   }
 
+  componentDidMount() {
+    this.getData();
+  }
+
+  getData() {
+    return QueryService.get(`/schemes/${this.props.match.params.id}/matches/elimination`)
+      .then(e => this.setState({ matches: e }));
+  }
+
   render() {
-    const { matchModel } = this.state;
+    const { matchModel, matches } = this.state;
     return (
       <React.Fragment>
         {matchModel
@@ -28,7 +39,7 @@ class EliminationBracket extends React.Component {
           />}
 
         <div className="bracket">
-          {rounds.map((round, index) => {
+          {matches.map((round, index) => {
             return (
               <div key={index} className="round">
                 <ul className="list">

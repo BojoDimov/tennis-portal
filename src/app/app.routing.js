@@ -34,8 +34,8 @@ const AppRouting = () => (
       {/* <Route path="/news" component={News} /> */}
       {/* <Route path="/tournaments" component={null} /> */}
       <Route path="/editions" component={EditionsRoot} />
-      <Route path="/schemes" component={SchemesRoot} />
       <Route path="/schemes/:id/elimination" component={EliminationBracket} />
+      <Route path="/schemes" component={SchemesRoot} />
 
       {NavigationModel.routes.map(route => {
         return (
