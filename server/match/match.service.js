@@ -57,16 +57,16 @@ class MatchesService {
           ['sets', 'order', 'asc']
         ]
       });
-    const result = [];
-    let currentRound = 0;
-    matches.forEach(match => {
-      if (match.round > currentRound) {
-        currentRound++;
-        result.push([]);
-      }
-      result[result.length - 1].push(match);
-    });
-    return result;
+    // const result = [];
+    // let currentRound = 0;
+    // matches.forEach(match => {
+    //   if (match.round > currentRound) {
+    //     currentRound++;
+    //     result.push([]);
+    //   }
+    //   result[result.length - 1].push(match);
+    // });
+    return matches;
   }
 
   getGroupMatches(scheme) {

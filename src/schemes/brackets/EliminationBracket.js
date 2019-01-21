@@ -7,14 +7,14 @@ import './styles.scss';
 
 import QueryService from '../../services/query.service';
 import MatchFormModal from '../components/MatchFormModal';
-const rounds = [[1, 2, 3, 4, 5, 6, 7, 8], [1, 2, 3, 4], [1, 2], [1]];
 
 class EliminationBracket extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       matchModel: null,
-      matches: []
+      bracket: [],
+      scheme: null
     }
   }
 
@@ -24,13 +24,65 @@ class EliminationBracket extends React.Component {
 
   getData() {
     return QueryService.get(`/schemes/${this.props.match.params.id}/matches/elimination`)
-      .then(e => this.setState({ matches: e }));
+      .then(e => this.setState({
+        bracket: this.constructBracket(e.matches, e.scheme),
+        scheme: e.scheme
+      }));
+  }
+
+  getRoundName(roundSize) {
+    let label = `R${roundSize}`;
+
+    if (roundSize == 8)
+      label = 'QF';
+    if (roundSize == 4)
+      label = 'SF';
+    if (roundSize == 2)
+      label = 'F';
+
+    return <Typography
+      component="span"
+      variant="headline"
+      color="textSecondary"
+      align="center"
+      style={{ borderBottom: '1px solid grey' }}
+    >
+      {label}
+    </Typography>
+  }
+
+  constructMatch(match, round, scheme) {
+    return {
+      schemeId: scheme.id,
+      match,
+      round,
+      team1: null,
+      team2: null,
+      seed: null,
+      sets: [],
+      withdraw: null
+    };
+  }
+
+  constructBracket(matches, scheme) {
+    let size = matches.filter(match => match.round == 1).length;
+    let rounds = Math.log2(size);
+    let bracket = [];
+
+    for (let round = 0; round < rounds + 1; round++) {
+      bracket[round] = [];
+      for (let match = 0; match < (size / (Math.pow(2, round))); match++) {
+        let currentMatch = matches.find(e => e.match == match + 1 && e.round == round + 1);
+        bracket[round].push(currentMatch || this.constructMatch(match + 1, round + 1, scheme));
+      }
+    }
+    return bracket;
   }
 
   render() {
-    const { matchModel, matches } = this.state;
+    const { matchModel, bracket } = this.state;
     return (
-      <React.Fragment>
+      <Paper elevation={4} style={{ margin: '1rem', backgroundColor: 'rgba(255, 255, 255, .9)' }}>
         {matchModel
           && <MatchFormModal
             model={matchModel}
@@ -38,16 +90,25 @@ class EliminationBracket extends React.Component {
             onClose={() => this.setState({ matchModel: null })}
           />}
 
+        {/* {<div className="mask"></div>} */}
+
         <div className="bracket">
-          {matches.map((round, index) => {
+          {bracket.map((round, index) => {
             return (
               <div key={index} className="round">
+                <h3 className="round-title" style={{ padding: '.5rem' }}>
+                  {this.getRoundName(round.length * 2)}
+                </h3>
                 <ul className="list">
                   {round.map((match, i) => {
                     return (
                       <li className="item" key={i}>
-                        <div className="match" onClick={() => this.setState({ matchModel: {} })} >
-                          <Match />
+                        <div className="match">
+                          <Match
+                            match={match}
+                            onEvent={() => this.setState({ matchModel: match })}
+                            flag
+                          />
                         </div>
                       </li>
                     )
@@ -57,34 +118,66 @@ class EliminationBracket extends React.Component {
             )
           })}
         </div>
-      </React.Fragment>
+      </Paper>
     );
   }
 }
 
 class Match extends React.Component {
   render() {
-    return (
-      <React.Fragment>
+    const { match, flag } = this.props;
+
+    if (flag)
+      return (
         <Tooltip
           title="Въвеждане/промяна на резултат"
-          placement="top-center"
+          placement="top"
           TransitionComponent={Zoom}
           enterDelay={0}
+          onClick={this.props.onEvent}
         >
           <Paper elevation={4} className="match-box">
-            <div className="match-box-team">
-              <Typography style={{ fontSize: '.8em' }} >Панайот Давидов</Typography>
-              <Typography style={{ fontSize: '.8em' }} variant="caption">6 3 6</Typography>
-            </div>
-            <div className="match-box-team">
-              <Typography style={{ fontSize: '.8em' }}>Виктория Петрова</Typography>
-              <Typography style={{ fontSize: '.8em' }} variant="caption">3 6 4</Typography>
-            </div>
+            <TeamInfo team={match.team1} match={match.match} round={match.round} pos={1} />
+            <TeamInfo team={match.team2} match={match.match} round={match.round} pos={2} />
           </Paper>
         </Tooltip>
-      </React.Fragment>
-    );
+      );
+
+    else
+      return (
+        <Paper elevation={4} className="match-box">
+          <TeamInfo team={match.team1} match={match.match} round={match.round} pos={1} />
+          <TeamInfo team={match.team2} match={match.match} round={match.round} pos={2} />
+        </Paper>
+      );
+  }
+}
+
+class TeamInfo extends React.Component {
+  render() {
+    const { team, match, round, pos } = this.props;
+
+    if (team)
+      return (
+        <div className="match-box-team">
+          <div>
+            <Typography style={{ fontSize: '.8em' }}>{team.user1.name}</Typography>
+            {team.user2 &&
+              <Typography style={{ fontSize: '.8em' }}>{team.user2.name}</Typography>}
+          </div>
+          <Typography style={{ fontSize: '.8em' }} variant="caption">6 3 6</Typography>
+        </div>
+      );
+
+    else
+      return (
+        <div className="match-box-team">
+          <Typography style={{ fontSize: '.8em' }}>
+            {round == 1 ? 'bye' : `winner of match ${match * 2 + pos - 2} round ${round - 1}`}
+          </Typography>
+          <Typography style={{ fontSize: '.8em' }} variant="caption">6 3 6</Typography>
+        </div>
+      );
   }
 }
 

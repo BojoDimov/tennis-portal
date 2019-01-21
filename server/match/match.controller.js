@@ -26,7 +26,10 @@ const remove = (req, res, next) => {
 
 const getEliminationMatches = async (req, res, next) => {
   const matches = await MatchesService.getEliminationMatches(req.scheme);
-  return res.json(matches);
+  return res.json({
+    matches,
+    scheme: req.scheme
+  });
 }
 
 const getGroupMatches = async (req, res, next) => {
