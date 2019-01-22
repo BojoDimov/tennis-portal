@@ -24,7 +24,9 @@ class MatchFormModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      model: {},
+      model: {
+        sets: []
+      },
       errors: []
     }
 
@@ -57,21 +59,34 @@ class MatchFormModal extends React.Component {
 
       this.setState({ model });
     }
+
+    this.handleSetsChange = (index, prop) => (event) => {
+      const model = this.state.model;
+      model.sets[index][prop] = event.target.value;
+      this.setState({ model });
+    }
   }
 
   componentDidMount() {
-    this.setState({ model: this.props.model });
+    this.setState({ model: this.formatSets(this.props.model) });
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.model != this.props.model)
-      this.setState({ model: this.props.model });
+      this.setState({ model: this.formatSets(this.props.model) });
+  }
+
+  formatSets(match) {
+    match.sets = [1, 2, 3, 4, 5].map(order => {
+      return match.sets.find(set => set.order == order) || { order, matchId: match.id };
+    });
+    return match;
   }
 
   save() {
     const model = this.state.model;
     return QueryService
-      .post(`/tournaments/${model.id ? model.id : ''}`, model)
+      .post(`/schemes/${model.schemeId}/matches/${model.id}`, model)
       .then(e => this.props.onChange(e));
   }
 
@@ -81,7 +96,6 @@ class MatchFormModal extends React.Component {
 
     const enableTeamChange = model.round == 1;
     const label = (doubles ? 'Отбор ' : 'Играч ');
-    const withdrawOptions = [model.team1, model.team2];
 
     return (
       <Dialog
@@ -170,15 +184,15 @@ class MatchFormModal extends React.Component {
               </TableRow>
             </TableHead>
             <TableBody>
-              {[1, 2, 3, 4, 5].map(index => {
+              {model.sets.map((set, index) => {
                 return (
-                  <TableRow key={index}>
-                    <TableCell padding="dense">{index}</TableCell>
+                  <TableRow key={set.order}>
+                    <TableCell padding="dense">{set.order}</TableCell>
                     <TableCell padding="none">
-                      <input type="text" style={{ maxWidth: '40px' }} />
+                      <input value={set.team1} type="text" style={{ maxWidth: '40px' }} onChange={this.handleSetsChange(index, 'team1')} />
                     </TableCell>
                     <TableCell padding="none">
-                      <input type="text" style={{ maxWidth: '40px' }} />
+                      <input value={set.team2} type="text" style={{ maxWidth: '40px' }} onChange={this.handleSetsChange(index, 'team2')} />
                     </TableCell>
                   </TableRow>
                 );

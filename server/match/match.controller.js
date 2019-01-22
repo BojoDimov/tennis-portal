@@ -2,26 +2,14 @@ const express = require('express');
 const router = express.Router();
 const MatchesService = require('./match.service');
 
-const getAll = (req, res, next) => {
-  return MatchesService
-    .getAll(req.scheme.id)
-    .then(e => res.json(e));
-}
-
-const get = (req, res, next) => {
-
-}
-
-const create = (req, res, next) => {
-
-}
-
-const update = (req, res, next) => {
-
-}
-
-const remove = (req, res, next) => {
-
+const update = async (req, res, next) => {
+  try {
+    await MatchesService.update(req.params.matchId, req.body, req.scheme);
+    return res.json({});
+  }
+  catch (err) {
+    return next(err, req, res, null);
+  }
 }
 
 const getEliminationMatches = async (req, res, next) => {
@@ -40,9 +28,9 @@ const getGroupMatches = async (req, res, next) => {
 
 router.get('/elimination', getEliminationMatches);
 router.get('/groups', getGroupMatches);
-router.get('/:id', get);
-router.post('/', create);
-router.post('/:id', update);
-router.delete('/:id', remove);
+router.post('/:matchId', update);
+// router.get('/:matchId', get);
+// router.post('/', create);
+// router.delete('/:matchId', remove);
 
 module.exports = router;

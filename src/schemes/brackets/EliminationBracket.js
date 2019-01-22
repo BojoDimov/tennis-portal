@@ -137,8 +137,8 @@ class Match extends React.Component {
           onClick={this.props.onEvent}
         >
           <Paper elevation={4} className="match-box">
-            <TeamInfo team={match.team1} match={match.match} round={match.round} pos={1} />
-            <TeamInfo team={match.team2} match={match.match} round={match.round} pos={2} />
+            <TeamInfo team={match.team1} match={match} round={match.round} pos={1} />
+            <TeamInfo team={match.team2} match={match} round={match.round} pos={2} />
           </Paper>
         </Tooltip>
       );
@@ -146,14 +146,29 @@ class Match extends React.Component {
     else
       return (
         <Paper elevation={4} className="match-box">
-          <TeamInfo team={match.team1} match={match.match} round={match.round} pos={1} />
-          <TeamInfo team={match.team2} match={match.match} round={match.round} pos={2} />
+          <TeamInfo team={match.team1} match={match} round={match.round} pos={1} />
+          <TeamInfo team={match.team2} match={match} round={match.round} pos={2} />
         </Paper>
       );
   }
 }
 
 class TeamInfo extends React.Component {
+  composeScore(sets, pos) {
+    if (!sets)
+      return null;
+    let enemyPos = (pos == 1 ? 2 : 1);
+    let result = sets.map((set, i) => {
+      return (
+        <span key={i} style={{ width: '22px', display: 'flex' }}>
+          {set['team' + pos]}
+          {set['team' + enemyPos] > set['team' + pos] && set.tiebreaker && <sup style={{ fontSize: '.5rem' }}>({set.tiebreaker})</sup>}
+        </span>
+      );
+    });
+    return result;
+  }
+
   render() {
     const { team, match, round, pos } = this.props;
 
@@ -165,17 +180,18 @@ class TeamInfo extends React.Component {
             {team.user2 &&
               <Typography style={{ fontSize: '.8em' }}>{team.user2.name}</Typography>}
           </div>
-          <Typography style={{ fontSize: '.8em' }} variant="caption">6 3 6</Typography>
+          <Typography style={{ fontSize: '.8em', display: 'flex' }} variant="caption">
+            {this.composeScore(match.sets, pos)}
+          </Typography>
         </div>
       );
 
     else
       return (
         <div className="match-box-team">
-          <Typography style={{ fontSize: '.8em' }}>
-            {round == 1 ? 'bye' : `winner of match ${match * 2 + pos - 2} round ${round - 1}`}
+          <Typography style={{ fontSize: '.8em' }} variant="caption">
+            {round == 1 ? 'bye' : `winner of match ${match.match * 2 + pos - 2} round ${round - 1}`}
           </Typography>
-          <Typography style={{ fontSize: '.8em' }} variant="caption">6 3 6</Typography>
         </div>
       );
   }
