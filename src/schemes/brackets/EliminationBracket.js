@@ -160,9 +160,10 @@ class TeamInfo extends React.Component {
     let enemyPos = (pos == 1 ? 2 : 1);
     let result = sets.map((set, i) => {
       return (
-        <span key={i} style={{ width: '22px', display: 'flex' }}>
+        <span key={i} style={{ width: set.tiebreaker ? '22px' : '10px', display: 'flex' }}>
           {set['team' + pos]}
-          {set['team' + enemyPos] > set['team' + pos] && set.tiebreaker && <sup style={{ fontSize: '.5rem' }}>({set.tiebreaker})</sup>}
+          {set['team' + enemyPos] > set['team' + pos] && set.tiebreaker
+            && <div style={{ fontSize: '.5rem', marginTop: '-3px' }}>({set.tiebreaker})</div>}
         </span>
       );
     });
@@ -180,7 +181,7 @@ class TeamInfo extends React.Component {
             {team.user2 &&
               <Typography style={{ fontSize: '.8em' }}>{team.user2.name}</Typography>}
           </div>
-          <Typography style={{ fontSize: '.8em', display: 'flex' }} variant="caption">
+          <Typography style={{ display: 'flex' }} variant="caption">
             {this.composeScore(match.sets, pos)}
           </Typography>
         </div>
