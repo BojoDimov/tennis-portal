@@ -78,7 +78,14 @@ class MatchFormModal extends React.Component {
 
   formatSets(match) {
     match.sets = [1, 2, 3, 4, 5].map(order => {
-      return match.sets.find(set => set.order == order) || { order, matchId: match.id };
+      let existingSet = match.sets.find(set => set.order == order);
+      if (existingSet && existingSet.tiebreaker) {
+        existingSet.team1 = existingSet.team1 < existingSet.team2 ?
+          `${existingSet.team1}(${existingSet.tiebreaker})` : existingSet.team1;
+        existingSet.team2 = existingSet.team2 < existingSet.team1 ?
+          `${existingSet.team2}(${existingSet.tiebreaker})` : existingSet.team2;
+      }
+      return existingSet || { order, matchId: match.id };
     });
     return match;
   }
