@@ -1,5 +1,7 @@
 const {
   Matches,
+  Groups,
+  GroupTeams,
   Sets,
   Teams,
   Users,
@@ -84,7 +86,30 @@ class MatchesService {
   }
 
   getGroupMatches(scheme) {
-
+    return Groups
+      .findAll({
+        where: {
+          schemeId: scheme.id
+        },
+        include: [
+          { model: Matches, as: 'matches', include: this.matchesIncludes() },
+          {
+            model: GroupTeams, as: 'teams',
+            include: [{
+              model: Teams, as: 'team',
+              include: [
+                { model: Users, as: 'user1', attributes: ['id', 'name', 'email'] },
+                { model: Users, as: 'user2', attributes: ['id', 'name', 'email'] }
+              ]
+            }]
+          }
+        ],
+        order: [
+          'group',
+          ['teams', 'order', 'asc'],
+          ['matches', 'sets', 'order', 'asc']
+        ]
+      });
   }
 
   getWinner(match) {

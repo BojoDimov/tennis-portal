@@ -21,8 +21,12 @@ const getEliminationMatches = async (req, res, next) => {
 }
 
 const getGroupMatches = async (req, res, next) => {
-  const matches = await MatchesService.getGroupMatches(req.scheme);
-  return res.json(matches);
+  const groups = await MatchesService.getGroupMatches(req.scheme);
+
+  return res.json({
+    groups,
+    scheme: req.scheme
+  })
 }
 
 

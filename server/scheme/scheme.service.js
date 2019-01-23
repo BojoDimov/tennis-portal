@@ -68,6 +68,8 @@ class SchemeService {
 
       if (scheme.bracketStatus == BracketStatus.UNDRAWN && scheme.hasGroupPhase) {
         //draw group phase
+        scheme.bracketStatus = BracketStatus.GROUPS_DRAWN;
+        await scheme.save({ transaction });
         for (const group of Bracket.drawGroups(scheme, scheme.seed, teams)) {
           await Groups.create(group, {
             include: [{ model: GroupTeams, as: 'teams' }],

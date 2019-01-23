@@ -70,7 +70,7 @@ class EnrollmentsComponent extends React.Component {
     const { scheme, classes } = this.props;
 
     return (
-      <ExpansionPanel style={{ marginTop: '1rem' }}>
+      <ExpansionPanel style={{ marginTop: '1rem' }} defaultExpanded>
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           <Typography variant="title">Играчи</Typography>
         </ExpansionPanelSummary>
@@ -152,7 +152,6 @@ class EnrollmentsComponent extends React.Component {
 }
 
 const styles = (theme) => {
-  console.log(theme);
   return ({
     root: {
       marginLeft: 0

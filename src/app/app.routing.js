@@ -3,6 +3,7 @@ import { Switch, Route, Redirect } from 'react-router-dom';
 
 import NotFoundPage from './NotFoundPage';
 import SchemesRoot from '../schemes/SchemesRoot';
+import GroupsBracket from '../schemes/brackets/GroupsBracket';
 import EliminationBracket from '../schemes/brackets/EliminationBracket';
 import EditionsRoot from '../editions/new/EditionsRoot';
 import Schedule from '../schedule/Schedule';
@@ -34,6 +35,7 @@ const AppRouting = () => (
       {/* <Route path="/news" component={News} /> */}
       {/* <Route path="/tournaments" component={null} /> */}
       <Route path="/editions" component={EditionsRoot} />
+      <Route path="/schemes/:id/groups" component={GroupsBracket} />
       <Route path="/schemes/:id/elimination" component={EliminationBracket} />
       <Route path="/schemes" component={SchemesRoot} />
 

@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
-import { BracketStatus } from '../../enums';
+import { l10n_text } from '../../components/L10n';
 class SchemeDetails extends React.Component {
   render() {
     const { scheme, enableEditionLink } = this.props;
@@ -52,6 +52,13 @@ class SchemeDetails extends React.Component {
             Описание
             <Typography>
               {getSchemeTraits(scheme)}
+            </Typography>
+          </Typography>
+
+          <Typography variant="caption" style={{ margin: '.5rem 0' }}>
+            Статус на схемата
+            <Typography>
+              {l10n_text(scheme.bracketStatus, "BracketStatus")}
             </Typography>
           </Typography>
         </CardContent>
