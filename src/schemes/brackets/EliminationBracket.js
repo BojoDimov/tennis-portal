@@ -82,7 +82,7 @@ class EliminationBracket extends React.Component {
   render() {
     const { matchModel, bracket } = this.state;
     return (
-      <Paper elevation={4} style={{ margin: '1rem', backgroundColor: 'rgba(255, 255, 255, .9)' }}>
+      <Paper elevation={4} style={{ backgroundColor: 'rgba(255, 255, 255, .9)' }}>
         {matchModel
           && <MatchFormModal
             model={matchModel}

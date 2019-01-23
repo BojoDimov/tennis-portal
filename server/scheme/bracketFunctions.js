@@ -118,7 +118,33 @@ function drawEliminations(scheme, seed, enrollments) {
       match.team2Id = enrollments[mapping.length + i].id;
   });
 
-  return matches.slice(1);
+  matches = matches.slice(1);
+
+  //Handle default wins from bye's
+  let secondRound = [];
+  matches.forEach(match => {
+    if (match.team1Id && match.team2Id)
+      return;
+    let defaultWinner = match.team1Id || match.team2Id;
+    let existingMatch = secondRound.find(e => e.match == Math.ceil(match.match / 2));
+
+    if (!existingMatch) {
+      existingMatch = {
+        schemeId: match.schemeId,
+        round: 2,
+        match: Math.ceil(match.match / 2)
+      };
+      secondRound.push(existingMatch);
+    }
+
+    if (existingMatch.match % 2 == 0)
+      existingMatch.team2Id = defaultWinner;
+    else
+      existingMatch.team1Id = defaultWinner;
+  });
+  matches.push(...secondRound);
+
+  return matches;
 }
 
 function get_group_order(seed, nGroups, nTeamsPerGroup) {
