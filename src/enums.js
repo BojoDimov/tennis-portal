@@ -22,9 +22,17 @@ export const Status = {
   INACTIVE: 'inactive'
 };
 
-export const SchemeType = {
-  GROUP: 'round-robin',
-  ELIMINATION: 'elimination'
+// export const SchemeType = {
+//   GROUP: 'round-robin',
+//   ELIMINATION: 'elimination'
+// };
+
+export const BracketStatus = {
+  UNDRAWN: 'undrawn',
+  GROUPS_DRAWN: 'groups-in-progress',
+  GROUPS_END: 'groups-finished',
+  ELIMINATION_DRAWN: 'elimination-in-progress',
+  ELIMINATION_END: 'elimination-finished'
 };
 
 export const CourtType = {
@@ -75,9 +83,16 @@ export const StatisticsType = {
 };
 
 export const EnumLocalization = {
-  'SchemeType': {
-    [SchemeType.ELIMINATION]: 'Елиминации',
-    [SchemeType.GROUP]: 'Групи'
+  // 'SchemeType': {
+  //   [SchemeType.ELIMINATION]: 'Елиминации',
+  //   [SchemeType.GROUP]: 'Групи'
+  // },
+  'BracketStatus': {
+    [BracketStatus.UNDRAWN]: 'Неизтеглена схема',
+    [BracketStatus.GROUPS_DRAWN]: 'Групова фаза',
+    [BracketStatus.GROUPS_END]: 'Приключила групова фаза',
+    [BracketStatus.ELIMINATION_DRAWN]: 'Елиминационна фаза',
+    [BracketStatus.ELIMINATION_END]: 'Приключена схема'
   },
   'StatisticsType': {
     [StatisticsType.MONTHLY]: 'Месечна',

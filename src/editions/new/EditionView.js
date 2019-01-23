@@ -10,7 +10,7 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import { withStyles } from '@material-ui/core/styles';
 
-import { SchemeType } from '../../enums';
+import { Status } from '../../enums';
 import EditionFormModal from './EditionFormModal';
 import SchemeFormModal from '../../schemes/SchemeFormModal';
 import SchemeDetails from '../../schemes/components/SchemeDetails';
@@ -44,16 +44,14 @@ class EditionView extends React.Component {
   initSchemeModel() {
     this.setState({
       schemeModel: {
+        status: Status.DRAFT,
         edition: this.state.edition,
         editionId: this.state.edition.id,
         singleTeams: true,
         maleTeams: false,
         femaleTeams: false,
         mixedTeams: false,
-        schemeType: SchemeType.ELIMINATION,
         hasGroupPhase: false,
-        groupPhase: null,
-        groupPhaseId: null,
         ageFrom: '',
         ageTo: '',
         maxPlayerCount: '',

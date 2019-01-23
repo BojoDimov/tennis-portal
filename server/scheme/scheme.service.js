@@ -5,7 +5,7 @@ const {
   Groups,
   GroupTeams
 } = require('../db');
-const { SchemeType } = require('../infrastructure/enums');
+const { BracketStatus } = require('../infrastructure/enums');
 const Enrollments = require('../enrollment/enrollment.service');
 const Bracket = require('./bracketFunctions');
 
@@ -56,24 +56,44 @@ class SchemeService {
   }
 
   processModel(model) {
-    if (model.schemeType == SchemeType.GROUP)
+    if (model.hasGroupPhase)
       model.maxPlayerCount = model.groupCount * model.teamsPerGroup;
   }
 
   async drawBracket(scheme) {
-    const teams = await Enrollments.getPlayers(scheme);
+    let transaction;
+    try {
+      transaction = await sequelize.transaction();
+      const teams = await Enrollments.getPlayers(scheme);
 
-    if (scheme.schemeType == SchemeType.ELIMINATION) {
-      let matches = Bracket.drawEliminations(scheme, scheme.seed, teams)
-      return await Matches.bulkCreate(matches);
+      if (scheme.bracketStatus == BracketStatus.UNDRAWN && scheme.hasGroupPhase) {
+        //draw group phase
+        for (const group of Bracket.drawGroups(scheme, scheme.seed, teams)) {
+          await Groups.create(group, {
+            include: [{ model: GroupTeams, as: 'teams' }],
+            transaction
+          });
+        }
+      }
+      else if (scheme.bracketStatus == BracketStatus.UNDRAWN && !scheme.hasGroupPhase) {
+        //draw elimination phase
+        scheme.bracketStatus = BracketStatus.ELIMINATION_DRAWN;
+        await scheme.save();
+        let matches = Bracket.drawEliminations(scheme, scheme.seed, teams);
+        await Matches.bulkCreate(matches, { transaction });
+      }
+      else if (scheme.bracketStatus == BracketStatus.GROUPS_END) {
+        //draw elimination from groups
+      }
+      else {
+        throw { name: 'DomainActionError', error: 'invalidState' };
+      }
+
+      await transaction.commit();
     }
-    else if (scheme.schemeType == SchemeType.GROUP) {
-      let groups = Bracket.drawGroups(scheme, scheme.seed, teams);
-      return Promise.all(groups.map(group => Groups.create(group, {
-        include: [
-          { model: GroupTeams, as: 'teams' }
-        ]
-      })));
+    catch (err) {
+      await transaction.rollback();
+      throw err;
     }
   }
 }

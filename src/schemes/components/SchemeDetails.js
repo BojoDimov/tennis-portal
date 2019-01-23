@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
-import { SchemeType } from '../../enums';
+import { BracketStatus } from '../../enums';
 class SchemeDetails extends React.Component {
   render() {
     const { scheme, enableEditionLink } = this.props;
@@ -65,10 +65,10 @@ class SchemeDetails extends React.Component {
 
 function getSchemeTraits(scheme) {
   const traits = [];
-  if (scheme.schemeType == SchemeType.ELIMINATION)
-    traits.push('Елиминация');
+  if (scheme.hasGroupPhase)
+    traits.push('Групова фаза, елиминации');
   else
-    traits.push('Групи');
+    traits.push('Елиминации');
 
   if (scheme.singleTeams)
     traits.push('сингъл');

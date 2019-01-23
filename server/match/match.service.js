@@ -6,7 +6,7 @@ const {
   sequelize
 } = require('../db');
 
-const { SchemeType } = require('../infrastructure/enums');
+const { BracketStatus } = require('../infrastructure/enums');
 
 class MatchesService {
   matchesIncludes() {
@@ -55,8 +55,10 @@ class MatchesService {
       match.withdraw = model.withdraw;
       await this.manageSets(model.sets, transaction);
       await match.save({ transaction });
-      if (scheme.schemeType == SchemeType.ELIMINATION)
+      if (scheme.bracketStatus == BracketStatus.ELIMINATION_DRAWN)
         await this.manageNextMatch(match, transaction);
+      if (scheme.bracketStatus == BracketStatus.GROUPS_DRAWN)
+        await this.manageGroupOrder(match, transaction);
 
       await transaction.commit();
     }
@@ -129,6 +131,10 @@ class MatchesService {
 
         return nextMatch.save({ transaction });
       });
+  }
+
+  async manageGroupOrder(match, transaction) {
+    throw { name: 'DomainActionError', error: 'NOT_IMPLEMENTED:manageGrouporder' };
   }
 
   async manageSets(sets, transaction) {

@@ -1,5 +1,4 @@
-const { Status, SchemeType } = require('../infrastructure/enums');
-const moment = require('moment-timezone');
+const { Status, BracketStatus } = require('../infrastructure/enums');
 
 module.exports = (db, Sequelize) => {
   const Schemes = db.define('Schemes', {
@@ -18,19 +17,24 @@ module.exports = (db, Sequelize) => {
     teamsPerGroup: Sequelize.INTEGER,
     registrationStart: { type: Sequelize.DATE, allowNull: false, },
     registrationEnd: { type: Sequelize.DATE, allowNull: false },
-    hasGroupPhase: { type: Sequelize.BOOLEAN, allowNull: false },
+    hasGroupPhase: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false },
+    bracketStatus: {
+      type: Sequelize.ENUM, allowNull: false,
+      values: [
+        BracketStatus.UNDRAWN,
+        BracketStatus.GROUPS_DRAWN, BracketStatus.GROUPS_END,
+        BracketStatus.ELIMINATION_DRAWN, BracketStatus.ELIMINATION_END
+      ]
+    },
     status: {
       type: Sequelize.ENUM, allowNull: false,
-      values: [Status.DRAFT, Status.PUBLISHED, Status.FINALIZED, Status.INACTIVE]
+      values: [Status.DRAFT, Status.PUBLISHED, Status.FINALIZED, Status.INACTIVE],
+      defaultValue: Status.DRAFT
     },
-    schemeType: {
-      type: Sequelize.ENUM, allowNull: false,
-      values: [SchemeType.ELIMINATION, SchemeType.GROUP]
-    },
-    pPoints: { type: Sequelize.INTEGER, default: 0, allowNull: false },
-    wPoints: { type: Sequelize.INTEGER, default: 0, allowNull: false },
-    cPoints: { type: Sequelize.INTEGER, default: 0, allowNull: false },
-    isActive: { type: Sequelize.BOOLEAN, defaultValue: true, allowNull: false }
+    pPoints: { type: Sequelize.INTEGER, defaultValue: 0, allowNull: false },
+    wPoints: { type: Sequelize.INTEGER, defaultValue: 0, allowNull: false },
+    cPoints: { type: Sequelize.INTEGER, defaultValue: 0, allowNull: false }
+    // isActive: { type: Sequelize.BOOLEAN, defaultValue: true, allowNull: false }
   }, {
       validate: {
         // mixedSingleTeams() {
@@ -81,13 +85,13 @@ module.exports = (db, Sequelize) => {
       }
     });
 
-    models.Schemes.belongsTo(models.Schemes, {
-      as: 'groupPhase',
-      foreignKey: {
-        name: 'groupPhaseId',
-        allowNull: true
-      }
-    });
+    // models.Schemes.belongsTo(models.Schemes, {
+    //   as: 'groupPhase',
+    //   foreignKey: {
+    //     name: 'groupPhaseId',
+    //     allowNull: true
+    //   }
+    // });
 
     models.Schemes.hasMany(models.Matches, {
       as: 'matches',
