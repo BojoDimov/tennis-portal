@@ -10,20 +10,12 @@ app.listen(process.env.PORT, () => console.log(`server running @ port:${process.
 app.use(cors());
 app.use(express.json());
 
-//console.log("Static files root:", path.join(__dirname, '../public', 'index.html'));
-// app.use('*.js', function (req, res, next) {
-//   const file = req.baseUrl + '.gz';
-//   res.set('Content-Encoding', 'gzip');
-//   return res.sendFile(path.join(__dirname, file));
-//   // next();
-// });
-
 app.use('/api', require('../server/controllers'));
 app.use(require('../server/infrastructure/middlewares/error'));
 
 app.use(/^.*js$/, (req, res, next) => {
   const file = req.baseUrl.split('/').reverse()[0];
-  res.sendFile(path.join(__dirname, file));
+  res.sendFile(path.join(__dirname, 'static/js', file));
 });
 
 app.use(/^.*(png|jpeg)$/, (req, res, next) => {
@@ -33,7 +25,12 @@ app.use(/^.*(png|jpeg)$/, (req, res, next) => {
 
 app.use(/^.*css$/, (req, res, next) => {
   const file = req.baseUrl.split('/').reverse()[0];
-  res.sendFile(path.join(__dirname, 'css', file));
+  const staticFile = path.join(__dirname, 'static/css', file);
+  const preloadedCss = path.join(__dirname, 'css', file);
+  if (fs.existsSync(staticFile))
+    res.sendFile(staticFile);
+  else
+    res.sendFile(preloadedCss);
 });
 
 app.use('*', (req, res, next) => {
