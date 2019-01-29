@@ -32,7 +32,7 @@ function NoOptionsMessage(props) {
 }
 
 function inputComponent({ inputRef, ...props }) {
-  return <div ref={inputRef} {...props} />;
+  return <div ref={inputRef} {...props} style={{ cursor: 'pointer' }} />;
 }
 
 function Control(props) {

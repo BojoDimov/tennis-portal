@@ -17,6 +17,7 @@ import UserProfile from '../users/UserProfile';
 import AccountActivation from '../login/Activation';
 import RecoveryStep1 from '../login/RecoveryStep1';
 import RecoveryStep2 from '../login/RecoveryStep2';
+import Test from '../test';
 import { ApplicationMode } from '../enums';
 
 const routeMapping = {
@@ -34,6 +35,7 @@ const AppRouting = () => (
     {mode => <Switch>
       {/* <Route path="/news" component={News} /> */}
       {/* <Route path="/tournaments" component={null} /> */}
+      <Route path="/test" component={Test} />
       <Route path="/editions" component={EditionsRoot} />
       <Route path="/schemes/:id/groups" component={GroupsBracket} />
       <Route path="/schemes/:id/elimination" component={EliminationBracket} />

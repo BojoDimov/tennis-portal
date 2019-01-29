@@ -65,6 +65,10 @@ class AsyncSelect extends React.Component {
     } = this.props;
 
     const selectStyles = {
+      container: base => ({
+        ...base,
+        position: 'default'
+      }),
       input: base => ({
         ...base,
         color: theme.palette.text.primary,
