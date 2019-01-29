@@ -5,3 +5,4 @@ deployment/assets
 deployment/css
 deployment/index.html
 .env
+build/

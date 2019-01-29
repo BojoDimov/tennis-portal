@@ -58,16 +58,16 @@ class EditGroupModal extends React.Component {
   }
 
   save() {
-    const model = this.state.group;
+    const model = this.state.model;
     if (model.id)
       return QueryService
         .post(`/schemes/${this.props.match.params.id}/groups/${model.id}`, model)
-        .then(e => null)
+        .then(e => this.props.onClose())
         .catch(errors => this.setState({ errors }));
     else
       return QueryService
         .post(`/schemes/${this.props.match.params.id}/groups`, model)
-        .then(e => null)
+        .then(e => this.props.onClose())
         .catch(errors => this.setState({ errors }));
   }
 
@@ -95,6 +95,7 @@ class EditGroupModal extends React.Component {
                 <AsyncSelect
                   value={groupTeam.team}
                   query="teams"
+                  disableClear
                   filter={{
                     singleTeams: scheme.singleTeams,
                     schemeId: scheme.id

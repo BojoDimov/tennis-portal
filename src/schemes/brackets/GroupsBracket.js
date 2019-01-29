@@ -8,6 +8,7 @@ import Button from '@material-ui/core/Button';
 import './styles.scss';
 import QueryService from '../../services/query.service';
 import EditGroupModal from './EditGroupModal';
+import EditMatchModal from '../components/MatchFormModal';
 
 class GroupsBracket extends React.Component {
   constructor(props) {
@@ -17,7 +18,8 @@ class GroupsBracket extends React.Component {
       scheme: {
         edition: {}
       },
-      groupModel: null
+      groupModel: null,
+      matchModel: null
     }
   }
 
@@ -34,7 +36,7 @@ class GroupsBracket extends React.Component {
   }
 
   render() {
-    const { scheme, groups, groupModel } = this.state;
+    const { scheme, groups, groupModel, matchModel } = this.state;
 
     return (
       <Paper elevation={4} style={{ padding: '2rem 0 3rem 0', backgroundColor: 'rgba(255, 255, 255, .9)' }}>
@@ -47,6 +49,16 @@ class GroupsBracket extends React.Component {
               this.setState({ groupModel: null })
             }}
             onClose={() => this.setState({ groupModel: null })}
+          />}
+
+        {matchModel
+          && <EditMatchModal
+            model={matchModel}
+            onChange={() => {
+              this.getData();
+              this.setState({ matchModel: null })
+            }}
+            onClose={() => this.setState({ matchModel: null })}
           />}
 
         <Typography align="center" variant="headline">Групова фаза за {scheme.edition.name} - {scheme.name}</Typography>
@@ -75,7 +87,7 @@ class Group extends React.Component {
   }
 
   render() {
-    const { group, onEdit } = this.props;
+    const { group, onEdit, onAddMatch } = this.props;
     const { tabIndex } = this.state;
 
     return (
@@ -94,11 +106,16 @@ class Group extends React.Component {
             <Tab label="Мачове" />
           </Tabs>
         </div>
-        <div style={{ padding: '1.5rem' }}>
+
+        <div style={{ padding: '1.5rem', flexGrow: 1, transition: 'flex-grow .3s ease-out' }}>
           {tabIndex == 0 && <GroupRankingView groupTeams={group.teams} />}
           {tabIndex == 1 && <GroupMatchesView matches={group.matches} />}
         </div>
-        <Button variant="contained" color="primary" onClick={onEdit}>Промяна</Button>
+
+        <div style={{ display: 'flex', padding: '1.5rem' }}>
+          <Button variant="contained" color="primary" size="small" onClick={onEdit}>Промяна</Button>
+          <Button variant="contained" color="primary" size="small" onClick={onAddMatch} style={{ marginLeft: '.3rem' }}>Добавяне на мач</Button>
+        </div>
       </Paper>
     );
   }
@@ -110,7 +127,7 @@ class GroupRankingView extends React.Component {
     return (
       <div>
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <Typography style={{ flexBasis: '4rem', fontStyle: 'italic' }}>W-L</Typography>
+          <Typography style={{ flexBasis: '4rem', fontStyle: 'italic' }}>W - L</Typography>
         </div>
         {groupTeams.map(groupTeam => {
           return (
@@ -126,7 +143,7 @@ class GroupMatchesView extends React.Component {
   render() {
     const { matches } = this.props;
     return (
-      <div>
+      <div style={{ alignContent: 'center' }}>
         {matches.length == 0 && <Typography variant="caption" align="center">Няма изиграни мачове</Typography>}
       </div>
     );
@@ -147,7 +164,7 @@ class GroupTeamInfo extends React.Component {
           {team.user2 && <Typography>{team.user2.name}</Typography>}
         </div>
         <Typography style={{ flexBasis: '4rem' }}>
-          2-1
+          2 - 1
           </Typography>
       </div>
     );

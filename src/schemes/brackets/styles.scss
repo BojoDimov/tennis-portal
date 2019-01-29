@@ -20,8 +20,10 @@ $linesColor: rgb(159, 197, 23);
 }
 
 .group-box {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1rem;
   border: 2px solid $linesColor;
-  height: 300px;
 
   .group-box-header {
     display: flex;
