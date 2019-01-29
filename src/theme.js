@@ -19,6 +19,11 @@ export default createMuiTheme({
         marginTop: '.5rem'
       }
     },
+    MuiDialog: {
+      paper: {
+        overflowY: 'visible'
+      }
+    },
     MuiTypography: {
       caption: {
         fontStyle: 'italic'

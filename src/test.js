@@ -60,8 +60,7 @@ class Test extends React.Component {
 
 const styles = (theme) => ({
   root: {
-    width: '600px',
-    overflow: 'visible'
+    width: '600px'
   },
   btnContainer: {
     [theme.breakpoints.down('sm')]: {
