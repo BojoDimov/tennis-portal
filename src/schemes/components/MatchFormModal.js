@@ -126,10 +126,15 @@ class MatchFormModal extends React.Component {
                 singleTeams: !doubles,
                 schemeId: model.schemeId
               }}
-              noOptionsMessage={() => 'Няма намерени отбори'}
-              formatOptionLabel={(option) => <Typography component="span">
-                {option.user1.name}
-              </Typography>}
+              noOptionsMessage={() => 'Няма намерени играчи/отбори'}
+              formatOptionLabel={(option) => {
+                return (
+                  <React.Fragment>
+                    <Typography component="span">{option.user1.name}</Typography>
+                    {doubles && <Typography component="span">{option.user2.name}</Typography>}
+                  </React.Fragment>
+                );
+              }}
               onChange={this.handleCustomChange('team1')}
             />
 
@@ -142,9 +147,14 @@ class MatchFormModal extends React.Component {
                 schemeId: model.schemeId
               }}
               noOptionsMessage={() => 'Няма намерени отбори'}
-              formatOptionLabel={(option) => <Typography component="span">
-                {option.user1.name}
-              </Typography>}
+              formatOptionLabel={(option) => {
+                return (
+                  <React.Fragment>
+                    <Typography component="span">{option.user1.name}</Typography>
+                    {doubles && <Typography component="span">{option.user2.name}</Typography>}
+                  </React.Fragment>
+                );
+              }}
               onChange={this.handleCustomChange('team2')}
             />
           </React.Fragment>}
