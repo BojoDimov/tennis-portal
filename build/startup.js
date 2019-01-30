@@ -22,26 +22,30 @@ app.use(express.json());
 app.use('/api', require('../server/controllers'));
 app.use(require('../server/infrastructure/middlewares/error'));
 
-app.use(/^.*js$/, (req, res, next) => {
-  const file = req.baseUrl.split('/').reverse()[0];
-  res.sendFile(path.join(__dirname, 'static/js', file));
-});
+if (process.env.TYPE == 'prod') {
+  // This is needed because in dev, webpack is handling the refresh for me,
+  // but in production I am doing everything, and deep-links are not working properly
+  app.use(/^.*js$/, (req, res, next) => {
+    const file = req.baseUrl.split('/').reverse()[0];
+    res.sendFile(path.join(__dirname, 'static/js', file));
+  });
 
-app.use(/^.*(png|jpeg)$/, (req, res, next) => {
-  const file = req.baseUrl.split('/').reverse()[0];
-  res.sendFile(path.join(__dirname, 'assets', file));
-});
+  app.use(/^.*(png|jpeg)$/, (req, res, next) => {
+    const file = req.baseUrl.split('/').reverse()[0];
+    res.sendFile(path.join(__dirname, 'assets', file));
+  });
 
-app.use(/^.*css$/, (req, res, next) => {
-  const file = req.baseUrl.split('/').reverse()[0];
-  const staticFile = path.join(__dirname, 'static/css', file);
-  const preloadedCss = path.join(__dirname, 'css', file);
-  if (fs.existsSync(staticFile))
-    res.sendFile(staticFile);
-  else
-    res.sendFile(preloadedCss);
-});
+  app.use(/^.*css$/, (req, res, next) => {
+    const file = req.baseUrl.split('/').reverse()[0];
+    const staticFile = path.join(__dirname, 'static/css', file);
+    const preloadedCss = path.join(__dirname, 'css', file);
+    if (fs.existsSync(staticFile))
+      res.sendFile(staticFile);
+    else
+      res.sendFile(preloadedCss);
+  });
 
-app.use('*', (req, res, next) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
+  app.use('*', (req, res, next) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+  });
+}
