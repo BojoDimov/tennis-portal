@@ -25,7 +25,7 @@ class NavigationModel {
   constructor() {
     this.routes = [
       { id: 1, to: '/schedule', name: 'График', Icon: CalendarTodayIcon },
-      { id: 8, to: '/editions', name: 'Турнири' },
+      // { id: 8, to: '/editions', name: 'Турнири' },
       // { id: 2, to: '/players', name: 'Играчи' }
     ];
     this.adminRoutes = [
