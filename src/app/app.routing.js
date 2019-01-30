@@ -33,9 +33,9 @@ const AppRouting = () => (
     {mode => <Switch>
       {/* <Route path="/news" component={News} /> */}
       {/* <Route path="/tournaments" component={null} /> */}
-      <Route path="/editions" component={EditionsRoot} />
+      {/* <Route path="/editions" component={EditionsRoot} />
       <Route path="/schemes" component={SchemesRoot} />
-      <Route path="/schemes/:id/elimination" component={EliminationBracket} />
+      <Route path="/schemes/:id/elimination" component={EliminationBracket} /> */}
 
       {NavigationModel.routes.map(route => {
         return (
