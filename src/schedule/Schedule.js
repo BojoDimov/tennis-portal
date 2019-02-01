@@ -87,7 +87,7 @@ class Schedule extends React.Component {
   componentDidMount() {
     QueryService
       .get(`/schedule/config`)
-    //.then(config => this.setState(config));
+      .then(config => this.setState(config));
 
     this.getData(this.state.date);
   }
