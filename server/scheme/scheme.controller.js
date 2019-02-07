@@ -81,5 +81,6 @@ router.delete('/:id', remove);
 router.get('/:id/drawBracket', include, drawBracket);
 router.use('/:id/enrollments', include, require('../enrollment/enrollment.controller'));
 router.use('/:id/matches', include, require('../match/match.controller'));
+router.use('/:id/groups', include, require('../group/group.controller'));
 
 module.exports = router;

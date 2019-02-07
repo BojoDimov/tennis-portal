@@ -61,20 +61,19 @@ class EditGroupModal extends React.Component {
     const model = this.state.model;
     if (model.id)
       return QueryService
-        .post(`/schemes/${this.props.match.params.id}/groups/${model.id}`, model)
-        .then(e => this.props.onClose())
+        .post(`/schemes/${model.schemeId}/groups/${model.id}`, model)
+        .then(e => this.props.onChange())
         .catch(errors => this.setState({ errors }));
     else
       return QueryService
-        .post(`/schemes/${this.props.match.params.id}/groups`, model)
-        .then(e => this.props.onClose())
+        .post(`/schemes/${model.schemeId}/groups`, model)
+        .then(e => this.props.onChange())
         .catch(errors => this.setState({ errors }));
   }
 
   render() {
     const { model, errors } = this.state;
     const { onClose, classes, fullScreen, scheme } = this.props;
-    console.log(model);
 
     return (
       <Dialog

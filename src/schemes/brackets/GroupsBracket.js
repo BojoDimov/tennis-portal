@@ -35,6 +35,17 @@ class GroupsBracket extends React.Component {
       }));
   }
 
+  addGroup() {
+    this.setState({
+      groupModel: {
+        group: this.state.groups.length,
+        teams: [],
+        matches: [],
+        schemeId: this.state.scheme.id
+      }
+    });
+  }
+
   render() {
     const { scheme, groups, groupModel, matchModel } = this.state;
 
@@ -62,6 +73,9 @@ class GroupsBracket extends React.Component {
           />}
 
         <Typography align="center" variant="headline">Групова фаза за {scheme.edition.name} - {scheme.name}</Typography>
+        <div style={{ margin: '1rem', display: 'flex', justifyContent: 'center' }}>
+          <Button variant="contained" color="primary" size="small" onClick={() => this.addGroup()}>Добави група</Button>
+        </div>
         <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '2rem', flexWrap: 'wrap' }}>
           {groups.map(group => {
             return (
