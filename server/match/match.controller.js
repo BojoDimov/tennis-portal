@@ -12,6 +12,26 @@ const update = async (req, res, next) => {
   }
 }
 
+const create = async (req, res, next) => {
+  try {
+    await MatchesService.create(req.body, req.scheme);
+    return res.json({});
+  }
+  catch (err) {
+    return next(err, req, res, null);
+  }
+}
+
+const remove = async (req, res, next) => {
+  try {
+    await MatchesService.delete(req.params.matchId, req.scheme);
+    return res.json({});
+  }
+  catch (err) {
+    return next(err, req, res, null);
+  }
+}
+
 const getEliminationMatches = async (req, res, next) => {
   const matches = await MatchesService.getEliminationMatches(req.scheme);
   return res.json({
@@ -33,6 +53,8 @@ const getGroupMatches = async (req, res, next) => {
 router.get('/elimination', getEliminationMatches);
 router.get('/groups', getGroupMatches);
 router.post('/:matchId', update);
+router.post('/', create);
+router.delete('/:matchId', remove);
 // router.get('/:matchId', get);
 // router.post('/', create);
 // router.delete('/:matchId', remove);

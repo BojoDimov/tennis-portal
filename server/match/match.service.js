@@ -9,6 +9,8 @@ const {
 } = require('../db');
 
 const { BracketStatus } = require('../infrastructure/enums');
+const { getWinner, parseSet } = require('./match.functions');
+const { fixOrder, generateStats } = require('../group/group.functions');
 
 class MatchesService {
   matchesIncludes() {
@@ -43,6 +45,27 @@ class MatchesService {
       });
   }
 
+  async create(model, scheme) {
+    model.sets = model.sets.filter((set) => (set.team1 || set.team2)).map(parseSet);
+    let transaction;
+    try {
+      transaction = await sequelize.transaction();
+      await Matches.create(model, {
+        include: ['sets'],
+        transaction
+      });
+
+      if (scheme.bracketStatus == BracketStatus.GROUPS_DRAWN)
+        await this.manageGroupOrder(model, transaction);
+
+      await transaction.commit();
+    }
+    catch (err) {
+      await transaction.rollback();
+      throw err;
+    }
+  }
+
   async update(id, model, scheme) {
     const match = await this.get(id);
     if (!match)
@@ -70,6 +93,32 @@ class MatchesService {
     }
   }
 
+  async delete(id, scheme, transaction) {
+    const match = await Matches.findById(id);
+    if (!match)
+      throw { name: 'NotFound' };
+
+    const coreDelete = async () => {
+      await Sets.destroy({ where: { matchId: id }, transaction });
+      await Matches.destroy({ where: { id }, transaction });
+      if (scheme.bracketStatus == BracketStatus.GROUPS_DRAWN)
+        await this.manageGroupOrder(match, transaction);
+    }
+
+    if (!transaction)
+      try {
+        transaction = await sequelize.transaction();
+        await coreDelete();
+        await transaction.commit();
+      }
+      catch (err) {
+        await transaction.rollback();
+        throw err;
+      }
+    else
+      await coreDelete();
+  }
+
   async getEliminationMatches(scheme) {
     const matches = await Matches
       .findAll({
@@ -85,8 +134,8 @@ class MatchesService {
     return matches;
   }
 
-  getGroupMatches(scheme) {
-    return Groups
+  async getGroupMatches(scheme) {
+    const groups = await Groups
       .findAll({
         where: {
           schemeId: scheme.id
@@ -110,32 +159,16 @@ class MatchesService {
           ['matches', 'sets', 'order', 'asc']
         ]
       });
-  }
 
-  getWinner(match) {
-    let winner = null;
-
-    if (match.withdraw == 1)
-      winner = match.team2Id;
-    else if (match.withdraw == 2)
-      winner = match.team1Id;
-    else if (match.sets.length > 0)
-      //if there are sets, winner is the one with winning last set
-      winner = match.sets[match.sets.length - 1].team1 > match.sets[match.sets.length - 1].team2 ?
-        match.team1Id : match.team2Id;
-
-    if (match.team2Id == null)
-      winner = match.team1Id;
-    if (match.team1Id == null)
-      winner = match.team2Id;
-    if (match.team1Id == null && match.team2Id == null)
-      winner = null;
-
-    return winner;
+    groups.forEach(group => {
+      generateStats(group);
+      group.test = 'test'
+    });
+    return groups;
   }
 
   manageNextMatch(match, transaction) {
-    let winner = this.getWinner(match);
+    let winner = getWinner(match);
     if (!winner)
       return;
 
@@ -159,7 +192,17 @@ class MatchesService {
   }
 
   async manageGroupOrder(match, transaction) {
-    throw { name: 'DomainActionError', error: 'NOT_IMPLEMENTED:manageGrouporder' };
+    const group = await Groups.findById(match.groupId, {
+      include: [
+        { model: GroupTeams, as: 'teams' },
+        {
+          model: Matches, as: 'matches',
+          include: ['sets']
+        }
+      ],
+      transaction
+    });
+    await fixOrder(group, transaction);
   }
 
   async manageSets(sets, transaction) {
@@ -168,7 +211,7 @@ class MatchesService {
     //filter empty sets
     sets = sets.filter((set) => (set.team1 || set.team2));
     //parse score inputs
-    sets = sets.map(this.parseSet);
+    sets = sets.map(parseSet);
     //has id => UPDATED
     let updated = sets.filter(set => set.id);
     //doesn't have id => CREATED
@@ -200,41 +243,6 @@ class MatchesService {
         },
         transaction
       });
-  }
-
-  parseSet(set) {
-    const scoreParser = /^(\d+)(\(\d+\))*$/;
-
-    if (!set.team1 || !set.team2)
-      throw { name: 'DomainActionError', error: { message: 'Invalid format: match->set' } };
-
-    let t1m = set.team1.toString().match(scoreParser);
-    let t2m = set.team2.toString().match(scoreParser);
-    if ((t1m[2] && t2m[2]) || t1m.length < 2 || t2m.length < 2)
-      throw { name: 'DomainActionError', erorr: { message: 'Invalid format: match->set' } };
-
-    set.team1 = parseInt(t1m[1]);
-    set.team2 = parseInt(t2m[1]);
-
-    if (t1m[2])
-      set.tiebreaker = parseInt(t1m[2].slice(1, t1m[2].length - 1));
-    else if (t2m[2])
-      set.tiebreaker = parseInt(t2m[2].slice(1, t2m[2].length - 1));
-    else set.tiebreaker = null;
-
-    return set;
-  }
-
-  formatSet(set) {
-    if (!set.tiebreaker)
-      return set;
-
-    if (set.team1 < set.team2)
-      set.team1 = set.team1 + "(" + set.tiebreaker + ")";
-    else
-      set.team2 = set.team2 + "(" + set.tiebreaker + ")";
-
-    return set;
   }
 }
 

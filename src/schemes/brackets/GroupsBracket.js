@@ -4,9 +4,12 @@ import Typography from '@material-ui/core/Typography';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Button from '@material-ui/core/Button';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 
 import './styles.scss';
 import QueryService from '../../services/query.service';
+import ConfirmationDialog from '../../components/ConfirmationDialog';
 import EditGroupModal from './EditGroupModal';
 import EditMatchModal from '../components/MatchFormModal';
 
@@ -46,6 +49,28 @@ class GroupsBracket extends React.Component {
     });
   }
 
+  addMatch(group) {
+    this.setState({
+      matchModel: {
+        groupId: group.id,
+        schemeId: this.state.scheme.id,
+        sets: []
+      }
+    })
+  }
+
+  deleteGroup(group) {
+    return QueryService
+      .delete(`/schemes/${group.schemeId}/groups/${group.id}`)
+      .then(() => this.getData());
+  }
+
+  deleteMatch(match) {
+    return QueryService
+      .delete(`/schemes/${match.schemeId}/matches/${match.id}`)
+      .then(() => this.getData());
+  }
+
   render() {
     const { scheme, groups, groupModel, matchModel } = this.state;
 
@@ -79,7 +104,15 @@ class GroupsBracket extends React.Component {
         <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '2rem', flexWrap: 'wrap' }}>
           {groups.map(group => {
             return (
-              <Group key={group.id} group={group} onEdit={() => this.setState({ groupModel: group })} />
+              <Group
+                key={group.id}
+                group={group}
+                onEdit={() => this.setState({ groupModel: group })}
+                onDelete={() => this.deleteGroup(group)}
+                onAddMatch={() => this.addMatch(group)}
+                onEditMatch={(match) => this.setState({ matchModel: match })}
+                onDeleteMatch={(match) => this.deleteMatch(match)}
+              />
             );
           })}
         </div>
@@ -101,7 +134,7 @@ class Group extends React.Component {
   }
 
   render() {
-    const { group, onEdit, onAddMatch } = this.props;
+    const { group, onEdit, onDelete, onAddMatch, onEditMatch, onDeleteMatch } = this.props;
     const { tabIndex } = this.state;
 
     return (
@@ -123,12 +156,19 @@ class Group extends React.Component {
 
         <div style={{ padding: '1.5rem', flexGrow: 1, transition: 'flex-grow .3s ease-out' }}>
           {tabIndex == 0 && <GroupRankingView groupTeams={group.teams} />}
-          {tabIndex == 1 && <GroupMatchesView matches={group.matches} />}
+          {tabIndex == 1 && <GroupMatchesView matches={group.matches} onEditMatch={onEditMatch} onDeleteMatch={onDeleteMatch} />}
         </div>
 
         <div style={{ display: 'flex', padding: '1.5rem' }}>
           <Button variant="contained" color="primary" size="small" onClick={onEdit}>Промяна</Button>
-          <Button variant="contained" color="primary" size="small" onClick={onAddMatch} style={{ marginLeft: '.3rem' }}>Добавяне на мач</Button>
+          <Button variant="contained" color="primary" size="small" onClick={onAddMatch} style={{ margin: '0 .3rem' }}>Добавяне на мач</Button>
+          <ConfirmationDialog
+            title="Изтриване на група"
+            body={<Typography>Сигурни ли сте че искате да група "{this.getGroupHeader(group.group)}"?</Typography>}
+            onAccept={onDelete}
+          >
+            <Button variant="contained" color="secondary" size="small">Изтриване</Button>
+          </ConfirmationDialog>
         </div>
       </Paper>
     );
@@ -145,7 +185,7 @@ class GroupRankingView extends React.Component {
         </div>
         {groupTeams.map(groupTeam => {
           return (
-            <GroupTeamInfo team={groupTeam.team} rank={groupTeam.order} />
+            <GroupTeamInfo key={groupTeam.id} team={groupTeam.team} rank={groupTeam.order} stats={groupTeam.stats} />
           );
         })}
       </div>
@@ -155,10 +195,59 @@ class GroupRankingView extends React.Component {
 
 class GroupMatchesView extends React.Component {
   render() {
-    const { matches } = this.props;
+    const { matches, onEditMatch, onDeleteMatch } = this.props;
+
+    if (!matches || !matches.length)
+      return (<Typography variant="caption" align="center">Няма изиграни мачове</Typography>);
+
     return (
-      <div style={{ alignContent: 'center' }}>
-        {matches.length == 0 && <Typography variant="caption" align="center">Няма изиграни мачове</Typography>}
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        {matches.map(match => {
+          return (
+            <div key={match.id} style={{ padding: '0.3rem 0', display: 'flex', width: '100%', justifyContent: 'space-between', borderBottom: '1px solid lightgrey' }}>
+              <div style={{ margin: '0 .2rem' }}>
+                <Typography>
+                  {match.team1.user1.name}
+                </Typography>
+                {match.team1.user2
+                  && <Typography>
+                    {match.team1.user2.name}
+                  </Typography>}
+              </div>
+              <Typography variant="caption" align="center">
+                {match.sets.map(set => {
+                  return (
+                    <span key={set.id} style={{ marginRight: '.3rem' }}>
+                      {set.team1}
+                      {set.team2}
+                      {set.tiebreaker && <sup>({set.tiebreaker})</sup>}
+                    </span>
+                  );
+                })}
+              </Typography>
+              <div style={{ margin: '0 .2rem' }}>
+                <Typography>
+                  {match.team2.user1.name}
+                </Typography>
+                {match.team2.user2
+                  && <Typography>
+                    {match.team2.user2.name}
+                  </Typography>}
+              </div>
+
+              <div>
+                <EditIcon color="primary" style={{ cursor: 'pointer' }} onClick={() => onEditMatch(match)}></EditIcon>
+                <ConfirmationDialog
+                  title="Изтриване на мач"
+                  body={<Typography>Сигурни ли сте че искате да изтриете мача?</Typography>}
+                  onAccept={() => onDeleteMatch(match)}
+                >
+                  <DeleteForeverIcon color="secondary" style={{ cursor: 'pointer' }}></DeleteForeverIcon>
+                </ConfirmationDialog>
+              </div>
+            </div>
+          );
+        })}
       </div>
     );
   }
@@ -166,7 +255,7 @@ class GroupMatchesView extends React.Component {
 
 class GroupTeamInfo extends React.Component {
   render() {
-    const { team, rank } = this.props;
+    const { team, rank, stats } = this.props;
     if (!team)
       return null;
 
@@ -178,8 +267,10 @@ class GroupTeamInfo extends React.Component {
           {team.user2 && <Typography>{team.user2.name}</Typography>}
         </div>
         <Typography style={{ flexBasis: '4rem' }}>
-          2 - 1
-          </Typography>
+          <span style={{ marginRight: '.3rem', fontStyle: 'italic' }}>{stats.wonMatches}</span>
+          -
+          <span style={{ marginLeft: '.3rem', fontStyle: 'italic' }}>{stats.totalMatches - stats.wonMatches}</span>
+        </Typography>
       </div>
     );
   }

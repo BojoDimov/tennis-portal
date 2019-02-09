@@ -85,23 +85,28 @@ class MatchFormModal extends React.Component {
         existingSet.team2 = existingSet.team2 < existingSet.team1 ?
           `${existingSet.team2}(${existingSet.tiebreaker})` : existingSet.team2;
       }
-      return existingSet || { order, matchId: match.id };
+      return existingSet || { order, matchId: match.id || null };
     });
     return match;
   }
 
   save() {
     const model = this.state.model;
-    return QueryService
-      .post(`/schemes/${model.schemeId}/matches/${model.id}`, model)
-      .then(e => this.props.onChange(e));
+    if (model.id)
+      return QueryService
+        .post(`/schemes/${model.schemeId}/matches/${model.id}`, model)
+        .then(e => this.props.onChange(e));
+    else
+      return QueryService
+        .post(`/schemes/${model.schemeId}/matches`, model)
+        .then(e => this.props.onChange(e));
   }
 
   render() {
     const { model, errors } = this.state;
     const { onClose, classes, fullScreen, doubles } = this.props;
 
-    const enableTeamChange = model.round == 1;
+    const enableTeamChange = model.round == 1 || model.groupId;
     const label = (doubles ? 'Отбор ' : 'Играч ');
 
     return (
@@ -124,7 +129,8 @@ class MatchFormModal extends React.Component {
               query="teams"
               filter={{
                 singleTeams: !doubles,
-                schemeId: model.schemeId
+                schemeId: model.schemeId,
+                groupId: model.groupId
               }}
               noOptionsMessage={() => 'Няма намерени играчи/отбори'}
               formatOptionLabel={(option) => {
@@ -144,7 +150,8 @@ class MatchFormModal extends React.Component {
               query="teams"
               filter={{
                 singleTeams: !doubles,
-                schemeId: model.schemeId
+                schemeId: model.schemeId,
+                groupId: model.groupId
               }}
               noOptionsMessage={() => 'Няма намерени отбори'}
               formatOptionLabel={(option) => {

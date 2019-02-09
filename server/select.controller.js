@@ -4,6 +4,8 @@ const {
   Teams,
   Subscriptions,
   Tournaments,
+  Groups,
+  GroupTeams,
   Sequelize
 } = require('./db');
 const Op = Sequelize.Op;
@@ -62,6 +64,15 @@ const selectTeams = async (request, response) => {
       { model: Users, as: 'user2', attributes: ['id', 'name', 'email'] }
     ]
   }
+
+  if (filter.groupId)
+    options.include.push({
+      model: GroupTeams,
+      as: 'groupTeams',
+      where: {
+        groupId: filter.groupId
+      }
+    });
 
   if (filter.singleTeams)
     options.where = {

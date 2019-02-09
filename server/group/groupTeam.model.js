@@ -1,5 +1,6 @@
 module.exports = (db, Sequelize) => {
   const GroupTeams = db.define("GroupTeams", {
+    //order starts from 1. Why? Because reasons, of course.
     order: { type: Sequelize.INTEGER, allowNull: false }
   });
 

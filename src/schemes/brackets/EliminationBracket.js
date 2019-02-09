@@ -90,8 +90,6 @@ class EliminationBracket extends React.Component {
             onClose={() => this.setState({ matchModel: null })}
           />}
 
-        {/* {<div className="mask"></div>} */}
-
         <div className="bracket">
           {bracket.map((round, index) => {
             return (

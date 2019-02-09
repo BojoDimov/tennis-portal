@@ -27,6 +27,14 @@ module.exports = (db, Sequelize) => {
         allowNull: false
       }
     });
+
+    models.Teams.hasMany(models.GroupTeams, {
+      as: 'groupTeams',
+      foreignKey: {
+        name: 'teamId',
+        allowNull: false
+      }
+    });
   }
 
   return Teams;

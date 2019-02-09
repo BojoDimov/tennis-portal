@@ -22,6 +22,17 @@ const update = async (req, res, next) => {
   }
 }
 
+const remove = async (req, res, next) => {
+  try {
+    await GroupsService.delete(req.params.groupId, req.scheme);
+    return res.json({});
+  }
+  catch (err) {
+    return next(err, req, res, null);
+  }
+}
+
 router.post('/', create);
 router.post('/:groupId', update);
+router.delete('/:groupId', remove);
 module.exports = router;
