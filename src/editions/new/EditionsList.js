@@ -13,6 +13,8 @@ import EditionsDesktopView from './EditionsDesktopView';
 import EditionsMobileView from './EditionsMobileView';
 import editionsViewActions from './EditionsViewActions';
 import QueryService from '../../services/query.service';
+import UserService from '../../services/user.service';
+import { ApplicationMode } from '../../enums';
 
 class EditionsList extends React.Component {
   constructor(props) {
@@ -47,57 +49,64 @@ class EditionsList extends React.Component {
     const actions = editionsViewActions(this.handleOpenModal, this.handleRemoveEdition);
 
     return (
-      <div className="container">
-        {editionModel
-          && <EditionFormModal
-            model={editionModel}
-            onChange={() => console.log('change')}
-            onClose={() => this.setState({ editionModel: null })}
-          />}
+      <UserService.WithApplicationMode>
+        {mode => (
+          <div className="container">
+            {editionModel
+              && <EditionFormModal
+                model={editionModel}
+                onChange={() => console.log('change')}
+                onClose={() => this.setState({ editionModel: null })}
+              />}
 
-        {tournamentModel
-          && <TournamentFormModal
-            model={tournamentModel}
-            onChange={() => this.setState({ tournamentModel: null })}
-            onClose={() => this.setState({ tournamentModel: null })}
-          />}
+            {tournamentModel
+              && <TournamentFormModal
+                model={tournamentModel}
+                onChange={() => this.setState({ tournamentModel: null })}
+                onClose={() => this.setState({ tournamentModel: null })}
+              />}
 
-        <Button
-          variant="contained"
-          color="primary"
-          size="small"
-          onClick={() => this.setState({ tournamentModel: { name: '', info: '', thumbnailId: null } })}
-        >
-          Нова Лига
-        </Button>
+            {mode == ApplicationMode.ADMIN
+              && <React.Fragment>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  onClick={() => this.setState({ tournamentModel: { name: '', info: '', thumbnailId: null } })}
+                >
+                  Нова Лига
+                  </Button>
 
-        <Button
-          style={{ marginLeft: '.3rem' }}
-          variant="contained"
-          color="primary"
-          size="small"
-          onClick={() => this.setState({ editionModel: { name: '', info: '', startDate: null, endDate: null } })}
-        >
-          Нов Турнир
-        </Button>
+                <Button
+                  style={{ marginLeft: '.3rem' }}
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  onClick={() => this.setState({ editionModel: { name: '', info: '', startDate: null, endDate: null } })}
+                >
+                  Нов Турнир
+                  </Button>
+              </React.Fragment>}
 
-        <ExpansionPanel defaultExpanded={true}>
-          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="headline">Турнири</Typography>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
+            <ExpansionPanel defaultExpanded={true}>
+              <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography variant="headline">Турнири</Typography>
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails>
 
-            {editions.length == 0 && <Typography variant="caption">Няма регистрирани турнири</Typography>}
-            {editions.length > 0 && <Hidden smDown>
-              <EditionsDesktopView editions={editions} actions={actions} />
-            </Hidden>}
+                {editions.length == 0 && <Typography variant="caption">Няма регистрирани турнири</Typography>}
+                {editions.length > 0 && <Hidden smDown>
+                  <EditionsDesktopView editions={editions} actions={actions} />
+                </Hidden>}
 
-            {editions.length > 0 && <Hidden mdUp>
-              <EditionsMobileView editions={editions} actions={actions} />
-            </Hidden>}
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
-      </div>
+                {editions.length > 0 && <Hidden mdUp>
+                  <EditionsMobileView editions={editions} actions={actions} />
+                </Hidden>}
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
+          </div>
+        )}
+      </UserService.WithApplicationMode>
     );
   }
 }

@@ -16,7 +16,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 import SelectTeamModal from './SelectTeamModal';
 import QueryService from '../../services/query.service';
-import UserService from '../../services/user.service';
+import { ApplicationMode } from '../../enums';
 import { lighten } from '@material-ui/core/styles/colorManipulator';
 
 class EnrollmentsComponent extends React.Component {
@@ -24,8 +24,7 @@ class EnrollmentsComponent extends React.Component {
     super(props);
     this.state = {
       openTeamModal: false,
-      enrolled: [],
-      isAdmin: true
+      enrolled: []
     }
   }
 
@@ -66,8 +65,9 @@ class EnrollmentsComponent extends React.Component {
   }
 
   render() {
-    const { enrolled, queued, isAdmin, openTeamModal } = this.state;
-    const { scheme, classes } = this.props;
+    const { enrolled, openTeamModal } = this.state;
+    const { scheme, classes, mode } = this.props;
+    const isAdmin = (mode == ApplicationMode.ADMIN);
 
     return (
       <ExpansionPanel style={{ marginTop: '1rem' }} defaultExpanded>
@@ -76,18 +76,20 @@ class EnrollmentsComponent extends React.Component {
         </ExpansionPanelSummary>
         <ExpansionPanelDetails style={{ flexDirection: 'column' }}>
 
-          <div>
-            <SelectTeamModal
-              open={openTeamModal}
-              onChange={(team) => this.add(team)}
-              onClose={() => this.setState({ openTeamModal: false })}
-            />
-            <Button variant="outlined" color="primary" size="small"
-              onClick={() => this.setState({ openTeamModal: true })}
-            >
-              Добави
+          {mode == ApplicationMode.ADMIN
+            && <div>
+              <SelectTeamModal
+                open={openTeamModal}
+                singleTeams={scheme.singleTeams}
+                onChange={(team) => this.add(team)}
+                onClose={() => this.setState({ openTeamModal: false })}
+              />
+              <Button variant="outlined" color="primary" size="small"
+                onClick={() => this.setState({ openTeamModal: true })}
+              >
+                Добави
             </Button>
-          </div>
+            </div>}
 
           <Table>
             <TableHead>
@@ -128,10 +130,6 @@ class EnrollmentsComponent extends React.Component {
                       <TableCell padding="dense">
                         <Typography variant="caption">няма</Typography>
                       </TableCell>
-                      {/* {enrollment.team.rankings && enrollment.team.rankings[0] &&
-                        <TableCell>{enrollment.team.rankings[0].points}</TableCell>}
-                      {(!enrollment.team.rankings || !enrollment.team.rankings[0]) &&
-                        <TableCell><Typography variant="caption">няма</Typography></TableCell>} */}
                       {isAdmin && <TableCell padding="none">
                         <Button variant="text" color="secondary" size="small"
                           onClick={() => this.removeEnrollment(enrollment.id)}

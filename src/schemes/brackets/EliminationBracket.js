@@ -5,7 +5,9 @@ import Tooltip from '@material-ui/core/Tooltip';
 import Zoom from '@material-ui/core/Zoom';
 import './styles.scss';
 
+import { ApplicationMode } from '../../enums';
 import QueryService from '../../services/query.service';
+import UserService from '../../services/user.service';
 import MatchFormModal from '../components/MatchFormModal';
 
 class EliminationBracket extends React.Component {
@@ -82,50 +84,54 @@ class EliminationBracket extends React.Component {
   render() {
     const { matchModel, bracket } = this.state;
     return (
-      <Paper elevation={4} style={{ backgroundColor: 'rgba(255, 255, 255, .9)' }}>
-        {matchModel
-          && <MatchFormModal
-            model={matchModel}
-            onChange={() => this.setState({ matchModel: null })}
-            onClose={() => this.setState({ matchModel: null })}
-          />}
+      <UserService.WithApplicationMode>
+        {mode => (
+          <Paper elevation={4} style={{ backgroundColor: 'rgba(255, 255, 255, .9)' }}>
+            {matchModel
+              && <MatchFormModal
+                model={matchModel}
+                onChange={() => this.setState({ matchModel: null })}
+                onClose={() => this.setState({ matchModel: null })}
+              />}
 
-        <div className="bracket">
-          {bracket.map((round, index) => {
-            return (
-              <div key={index} className="round">
-                <h3 className="round-title" style={{ padding: '.5rem' }}>
-                  {this.getRoundName(round.length * 2)}
-                </h3>
-                <ul className="list">
-                  {round.map((match, i) => {
-                    return (
-                      <li className="item" key={i}>
-                        <div className="match">
-                          <Match
-                            match={match}
-                            onEvent={() => this.setState({ matchModel: match })}
-                            flag
-                          />
-                        </div>
-                      </li>
-                    )
-                  })}
-                </ul>
-              </div>
-            )
-          })}
-        </div>
-      </Paper>
+            <div className="bracket">
+              {bracket.map((round, index) => {
+                return (
+                  <div key={index} className="round">
+                    <h3 className="round-title" style={{ padding: '.5rem' }}>
+                      {this.getRoundName(round.length * 2)}
+                    </h3>
+                    <ul className="list">
+                      {round.map((match, i) => {
+                        return (
+                          <li className="item" key={i}>
+                            <div className="match">
+                              <Match
+                                match={match}
+                                onEvent={() => this.setState({ matchModel: match })}
+                                mode={mode}
+                              />
+                            </div>
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  </div>
+                )
+              })}
+            </div>
+          </Paper>
+        )}
+      </UserService.WithApplicationMode>
     );
   }
 }
 
 class Match extends React.Component {
   render() {
-    const { match, flag } = this.props;
+    const { match, mode } = this.props;
 
-    if (flag)
+    if (mode == ApplicationMode.ADMIN)
       return (
         <Tooltip
           title="Въвеждане/промяна на резултат"
@@ -134,7 +140,7 @@ class Match extends React.Component {
           enterDelay={0}
           onClick={this.props.onEvent}
         >
-          <Paper elevation={4} className="match-box">
+          <Paper elevation={4} className="match-box" style={{ cursor: 'pointer' }}>
             <TeamInfo team={match.team1} match={match} round={match.round} pos={1} />
             <TeamInfo team={match.team2} match={match} round={match.round} pos={2} />
           </Paper>

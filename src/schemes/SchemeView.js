@@ -8,7 +8,7 @@ import EnrollmentsComponent from './components/Enrollments';
 import SchemeFormModal from './SchemeFormModal';
 import SchemeDetails from './components/SchemeDetails';
 import SchemeDetailsActions from './components/SchemeDetailsActions';
-import { BracketStatus } from '../enums';
+import { BracketStatus, ApplicationMode } from '../enums';
 
 class SchemeView extends React.Component {
 
@@ -48,61 +48,66 @@ class SchemeView extends React.Component {
     const actions = <SchemeDetailsActions scheme={scheme} />
 
     return (
-      <div className="container">
-        {schemeModel
-          && <SchemeFormModal
-            model={schemeModel}
-            onChange={() => {
-              this.setState({ schemeModel: null });
-              this.getData();
-            }}
-            onClose={() => this.setState({ schemeModel: null })}
-          />}
+      <UserService.WithApplicationMode>
+        {mode => (
+          <div className="container">
+            {schemeModel
+              && <SchemeFormModal
+                model={schemeModel}
+                onChange={() => {
+                  this.setState({ schemeModel: null });
+                  this.getData();
+                }}
+                onClose={() => this.setState({ schemeModel: null })}
+              />}
 
-        <div style={{ margin: '.5rem 0' }}>
-          <Button
-            variant="contained"
-            color="primary"
-            size="small"
-            onClick={() => this.setState({ schemeModel: scheme })}
-          >
-            Промяна
-          </Button>
-          {scheme.bracketStatus != BracketStatus.ELIMINATION_END
-            && <ConfirmationDialog
-              title="Изтегляне/приключване на текуща фаза"
-              body={<Typography>Сигурни ли сте че искате да извършите действието?</Typography>}
-              onAccept={() => this.drawBracket()}
-              style={{ marginTop: '.5rem' }}
-            >
-              <Button
-                variant="contained"
-                color="primary"
-                size="small"
-                style={{ marginLeft: '.3rem' }}
-              >
-                {scheme.bracketStatus == BracketStatus.UNDRAWN
-                  && <span>Изтегляне</span>}
-                {(scheme.bracketStatus == BracketStatus.GROUPS_DRAWN || scheme.bracketStatus == BracketStatus.ELIMINATION_DRAWN)
-                  && <span>Приключване на фаза</span>}
-                {scheme.bracketStatus == BracketStatus.GROUPS_END
-                  && <span>Следваща фаза</span>}
+            {mode == ApplicationMode.ADMIN &&
+              <div style={{ margin: '.5rem 0' }}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  onClick={() => this.setState({ schemeModel: scheme })}
+                >
+                  Промяна
               </Button>
-            </ConfirmationDialog>}
+                {scheme.bracketStatus != BracketStatus.ELIMINATION_END
+                  && <ConfirmationDialog
+                    title="Изтегляне/приключване на текуща фаза"
+                    body={<Typography>Сигурни ли сте че искате да извършите действието?</Typography>}
+                    onAccept={() => this.drawBracket()}
+                    style={{ marginTop: '.5rem' }}
+                  >
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      size="small"
+                      style={{ marginLeft: '.3rem' }}
+                    >
+                      {scheme.bracketStatus == BracketStatus.UNDRAWN
+                        && <span>Изтегляне</span>}
+                      {(scheme.bracketStatus == BracketStatus.GROUPS_DRAWN || scheme.bracketStatus == BracketStatus.ELIMINATION_DRAWN)
+                        && <span>Приключване на фаза</span>}
+                      {scheme.bracketStatus == BracketStatus.GROUPS_END
+                        && <span>Следваща фаза</span>}
+                    </Button>
+                  </ConfirmationDialog>}
 
-          <Button
-            variant="contained"
-            color="secondary"
-            size="small"
-            style={{ marginLeft: '.3rem' }}
-          >
-            Изтриване
-          </Button>
-        </div>
+                <Button
+                  variant="contained"
+                  color="secondary"
+                  size="small"
+                  style={{ marginLeft: '.3rem' }}
+                >
+                  Изтриване
+              </Button>
+              </div>}
 
-        <SchemeDetails scheme={scheme} actions={actions} enableEditionLink />
-        <EnrollmentsComponent scheme={scheme} style={{ marginTop: '1rem' }} />
-      </div>
+            <SchemeDetails scheme={scheme} actions={actions} enableEditionLink />
+            <EnrollmentsComponent scheme={scheme} style={{ marginTop: '1rem' }} mode={mode} />
+          </div>
+        )}
+      </UserService.WithApplicationMode>
     );
   }
 }

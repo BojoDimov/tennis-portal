@@ -19,7 +19,7 @@ class SelectTeamModal extends React.Component {
   }
 
   render() {
-    const { onClose, onChange, classes, fullScreen, open } = this.props;
+    const { onClose, onChange, classes, fullScreen, open, singleTeams } = this.props;
     const { model } = this.state;
     return (
       <Dialog
@@ -37,7 +37,7 @@ class SelectTeamModal extends React.Component {
             label="Избор на играч/двойка"
             query="teams"
             filter={{
-              singleTeams: true
+              singleTeams
             }}
             formatOptionLabel={(option) => {
               return (
