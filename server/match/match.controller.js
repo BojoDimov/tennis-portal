@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const MatchesService = require('./match.service');
+const adminIdentity = require('../infrastructure/middlewares/adminIdentity');
 
 const update = async (req, res, next) => {
   try {
@@ -52,11 +53,7 @@ const getGroupMatches = async (req, res, next) => {
 
 router.get('/elimination', getEliminationMatches);
 router.get('/groups', getGroupMatches);
-router.post('/:matchId', update);
-router.post('/', create);
-router.delete('/:matchId', remove);
-// router.get('/:matchId', get);
-// router.post('/', create);
-// router.delete('/:matchId', remove);
-
+router.post('/:matchId', adminIdentity, update);
+router.post('/', adminIdentity, create);
+router.delete('/:matchId', adminIdentity, remove);
 module.exports = router;

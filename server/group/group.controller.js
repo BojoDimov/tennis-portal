@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const GroupsService = require('./group.service');
+const adminIdentity = require('../infrastructure/middlewares/adminIdentity');
 
 const create = async (req, res, next) => {
   try {
@@ -32,7 +33,7 @@ const remove = async (req, res, next) => {
   }
 }
 
-router.post('/', create);
-router.post('/:groupId', update);
-router.delete('/:groupId', remove);
+router.post('/', adminIdentity, create);
+router.post('/:groupId', adminIdentity, update);
+router.delete('/:groupId', adminIdentity, remove);
 module.exports = router;

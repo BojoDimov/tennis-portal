@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const adminIdentity = require('../infrastructure/middlewares/adminIdentity');
 
 const EnrollmentsService = require('./enrollment.service');
 
@@ -22,6 +23,6 @@ const remove = (req, res, next) => {
 }
 
 router.get('/', getAll);
-router.post('/', create);
-router.delete('/:id', remove);
+router.post('/', adminIdentity, create);
+router.delete('/:id', adminIdentity, remove);
 module.exports = router;

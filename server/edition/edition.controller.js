@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const EditionsService = require('./edition.service');
+const adminIdentity = require('../infrastructure/middlewares/adminIdentity');
 
 const filter = async (req, res, next) => {
   try {
@@ -53,9 +54,9 @@ const remove = async (req, res, next) => {
 }
 
 router.post('/filter', filter);
-router.post('/', create);
+router.post('/', adminIdentity, create);
 router.get('/:id', get);
-router.post('/:id', update);
-router.delete('/:id', remove);
+router.post('/:id', adminIdentity, update);
+router.delete('/:id', adminIdentity, remove);
 
 module.exports = router;
