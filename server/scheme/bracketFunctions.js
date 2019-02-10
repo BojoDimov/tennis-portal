@@ -35,10 +35,11 @@ function fillGroups(groups) {
   return result;
 }
 
-function drawEliminationsFromGroups(groups) {
+function drawEliminationsFromGroups(groups, schemeId) {
   let matches = [];
   for (let i = 0; i < groups.length / 2; i++) {
     matches.push({
+      schemeId,
       team1Id: groups[i].team1 ? groups[i].team1.id : null,
       team2Id: groups[groups.length - i - 1].team2 ? groups[groups.length - i - 1].team2.id : null,
       match: matches.length + 1,
@@ -48,6 +49,7 @@ function drawEliminationsFromGroups(groups) {
 
   for (let i = 0; i < groups.length / 2; i++) {
     matches.push({
+      schemeId,
       team2Id: groups[i].team2 ? groups[i].team2.id : null,
       team1Id: groups[groups.length - i - 1].team1 ? groups[groups.length - i - 1].team1.id : null,
       match: matches.length + 1,

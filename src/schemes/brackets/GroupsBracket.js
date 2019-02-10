@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Tabs from '@material-ui/core/Tabs';
@@ -97,7 +98,16 @@ class GroupsBracket extends React.Component {
             onClose={() => this.setState({ matchModel: null })}
           />}
 
-        <Typography align="center" variant="headline">Групова фаза за {scheme.edition.name} - {scheme.name}</Typography>
+        <Typography align="center" variant="headline">
+          Групова фаза за
+          <Link to={`/editions/${scheme.edition.id}`}>
+            <Typography variant="display1">{scheme.edition.name}</Typography>
+          </Link>
+          -
+          <Link to={`/schemes/${scheme.id}`}>
+            <Typography variant="display1">{scheme.name}</Typography>
+          </Link>
+        </Typography>
         <div style={{ margin: '1rem', display: 'flex', justifyContent: 'center' }}>
           <Button variant="contained" color="primary" size="small" onClick={() => this.addGroup()}>Добави група</Button>
         </div>

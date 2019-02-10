@@ -100,6 +100,11 @@ module.exports = (db, Sequelize) => {
         allowNull: false
       }
     });
+
+    // models.Schemes.hasMany(models.Groups, {
+    //   as: 'groups',
+
+    // })
   };
 
   return Schemes;

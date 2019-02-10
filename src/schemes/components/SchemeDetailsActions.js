@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import { BracketStatus } from '../../enums';
+
 class SchemeDetailsActions extends React.Component {
   render() {
     const { scheme, enableViewLink } = this.props;
@@ -15,7 +16,7 @@ class SchemeDetailsActions extends React.Component {
           && <Link to={`/schemes/${scheme.id}/groups`}>
             <Button color="primary">Групи</Button>
           </Link>}
-        {scheme.bracketStatus == BracketStatus.ELIMINATION_DRAWN
+        {(scheme.bracketStatus == BracketStatus.ELIMINATION_DRAWN || scheme.bracketStatus == BracketStatus.ELIMINATION_END)
           && <React.Fragment>
             <Link to={`/schemes/${scheme.id}/elimination`}>
               <Button color="primary">Схема</Button>
@@ -25,8 +26,11 @@ class SchemeDetailsActions extends React.Component {
                 <Button color="primary">Групи</Button>
               </Link>}
           </React.Fragment>}
-        <Button color="primary">Записване</Button>
-        <Button color="secondary">Отписване</Button>
+        {scheme.bracketStatus == BracketStatus.UNDRAWN
+          && <React.Fragment>
+            <Button color="primary">Записване</Button>
+            <Button color="secondary">Отписване</Button>
+          </React.Fragment>}
       </React.Fragment>
     );
   }

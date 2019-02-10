@@ -29,7 +29,13 @@ export default createMuiTheme({
         fontStyle: 'italic'
       },
       body2: {
-        color: '#629900'
+        color: '#828A00'
+      },
+      display1: {
+        color: '#828A00',
+        display: 'inline',
+        fontSize: '1.5rem',
+        margin: '0 0.3rem'
       }
     },
     MuiDrawer: {

@@ -45,7 +45,7 @@ const update = async (req, res, next) => {
 
 const remove = async (req, res, next) => {
   try {
-    await SchemeService.get(req.params.id);
+    await SchemeService.delete(req.params.id);
     return res.json({});
   }
   catch (err) {

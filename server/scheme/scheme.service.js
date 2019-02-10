@@ -8,12 +8,9 @@ const {
 const { BracketStatus } = require('../infrastructure/enums');
 const Enrollments = require('../enrollment/enrollment.service');
 const Bracket = require('./bracketFunctions');
+const MatchService = require('../match/match.service');
 
 class SchemeService {
-  async filter() {
-
-  }
-
   async get(id) {
     return await Schemes.findById(id, {
       include: [
@@ -38,8 +35,8 @@ class SchemeService {
     return await scheme.update(model);
   }
 
-  async remove(id) {
-
+  async delete(id) {
+    throw { name: 'NotImplemented' };
   }
 
   formatModel(model) {
@@ -86,10 +83,25 @@ class SchemeService {
       }
       else if (scheme.bracketStatus == BracketStatus.GROUPS_END) {
         //draw elimination from groups
+        const data = await MatchService.getGroupMatches(scheme);
+        const groups = data.map(group => {
+          return {
+            team1: group.teams[0].team,
+            team2: group.teams[1].team
+          }
+        });
+
+        Bracket.fillGroups(groups);
+        const matches = Bracket.drawEliminationsFromGroups(groups, scheme.id);
+        await Matches.bulkCreate(matches, { transaction });
+        await scheme.update({ bracketStatus: BracketStatus.ELIMINATION_DRAWN }, { transaction });
       }
-      else {
+      else if (scheme.bracketStatus == BracketStatus.GROUPS_DRAWN)
+        await scheme.update({ bracketStatus: BracketStatus.GROUPS_END }, { transaction });
+      else if (scheme.bracketStatus == BracketStatus.ELIMINATION_DRAWN)
+        await scheme.update({ bracketStatus: BracketStatus.ELIMINATION_END }, { transaction });
+      else
         throw { name: 'DomainActionError', error: 'invalidState' };
-      }
 
       await transaction.commit();
     }

@@ -1,18 +1,14 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-
+import ConfirmationDialog from '../components/ConfirmationDialog';
 import UserService from '../services/user.service';
 import QueryService from '../services/query.service';
 import EnrollmentsComponent from './components/Enrollments';
 import SchemeFormModal from './SchemeFormModal';
 import SchemeDetails from './components/SchemeDetails';
 import SchemeDetailsActions from './components/SchemeDetailsActions';
-import MatchesList from './components/MatchesList';
+import { BracketStatus } from '../enums';
 
 class SchemeView extends React.Component {
 
@@ -44,7 +40,7 @@ class SchemeView extends React.Component {
 
   drawBracket() {
     return QueryService.get(`/schemes/${this.state.scheme.id}/drawBracket`)
-      .then();
+      .then(() => this.getData());
   }
 
   render() {
@@ -64,28 +60,48 @@ class SchemeView extends React.Component {
           />}
 
         <div style={{ margin: '.5rem 0' }}>
-          <Button variant="contained" color="primary" size="small" onClick={() => this.setState({ schemeModel: scheme })}>Промяна</Button>
-          <Button variant="contained" color="primary" size="small" onClick={() => this.drawBracket()} style={{ marginLeft: '.3rem' }}>Изтегляне</Button>
-          <Button variant="contained" color="secondary" size="small" style={{ marginLeft: '.3rem' }}>Изтриване</Button>
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            onClick={() => this.setState({ schemeModel: scheme })}
+          >
+            Промяна
+          </Button>
+          {scheme.bracketStatus != BracketStatus.ELIMINATION_END
+            && <ConfirmationDialog
+              title="Изтегляне/приключване на текуща фаза"
+              body={<Typography>Сигурни ли сте че искате да извършите действието?</Typography>}
+              onAccept={() => this.drawBracket()}
+              style={{ marginTop: '.5rem' }}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                size="small"
+                style={{ marginLeft: '.3rem' }}
+              >
+                {scheme.bracketStatus == BracketStatus.UNDRAWN
+                  && <span>Изтегляне</span>}
+                {(scheme.bracketStatus == BracketStatus.GROUPS_DRAWN || scheme.bracketStatus == BracketStatus.ELIMINATION_DRAWN)
+                  && <span>Приключване на фаза</span>}
+                {scheme.bracketStatus == BracketStatus.GROUPS_END
+                  && <span>Следваща фаза</span>}
+              </Button>
+            </ConfirmationDialog>}
+
+          <Button
+            variant="contained"
+            color="secondary"
+            size="small"
+            style={{ marginLeft: '.3rem' }}
+          >
+            Изтриване
+          </Button>
         </div>
 
         <SchemeDetails scheme={scheme} actions={actions} enableEditionLink />
         <EnrollmentsComponent scheme={scheme} style={{ marginTop: '1rem' }} />
-
-        {/* <ExpansionPanel>
-          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="title">Групова фаза</Typography>
-          </ExpansionPanelSummary>
-        </ExpansionPanel>
-
-        <ExpansionPanel>
-          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="title">Елиминация</Typography>
-          </ExpansionPanelSummary>
-        </ExpansionPanel> */}
-
-        {/*
-        <MatchesList schemeId={scheme.id} /> */}
       </div>
     );
   }
