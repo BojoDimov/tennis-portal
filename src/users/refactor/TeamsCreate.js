@@ -5,7 +5,7 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import SingleSelect from '../components/select';
+import SingleSelect from '../../components/select';
 import { withStyles } from '@material-ui/core/styles';
 
 const styles = (theme) => ({
@@ -63,14 +63,14 @@ class TeamCreate extends React.Component {
           <SingleSelect
             style={{ marginBottom: '1rem' }}
             placeholder="Избор на играч 1"
-            items={users}
+            options={users}
             value={user1}
             onChange={(id) => this.handleChange('user1', id)}
           />
           <SingleSelect
             style={{ marginBottom: '1rem' }}
             placeholder="Избор на играч 2"
-            items={users}
+            options={users}
             value={user2}
             onChange={(id) => this.handleChange('user2', id)}
           />
