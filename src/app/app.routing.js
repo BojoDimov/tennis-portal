@@ -33,7 +33,6 @@ const routeMapping = {
 const AppRouting = () => (
   <UserService.WithApplicationMode>
     {mode => <Switch>
-      {/* <Route path="/news" component={News} /> */}
       {/* <Route path="/tournaments" component={null} /> */}
       <Route path="/test" component={Test} />
       <Route path="/editions" component={EditionsRoot} />
