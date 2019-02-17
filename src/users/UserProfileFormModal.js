@@ -42,7 +42,7 @@ class UserProfileFormModal extends React.Component {
     const title = 'Промяна на допълнителна информация за акаунт';
     const actions = <React.Fragment>
       <Button variant="contained" color="primary">Запис</Button>
-      <Button variant="contained" color="primary" onClick={onClose}>Отказ</Button>
+      <Button variant="outlined" color="primary" onClick={onClose}>Отказ</Button>
     </React.Fragment>;
 
     return (
