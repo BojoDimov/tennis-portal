@@ -6,12 +6,14 @@ import List from '@material-ui/core/List';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 
 import UserService from '../services/user.service';
 import QueryService from '../services/query.service';
 import { l10n_text } from '../components/L10n';
 import { getHour } from '../utils';
+import UserProfileFormModal from '../users/UserProfileFormModal';
 
 class UserProfile extends React.Component {
   constructor(props) {
@@ -22,7 +24,8 @@ class UserProfile extends React.Component {
       subscriptions: null,
       reservations: null,
       subsCollapsed: true,
-      resCollapsed: false
+      resCollapsed: false,
+      userModel: null
     }
   }
 
@@ -38,17 +41,27 @@ class UserProfile extends React.Component {
   }
 
   render() {
-    const { user, reservations, subscriptions, subsCollapsed, resCollapsed } = this.state;
+    const { user, userModel, reservations, subscriptions, subsCollapsed, resCollapsed } = this.state;
     const { mode, classes } = this.props;
 
     return (
       <div className="container">
+        {userModel
+          && <UserProfileFormModal
+            model={userModel}
+            onChange={() => this.getData()}
+            onClose={() => this.setState({ userModel: null })}
+          />}
+
         <Card classes={{ root: classes.sectionRoot }}>
           <CardContent classes={{ root: classes.cardContentRoot }}>
             <Typography classes={{ root: classes.sectionHeadline }} variant="headline">{user.name}</Typography>
             <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
               <UserPersonalInfo user={user} />
               <UserPlayerInfo user={user} style={{ marginLeft: '2rem' }} />
+            </div>
+            <div>
+              <Button variant="contained" size="small" color="primary" onClick={() => this.setState({ userModel: user })}>Промяна</Button>
             </div>
           </CardContent>
           <CardActions>
