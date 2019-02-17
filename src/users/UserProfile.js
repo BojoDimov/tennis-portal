@@ -46,10 +46,10 @@ class UserProfile extends React.Component {
         <Card classes={{ root: classes.sectionRoot }}>
           <CardContent classes={{ root: classes.cardContentRoot }}>
             <Typography classes={{ root: classes.sectionHeadline }} variant="headline">{user.name}</Typography>
-            {/* <Typography variant="caption">
-              E-mail
-              <Typography>{user.email}</Typography>
-            </Typography> */}
+            <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+              <UserPersonalInfo user={user} />
+              <UserPlayerInfo user={user} style={{ marginLeft: '2rem' }} />
+            </div>
           </CardContent>
           <CardActions>
           </CardActions>
@@ -125,6 +125,64 @@ class UserProfile extends React.Component {
               </React.Fragment>}
           </CardContent>
         </Card>}
+      </div>
+    );
+  }
+}
+
+class UserPersonalInfo extends React.Component {
+  render() {
+    const { user } = this.props;
+    return (
+      <div>
+        <Typography variant="caption">
+          Email
+          <Typography>{user.email}</Typography>
+        </Typography>
+
+        <Typography variant="caption">
+          Телефон
+          <Typography>{user.telephone || 'няма'}</Typography>
+        </Typography>
+
+        <Typography variant="caption">
+          Рожденна дата
+          <Typography>{user.birthDate || 'няма'}</Typography>
+        </Typography>
+
+        <Typography variant="caption">
+          Пол
+          <Typography>{user.gender || 'няма'}</Typography>
+        </Typography>
+      </div>
+    );
+  }
+}
+
+class UserPlayerInfo extends React.Component {
+  render() {
+    const { user, style } = this.props;
+    return (
+      <div style={style}>
+        <Typography variant="caption">
+          Играе от
+          <Typography>{user.startedPlaying || 'няма'}</Typography>
+        </Typography>
+
+        <Typography variant="caption">
+          Играе с
+          <Typography>{user.playStyle || 'няма'}</Typography>
+        </Typography>
+
+        <Typography variant="caption">
+          Бекхенд
+          <Typography>{user.backahandType || 'няма'}</Typography>
+        </Typography>
+
+        <Typography variant="caption">
+          Любима настилка
+          <Typography>{user.courtType || 'няма'}</Typography>
+        </Typography>
       </div>
     );
   }
