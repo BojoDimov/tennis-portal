@@ -107,12 +107,23 @@ const updateSecondaryData = async (req, res, next) => {
   }
 }
 
+const changePassword = async (req, res, next) => {
+  try {
+    await UserService.changePassword(req.user.id, req.body);
+    return res.json({});
+  }
+  catch (err) {
+    return next(err, req, res, null);
+  }
+}
+
 router.get('/:id', auth, collect);
 router.get('/activation', activate);
 router.get('/recovery/step1', issueRecoveryEmail);
 router.post('/recovery/step2', recoverAccount);
 router.get('/', auth, getAll);
 router.post('/updateSecondaryData', auth, updateSecondaryData);
+router.post('/changePassword', auth, changePassword);
 router.post('/:id', auth, update);
 router.post('/', create);
 router.delete('/:id', auth, remove);

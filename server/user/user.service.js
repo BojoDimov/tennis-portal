@@ -293,6 +293,27 @@ class UserService {
       await uac.user.save({ transaction: trn });
     });
   }
+
+  //Throws
+  //InvalidCredentialsException
+  //PasswordRequired
+  //PasswordDoesntMatch
+  async changePassword(userId, model) {
+    const user = await Users.findById(userId);
+    let hash = crypto.createHash('sha256');
+    hash.update(user.passwordSalt + model.currentPassword);
+
+    if (hash.digest('hex').slice(40) !== user.passwordHash)
+      throw { name: 'DomainActionError', error: { name: 'InvalidCredentialsException' } };
+    else if (!model.newPassword)
+      throw { name: 'DomainActionError', error: { name: 'PasswordRequired' } };
+    else if (model.newPassword != model.confirmNewPassword)
+      throw { name: 'DomainActionError', error: { name: 'PasswordDoesntMatch' } };
+    else {
+      this.encryptPassword(user, model.newPassword);
+      await user.save();
+    }
+  }
 }
 
 module.exports = new UserService();
