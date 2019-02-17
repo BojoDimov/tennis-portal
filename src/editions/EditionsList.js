@@ -35,10 +35,10 @@ class EditionsList extends React.Component {
   }
 
   componentDidMount() {
-    this.filter();
+    this.getData();
   }
 
-  filter() {
+  getData() {
     return QueryService
       .post(`/editions/filter`, {})
       .then(editions => this.setState({ editions }));
@@ -55,14 +55,14 @@ class EditionsList extends React.Component {
             {editionModel
               && <EditionFormModal
                 model={editionModel}
-                onChange={() => console.log('change')}
+                onChange={() => { this.setState({ editionModel: null }); this.getData(); }}
                 onClose={() => this.setState({ editionModel: null })}
               />}
 
             {tournamentModel
               && <TournamentFormModal
                 model={tournamentModel}
-                onChange={() => this.setState({ tournamentModel: null })}
+                onChange={() => { this.setState({ tournamentModel: null }); this.getData(); }}
                 onClose={() => this.setState({ tournamentModel: null })}
               />}
 
