@@ -1,22 +1,23 @@
 import React from 'react';
+import Button from '@material-ui/core/Button';
 
 import FormModal from '../components/FormModal';
+import UserModel from './user.model';
 import QueryService from '../services/query.service';
-import { Button } from '@material-ui/core';
 
 class UserProfileFormModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      model: {},
-      errors: []
+      model: UserModel.get(),
+      errors: UserModel.getErrorsModel()
     }
 
-    this.handleChange = (prop) => (e) => {
-      const model = this.state.model;
-      model[prop] = e.target.value;
+    this.handleChange = (prop, custom = false) => (event) => {
+      let model = this.state.model;
+      model[prop] = (custom ? event : event.target.value);
       this.setState({ model });
-    }
+    };
   }
 
   componentDidMount() {
@@ -29,10 +30,12 @@ class UserProfileFormModal extends React.Component {
   }
 
   save() {
-    // const model = this.state.model;
-    // return QueryService
-    //   .post(`/tournaments/${model.id ? model.id : ''}`, model)
-    //   .then(e => this.props.onChange(e));
+    const { model } = this.state;
+
+    return QueryService
+      .post('/users/updateSecondaryData', model)
+      .then(() => this.props.onChange())
+      .catch(err => this.setState({ errors: err }));
   }
 
   render() {
@@ -41,12 +44,13 @@ class UserProfileFormModal extends React.Component {
 
     const title = 'Промяна на допълнителна информация за акаунт';
     const actions = <React.Fragment>
-      <Button variant="contained" color="primary">Запис</Button>
+      <Button variant="contained" color="primary" onClick={() => this.save()}>Запис</Button>
       <Button variant="outlined" color="primary" onClick={onClose}>Отказ</Button>
     </React.Fragment>;
+    const body = <UserModel.UserPlayerSecondaryData user={model} onChange={this.handleChange} errors={errors} />
 
     return (
-      <FormModal onClose={onClose} title={title} body={'HIHI'} actions={actions} />
+      <FormModal onClose={onClose} title={title} body={body} actions={actions} />
     );
   }
 }

@@ -13,7 +13,8 @@ import UserService from '../services/user.service';
 import QueryService from '../services/query.service';
 import { l10n_text } from '../components/L10n';
 import { getHour } from '../utils';
-import UserProfileFormModal from '../users/UserProfileFormModal';
+import UserProfileFormModal from './UserProfileFormModal';
+import ChangePasswordModal from './ChangePasswordModal'
 
 class UserProfile extends React.Component {
   constructor(props) {
@@ -25,7 +26,8 @@ class UserProfile extends React.Component {
       reservations: null,
       subsCollapsed: true,
       resCollapsed: false,
-      userModel: null
+      userModel: null,
+      changePassword: false
     }
   }
 
@@ -41,7 +43,7 @@ class UserProfile extends React.Component {
   }
 
   render() {
-    const { user, userModel, reservations, subscriptions, subsCollapsed, resCollapsed } = this.state;
+    const { user, userModel, reservations, subscriptions, subsCollapsed, resCollapsed, changePassword } = this.state;
     const { mode, classes } = this.props;
 
     return (
@@ -49,9 +51,11 @@ class UserProfile extends React.Component {
         {userModel
           && <UserProfileFormModal
             model={userModel}
-            onChange={() => this.getData()}
+            onChange={() => { this.getData(); this.setState({ userModel: null }) }}
             onClose={() => this.setState({ userModel: null })}
           />}
+
+        {changePassword && <ChangePasswordModal onClose={() => this.setState({ changePassword: false })} />}
 
         <Card classes={{ root: classes.sectionRoot }}>
           <CardContent classes={{ root: classes.cardContentRoot }}>
@@ -61,7 +65,8 @@ class UserProfile extends React.Component {
               <UserPlayerInfo user={user} style={{ marginLeft: '2rem' }} />
             </div>
             <div>
-              <Button variant="contained" size="small" color="primary" onClick={() => this.setState({ userModel: user })}>Промяна</Button>
+              <Button variant="contained" size="small" color="primary" onClick={() => this.setState({ userModel: Object.assign({}, user) })}>Промяна</Button>
+              <Button variant="contained" size="small" color="primary" style={{ marginLeft: '.3rem' }} onClick={() => this.setState({ changePassword: true })}>Смяна на парола</Button>
             </div>
           </CardContent>
           <CardActions>
@@ -165,7 +170,7 @@ class UserPersonalInfo extends React.Component {
 
         <Typography variant="caption">
           Пол
-          <Typography>{user.gender || 'няма'}</Typography>
+          <Typography>{l10n_text(user.gender, "Gender")}</Typography>
         </Typography>
       </div>
     );
@@ -179,22 +184,22 @@ class UserPlayerInfo extends React.Component {
       <div style={style}>
         <Typography variant="caption">
           Играе от
-          <Typography>{user.startedPlaying || 'няма'}</Typography>
+          <Typography>{user.startedPlaying ? user.startedPlaying + 'г.' : 'няма'}</Typography>
         </Typography>
 
         <Typography variant="caption">
           Играе с
-          <Typography>{user.playStyle || 'няма'}</Typography>
+          <Typography>{l10n_text(user.playStyle, "PlayStyle") || 'няма'}</Typography>
         </Typography>
 
         <Typography variant="caption">
           Бекхенд
-          <Typography>{user.backahandType || 'няма'}</Typography>
+          <Typography>{l10n_text(user.backhandType, "BackhandType") || 'няма'}</Typography>
         </Typography>
 
         <Typography variant="caption">
           Любима настилка
-          <Typography>{user.courtType || 'няма'}</Typography>
+          <Typography>{l10n_text(user.courtType, "CourtType") || 'няма'}</Typography>
         </Typography>
       </div>
     );

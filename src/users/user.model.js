@@ -192,7 +192,6 @@ class UserModel {
           label="Дата на раждане"
           labelFunc={(date) => date ? new Date(date).toLocaleDateString() : ''}
           clearable
-          required={true}
           fullWidth={true}
           value={user.birthDate}
           error={errors.birthDate.length > 0}
@@ -203,7 +202,6 @@ class UserModel {
         <EnumSelect
           label="Пол"
           value={user.gender}
-          required={true}
           error={errors.gender.length > 0}
           errorText={this.composeErrors(errors, 'gender')}
           onChange={onChange('gender')}

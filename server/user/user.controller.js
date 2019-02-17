@@ -96,11 +96,23 @@ const collect = async (req, res) => {
   });
 }
 
+const updateSecondaryData = async (req, res, next) => {
+  try {
+    const user = req.user;
+    await UserService.updateSecondaryData(user, req.body);
+    return res.json({});
+  }
+  catch (err) {
+    return next(err, req, res, null);
+  }
+}
+
 router.get('/:id', auth, collect);
 router.get('/activation', activate);
 router.get('/recovery/step1', issueRecoveryEmail);
 router.post('/recovery/step2', recoverAccount);
 router.get('/', auth, getAll);
+router.post('/updateSecondaryData', auth, updateSecondaryData);
 router.post('/:id', auth, update);
 router.post('/', create);
 router.delete('/:id', auth, remove);

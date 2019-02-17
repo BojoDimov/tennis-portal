@@ -44,7 +44,7 @@ class UserService {
   async getById(userId) {
     return await Users.findById(userId, {
       attributes: {
-        exclude: ['passwordHash', 'passwordSalt', 'birthDate', 'gender', 'isActive', 'isAdmin']
+        exclude: ['passwordHash', 'passwordSalt', 'isActive', 'isAdmin']
       },
     });
   }
@@ -76,6 +76,16 @@ class UserService {
       reservationDebt: model.reservationDebt,
       subscriptionDebt: model.subscriptionDebt
     });
+  }
+
+  async updateSecondaryData(user, model) {
+    user.birthDate = model.birthDate || null;
+    user.gender = model.gender || null;
+    user.playStyle = model.playStyle || null;
+    user.backhandType = model.backhandType || null;
+    user.courtType = model.courtType || null;
+    user.startedPlaying = parseInt(model.startedPlaying) || null;
+    await user.save();
   }
 
   //null if value is undefined, -1 if there is error, true if ok
