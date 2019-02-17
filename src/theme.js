@@ -38,6 +38,11 @@ export default createMuiTheme({
         margin: '0 0.3rem'
       }
     },
+    MuiCardActions: {
+      root: {
+        padding: 0
+      }
+    },
     MuiDrawer: {
       modal: {
         zIndex: 1200
