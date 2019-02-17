@@ -10,9 +10,9 @@ import withMobileDialog from '@material-ui/core/withMobileDialog';
 import DatePicker from 'material-ui-pickers/DatePicker';
 import { withStyles } from '@material-ui/core/styles';
 
-import QueryService from '../../services/query.service';
-import AsyncSelect from '../../components/select/AsyncSelect';
-import EnumSelectToggle from '../../components/EnumSelectToggle';
+import QueryService from '../services/query.service';
+import AsyncSelect from '../components/select/AsyncSelect';
+import EnumSelectToggle from '../components/EnumSelectToggle';
 
 class EditionFormModal extends React.Component {
   constructor(props) {

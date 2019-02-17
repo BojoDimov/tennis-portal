@@ -1,61 +1,31 @@
 import React from 'react';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import Hidden from '@material-ui/core/Hidden';
-import Paper from '@material-ui/core/Paper';
+import moment from 'moment';
+import { Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import BuildIcon from '@material-ui/icons/Build';
-
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
+import { withStyles } from '@material-ui/core/styles';
 
-import Schemes from '../schemes/Schemes';
-import UserService from '../services/user.service';
+import { Status, ApplicationMode } from '../enums';
+import EditionFormModal from './EditionFormModal';
+import SchemeFormModal from '../schemes/SchemeFormModal';
+import SchemeDetails from '../schemes/components/SchemeDetails';
+import SchemeDetailsActions from '../schemes/components/SchemeDetailsActions';
+import DisplayImage from '../components/DisplayImage';
 import QueryService from '../services/query.service';
-
-class EditionDetails extends React.Component {
-  render() {
-    const { edition } = this.props;
-
-    return (
-      <Card>
-        <CardContent>
-          <Typography variant="headline">{edition.name}</Typography>
-          <Typography variant="caption">{edition.info}</Typography>
-          <div style={{ display: 'flex', marginTop: '1rem' }}>
-            <Typography variant="subheading" style={{ paddingRight: '1rem' }}>
-              Начало
-              <Typography>{new Date(edition.startDate).toLocaleDateString()}</Typography>
-            </Typography>
-
-            <Typography variant="subheading">
-              Край
-              <Typography>{new Date(edition.endDate).toLocaleDateString()}</Typography>
-            </Typography>
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-}
+import UserService from '../services/user.service';
 
 class EditionView extends React.Component {
-
   constructor(props) {
     super(props);
     this.state = {
-      edition: {},
-      isAdmin: UserService.isAdmin(),
-      menuAnchor: null
-    }
-
-    this.closeMenu = () => {
-      this.setState({ menuAnchor: null });
+      edition: {
+        tournament: {},
+        schemes: []
+      },
+      editionModel: null,
+      schemeModel: null
     }
   }
 
@@ -69,72 +39,129 @@ class EditionView extends React.Component {
       .then(e => this.setState({ edition: e }));
   }
 
+  initSchemeModel() {
+    this.setState({
+      schemeModel: {
+        status: Status.DRAFT,
+        edition: this.state.edition,
+        editionId: this.state.edition.id,
+        singleTeams: true,
+        maleTeams: false,
+        femaleTeams: false,
+        mixedTeams: false,
+        hasGroupPhase: false,
+        ageFrom: '',
+        ageTo: '',
+        maxPlayerCount: '',
+        groupCount: '',
+        teamsPerGroup: '',
+        date: null,
+        registrationStart: null,
+        registrationEnd: null,
+        pPoints: 1,
+        wPoints: 15,
+        cPoints: 20
+      }
+    });
+  }
+
   render() {
-    const { edition, isAdmin, menuAnchor } = this.state;
+    const { edition, editionModel, schemeModel } = this.state;
+    const { classes } = this.props;
 
     return (
-      <div className="container">
-        {isAdmin && <Hidden smDown>
-          <div className="spacing">
-            <Button variant="contained" size="small" color="primary">Промяна</Button>
-            <Button variant="contained" size="small" color="primary">Добави схема</Button>
-            <Button variant="contained" size="small" color="primary">Чернова</Button>
-            <Button variant="contained" size="small" color="primary">Публикуване</Button>
-            <Button variant="contained" size="small" color="primary">Финализиране</Button>
-            <Button variant="contained" size="small" color="primary">Изтриване</Button>
+      <UserService.WithApplicationMode>
+        {mode => (
+          <div className="container">
+            {editionModel
+              && <EditionFormModal
+                model={editionModel}
+                onChange={() => {
+                  this.setState({ editionModel: null });
+                  this.getData();
+                }}
+                onClose={() => this.setState({ editionModel: null })}
+              />}
+
+            {schemeModel
+              && <SchemeFormModal
+                model={schemeModel}
+                onChange={() => {
+                  this.setState({ schemeModel: null });
+                  this.getData();
+                }}
+                onClose={() => this.setState({ schemeModel: null })}
+              />}
+
+            {mode == ApplicationMode.ADMIN && <div style={{ margin: '.5rem 0' }}>
+              <Button variant="contained" color="primary" size="small" onClick={() => this.initSchemeModel()}>Добави схема</Button>
+              <Button variant="contained" color="primary" size="small" style={{ marginLeft: '.3rem' }} onClick={() => this.setState({ editionModel: edition })}>Промяна</Button>
+              <Button variant="contained" color="secondary" size="small" style={{ marginLeft: '.3rem' }}>Изтриване</Button>
+            </div>}
+
+            <Card>
+              <CardContent>
+                <Typography variant="headline">
+                  {edition.name}
+                </Typography>
+                <Typography variant="caption">{edition.info}</Typography>
+
+                <Typography variant="caption" style={{ marginTop: '1rem' }}>Лига</Typography>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  {edition.tournament.thumbnail
+                    && <DisplayImage image={edition.tournament.thumbnail} style={{ maxWidth: '50px', marginRight: '.5rem' }} />}
+                  <Link to={`/tournaments/${edition.tournament.id}`}>
+                    <Typography variant="body2">{edition.tournament.name}</Typography>
+                  </Link>
+                </div>
+
+                <div style={{ display: 'flex', marginTop: '1rem' }}>
+                  <Typography variant="caption" style={{ paddingRight: '1rem' }}>
+                    Начало
+              <Typography>{moment(edition.startDate).format('DD.MM.YYYY')}</Typography>
+                  </Typography>
+
+                  <Typography variant="caption">
+                    Край
+              <Typography>{moment(edition.endDate).format('DD.MM.YYYY')}</Typography>
+                  </Typography>
+                </div>
+              </CardContent>
+            </Card>
+
+            <div className={classes.schemesRoot}>
+              {edition.schemes.map(scheme => {
+                const actions = <SchemeDetailsActions scheme={scheme} enableViewLink />;
+                return <SchemeDetails
+                  scheme={scheme}
+                  actions={actions}
+                  CardProps={{
+                    className: classes.schemesItem
+                  }} />
+              })}
+            </div>
           </div>
-        </Hidden>}
-
-
-        {isAdmin && <Hidden mdUp>
-          <Button
-            aria-owns={menuAnchor ? 'admin-actions' : null}
-            aria-haspopup="true"
-            color="primary" size="small"
-            onClick={(e) => this.setState({ menuAnchor: e.target })}
-          >
-            <BuildIcon />
-          </Button>
-          <Menu
-            id="admin-actions"
-            anchorEl={menuAnchor}
-            open={Boolean(menuAnchor)}
-            onClose={this.closeMenu}
-          >
-            <MenuItem onClick={this.closeMenu}>
-              Промяна
-            </MenuItem>
-            <MenuItem onClick={this.closeMenu}>
-              Добави схема
-            </MenuItem>
-            <MenuItem onClick={this.closeMenu}>
-              Чернова
-            </MenuItem>
-            <MenuItem onClick={this.closeMenu}>
-              Публикуване
-            </MenuItem>
-            <MenuItem onClick={this.closeMenu}>
-              Финализиране
-            </MenuItem>
-            <MenuItem onClick={this.closeMenu}>
-              Изтриване
-            </MenuItem>
-          </Menu>
-        </Hidden>}
-
-        <EditionDetails edition={edition} />
-
-        <ExpansionPanel defaultExpanded={true}>
-          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography variant="headline">Схеми</Typography>
-          </ExpansionPanelSummary>
-          <ExpansionPanelDetails>
-            <Schemes editionId={edition.id} />
-          </ExpansionPanelDetails>
-        </ExpansionPanel>
-      </div>
+        )}
+      </UserService.WithApplicationMode>
     );
   }
 }
 
-export default EditionView;
+const styles = (theme) => ({
+  schemesRoot: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    marginTop: '.3rem'
+  },
+  schemesItem: {
+    width: '49.5%',
+    marginBottom: '.3rem',
+    paddingBottom: '0',
+    [theme.breakpoints.down('xs')]: {
+      width: '100%'
+    }
+  }
+});
+
+export default withStyles(styles)(EditionView);

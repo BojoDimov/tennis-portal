@@ -5,7 +5,7 @@ import NotFoundPage from './NotFoundPage';
 import SchemesRoot from '../schemes/SchemesRoot';
 import GroupsBracket from '../schemes/brackets/GroupsBracket';
 import EliminationBracket from '../schemes/brackets/EliminationBracket';
-import EditionsRoot from '../editions/new/EditionsRoot';
+import EditionsRoot from '../editions/EditionsRoot';
 import Schedule from '../schedule/Schedule';
 import Courts from '../admin/courts/Courts';
 import Seasons from '../admin/seasons/Seasons';

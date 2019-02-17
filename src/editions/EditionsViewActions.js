@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 
-import ConfirmationDialog from '../../components/ConfirmationDialog';
+import ConfirmationDialog from '../components/ConfirmationDialog';
 
 export default function generateActions(onChange, onRemove) {
   return class extends React.Component {

@@ -9,8 +9,8 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 
-import DisplayImage from '../../components/DisplayImage';
-import QueryService from '../../services/query.service';
+import DisplayImage from '../components/DisplayImage';
+import QueryService from '../services/query.service';
 
 class EditionsDesktopView extends React.Component {
   render() {

@@ -7,14 +7,14 @@ import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
-import TournamentFormModal from '../../tournaments/TournamentFormModal';
+import TournamentFormModal from '../tournaments/TournamentFormModal';
 import EditionFormModal from './EditionFormModal';
 import EditionsDesktopView from './EditionsDesktopView';
 import EditionsMobileView from './EditionsMobileView';
 import editionsViewActions from './EditionsViewActions';
-import QueryService from '../../services/query.service';
-import UserService from '../../services/user.service';
-import { ApplicationMode } from '../../enums';
+import QueryService from '../services/query.service';
+import UserService from '../services/user.service';
+import { ApplicationMode } from '../enums';
 
 class EditionsList extends React.Component {
   constructor(props) {
