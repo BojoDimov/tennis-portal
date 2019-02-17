@@ -15,9 +15,9 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import BuildIcon from '@material-ui/icons/Build';
 
-import AsyncSelect from '../components/select/AsyncSelect';
-import QueryService from '../services/query.service';
-import { getHour } from '../utils';
+import AsyncSelect from '../../components/select/AsyncSelect';
+import QueryService from '../../services/query.service';
+import { getHour } from '../../utils';
 
 class Subscriptions extends React.Component {
   constructor(props) {

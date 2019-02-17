@@ -23,9 +23,9 @@ import DoneIcon from '@material-ui/icons/Done';
 import BuildIcon from '@material-ui/icons/Build';
 import Paper from '@material-ui/core/Paper';
 
-import ConfirmationDialog from '../components/ConfirmationDialog';
-import QueryService from '../services/query.service';
-import UserModel from '../users/user.model';
+import ConfirmationDialog from '../../components/ConfirmationDialog';
+import QueryService from '../../services/query.service';
+import UserModel from '../../users/user.model';
 import UserDetailsModal from './UserDetailsModal';
 import UserSubscriptionsModal from './UserSubscriptionsModal';
 

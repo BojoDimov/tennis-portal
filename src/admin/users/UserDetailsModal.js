@@ -12,8 +12,8 @@ import Switch from '@material-ui/core/Switch';
 import withMobileDialog from '@material-ui/core/withMobileDialog';
 import { withStyles } from '@material-ui/core/styles';
 
-import QueryService from '../services/query.service';
-import UserModel from '../users/user.model';
+import QueryService from '../../services/query.service';
+import UserModel from '../../users/user.model';
 
 class UserDetailsModal extends React.Component {
   constructor(props) {

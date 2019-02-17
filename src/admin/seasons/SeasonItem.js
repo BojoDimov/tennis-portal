@@ -9,8 +9,8 @@ import CardContent from '@material-ui/core/CardContent';
 import DatePicker from 'material-ui-pickers/DatePicker';
 import { withStyles } from '@material-ui/core/styles';
 
-import QueryService from '../services/query.service';
-import { getHour } from '../utils';
+import QueryService from '../../services/query.service';
+import { getHour } from '../../utils';
 
 const styles = () => ({
   card: {

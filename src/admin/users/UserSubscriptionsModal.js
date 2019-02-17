@@ -15,12 +15,12 @@ import TextField from '@material-ui/core/TextField';
 import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { withStyles } from '@material-ui/core/styles';
 
-import UserService from '../services/user.service';
-import L10n from '../components/L10n';
-import QueryService from '../services/query.service';
-import { SubscriptionType } from '../enums';
-import ConfirmationDialog from '../components/ConfirmationDialog';
-import EnumSelect from '../components/EnumSelect';
+import UserService from '../../services/user.service';
+import L10n from '../../components/L10n';
+import QueryService from '../../services/query.service';
+import { SubscriptionType } from '../../enums';
+import ConfirmationDialog from '../../components/ConfirmationDialog';
+import EnumSelect from '../../components/EnumSelect';
 
 class UserSubscriptionsModal extends React.Component {
   constructor(props) {

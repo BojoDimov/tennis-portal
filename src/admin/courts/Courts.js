@@ -2,7 +2,7 @@ import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 
-import QueryService from '../services/query.service';
+import QueryService from '../../services/query.service';
 import CourtItem from './CourtItem';
 
 const styles = () => ({

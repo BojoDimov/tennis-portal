@@ -3,7 +3,7 @@ import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 
 import SeasonItem from './SeasonItem';
-import QueryService from '../services/query.service';
+import QueryService from '../../services/query.service';
 
 const styles = () => ({
   root: {
