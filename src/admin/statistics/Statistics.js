@@ -5,9 +5,9 @@ import Typography from '@material-ui/core/Typography';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 
-import Calendar from '../components/calendar/Calendar';
-import QueryService from '../services/query.service';
-import { StatisticsType, ReservationPayment, ReservationType } from '../enums';
+import Calendar from '../../components/calendar/Calendar';
+import QueryService from '../../services/query.service';
+import { StatisticsType, ReservationPayment, ReservationType } from '../../enums';
 import { UserPlayedHours, StatisticByClassifier } from './MonthlyStatistics';
 
 class StatisticsRoot extends React.Component {
