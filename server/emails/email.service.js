@@ -12,18 +12,12 @@ const footer = `
 --------------------------------------
 <br>
 Този имейл е автоматично генериран, моля не изпращайте отговор.
-<br>
-За контакти и информация:
-<br>
-тел: 0892777925
-<br>
-e-mail: tours@tennisdiana.com
 `;
 
 class EmailService {
   async createRegistrationEmail(model) {
     let token = crypto.randomBytes(16).toString('hex');
-    let url = `http://${process.env.CLIENT_HOST}/account/activation?token=${token}`;
+    let url = `${process.env.CLIENT_HOST}/account/activation?token=${token}`;
     let expires = new Date();
     expires.setHours(expires.getHours() + 24);
 
@@ -35,7 +29,7 @@ class EmailService {
       body: `
       Здравейте ${model.name},
       <br>
-      Вашият акаунт беше успешно създаден. Моля за да го активирате, последвайте следният 
+      Вашият акаунт беше успешно създаден. Моля, за да го активирате, последвайте следният 
       <a href="${url}">линк</a>
       ` + footer
     };
@@ -47,7 +41,7 @@ class EmailService {
 
   async createRecoveryEmail(model) {
     let token = crypto.randomBytes(16).toString('hex');
-    let url = `http://${process.env.CLIENT_HOST}/recovery/step2?token=${token}`;
+    let url = `${process.env.CLIENT_HOST}/recovery/step2?token=${token}`;
     let expires = new Date();
     expires.setHours(expires.getHours() + 24);
 
@@ -61,7 +55,7 @@ class EmailService {
       <br>
       За вашият акаунт в Тенис клуб Диана беше заявен код за възстановяване на забравена парола.
       <br>
-      Моля последвайте следният 
+      Моля, последвайте следният 
       <a href="${url}">линк</a>
       за да изберете нова парола за своя акаунт.
       ` + footer
@@ -84,13 +78,6 @@ class EmailService {
   }
 
   async sendEmail(email) {
-    // const transporter = nodemailer.createTransport({
-    //   service: process.env.SMTP_HOST,
-    //   auth: {
-    //     user: process.env.SMTP_USERNAME,
-    //     pass: process.env.SMTP_PASSWORD
-    //   }
-    // });
     const transporter = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: process.env.SMTP_PORT,

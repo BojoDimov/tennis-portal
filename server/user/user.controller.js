@@ -96,11 +96,11 @@ const collect = async (req, res) => {
   });
 }
 
-router.get('/:id', auth, collect);
 router.get('/activation', activate);
 router.get('/recovery/step1', issueRecoveryEmail);
-router.post('/recovery/step2', recoverAccount);
+router.get('/:id', auth, collect);
 router.get('/', auth, getAll);
+router.post('/recovery/step2', recoverAccount);
 router.post('/:id', auth, update);
 router.post('/', create);
 router.delete('/:id', auth, remove);
