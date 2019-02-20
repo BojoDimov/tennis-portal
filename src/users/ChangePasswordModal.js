@@ -69,7 +69,14 @@ class ChangePasswordModal extends React.Component {
     </React.Fragment>;
 
     return (
-      <FormModal onClose={onClose} title={title} body={body} actions={actions} hasError={errors} />
+      <FormModal
+        enableFullWidth={true}
+        onClose={onClose}
+        title={title}
+        body={body}
+        actions={actions}
+        hasError={errors}
+      />
     );
   }
 }

@@ -50,7 +50,13 @@ class UserProfileFormModal extends React.Component {
     const body = <UserModel.UserPlayerSecondaryData user={model} onChange={this.handleChange} errors={errors} />
 
     return (
-      <FormModal onClose={onClose} title={title} body={body} actions={actions} />
+      <FormModal
+        enableFullWidth={true}
+        onClose={onClose}
+        title={title}
+        body={body}
+        actions={actions}
+      />
     );
   }
 }

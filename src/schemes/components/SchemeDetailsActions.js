@@ -6,6 +6,7 @@ import { BracketStatus, ApplicationMode } from '../../enums';
 
 import MessageModal from '../../components/MessageModal';
 import { dispatchEvent } from '../../services/events.service';
+import ConfirmationDialog from '../../components/ConfirmationDialog';
 import QueryService from '../../services/query.service';
 
 class SchemeDetailsActions extends React.Component {
@@ -45,10 +46,10 @@ class SchemeDetailsActions extends React.Component {
     return (
       <React.Fragment>
         <MessageModal activation={this.state.hasEnrolled}>
-          <Typography variant="subheading" color="primary">Успешно се записахте за турнир {this.props.scheme.name}!</Typography>
+          <Typography>Записване за турнир {this.props.scheme.name} беше успешно.</Typography>
         </MessageModal>
         <MessageModal activation={this.state.hasCancelledEnrollment}>
-          <Typography variant="subheading">Успешно се отписахте от турнир {this.props.scheme.name}!</Typography>
+          <Typography>Отписването от турнир {this.props.scheme.name} беше успешно.</Typography>
         </MessageModal>
         <MessageModal activation={this.state.error}>
           <Typography variant="subheading">Възникна грешка при записване за турнир {this.props.scheme.name}!</Typography>
@@ -75,7 +76,16 @@ class SchemeDetailsActions extends React.Component {
         {scheme.bracketStatus == BracketStatus.UNDRAWN
           && <React.Fragment>
             {!enrollment && <Button color="primary" onClick={() => this.enroll()}>Записване</Button>}
-            {enrollment && <Button color="secondary" onClick={() => this.cancelEnroll()}>Отписване</Button>}
+            {enrollment && <ConfirmationDialog
+              title="Отписване от турнир"
+              body={<Typography>
+                Сигурни ли сте че искате да се отпишете от турнир {this.props.scheme.name}?
+                <Typography variant="caption">Ако сте в отбор, то и другият играч ще бъде отписан.</Typography>
+              </Typography>}
+              onAccept={() => this.cancelEnroll()}
+            >
+              <Button color="secondary">Отписване</Button>
+            </ConfirmationDialog>}
           </React.Fragment>}
       </React.Fragment>
     );
