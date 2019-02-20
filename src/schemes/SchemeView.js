@@ -9,6 +9,7 @@ import SchemeFormModal from './SchemeFormModal';
 import SchemeDetails from './components/SchemeDetails';
 import SchemeDetailsActions from './components/SchemeDetailsActions';
 import { BracketStatus, ApplicationMode } from '../enums';
+import { catchEvent } from '../services/events.service';
 
 class SchemeView extends React.Component {
 
@@ -18,19 +19,28 @@ class SchemeView extends React.Component {
       scheme: {
         edition: {}
       },
-      schemeModel: null
+      schemeModel: null,
+      enrolled: []
     }
   }
 
   componentDidMount() {
     this.getData();
+    catchEvent('logged-in', () => {
+      this.getData();
+    })
   }
 
   getData() {
     const { id } = this.props.match.params;
-    return QueryService
+
+    QueryService
       .get(`/schemes/${id}`)
       .then(e => this.setState({ scheme: e }));
+
+    QueryService
+      .get('/users/enrollments')
+      .then(enrolled => this.setState({ enrolled }));
   }
 
   deleteScheme() {
@@ -44,8 +54,7 @@ class SchemeView extends React.Component {
   }
 
   render() {
-    const { scheme, schemeModel } = this.state;
-    const actions = <SchemeDetailsActions scheme={scheme} />
+    const { scheme, schemeModel, enrolled } = this.state;
 
     return (
       <UserService.WithApplicationMode>
@@ -103,7 +112,13 @@ class SchemeView extends React.Component {
               </Button>
               </div>}
 
-            <SchemeDetails scheme={scheme} actions={actions} enableEditionLink />
+            <SchemeDetails
+              scheme={scheme}
+              actions={
+                <SchemeDetailsActions mode={mode} scheme={scheme} reload={() => this.getData()} enrollment={enrolled[scheme.id]} />
+              }
+              enableEditionLink
+            />
             <EnrollmentsComponent scheme={scheme} style={{ marginTop: '1rem' }} mode={mode} />
           </div>
         )}

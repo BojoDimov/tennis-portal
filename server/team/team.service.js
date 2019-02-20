@@ -13,7 +13,12 @@ class TeamsService {
   }
 
   get(userId) {
-
+    return Teams.findOne({
+      where: {
+        user1Id: userId,
+        user2Id: null
+      }
+    });
   }
 
   create(model) {

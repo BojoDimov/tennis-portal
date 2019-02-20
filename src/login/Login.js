@@ -47,6 +47,7 @@ class Login extends React.Component {
       .post(`/login`, this.state)
       .then(({ token }) => {
         UserService.login(token);
+        dispatchEvent('logged-in');
         this.props.onClose();
       })
       .catch(() => {

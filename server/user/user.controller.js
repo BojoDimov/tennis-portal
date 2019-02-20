@@ -1,14 +1,26 @@
 const router = require('express').Router();
 const auth = require('../infrastructure/middlewares/auth');
+const identity = require('../infrastructure/middlewares/identity');
 const UserService = require('./user.service');
 const EmailService = require('../emails/email.service');
 const SubscriptionService = require('../subscription/subscription.service');
 const ScheduleService = require('../schedule/schedule.service');
+const EnrollmentsService = require('../enrollment/enrollment.service');
 
 const getAll = (req, res, next) => {
   return UserService
     .getAll()
     .then(e => res.json(e));
+}
+
+const getEnrollments = async (req, res) => {
+  if (!req.user)
+    return res.json({});
+
+  const enrollments = await EnrollmentsService.getByUserId(req.user.id);
+  const result = [];
+  enrollments.forEach(e => result[e.schemeId] = e);
+  return res.json(result);
 }
 
 const create = async (req, res, next) => {
@@ -117,11 +129,12 @@ const changePassword = async (req, res, next) => {
   }
 }
 
-router.get('/:id', auth, collect);
+router.get('/enrollments', identity, getEnrollments);
 router.get('/activation', activate);
 router.get('/recovery/step1', issueRecoveryEmail);
-router.post('/recovery/step2', recoverAccount);
+router.get('/:id', auth, collect);
 router.get('/', auth, getAll);
+router.post('/recovery/step2', recoverAccount);
 router.post('/updateSecondaryData', auth, updateSecondaryData);
 router.post('/changePassword', auth, changePassword);
 router.post('/:id', auth, update);

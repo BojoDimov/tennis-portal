@@ -2,6 +2,34 @@ const { Sequelize, Enrollments, Teams, Users, Rankings } = require('../db');
 const Op = Sequelize.Op;
 
 class EnrollmentService {
+  getByUserId(userId) {
+    return Enrollments
+      .findAll({
+        include: [
+          {
+            model: Teams, as: 'team',
+            where: {
+              [Op.or]: {
+                user1Id: userId,
+                user2Id: userId
+              }
+            }
+          }
+        ]
+      });
+  }
+
+  getById(id) {
+    return Enrollments.findById(id, {
+      include: [
+        {
+          model: Teams, as: 'team',
+          include: ['user1', 'user2']
+        }
+      ]
+    });
+  }
+
   getPlayers(scheme) {
     return Enrollments
       .findAll({
@@ -89,13 +117,13 @@ class EnrollmentService {
       });
   }
 
-  cancelEnroll(id) {
-    return Enrollments
-      .destroy({ where: { id: id } });
-  }
+  async cancelEnroll(id) {
+    const enrollment = await this.getById(id);
+    if (!enrollment)
+      throw { name: 'NotFound' };
 
-  transfer(scheme) {
-
+    await Enrollments.destroy({ where: { id: id } });
+    //send emails for enrollment.team->users
   }
 }
 

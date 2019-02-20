@@ -5,7 +5,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableRow from '@material-ui/core/TableRow';
 import TableCell from '@material-ui/core/TableCell';
 
-import { l10n_text } from '../components/L10n';
+import { l10n_text } from '../../components/L10n';
 import { SortableTableCell, orderData, transformToUserPlayedHours, transformByClassifier } from './utils';
 import { Typography } from '@material-ui/core';
 

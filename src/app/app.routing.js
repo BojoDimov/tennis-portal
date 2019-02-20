@@ -9,7 +9,7 @@ import EditionsRoot from '../editions/EditionsRoot';
 import Schedule from '../schedule/Schedule';
 import Courts from '../admin/courts/Courts';
 import Seasons from '../admin/seasons/Seasons';
-import Statistics from '../statistics/Statistics';
+import Statistics from '../admin/statistics/Statistics';
 import Users from '../admin/users/Users';
 import NavigationModel from '../menu/navigation.model';
 import UserService from '../services/user.service';
