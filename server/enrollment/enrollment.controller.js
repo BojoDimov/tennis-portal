@@ -28,8 +28,8 @@ const enroll = async (req, res, next) => {
   try {
     const team = await TeamsService.get(req.user.id);
     const enrollmentData = {
-      schemeId: req.scheme.id,
-      teamId: team.id,
+      scheme: req.scheme,
+      team: team,
       user1Id: req.user.id,
       user2Id: null
     }

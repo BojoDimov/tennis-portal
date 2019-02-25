@@ -1,4 +1,5 @@
 const { Sequelize, Enrollments, Teams, Users, Rankings } = require('../db');
+const { Gender } = require('../infrastructure/enums');
 const Op = Sequelize.Op;
 
 class EnrollmentService {
@@ -91,11 +92,15 @@ class EnrollmentService {
       });
   }
 
-  enroll(data) {
-    return Enrollments
+  //Throws
+  //ExistingEnrollment
+  //RequirementsNotMet
+  //UserHasNoInfo
+  async enroll(data) {
+    const existingEnrollment = await Enrollments
       .findOne({
         where: {
-          schemeId: data.schemeId,
+          schemeId: data.scheme.id,
         },
         include: [
           {
@@ -108,13 +113,16 @@ class EnrollmentService {
             }
           }
         ]
-      })
-      .then(enrollment => {
-        if (enrollment)
-          throw { name: 'InvalidAction' };
-
-        return Enrollments.create({ schemeId: data.schemeId, teamId: data.teamId });
       });
+
+    if (existingEnrollment)
+      throw { name: 'DomainActionError', error: { message: 'ExistingEnrollment' } };
+
+    let errors = this.validateEnrollment(data.scheme, data.team);
+    if (errors.length > 0)
+      throw { name: 'DomainActionError', error: { message: 'RequirementsNotMet', errors } };
+
+    return Enrollments.create({ schemeId: data.scheme.id, teamId: data.team.id });
   }
 
   async cancelEnroll(id) {
@@ -124,6 +132,19 @@ class EnrollmentService {
 
     await Enrollments.destroy({ where: { id: id } });
     //send emails for enrollment.team->users
+  }
+
+  validateEnrollment(scheme, team) {
+    const errors = [];
+    if (!team.user1.gender || !team.user1.birthDate)
+      throw { name: 'DomainActionError', error: { message: 'UserHasNoInfo' } };
+
+    if (scheme.singleTeams) {
+      if ((scheme.maleTeams && team.user1.gender != Gender.MALE)
+        || (scheme.femaleTeams && team.user.gender != Gender.FEMALE))
+        errors.push('gender');
+
+    }
   }
 }
 

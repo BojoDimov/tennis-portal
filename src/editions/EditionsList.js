@@ -14,7 +14,7 @@ import EditionsMobileView from './EditionsMobileView';
 import editionsViewActions from './EditionsViewActions';
 import QueryService from '../services/query.service';
 import UserService from '../services/user.service';
-import { ApplicationMode } from '../enums';
+import { ApplicationMode, Status } from '../enums';
 
 class EditionsList extends React.Component {
   constructor(props) {
@@ -72,7 +72,7 @@ class EditionsList extends React.Component {
                   variant="contained"
                   color="primary"
                   size="small"
-                  onClick={() => this.setState({ tournamentModel: { name: '', info: '', thumbnailId: null } })}
+                  onClick={() => this.setState({ status: Status.DRAFT, tournamentModel: { name: '', info: '', thumbnailId: null } })}
                 >
                   Нова Лига
                   </Button>
@@ -82,7 +82,7 @@ class EditionsList extends React.Component {
                   variant="contained"
                   color="primary"
                   size="small"
-                  onClick={() => this.setState({ editionModel: { name: '', info: '', startDate: null, endDate: null } })}
+                  onClick={() => this.setState({ editionModel: { status: Status.DRAFT, name: '', info: '', startDate: null, endDate: null } })}
                 >
                   Нов Турнир
                   </Button>
