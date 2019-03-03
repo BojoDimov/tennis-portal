@@ -17,7 +17,11 @@ class TeamsService {
       where: {
         user1Id: userId,
         user2Id: null
-      }
+      },
+      include: [
+        { model: Users, as: 'user1', attributes: ['id', 'name', 'email', 'birthDate', 'gender'] },
+        { model: Users, as: 'user2', attributes: ['id', 'name', 'email', 'birthDate', 'gender'] }
+      ]
     });
   }
 

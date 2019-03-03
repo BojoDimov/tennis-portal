@@ -38,7 +38,6 @@ class Users extends React.Component {
       rowsPerPage: 10,
       users: [],
       usersFilter: '',
-      page: 0,
       editUser: null,
       subsUser: null
     };

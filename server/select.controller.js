@@ -6,9 +6,12 @@ const {
   Tournaments,
   Groups,
   GroupTeams,
+  Enrollments,
   Sequelize
 } = require('./db');
 const Op = Sequelize.Op;
+
+const auth = require('./infrastructure/middlewares/auth');
 
 const selectUsers = async (request, response) => {
   const filter = request.body;
@@ -135,9 +138,37 @@ const selectTournament = async (request, response) => {
   });
 }
 
+const selectInvited = async (request, response) => {
+  const schemeEnrollments = await Enrollments.findAll({
+    where: {
+      schemeId: request.body.schemeId
+    },
+    include: ['team']
+  });
+
+  const userIds = schemeEnrollments
+    .reduce((acc, { team }) => acc.concat([team.user1Id, team.user2Id]), [])
+    .filter(id => id);
+
+  const result = await Users.findAndCountAll({
+    where: {
+      id: {
+        [Op.notIn]: userIds
+      }
+    },
+    order: [['name', 'asc']]
+  });
+
+  return response.json({
+    totalCount: result.count,
+    options: result.rows
+  });
+}
+
 router.post('/users', selectUsers);
 router.post('/teams', selectTeams);
 router.post('/subscriptions', selectSubscriptions);
 router.post('/tournaments', selectTournament);
+router.post('/invitable', auth, selectInvited);
 
 module.exports = router;

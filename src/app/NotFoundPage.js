@@ -8,7 +8,7 @@ class NotFoundPage extends React.Component {
       <div className="container">
         <Paper style={{ height: '300px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
           <Typography color="secondary" variant="headline">
-            Страницата която търсите вече не съществува :(
+            Страницата, която търсите, вече не съществува 🙉
       </Typography>
         </Paper>
 

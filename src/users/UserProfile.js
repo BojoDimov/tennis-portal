@@ -15,6 +15,7 @@ import { l10n_text } from '../components/L10n';
 import { getHour } from '../utils';
 import UserProfileFormModal from './UserProfileFormModal';
 import ChangePasswordModal from './ChangePasswordModal'
+import InvitationsComponent from './InvitationsComponent';
 
 class UserProfile extends React.Component {
   constructor(props) {
@@ -24,8 +25,10 @@ class UserProfile extends React.Component {
       user: {},
       subscriptions: null,
       reservations: null,
+      invitations: null,
       subsCollapsed: true,
-      resCollapsed: false,
+      resCollapsed: true,
+      invCollapsed: true,
       userModel: null,
       changePassword: false
     }
@@ -37,13 +40,27 @@ class UserProfile extends React.Component {
 
   getData() {
     const id = this.props.match.params.id || this.state.loggedInUser.id;
-    return QueryService
+
+    QueryService.get('/invitations')
+      .then(invitations => this.setState({ invitations }));
+
+    QueryService
       .get(`/users/${id}`)
       .then(e => this.setState(e));
   }
 
   render() {
-    const { user, userModel, reservations, subscriptions, subsCollapsed, resCollapsed, changePassword } = this.state;
+    const {
+      user,
+      userModel,
+      reservations,
+      subscriptions,
+      invitations,
+      subsCollapsed,
+      resCollapsed,
+      invCollapsed,
+      changePassword
+    } = this.state;
     const { mode, classes } = this.props;
 
     return (
@@ -72,6 +89,21 @@ class UserProfile extends React.Component {
           <CardActions>
           </CardActions>
         </Card>
+
+        {invitations && <Card classes={{ root: classes.sectionRoot }}>
+          <CardContent classes={{ root: classes.cardContentRoot }}>
+            <Typography
+              variant="headline"
+              classes={{ root: classes.sectionHeadline }}
+              onClick={() => this.setState({ invCollapsed: !invCollapsed })}
+            >
+              <span>Покани за турнири</span>
+              {invCollapsed && <ExpandLessIcon />}
+              {!invCollapsed && <ExpandMoreIcon />}
+            </Typography>
+            {invCollapsed && <InvitationsComponent invitations={this.state.invitations} />}
+          </CardContent>
+        </Card>}
 
         {reservations != null && <Card classes={{ root: classes.sectionRoot }}>
           <CardContent classes={{ root: classes.cardContentRoot }}>

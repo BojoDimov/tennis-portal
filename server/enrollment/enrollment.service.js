@@ -1,6 +1,7 @@
 const { Sequelize, Enrollments, Teams, Users, Rankings } = require('../db');
 const { Gender } = require('../infrastructure/enums');
 const Op = Sequelize.Op;
+const moment = require('moment-timezone');
 
 class EnrollmentService {
   getByUserId(userId) {
@@ -118,9 +119,9 @@ class EnrollmentService {
     if (existingEnrollment)
       throw { name: 'DomainActionError', error: { message: 'ExistingEnrollment' } };
 
-    let errors = this.validateEnrollment(data.scheme, data.team);
-    if (errors.length > 0)
-      throw { name: 'DomainActionError', error: { message: 'RequirementsNotMet', errors } };
+    // let errors = this.validateEnrollment(data.scheme, data.team);
+    // if (errors.length > 0)
+    //   throw { name: 'DomainActionError', error: { message: 'RequirementsNotMet', errors } };
 
     return Enrollments.create({ schemeId: data.scheme.id, teamId: data.team.id });
   }
@@ -139,12 +140,34 @@ class EnrollmentService {
     if (!team.user1.gender || !team.user1.birthDate)
       throw { name: 'DomainActionError', error: { message: 'UserHasNoInfo' } };
 
+    if ((scheme.ageFrom && moment(team.user1.birthDate).get("years") < scheme.ageFrom)
+      || (scheme.ageTo && moment(team.user1.birthDate).get("years") >= scheme.ageTo))
+      errors.push('age');
+
     if (scheme.singleTeams) {
       if ((scheme.maleTeams && team.user1.gender != Gender.MALE)
-        || (scheme.femaleTeams && team.user.gender != Gender.FEMALE))
+        || (scheme.femaleTeams && team.user1.gender != Gender.FEMALE))
         errors.push('gender');
-
     }
+    else {
+      if (!team.user2.gender || !team.user2.birthDate)
+        throw { name: 'DomainActionError', error: { message: 'UserHasNoInfo' } };
+
+      if ((scheme.ageFrom && moment(team.user2.birthDate).get("years") < scheme.ageFrom)
+        || (scheme.ageTo && moment(team.user2.birthDate).get("years") >= scheme.ageTo))
+        errors.push('age');
+
+      const satisfyMaleCond = scheme.maleTeams && team.user1.gender == Gender.MALE && team.user2.gender == Gender.MALE;
+      const satisfyFemaleCond = scheme.femaleTeams && team.user1.gender == Gender.FEMALE && team.user2.gender == Gender.FEMALE;
+      const satisfyMixedCond = scheme.mixedTeams
+        && (team.user1.gender == Gender.MALE && team.user2.gender == Gender.FEMALE
+          || team.user1.gender == Gender.FEMALE && team.user2.gender == Gender.MALE);
+
+      if (!satisfyMaleCond && !satisfyFemaleCond && !satisfyMixedCond)
+        errors.push('gender');
+    }
+
+    return errors;
   }
 }
 

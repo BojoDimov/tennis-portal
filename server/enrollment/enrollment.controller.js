@@ -11,10 +11,23 @@ const getAll = (req, res, next) => {
     .then(e => res.json(e));
 }
 
-const create = (req, res, next) => {
-  return EnrollmentsService
-    .enroll(req.body)
-    .then(e => res.json(e));
+const create = async (req, res, next) => {
+  const team = await TeamsService.get(req.body.teamId);
+
+  const enrollmentData = {
+    scheme: req.scheme,
+    team: team,
+    user1Id: req.body.user1Id,
+    user2Id: req.body.user2Id
+  };
+
+  try {
+    await EnrollmentsService.enroll(enrollmentData);
+    return res.json({});
+  }
+  catch (err) {
+    return next(err, req, res, null);
+  }
 }
 
 const remove = (req, res, next) => {

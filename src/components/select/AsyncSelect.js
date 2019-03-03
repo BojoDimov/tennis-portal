@@ -69,6 +69,10 @@ class AsyncSelect extends React.Component {
         ...base,
         position: 'default'
       }),
+      menuList: base => ({
+        ...base,
+        paddingBottom: '3rem'
+      }),
       input: base => ({
         ...base,
         color: theme.palette.text.primary,
@@ -111,7 +115,6 @@ class AsyncSelect extends React.Component {
             onMenuScrollToBottom={() => this.load(true)}
             classes={classes}
             styles={selectStyles}
-            menuPlacement="auto"
             components={SelectComponents}
           />
         </NoSsr>

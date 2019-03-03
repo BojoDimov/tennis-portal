@@ -8,6 +8,7 @@ import MessageModal from '../../components/MessageModal';
 import { dispatchEvent } from '../../services/events.service';
 import ConfirmationDialog from '../../components/ConfirmationDialog';
 import QueryService from '../../services/query.service';
+import InvitationsModal from './InvitationsModal';
 
 class SchemeDetailsActions extends React.Component {
   constructor(props) {
@@ -15,6 +16,7 @@ class SchemeDetailsActions extends React.Component {
     this.state = {
       hasEnrolled: false,
       hasCancelledEnrollment: false,
+      invitationsModal: false,
       error: null
     }
   }
@@ -55,6 +57,8 @@ class SchemeDetailsActions extends React.Component {
           <Typography variant="subheading">Възникна грешка при записване за турнир {this.props.scheme.name}!</Typography>
           <Typography>{this.state.error}</Typography>
         </MessageModal>
+        {this.state.invitationsModal
+          && <InvitationsModal onClose={() => this.setState({ invitationsModal: false })} scheme={this.props.scheme} />}
         {enableViewLink &&
           <Link to={`/schemes/${scheme.id}`}>
             <Button color="primary">Преглед</Button>
@@ -76,6 +80,7 @@ class SchemeDetailsActions extends React.Component {
         {scheme.bracketStatus == BracketStatus.UNDRAWN
           && <React.Fragment>
             {!enrollment && <Button color="primary" onClick={() => this.enroll()}>Записване</Button>}
+            {!enrollment && <Button color="primary" onClick={() => this.setState({ invitationsModal: true })}>Записване (двойки)</Button>}
             {enrollment && <ConfirmationDialog
               title="Отписване от турнир"
               body={<Typography>
