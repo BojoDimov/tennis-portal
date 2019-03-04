@@ -97,7 +97,7 @@ class EnrollmentService {
   //ExistingEnrollment
   //RequirementsNotMet
   //UserHasNoInfo
-  async enroll(data) {
+  async enroll(data, transaction) {
     const existingEnrollment = await Enrollments
       .findOne({
         where: {
@@ -119,11 +119,13 @@ class EnrollmentService {
     if (existingEnrollment)
       throw { name: 'DomainActionError', error: { message: 'ExistingEnrollment' } };
 
-    // let errors = this.validateEnrollment(data.scheme, data.team);
-    // if (errors.length > 0)
-    //   throw { name: 'DomainActionError', error: { message: 'RequirementsNotMet', errors } };
+    if (data.shouldValidate) {
+      let errors = this.validateEnrollment(data.scheme, data.team);
+      if (errors.length > 0)
+        throw { name: 'DomainActionError', error: { message: 'RequirementsNotMet', errors } };
+    }
 
-    return Enrollments.create({ schemeId: data.scheme.id, teamId: data.team.id });
+    return Enrollments.create({ schemeId: data.scheme.id, teamId: data.team.id }, { transaction });
   }
 
   async cancelEnroll(id) {

@@ -5,6 +5,8 @@ const auth = require('../infrastructure/middlewares/auth');
 const TeamsService = require('../team/team.service');
 const EnrollmentsService = require('./enrollment.service');
 
+const { Teams, sequelize } = require('../db');
+
 const getAll = (req, res, next) => {
   return EnrollmentsService
     .getAll(req.scheme)
@@ -12,20 +14,27 @@ const getAll = (req, res, next) => {
 }
 
 const create = async (req, res, next) => {
-  const team = await TeamsService.get(req.body.teamId);
-
-  const enrollmentData = {
-    scheme: req.scheme,
-    team: team,
-    user1Id: req.body.user1Id,
-    user2Id: req.body.user2Id
-  };
-
+  let transaction;
   try {
-    await EnrollmentsService.enroll(enrollmentData);
+    transaction = await sequelize.transaction();
+
+    const team = await TeamsService.findOrCreate(req.body, transaction);
+
+    const enrollmentData = {
+      scheme: req.scheme,
+      team: team,
+      user1Id: team.user1Id,
+      user2Id: team.user2Id,
+      shouldValidate: false
+    };
+
+    await EnrollmentsService.enroll(enrollmentData, transaction);
+
+    await transaction.commit();
     return res.json({});
   }
   catch (err) {
+    await transaction.rollback();
     return next(err, req, res, null);
   }
 }
@@ -44,7 +53,8 @@ const enroll = async (req, res, next) => {
       scheme: req.scheme,
       team: team,
       user1Id: req.user.id,
-      user2Id: null
+      user2Id: null,
+      shouldValidate: true
     }
     await EnrollmentsService.enroll(enrollmentData);
     return res.json({});
