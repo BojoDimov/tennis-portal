@@ -42,7 +42,7 @@ const create = async (req, res, next) => {
 const remove = (req, res, next) => {
   return EnrollmentsService
     .cancelEnroll(req.params.id)
-    .then(e => res.json(e));
+    .then(e => res.json({}));
 }
 
 //this is enrollment for single teams
