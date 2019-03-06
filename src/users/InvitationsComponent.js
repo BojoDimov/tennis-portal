@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -15,7 +16,7 @@ class InvitationsComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      userId: UserService.getUser(),
+      userId: UserService.getUser().id,
       page: 0,
       rowsPerPage: 10
     }
@@ -47,8 +48,21 @@ class InvitationsComponent extends React.Component {
               <ListItem key={inv.id} style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #f3f3f3' }}>
                 {userId == inv.inviterId &&
                   <Typography>{inv.invited.name}</Typography>}
-                {userId == inv.invited &&
+                {userId == inv.invitedId &&
                   <Typography>{inv.inviter.name}</Typography>}
+
+                <div>
+                  <Link to={`/editions/${inv.scheme.editionId}`}>
+                    <Typography variant="body2">
+                      {inv.scheme.edition.name}
+                    </Typography>
+                  </Link>
+                  <Link to={`/schemes/${inv.scheme.id}`}>
+                    <Typography variant="body2">
+                      {inv.scheme.name}
+                    </Typography>
+                  </Link>
+                </div>
                 {userId == inv.inviterId
                   && <Button
                     variant="outlined"
@@ -56,7 +70,7 @@ class InvitationsComponent extends React.Component {
                     size="small"
                     onClick={() => this.cancel(inv)}
                   >
-                    Отказ на поканата
+                    Отказване
                   </Button>}
                 {userId == inv.invitedId
                   && <Button
@@ -65,7 +79,7 @@ class InvitationsComponent extends React.Component {
                     size="small"
                     onClick={() => this.accept(inv)}
                   >
-                    Приемане на поканата
+                    Приемане
                   </Button>}
               </ListItem>
             );

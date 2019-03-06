@@ -58,7 +58,14 @@ class SchemeDetailsActions extends React.Component {
           <Typography>{this.state.error}</Typography>
         </MessageModal>
         {this.state.invitationsModal
-          && <InvitationsModal onClose={() => this.setState({ invitationsModal: false })} scheme={this.props.scheme} />}
+          && <InvitationsModal
+            onChange={() => {
+              this.props.reload();
+              this.setState({ invitationsModal: false });
+            }}
+            onClose={() => this.setState({ invitationsModal: false })}
+            scheme={this.props.scheme}
+          />}
         {enableViewLink &&
           <Link to={`/schemes/${scheme.id}`}>
             <Button color="primary">Преглед</Button>
@@ -79,8 +86,8 @@ class SchemeDetailsActions extends React.Component {
           </React.Fragment>}
         {scheme.bracketStatus == BracketStatus.UNDRAWN
           && <React.Fragment>
-            {!enrollment && <Button color="primary" onClick={() => this.enroll()}>Записване</Button>}
-            {!enrollment && <Button color="primary" onClick={() => this.setState({ invitationsModal: true })}>Записване (двойки)</Button>}
+            {!enrollment && scheme.singleTeams && <Button color="primary" onClick={() => this.enroll()}>Записване</Button>}
+            {!enrollment && !scheme.singleTeams && <Button color="primary" onClick={() => this.setState({ invitationsModal: true })}>Записване (двойки)</Button>}
             {enrollment && <ConfirmationDialog
               title="Отписване от турнир"
               body={<Typography>

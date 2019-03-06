@@ -44,30 +44,36 @@ class InvitationsModal extends React.Component {
   }
 
   render() {
+    const { selectedUser } = this.state;
     const { onClose, scheme } = this.props;
     const title = `Менажиране на поканите за схема ${scheme.name}`;
-    const actions = <Button variant="outlined" color="primary" onClick={onClose}>Затвори</Button>
+    const actions = <Button variant="outlined" color="primary" onClick={onClose} size="small">Затвори</Button>
     const body = <React.Fragment>
-      <Typography variant="caption">
+      {/* <Typography variant="caption">
         Ще бъдете записани за турнира, когато поканеният играч приеме.
         В падащото меню за избор на играч се показват само играчи,
         които могат да приемат поканата Ви (това означава, че отговарят на
         изискванията на турнира и не са записани).
-      </Typography>
-      <AsyncSelect
-        label="Играч"
-        value={this.state.selectedUser}
-        query="invitable"
-        filter={{
-          schemeId: scheme.id
-        }}
-        noOptionsMessage={() => 'Няма намерени играчи, отговарящи на изискванията'}
-        formatOptionLabel={(option) => <Typography component="span">
-          {option.name}
-        </Typography>}
-        onChange={this.handleChange}
-      />
-      <InvitationsComponent invitations={this.state.invitations} />
+      </Typography> */}
+      <div style={{ margin: '0 0 1rem 0', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+        <AsyncSelect
+          label="Играч"
+          value={selectedUser}
+          query="invitable"
+          filter={{
+            schemeId: scheme.id
+          }}
+          noOptionsMessage={() => 'Няма намерени играчи, отговарящи на изискванията'}
+          formatOptionLabel={(option) => <Typography component="span">
+            {option.name}
+          </Typography>}
+          onChange={this.handleChange}
+        />
+
+        <Button variant="contained" color="primary" size="small" style={{ marginLeft: '1rem' }} disabled={!selectedUser} onClick={() => this.invite()}>Покани</Button>
+      </div>
+
+      <InvitationsComponent invitations={this.state.invitations} onChange={() => this.getData()} />
     </React.Fragment>
 
     return (

@@ -41,8 +41,9 @@ class UserProfile extends React.Component {
   getData() {
     const id = this.props.match.params.id || this.state.loggedInUser.id;
 
-    QueryService.get('/invitations')
-      .then(invitations => this.setState({ invitations }));
+    if (!this.props.match.params.id || this.props.match.params.id == this.state.loggedInUser.id)
+      QueryService.get('/invitations')
+        .then(invitations => this.setState({ invitations }));
 
     QueryService
       .get(`/users/${id}`)
@@ -101,7 +102,7 @@ class UserProfile extends React.Component {
               {invCollapsed && <ExpandLessIcon />}
               {!invCollapsed && <ExpandMoreIcon />}
             </Typography>
-            {invCollapsed && <InvitationsComponent invitations={this.state.invitations} />}
+            {invCollapsed && <InvitationsComponent invitations={this.state.invitations} onChange={() => this.getData()} />}
           </CardContent>
         </Card>}
 
