@@ -65,7 +65,7 @@ class Schedule extends React.Component {
     this.state = {
       administrator: UserService.getUser(),
       counter: 0,
-      season: {},
+      season: null,
       courts: [],
       reservations: [],
       date: moment().startOf('date'),
@@ -166,6 +166,11 @@ class Schedule extends React.Component {
   render() {
     const { classes } = this.props;
     const { season, courts, date } = this.state;
+
+    if (!season)
+      return <Paper style={{ padding: '1rem' }} className="container">
+        <Typography variant="headline" align="center" color="secondary">Няма текущ сезон</Typography>
+      </Paper>
 
     return (
       <UserService.WithApplicationMode>

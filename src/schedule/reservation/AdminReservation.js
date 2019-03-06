@@ -18,8 +18,13 @@ class AdminReservation extends React.Component {
   render() {
     const { reservation, onChange, classes } = this.props;
     let type = classes.free;
-    if (reservation.id)
-      type = classes.reserved;
+    if (reservation.id) {
+      if ((reservation.type != ReservationType.GUEST || reservation.payments.length > 0)
+        && (reservation.type != ReservationType.USER || reservation.payments.length > 0))
+        type = classes.paidReservation;
+      else
+        type = classes.unpaidReservation;
+    }
 
     if (reservation.type == ReservationType.SERVICE)
       type = classes.unavaliable;
@@ -64,11 +69,17 @@ const styles = (theme) => ({
       cursor: 'pointer',
     }
   },
-  reserved: {
+  unpaidReservation: {
     ...ReservationStyles.cell,
     ...ReservationStyles.button,
     backgroundColor: theme.palette.secondary.light,
     color: theme.palette.secondary.contrastText,
+  },
+  paidReservation: {
+    ...ReservationStyles.cell,
+    ...ReservationStyles.button,
+    backgroundColor: theme.palette.primary.light,
+    color: theme.palette.primary.contrastText
   },
   unavaliable: {
     ...ReservationStyles.cell,

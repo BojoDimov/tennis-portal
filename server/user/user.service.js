@@ -107,6 +107,8 @@ class UserService {
     model.playStyle = model.playStyle || null;
     model.courtType = model.courtType || null;
     model.backhandType = model.backhandType || null;
+    model.reservationDebt = parseInt(model.reservationDebt) || 0;
+    model.subscriptionDebt = parseInt(model.subscriptionDebt) || 0;
     return model;
   }
 
@@ -139,7 +141,9 @@ class UserService {
       startedPlaying: [],
       playStyle: [],
       backhandType: [],
-      courtType: []
+      courtType: [],
+      reservationDebt: [],
+      subscriptionDebt: []
     };
 
     //required fields
