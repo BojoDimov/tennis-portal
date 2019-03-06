@@ -72,7 +72,7 @@ class EditionsList extends React.Component {
                   variant="contained"
                   color="primary"
                   size="small"
-                  onClick={() => this.setState({ status: Status.DRAFT, tournamentModel: { name: '', info: '', thumbnailId: null } })}
+                  onClick={() => this.setState({ tournamentModel: { status: Status.DRAFT, name: '', info: '', thumbnailId: null } })}
                 >
                   Нова Лига
                   </Button>

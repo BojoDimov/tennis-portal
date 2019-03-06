@@ -32,3 +32,22 @@ alter "registrationStart" type varchar(255);
 
 alter table "Schemes"
 alter "registrationEnd" type varchar(255);
+
+
+
+--------------UPDATE 3-------------
+-------DROP TOURNAMENTS AND RECREATE DB--------
+drop table "Enrollments";
+drop table "Sets";
+drop table "Matches";
+drop table "GroupTeams";
+drop table "Groups";
+drop table "Schemes";
+drop table "Editions";
+drop table "Rankings";
+drop table "Tournaments";
+
+drop type if exists "enum_Tournaments_status";
+drop type if exists "enum_Editions_status"; 
+drop type if exists "enum_Schemes_status";
+drop type if exists "enum_Schemes_schemeType";
