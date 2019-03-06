@@ -17,9 +17,7 @@ export const Gender = {
 
 export const Status = {
   DRAFT: 'draft',
-  PUBLISHED: 'published',
-  FINALIZED: 'finalized',
-  INACTIVE: 'inactive'
+  PUBLISHED: 'published'
 };
 
 // export const SchemeType = {
