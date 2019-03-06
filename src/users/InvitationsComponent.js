@@ -9,6 +9,7 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import TablePagination from '@material-ui/core/TablePagination';
 
+import MessageModal from '../components/MessageModal';
 import UserService from '../services/user.service';
 import QueryService from '../services/query.service';
 
@@ -18,29 +19,46 @@ class InvitationsComponent extends React.Component {
     this.state = {
       userId: UserService.getUser().id,
       page: 0,
-      rowsPerPage: 10
+      rowsPerPage: 10,
+      // Handle errors: ExistingEnrollment, RequirementsNotMet, UserHasNoInfo
+      err: null
     }
   }
 
   accept(invitation) {
+    this.setState({ err: null });
     QueryService
       .post(`/invitations/${invitation.id}`)
       .then(() => this.props.onChange())
-      .catch(err => console.log(err));
+      .catch(err => this.setState({ err }));
   }
 
   cancel(invitation) {
     QueryService
       .delete(`/invitations/${invitation.id}`)
-      .then(() => this.props.onChange());
+      .then(() => this.props.onChange())
+      .catch(() => null);
   }
 
   render() {
-    const { page, rowsPerPage, userId } = this.state;
+    const { page, rowsPerPage, userId, err } = this.state;
     const { invitations } = this.props;
 
     return (
       <React.Fragment>
+        <MessageModal activation={this.state.err}>
+          <Typography variant="subheading" color="secondary">Възникна грешка при приемане на поканата.</Typography>
+          {err && err.message == 'ExistingEnrollment' && <React.Fragment>
+            <Typography>Някой от играчите вече е записан за този турнир.</Typography>
+          </React.Fragment>}
+          {err && err.message == 'RequirementsNotMet' && <React.Fragment>
+            <Typography>Някой от играчите не покрива следните ограничения на турнира:</Typography>
+            <Typography variant="caption">{err.errors.map(e => e == 'gender' ? 'пол' : 'възраст').join(', ')}</Typography>
+          </React.Fragment>}
+          {err && err.message == 'UserHasNoInfo' && <React.Fragment>
+            <Typography>Някой от играчите няма въведена информация за пол и/или дата на раждане, които са нужни за записване.</Typography>
+          </React.Fragment>}
+        </MessageModal>
         {invitations.length == 0 && <Typography variant="caption">Нямате текущи покани</Typography>}
         <List>
           {invitations.slice(page * rowsPerPage, (page + 1) * rowsPerPage).map(inv => {

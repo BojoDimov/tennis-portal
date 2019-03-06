@@ -31,7 +31,8 @@ const collect = async (req, res, next) => {
           moment(date).startOf('month').format('YYYY-MM-DD'),
           moment(date).endOf('month').format('YYYY-MM-DD')
         ]
-      }
+      },
+      isActive: true
     }
   };
 
