@@ -203,7 +203,7 @@ class UserPersonalInfo extends React.Component {
 
         <Typography variant="caption">
           Пол
-          <Typography>{l10n_text(user.gender, "Gender")}</Typography>
+          <Typography>{l10n_text(user.gender, "Gender") || 'няма'}</Typography>
         </Typography>
       </div>
     );
