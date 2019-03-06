@@ -41,10 +41,13 @@ class AccountActivation extends React.Component {
       <div className="container">
         <Paper className={classes.root}>
           <Typography align="center" variant="headline">Активация на акунт</Typography>
+          {!this.state.success && !this.state.err && <Typography align="center" variant="subheading">
+            Проверка на ключ за активация...
+          </Typography>}
+
           {this.state.success && <Typography align="center" variant="subheading" color="primary" className={classes.success}>
             Активацията на Вашият акаунт беше успешна!
           </Typography>}
-
           {this.state.success && <Typography align="center" variant="headline" style={{ fontWeight: 700, fontSize: '1.3em' }}>{this.state.timer}</Typography>}
 
           {this.state.err && <Typography align="center" variant="subheading" color="secondary" className={classes.error}>
