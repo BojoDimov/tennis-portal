@@ -31,7 +31,7 @@ class EnumSelect extends React.Component {
           value={value}
           onChange={onChange}
         >
-          <MenuItem value="" disabled={true}>
+          <MenuItem value={null} disabled={true}>
             <Typography variant="display2">{label}</Typography>
           </MenuItem>
           {allowClear && <MenuItem value="">
