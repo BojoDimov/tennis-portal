@@ -10,21 +10,21 @@ import { withStyles } from '@material-ui/core/styles';
 
 class FormModal extends React.Component {
   render() {
-    const { title, body, actions, onClose, classes, fullScreen, hasError } = this.props;
+    const { title, body, actions, onClose, classes, fullScreen, hasError, enableFullWidth } = this.props;
     const rootClass = hasError ? classes.rootWithError : classes.root;
 
     return (
       <Dialog
         open={true}
         onClose={onClose}
-        fullScreen={fullScreen}
+        fullScreen={fullScreen && enableFullWidth}
         classes={{ paper: rootClass }}
       >
         <DialogTitle>
           <Typography component="span" variant="headline">{title}</Typography>
-          <span className={classes.closeBtn} onClick={onClose}>
+          {enableFullWidth && <span className={classes.closeBtn} onClick={onClose}>
             <ClearIcon />
-          </span>
+          </span>}
         </DialogTitle>
         <DialogContent>
           {body}

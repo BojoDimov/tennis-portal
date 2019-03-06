@@ -1,13 +1,71 @@
 import React from 'react';
+import Typography from '@material-ui/core/Typography';
 import { Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
-import { BracketStatus } from '../../enums';
+import { BracketStatus, ApplicationMode } from '../../enums';
+
+import MessageModal from '../../components/MessageModal';
+import { dispatchEvent } from '../../services/events.service';
+import ConfirmationDialog from '../../components/ConfirmationDialog';
+import QueryService from '../../services/query.service';
+import InvitationsModal from './InvitationsModal';
 
 class SchemeDetailsActions extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      hasEnrolled: false,
+      hasCancelledEnrollment: false,
+      invitationsModal: false,
+      error: null
+    }
+  }
+
+  enroll() {
+    if (this.props.mode == ApplicationMode.GUEST)
+      dispatchEvent('menu-login');
+    else {
+      return QueryService
+        .get(`/schemes/${this.props.scheme.id}/enrollments/enroll`)
+        .then(e => {
+          this.setState({ hasEnrolled: true });
+          this.props.reload()
+        });
+    }
+  }
+
+  cancelEnroll() {
+    return QueryService
+      .delete(`/schemes/${this.props.scheme.id}/enrollments/${this.props.enrollment.id}/cancelEnroll`)
+      .then(e => {
+        this.setState({ hasCancelledEnrollment: true });
+        this.props.reload();
+      });
+  }
+
   render() {
-    const { scheme, enableViewLink } = this.props;
+    const { scheme, enableViewLink, enrollment } = this.props;
     return (
       <React.Fragment>
+        <MessageModal activation={this.state.hasEnrolled}>
+          <Typography>Записване за турнир {this.props.scheme.name} беше успешно.</Typography>
+        </MessageModal>
+        <MessageModal activation={this.state.hasCancelledEnrollment}>
+          <Typography>Отписването от турнир {this.props.scheme.name} беше успешно.</Typography>
+        </MessageModal>
+        <MessageModal activation={this.state.error}>
+          <Typography variant="subheading">Възникна грешка при записване за турнир {this.props.scheme.name}!</Typography>
+          <Typography>{this.state.error}</Typography>
+        </MessageModal>
+        {this.state.invitationsModal
+          && <InvitationsModal
+            onChange={() => {
+              this.props.reload();
+              this.setState({ invitationsModal: false });
+            }}
+            onClose={() => this.setState({ invitationsModal: false })}
+            scheme={this.props.scheme}
+          />}
         {enableViewLink &&
           <Link to={`/schemes/${scheme.id}`}>
             <Button color="primary">Преглед</Button>
@@ -28,8 +86,18 @@ class SchemeDetailsActions extends React.Component {
           </React.Fragment>}
         {scheme.bracketStatus == BracketStatus.UNDRAWN
           && <React.Fragment>
-            <Button color="primary">Записване</Button>
-            <Button color="secondary">Отписване</Button>
+            {!enrollment && scheme.singleTeams && <Button color="primary" onClick={() => this.enroll()}>Записване</Button>}
+            {!enrollment && !scheme.singleTeams && <Button color="primary" onClick={() => this.setState({ invitationsModal: true })}>Записване (двойки)</Button>}
+            {enrollment && <ConfirmationDialog
+              title="Отписване от турнир"
+              body={<Typography>
+                Сигурни ли сте че искате да се отпишете от турнир {this.props.scheme.name}?
+                <Typography variant="caption">Ако сте в отбор, то и другият играч ще бъде отписан.</Typography>
+              </Typography>}
+              onAccept={() => this.cancelEnroll()}
+            >
+              <Button color="secondary">Отписване</Button>
+            </ConfirmationDialog>}
           </React.Fragment>}
       </React.Fragment>
     );

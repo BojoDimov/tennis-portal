@@ -14,6 +14,7 @@ import SchemeDetails from '../schemes/components/SchemeDetails';
 import SchemeDetailsActions from '../schemes/components/SchemeDetailsActions';
 import DisplayImage from '../components/DisplayImage';
 import QueryService from '../services/query.service';
+import { catchEvent } from '../services/events.service';
 import UserService from '../services/user.service';
 
 class EditionView extends React.Component {
@@ -25,18 +26,26 @@ class EditionView extends React.Component {
         schemes: []
       },
       editionModel: null,
-      schemeModel: null
+      schemeModel: null,
+      enrolled: []
     }
   }
 
   componentDidMount() {
     this.getData();
+    catchEvent('logged-in', () => {
+      this.getData();
+    });
   }
 
   getData() {
     QueryService
       .get(`/editions/${this.props.match.params.id}`)
       .then(e => this.setState({ edition: e }));
+
+    QueryService
+      .get('/users/enrollments')
+      .then(enrolled => this.setState({ enrolled }));
   }
 
   initSchemeModel() {
@@ -66,7 +75,7 @@ class EditionView extends React.Component {
   }
 
   render() {
-    const { edition, editionModel, schemeModel } = this.state;
+    const { edition, editionModel, schemeModel, enrolled } = this.state;
     const { classes } = this.props;
 
     return (
@@ -131,7 +140,13 @@ class EditionView extends React.Component {
 
             <div className={classes.schemesRoot}>
               {edition.schemes.map(scheme => {
-                const actions = <SchemeDetailsActions scheme={scheme} enableViewLink />;
+                const actions = <SchemeDetailsActions
+                  scheme={scheme}
+                  enableViewLink
+                  enrollment={enrolled[scheme.id]}
+                  mode={mode}
+                  reload={() => this.getData()}
+                />;
                 return <SchemeDetails
                   scheme={scheme}
                   actions={actions}

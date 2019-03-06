@@ -18,7 +18,8 @@ class EnumSelect extends React.Component {
       label,
       required,
       error,
-      errorText
+      errorText,
+      allowClear
     } = this.props;
 
     return (
@@ -31,8 +32,11 @@ class EnumSelect extends React.Component {
           onChange={onChange}
         >
           <MenuItem value="" disabled={true}>
-            <em>{label}</em>
+            <Typography variant="display2">{label}</Typography>
           </MenuItem>
+          {allowClear && <MenuItem value="">
+            <Typography variant="caption">Няма</Typography>
+          </MenuItem>}
           {Object.keys(EnumValues).map((key, i) => {
             return (
               <MenuItem key={i} value={EnumValues[key]}>

@@ -1,84 +1,93 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
 import Typography from '@material-ui/core/Typography';
-import withMobileDialog from '@material-ui/core/withMobileDialog';
-import { withStyles } from '@material-ui/core/styles';
 
+import QueryService from '../../services/query.service';
 import AsyncSelect from '../../components/select/AsyncSelect';
+import FormModal from '../../components/FormModal';
 
 class SelectTeamModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      model: null
+      user1: null,
+      user2: null,
+      err: null
     };
   }
 
-  render() {
-    const { onClose, onChange, classes, fullScreen, open, singleTeams } = this.props;
-    const { model } = this.state;
-    return (
-      <Dialog
-        open={open}
-        onClose={onClose}
-        fullScreen={fullScreen}
-        classes={{ paper: classes.root }}
-      >
-        <DialogTitle>
-          <Typography component="span" variant="headline">Избор на играч/двойка</Typography>
-        </DialogTitle>
-        <DialogContent>
-          <AsyncSelect
-            value={model}
-            label="Избор на играч/двойка"
-            query="teams"
-            filter={{
-              singleTeams
-            }}
-            formatOptionLabel={(option) => {
-              return (
-                <Typography>{option.user1.name}</Typography>
-              );
-            }}
-            onChange={model => this.setState({ model })} />
-        </DialogContent>
+  save() {
+    this.setState({ err: null });
 
-        <DialogActions className={classes.btnContainer}>
-          <Button disabled={!model} variant="contained" color="primary" className={classes.btn} onClick={() => onChange(model)}>
-            Запис
-          </Button>
-          <Button variant="outlined" color="primary" className={classes.btn} onClick={onClose}>
-            Отказ
-          </Button>
-        </DialogActions>
-      </Dialog>
+    QueryService
+      .post(`/schemes/${this.props.scheme.id}/enrollments`, this.state)
+      .then(e => this.props.onChange())
+      .catch(err => this.setState({ err }));
+  }
+
+  canSave() {
+    return (this.props.scheme.singleTeams && this.state.user1)
+      || (this.state.user1 && this.state.user2);
+  }
+
+  render() {
+    const { onClose, scheme } = this.props;
+    const { user1, user2, err } = this.state;
+
+    const errTextPrefix = scheme.singleTeams ? "Играчът" : "Някой от играчите";
+
+    const title = 'Записване на играч/двойка';
+    const actions = <React.Fragment>
+      <Button disabled={!this.canSave()} variant="contained" color="primary" onClick={() => this.save()}>
+        Запис
+      </Button>
+      <Button variant="outlined" color="primary" onClick={onClose}>
+        Отказ
+      </Button>
+    </React.Fragment>;
+
+    const body = <React.Fragment>
+      <AsyncSelect
+        value={user1}
+        label="Избор на играч"
+        query="users"
+        formatOptionLabel={(option) => <Typography component="span">
+          {option.name}
+          <Typography component="span" variant="caption">{option.email}</Typography>
+        </Typography>}
+        onChange={user1 => this.setState({ user1 })} />
+      {!scheme.singleTeams && <AsyncSelect
+        value={user2}
+        label="Избор на играч"
+        query="users"
+        formatOptionLabel={(option) => <Typography component="span">
+          {option.name}
+          <Typography component="span" variant="caption">{option.email}</Typography>
+        </Typography>}
+        onChange={user2 => this.setState({ user2 })} />}
+
+      {err && <div style={{ marginTop: '1rem', color: 'red', fontSize: '.8rem' }}>
+        {err.message == 'ExistingEnrollment'
+          && <em className="exception">{errTextPrefix} вече са записани.</em>}
+        {err.message == 'RequirementsNotMet'
+          && <em className="exception">{errTextPrefix} не покрива изискванията на схемата.</em>}
+        {err.message == 'UserHasNoInfo'
+          && <em className="exception">{errTextPrefix} няма въведена информация за пол и/или дата на раждане.</em>}
+
+      </div>}
+    </React.Fragment>;
+
+    return (
+      <FormModal
+        enableFullWidth={true}
+        onClose={onClose}
+        title={title}
+        body={body}
+        actions={actions}
+        hasError={err}
+      />
     );
   }
 }
 
-const styles = (theme) => ({
-  root: {
-    width: '600px',
-    height: '600px'
-  },
-  btnContainer: {
-    [theme.breakpoints.down('sm')]: {
-      display: 'flex',
-      flexDirection: 'column'
-    }
-  },
-  btn: {
-    [theme.breakpoints.down('sm')]: {
-      marginBottom: '.3rem',
-      width: '100%'
-    }
-  }
-});
-
-export default withStyles(styles)(
-  withMobileDialog({ breakpoint: 'xs' })(SelectTeamModal)
-);
+export default SelectTeamModal;

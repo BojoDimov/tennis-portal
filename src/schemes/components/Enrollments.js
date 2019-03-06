@@ -75,21 +75,21 @@ class EnrollmentsComponent extends React.Component {
           <Typography variant="title">Играчи</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails style={{ flexDirection: 'column' }}>
+          {openTeamModal && <SelectTeamModal
+            scheme={scheme}
+            onChange={() => {
+              this.setState({ openTeamModal: false });
+              this.getData();
+            }}
+            onClose={() => this.setState({ openTeamModal: false })}
+          />}
 
           {mode == ApplicationMode.ADMIN
-            && <div>
-              <SelectTeamModal
-                open={openTeamModal}
-                singleTeams={scheme.singleTeams}
-                onChange={(team) => this.add(team)}
-                onClose={() => this.setState({ openTeamModal: false })}
-              />
-              <Button variant="outlined" color="primary" size="small"
-                onClick={() => this.setState({ openTeamModal: true })}
-              >
-                Добави
-            </Button>
-            </div>}
+            && <div><Button variant="outlined" color="primary" size="small"
+              onClick={() => this.setState({ openTeamModal: true })}
+            >
+              Добави
+            </Button></div>}
 
           <Table>
             <TableHead>
