@@ -54,10 +54,23 @@ class UserService {
   }
 
   async create(model) {
-    model = this.trim(model);
-    model = await this.validate(model, false);
-    model = this.format(model);
-    return Users.create(model);
+    let transaction;
+    try {
+      transaction = await sequelize.transaction();
+
+      model = this.trim(model);
+      model = await this.validate(model, false);
+      model = this.format(model);
+      const user = await Users.create(model, { transaction });
+      const team = await Teams.create({ user1Id: user.id, user2Id: null }, { transaction });
+
+      await transaction.commit();
+      return user;
+    }
+    catch (err) {
+      await transaction.rollback();
+      throw err;
+    }
   }
 
   async update(id, model) {

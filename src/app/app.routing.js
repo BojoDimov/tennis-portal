@@ -21,6 +21,7 @@ import Test from '../test';
 import { ApplicationMode } from '../enums';
 
 const routeMapping = {
+  '/editions': EditionsRoot,
   '/schedule': Schedule,
   '/players': NotFoundPage,
   '/admin/courts': Courts,
@@ -33,9 +34,8 @@ const routeMapping = {
 const AppRouting = () => (
   <UserService.WithApplicationMode>
     {mode => <Switch>
-      {/* <Route path="/tournaments" component={null} /> */}
-      <Route path="/test" component={Test} />
-      <Route path="/editions" component={EditionsRoot} />
+      {/* <Route path="/tournaments" component={null} /> 
+      <Route path="/editions" component={EditionsRoot} />*/}
       <Route path="/schemes/:id/groups" component={GroupsBracket} />
       <Route path="/schemes/:id/elimination" component={EliminationBracket} />
       <Route path="/schemes" component={SchemesRoot} />
