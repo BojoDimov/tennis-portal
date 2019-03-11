@@ -16,6 +16,8 @@ import DisplayImage from '../components/DisplayImage';
 import QueryService from '../services/query.service';
 import { catchEvent } from '../services/events.service';
 import UserService from '../services/user.service';
+import ConfirmationDialog from '../components/ConfirmationDialog';
+import MessageModal from '../components/MessageModal';
 
 class EditionView extends React.Component {
   constructor(props) {
@@ -27,7 +29,8 @@ class EditionView extends React.Component {
       },
       editionModel: null,
       schemeModel: null,
-      enrolled: []
+      enrolled: [],
+      hasError: false
     }
   }
 
@@ -75,6 +78,13 @@ class EditionView extends React.Component {
     });
   }
 
+  remove() {
+    this.setState({ hasError: false });
+    return QueryService.delete(`/editions/${this.state.edition.id}`)
+      .then(() => this.props.history.replace('/editions'))
+      .catch(err => this.setState({ hasError: true }));
+  }
+
   render() {
     const { edition, editionModel, schemeModel, enrolled } = this.state;
     const { classes } = this.props;
@@ -83,6 +93,9 @@ class EditionView extends React.Component {
       <UserService.WithApplicationMode>
         {mode => (
           <div className="container">
+            <MessageModal activation={this.state.hasError}>
+              <Typography>Неуспешно изтриване на турнир. Възможна причина за грешката е съществуващи схеми със записани играчи в тях.</Typography>
+            </MessageModal>
             {editionModel
               && <EditionFormModal
                 model={editionModel}
@@ -106,7 +119,14 @@ class EditionView extends React.Component {
             {mode == ApplicationMode.ADMIN && <div style={{ margin: '.5rem 0' }}>
               <Button variant="contained" color="primary" size="small" onClick={() => this.initSchemeModel()}>Добави схема</Button>
               <Button variant="contained" color="primary" size="small" style={{ marginLeft: '.3rem' }} onClick={() => this.setState({ editionModel: edition })}>Промяна</Button>
-              <Button variant="contained" color="secondary" size="small" style={{ marginLeft: '.3rem' }}>Изтриване</Button>
+              <ConfirmationDialog
+                title="Изтриване на турнир"
+                body={<Typography>Сигурни ли сте че искате да изтриете турнир {edition.name}?</Typography>}
+                onAccept={() => this.remove()}
+              >
+                <Button variant="contained" color="secondary" size="small" style={{ marginLeft: '.3rem' }}>Изтриване</Button>
+              </ConfirmationDialog>
+
             </div>}
 
             <Card>
@@ -149,6 +169,7 @@ class EditionView extends React.Component {
                   reload={() => this.getData()}
                 />;
                 return <SchemeDetails
+                  key={scheme.id}
                   scheme={scheme}
                   actions={actions}
                   CardProps={{

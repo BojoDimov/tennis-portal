@@ -35,7 +35,7 @@ const create = async (req, res, next) => {
 
 const update = async (req, res, next) => {
   try {
-    await EditionsService.get(req.params.id, req.body);
+    await EditionsService.update(req.params.id, req.body);
     return res.json({});
   }
   catch (err) {
@@ -45,7 +45,7 @@ const update = async (req, res, next) => {
 
 const remove = async (req, res, next) => {
   try {
-    await EditionsService.get(req.params.id);
+    await EditionsService.remove(req.params.id);
     return res.json({});
   }
   catch (err) {
