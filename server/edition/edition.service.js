@@ -1,9 +1,14 @@
 const { Tournaments, Editions, Schemes, sequelize } = require('../db');
+const Op = sequelize.Op;
 const moment = require('moment-timezone');
+const { Status } = require('../infrastructure/enums');
 
 class EditionsService {
-  async filter() {
+  async filter(isAdmin) {
     return await Editions.findAll({
+      where: isAdmin ? {} : {
+        status: Status.PUBLISHED
+      },
       include: [
         {
           model: Tournaments,
