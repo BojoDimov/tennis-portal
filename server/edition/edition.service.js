@@ -20,7 +20,7 @@ class EditionsService {
     });
   }
 
-  async get(id) {
+  async get(id, isAdmin = true) {
     const edition = await Editions.findById(id, {
       include: [
         {
@@ -28,7 +28,14 @@ class EditionsService {
           as: 'tournament',
           include: ['thumbnail']
         },
-        'schemes'
+        {
+          model: Schemes,
+          as: 'schemes',
+          where: isAdmin ? {} : {
+            status: Status.PUBLISHED
+          },
+          required: false
+        }
       ]
     });
     if (!edition)

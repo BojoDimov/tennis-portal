@@ -19,8 +19,12 @@ const filter = async (req, res, next) => {
 }
 
 const get = async (req, res, next) => {
+  let isAdmin = false;
+  if (req.user && req.user.isAdmin)
+    isAdmin = true;
+
   try {
-    const item = await EditionsService.get(req.params.id);
+    const item = await EditionsService.get(req.params.id, isAdmin);
     return res.json(item);
   }
   catch (err) {
@@ -60,7 +64,7 @@ const remove = async (req, res, next) => {
 
 router.post('/filter', identity, filter);
 router.post('/', adminIdentity, create);
-router.get('/:id', get);
+router.get('/:id', identity, get);
 router.post('/:id', adminIdentity, update);
 router.delete('/:id', adminIdentity, remove);
 
