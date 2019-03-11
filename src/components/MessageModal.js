@@ -16,8 +16,9 @@ class MessageModal extends React.Component {
   }
 
   show() {
+    let duration = this.props.duration || 60;
     this.setState({ open: true });
-    setTimeout(() => this.setState({ open: false }), 10 * 1000);
+    setTimeout(() => this.setState({ open: false }), duration * 1000);
   }
 
   render() {

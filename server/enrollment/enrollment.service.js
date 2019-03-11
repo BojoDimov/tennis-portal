@@ -139,6 +139,9 @@ class EnrollmentService {
 
   validateEnrollment(scheme, team) {
     const errors = [];
+    if (moment().isBefore(moment(scheme.registrationStart)))
+      throw { name: 'DomainActionError', error: { message: 'RegistrationIsNotOpen' } };
+
     if (!team.user1.gender || !team.user1.birthDate)
       throw { name: 'DomainActionError', error: { message: 'UserHasNoInfo' } };
 
