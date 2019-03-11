@@ -36,7 +36,10 @@ class SchemeService {
   }
 
   async delete(id) {
-    throw { name: 'NotImplemented' };
+    const scheme = await this.get(id);
+    if (!scheme)
+      throw { name: 'NotFound' };
+    await Schemes.destroy({ where: { id: scheme.id } });
   }
 
   formatModel(model) {

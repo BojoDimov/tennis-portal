@@ -10,6 +10,7 @@ import SchemeDetails from './components/SchemeDetails';
 import SchemeDetailsActions from './components/SchemeDetailsActions';
 import { BracketStatus, ApplicationMode } from '../enums';
 import { catchEvent } from '../services/events.service';
+import MessageModal from '../components/MessageModal';
 
 class SchemeView extends React.Component {
 
@@ -20,7 +21,8 @@ class SchemeView extends React.Component {
         edition: {}
       },
       schemeModel: null,
-      enrolled: []
+      enrolled: [],
+      hasError: false
     }
   }
 
@@ -44,8 +46,10 @@ class SchemeView extends React.Component {
   }
 
   deleteScheme() {
+    this.setState({ hasError: false });
     return QueryService.delete(`/schemes/${this.state.scheme.id}`)
-      .then()
+      .then(e => this.props.history.replace(`/editions/${this.state.scheme.edition.id}`))
+      .catch(err => this.setState({ hasError: true }));
   }
 
   drawBracket() {
@@ -60,6 +64,9 @@ class SchemeView extends React.Component {
       <UserService.WithApplicationMode>
         {mode => (
           <div className="container">
+            <MessageModal activation={this.state.hasError}>
+              <Typography>Неуспешно изтриване на схема. Възможна причина за грешката е съществуващи записи на играчи.</Typography>
+            </MessageModal>
             {schemeModel
               && <SchemeFormModal
                 model={schemeModel}
@@ -102,14 +109,21 @@ class SchemeView extends React.Component {
                     </Button>
                   </ConfirmationDialog>}
 
-                <Button
-                  variant="contained"
-                  color="secondary"
-                  size="small"
-                  style={{ marginLeft: '.3rem' }}
+                <ConfirmationDialog
+                  title="Изтриване на турнир"
+                  body={<Typography>Сигурни ли сте че искате да изтриете схема {scheme.name}?</Typography>}
+                  onAccept={() => this.deleteScheme()}
                 >
-                  Изтриване
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    size="small"
+                    style={{ marginLeft: '.3rem' }}
+                  >
+                    Изтриване
               </Button>
+                </ConfirmationDialog>
+
               </div>}
 
             <SchemeDetails
