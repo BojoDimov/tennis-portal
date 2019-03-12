@@ -88,7 +88,7 @@ class SchemeDetailsActions extends React.Component {
           <Link to={`/schemes/${scheme.id}`}>
             <Button color="primary">Преглед</Button>
           </Link>}
-        {scheme.bracketStatus == BracketStatus.GROUPS_DRAWN
+        {(scheme.bracketStatus == BracketStatus.GROUPS_DRAWN || scheme.bracketStatus == BracketStatus.GROUPS_END)
           && <Link to={`/schemes/${scheme.id}/groups`}>
             <Button color="primary">Групи</Button>
           </Link>}

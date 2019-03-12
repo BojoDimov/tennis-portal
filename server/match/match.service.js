@@ -35,13 +35,14 @@ class MatchesService {
     ];
   }
 
-  get(id) {
+  get(id, transaction) {
     return Matches
       .findById(id, {
         include: this.matchesIncludes(),
         order: [
           ['sets', 'order', 'asc']
-        ]
+        ],
+        transaction
       });
   }
 
@@ -67,7 +68,7 @@ class MatchesService {
   }
 
   async update(id, model, scheme) {
-    const match = await this.get(id);
+    let match = await this.get(id);
     if (!match)
       throw { name: 'NotFound' };
 
@@ -80,6 +81,7 @@ class MatchesService {
       match.withdraw = model.withdraw;
       await this.manageSets(model.sets, transaction);
       await match.save({ transaction });
+      match = await this.get(id, transaction);
       if (scheme.bracketStatus == BracketStatus.ELIMINATION_DRAWN)
         await this.manageNextMatch(match, transaction);
       if (scheme.bracketStatus == BracketStatus.GROUPS_DRAWN)
@@ -167,28 +169,26 @@ class MatchesService {
     return groups;
   }
 
-  manageNextMatch(match, transaction) {
+  async manageNextMatch(match, transaction) {
     let winner = getWinner(match);
     if (!winner)
       return;
 
-    return Matches
-      .findOrCreate({
-        where: {
-          round: match.round + 1,
-          match: Math.ceil(match.match / 2),
-          schemeId: match.schemeId
-        },
-        transaction
-      })
-      .then(([nextMatch, _]) => {
-        if (match.match % 2 == 0)
-          nextMatch.team2Id = winner;
-        else
-          nextMatch.team1Id = winner;
+    const [nextMatch, created] = await Matches.findOrCreate({
+      where: {
+        round: match.round + 1,
+        match: Math.ceil(match.match / 2),
+        schemeId: match.schemeId
+      },
+      transaction
+    });
 
-        return nextMatch.save({ transaction });
-      });
+    if (match.match % 2 == 0)
+      nextMatch.team2Id = winner;
+    else
+      nextMatch.team1Id = winner;
+
+    await nextMatch.save({ transaction });
   }
 
   async manageGroupOrder(match, transaction) {

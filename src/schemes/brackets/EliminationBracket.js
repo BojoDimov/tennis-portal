@@ -90,7 +90,10 @@ class EliminationBracket extends React.Component {
             {matchModel
               && <MatchFormModal
                 model={matchModel}
-                onChange={() => this.setState({ matchModel: null })}
+                onChange={() => {
+                  this.setState({ matchModel: null });
+                  this.getData();
+                }}
                 onClose={() => this.setState({ matchModel: null })}
               />}
 
