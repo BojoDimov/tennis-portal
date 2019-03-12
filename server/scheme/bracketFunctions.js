@@ -76,7 +76,7 @@ function drawGroups(scheme, seed, enrollments) {
       };
 
     if (i < enrollments.length)
-      groups[g].teams.push({ teamId: enrollments[i].id, order: groups[g].teams.length + 1 });
+      groups[g].teams.push({ teamId: enrollments[i].teamId, order: groups[g].teams.length + 1 });
     else
       groups[g].teams.push({ teamId: null, order: groups[g].teams.length + 1 });
   }
@@ -103,11 +103,11 @@ function drawEliminations(scheme, seed, enrollments) {
   mapping.forEach((pos, s) => {
     let match = matches[Math.floor(pos / 2) + 1];
     if (pos % 2 == 0) {
-      match.team1Id = enrollments[s].id;
+      match.team1Id = enrollments[s].teamId;
       match.seed1 = s + 1;
     }
     else {
-      match.team2Id = enrollments[s].id;
+      match.team2Id = enrollments[s].teamId;
       match.seed2 = s + 1;
     }
   });
@@ -115,9 +115,9 @@ function drawEliminations(scheme, seed, enrollments) {
   remaining.forEach((pos, i) => {
     let match = matches[Math.floor(pos / 2) + 1];
     if (pos % 2 == 0)
-      match.team1Id = enrollments[mapping.length + i].id;
+      match.team1Id = enrollments[mapping.length + i].teamId;
     else
-      match.team2Id = enrollments[mapping.length + i].id;
+      match.team2Id = enrollments[mapping.length + i].teamId;
   });
 
   matches = matches.slice(1);

@@ -48,7 +48,7 @@ const remove = (req, res, next) => {
 //this is enrollment for single teams
 const enroll = async (req, res, next) => {
   try {
-    const team = await TeamsService.get(req.user.id);
+    const team = await TeamsService.getUserTeam(req.user.id);
     const enrollmentData = {
       scheme: req.scheme,
       team: team,

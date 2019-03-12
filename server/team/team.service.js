@@ -13,7 +13,7 @@ class TeamsService {
       });
   }
 
-  get(userId) {
+  getUserTeam(userId) {
     return Teams.findOne({
       where: {
         user1Id: userId,

@@ -43,7 +43,7 @@ class EnrollmentService {
             model: Teams, as: 'team',
             include: [
               {
-                model: Rankings, as: 'rankings'
+                model: Rankings, as: 'rankings', required: false, where: { tournamentId: scheme.edition.tournamentId }
               },
               { model: Users, as: 'user1', attributes: ['id', 'name', 'email'] },
               { model: Users, as: 'user2', attributes: ['id', 'name', 'email'] }
@@ -55,8 +55,8 @@ class EnrollmentService {
       })
       .then(enrollments => {
         return enrollments.sort((a, b) => {
-          let ap = ((a.team.rankings || []).find(r => r.tournamentId == scheme.edition.tournamentId) || { points: 0 }).points;
-          let bp = ((b.team.rankings || []).find(r => r.tournamentId == scheme.edition.tournamentId) || { points: 0 }).points;
+          let ap = ((a.team.rankings && a.team.rankings[0]) || { points: 0 }).points;
+          let bp = ((b.team.rankings && b.team.rankings[0]) || { points: 0 }).points;
           return bp - ap;
         });
       });
