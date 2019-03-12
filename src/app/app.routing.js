@@ -2,6 +2,7 @@ import React from 'react';
 import { Switch, Route, Redirect } from 'react-router-dom';
 
 import NotFoundPage from './NotFoundPage';
+import TournamentView from '../tournaments/TournamentView';
 import SchemesRoot from '../schemes/SchemesRoot';
 import GroupsBracket from '../schemes/brackets/GroupsBracket';
 import EliminationBracket from '../schemes/brackets/EliminationBracket';
@@ -17,7 +18,6 @@ import UserProfile from '../users/UserProfile';
 import AccountActivation from '../login/Activation';
 import RecoveryStep1 from '../login/RecoveryStep1';
 import RecoveryStep2 from '../login/RecoveryStep2';
-import Test from '../test';
 import { ApplicationMode } from '../enums';
 
 const routeMapping = {
@@ -36,6 +36,7 @@ const AppRouting = () => (
     {mode => <Switch>
       {/* <Route path="/tournaments" component={null} /> 
       <Route path="/editions" component={EditionsRoot} />*/}
+      <Route path="/tournaments/:id" component={TournamentView} />
       <Route path="/schemes/:id/groups" component={GroupsBracket} />
       <Route path="/schemes/:id/elimination" component={EliminationBracket} />
       <Route path="/schemes" component={SchemesRoot} />

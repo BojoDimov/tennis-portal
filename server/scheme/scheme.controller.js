@@ -64,13 +64,36 @@ const drawBracket = async (req, res, next) => {
   }
 }
 
-router.post('/', adminIdentity, create);
-router.get('/:id', get);
-router.post('/:id', adminIdentity, update);
-router.delete('/:id', adminIdentity, remove);
+const getScore = async (req, res, next) => {
+  try {
+    const rankings = await SchemeService.getScore(req.scheme);
+    return res.json(rankings);
+  }
+  catch (err) {
+    return next(err, req, res, null);
+  }
+}
+
+const saveScore = async (req, res, next) => {
+  try {
+    await SchemeService.saveScore(req.scheme, req.body);
+    return res.json({});
+  }
+  catch (err) {
+    return next(err, req, res, null);
+  }
+}
+
+
+router.get('/:id/scores', adminIdentity, include, getScore);
+router.post('/:id/scores/save', adminIdentity, include, saveScore);
 router.get('/:id/drawBracket', adminIdentity, include, drawBracket);
 router.use('/:id/enrollments', include, require('../enrollment/enrollment.controller'));
 router.use('/:id/matches', include, require('../match/match.controller'));
 router.use('/:id/groups', include, require('../group/group.controller'));
+router.get('/:id', get);
+router.post('/:id', adminIdentity, update);
+router.post('/', adminIdentity, create);
+router.delete('/:id', adminIdentity, remove);
 
 module.exports = router;

@@ -2,7 +2,7 @@ const router = require('express').Router();
 const adminIdentity = require('./infrastructure/middlewares/adminIdentity');
 
 router.use('/select', require('./select.controller'));
-//router.use('/tournaments', require('./tournament/tournament.controller'));
+router.use('/tournaments', require('./tournament/tournament.controller'));
 router.use('/editions', require('./edition/edition.controller'));
 router.use('/schemes', require('./scheme/scheme.controller'));
 router.use('/enrollments', require('./enrollment/enrollment.controller'));

@@ -11,6 +11,7 @@ import SchemeDetailsActions from './components/SchemeDetailsActions';
 import { BracketStatus, ApplicationMode } from '../enums';
 import { catchEvent } from '../services/events.service';
 import MessageModal from '../components/MessageModal';
+import ScoresModal from './components/ScoresModal';
 
 class SchemeView extends React.Component {
 
@@ -22,7 +23,8 @@ class SchemeView extends React.Component {
       },
       schemeModel: null,
       enrolled: [],
-      hasError: false
+      hasError: false,
+      scores: null
     }
   }
 
@@ -57,8 +59,13 @@ class SchemeView extends React.Component {
       .then(() => this.getData());
   }
 
+  getScores() {
+    return QueryService.get(`/schemes/${this.state.scheme.id}/scores`)
+      .then(scores => this.setState({ scores }));
+  }
+
   render() {
-    const { scheme, schemeModel, enrolled } = this.state;
+    const { scheme, schemeModel, enrolled, scores } = this.state;
 
     return (
       <UserService.WithApplicationMode>
@@ -76,6 +83,16 @@ class SchemeView extends React.Component {
                 }}
                 onClose={() => this.setState({ schemeModel: null })}
               />}
+            {scores && scores.length > 0
+              && <ScoresModal
+                scores={scores}
+                scheme={scheme}
+                onChange={() => {
+                  this.setState({ scores: null });
+                  this.getData();
+                }}
+                onClose={() => this.setState({ scores: null })}
+              />}
 
             {mode == ApplicationMode.ADMIN &&
               <div style={{ margin: '.5rem 0' }}>
@@ -86,7 +103,7 @@ class SchemeView extends React.Component {
                   onClick={() => this.setState({ schemeModel: scheme })}
                 >
                   Промяна
-              </Button>
+                </Button>
                 {scheme.bracketStatus != BracketStatus.ELIMINATION_END
                   && <ConfirmationDialog
                     title="Изтегляне/приключване на текуща фаза"
@@ -108,6 +125,16 @@ class SchemeView extends React.Component {
                         && <span>Следваща фаза</span>}
                     </Button>
                   </ConfirmationDialog>}
+
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="small"
+                  style={{ marginLeft: '.3rem' }}
+                  onClick={() => this.getScores()}
+                >
+                  Резултати
+                </Button>
 
                 <ConfirmationDialog
                   title="Изтриване на турнир"

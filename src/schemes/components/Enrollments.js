@@ -128,7 +128,10 @@ class EnrollmentsComponent extends React.Component {
                           </Link>}
                       </TableCell>
                       <TableCell padding="dense">
-                        <Typography variant="caption">няма</Typography>
+                        {enrollment.team.rankings && enrollment.team.rankings[0]
+                          && <Typography variant="caption">{enrollment.team.rankings[0].points}</Typography>}
+                        {(!enrollment.team.rankings || !enrollment.team.rankings[0])
+                          && <Typography variant="caption">няма</Typography>}
                       </TableCell>
                       {isAdmin && <TableCell padding="none">
                         <Button variant="text" color="secondary" size="small"

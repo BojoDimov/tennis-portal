@@ -1,4 +1,4 @@
-const { Tournaments } = require('../db');
+const { Tournaments, Rankings, Teams, Users } = require('../db');
 const { Status } = require('../infrastructure/enums');
 class TournamentsService {
   async filter() {
@@ -6,7 +6,24 @@ class TournamentsService {
   }
 
   async get(id) {
-    const tournament = await Tournaments.findById(id, { include: ['thumbnail'] });
+    const tournament = await Tournaments.findById(id, {
+      include: [
+        'thumbnail',
+        {
+          model: Rankings, as: 'rankings',
+          include: [{
+            model: Teams, as: 'team',
+            include: [
+              { model: Users, as: 'user1', attributes: ['id', 'name'] },
+              { model: Users, as: 'user2', attributes: ['id', 'name'] }
+            ]
+          }],
+          order: [
+            ['points', 'desc']
+          ]
+        }
+      ]
+    });
     if (!tournament)
       throw { name: 'NotFound' };
     return tournament;

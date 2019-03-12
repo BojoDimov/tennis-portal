@@ -3,12 +3,16 @@ const {
   Schemes,
   Matches,
   Groups,
-  GroupTeams
+  GroupTeams,
+  Teams,
+  Users,
+  Rankings
 } = require('../db');
 const { BracketStatus } = require('../infrastructure/enums');
 const Enrollments = require('../enrollment/enrollment.service');
 const Bracket = require('./bracketFunctions');
 const MatchService = require('../match/match.service');
+const { getWinner, getStatsFromMatch } = require('../match/match.functions');
 
 class SchemeService {
   async get(id) {
@@ -105,6 +109,83 @@ class SchemeService {
         await scheme.update({ bracketStatus: BracketStatus.ELIMINATION_END }, { transaction });
       else
         throw { name: 'DomainActionError', error: 'invalidState' };
+
+      await transaction.commit();
+    }
+    catch (err) {
+      await transaction.rollback();
+      throw err;
+    }
+  }
+
+  async getScore(scheme) {
+    if (scheme.bracketStatus != BracketStatus.ELIMINATION_END)
+      throw { name: 'DomainActionError', error: {} };
+
+    const matches = await Matches.findAll({
+      where: {
+        schemeId: scheme.id
+      },
+      include: MatchService.matchesIncludes(),
+      order: [['round', 'desc'], ['match', 'desc']]
+    });
+
+    const teamStats = [];
+    const teams = [];
+    matches.forEach(match => getStatsFromMatch(teamStats, match));
+    matches.forEach(match => {
+      if (match.team1Id && !teams[match.team1Id])
+        teams[match.team1Id] = {
+          team: match.team1,
+          score: 1
+        };
+
+      if (match.team2Id && !teams[match.team2Id])
+        teams[match.team2Id] = {
+          team: match.team2,
+          score: scheme.pPoints
+        };
+    });
+
+    for (let teamId in teamStats) {
+      teams[teamId].score += teamStats[teamId].wonMatches * scheme.wPoints;
+    }
+
+    let tournamentWinner = null;
+    let finale = matches.find(match => match.match && match.round && (match.sets.length > 0 || match.withdraw));
+    if (finale)
+      tournamentWinner = getWinner(finale);
+
+    if (tournamentWinner)
+      teams[tournamentWinner].score += scheme.cPoints;
+
+    teams.sort((a, b) => b.score - a.score);
+    return teams.filter(e => e);
+  }
+
+  async saveScore(scheme, scores) {
+    let transaction;
+    try {
+      transaction = await sequelize.transaction();
+      const rankings = await Rankings.findAll({
+        where: {
+          tournamentId: scheme.edition.tournamentId
+        }
+      });
+
+      for (let i = 0; i < scores.length; ++i) {
+        const ranking = rankings.find(e => e.teamId == scores[i].team.id);
+        if (!ranking)
+          await Rankings.create({
+            tournamentId: scheme.edition.tournamentId,
+            teamId: scores[i].team.id,
+            points: scores[i].score
+          }, { transaction });
+        else {
+          ranking.points += scores[i].score;
+          await ranking.save({ transaction });
+        }
+      }
 
       await transaction.commit();
     }
