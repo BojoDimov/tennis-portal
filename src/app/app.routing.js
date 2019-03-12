@@ -12,6 +12,7 @@ import Courts from '../admin/courts/Courts';
 import Seasons from '../admin/seasons/Seasons';
 import Statistics from '../admin/statistics/Statistics';
 import Users from '../admin/users/Users';
+import TeamView from '../users/TeamView';
 import NavigationModel from '../menu/navigation.model';
 import UserService from '../services/user.service';
 import UserProfile from '../users/UserProfile';
@@ -40,6 +41,7 @@ const AppRouting = () => (
       <Route path="/schemes/:id/groups" component={GroupsBracket} />
       <Route path="/schemes/:id/elimination" component={EliminationBracket} />
       <Route path="/schemes" component={SchemesRoot} />
+      <Route path="/teams/:id" component={TeamView} />
 
       {NavigationModel.routes.map(route => {
         return (

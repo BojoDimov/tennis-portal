@@ -13,6 +13,19 @@ class TeamsService {
       });
   }
 
+  async get(id) {
+    const team = await Teams.findById(id, {
+      include: [
+        { model: Users, as: 'user1', attributes: ['id', 'name', 'startedPlaying', 'playStyle', 'backhandType', 'courtType'] },
+        { model: Users, as: 'user2', attributes: ['id', 'name', 'startedPlaying', 'playStyle', 'backhandType', 'courtType'] }
+      ]
+    });
+
+    if (!team)
+      throw { name: 'NotFound' };
+    return team;
+  }
+
   getUserTeam(userId) {
     return Teams.findOne({
       where: {

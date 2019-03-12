@@ -61,7 +61,7 @@ class MatchDetails extends React.Component {
         <CardContent>
           <div className={classes.vsRoot}>
             {match.team1 &&
-              <Link to={`/users/${match.team1.id}`} style={{ flexBasis: '33%' }}>
+              <div style={{ flexBasis: '33%' }}>
                 <Typography variant="body2" className={classes.vsTeam}>
                   {match.team1.user1.name}
                 </Typography>
@@ -69,13 +69,13 @@ class MatchDetails extends React.Component {
                   <Typography variant="body2" className={classes.vsTeam}>
                     {match.team1.user2.name}
                   </Typography>}
-              </Link>}
+              </div>}
 
             {!match.team1 && <Typography style={{ textAlign: 'center' }}>BYE</Typography>}
 
             <StyledScore sets={match.sets} />
 
-            {match.team2 && <Link to={`/users/${match.team1.user2Id}`} style={{ flexBasis: '33%' }}>
+            {match.team2 && <div style={{ flexBasis: '33%' }}>
               <Typography variant="body2" className={classes.vsTeam}>
                 {match.team2 ? match.team2.user1.name : 'BYE'}
               </Typography>
@@ -83,7 +83,7 @@ class MatchDetails extends React.Component {
                 <Typography variant="body2" className={classes.vsTeam}>
                   {match.team2.user2.name}
                 </Typography>} */}
-            </Link>}
+            </div>}
 
             {!match.team2 && <Typography style={{ flexBasis: '33%' }}>BYE</Typography>}
 

@@ -49,6 +49,15 @@ class UserService {
     });
   }
 
+  async getPlayerInfo(id) {
+    const user = await Users.findById(id, {
+      attributes: ['id', 'name', 'startedPlaying', 'playStyle', 'backhandType', 'courtType']
+    });
+    if (!user)
+      throw { name: 'NotFound' };
+    return user;
+  }
+
   async getByEmail(email) {
     return await Users.findOne({ where: { email } });
   }

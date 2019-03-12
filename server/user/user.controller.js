@@ -13,6 +13,16 @@ const getAll = (req, res, next) => {
     .then(e => res.json(e));
 }
 
+const getPlayerInfo = async (req, res, next) => {
+  try {
+    const user = await UserService.getPlayerInfo(req.params.id);
+    return res.json(user);
+  }
+  catch (err) {
+    return next(err, req, res, null);
+  }
+}
+
 const getEnrollments = async (req, res) => {
   if (!req.user)
     return res.json({});
@@ -132,6 +142,7 @@ const changePassword = async (req, res, next) => {
 router.get('/enrollments', identity, getEnrollments);
 router.get('/activation', activate);
 router.get('/recovery/step1', issueRecoveryEmail);
+router.get('/:id/playerInfo', getPlayerInfo);
 router.get('/:id', auth, collect);
 router.get('/', auth, getAll);
 router.post('/recovery/step2', recoverAccount);
