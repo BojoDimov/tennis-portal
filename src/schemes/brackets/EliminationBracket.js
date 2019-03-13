@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Tooltip from '@material-ui/core/Tooltip';
@@ -82,11 +83,22 @@ class EliminationBracket extends React.Component {
   }
 
   render() {
-    const { matchModel, bracket } = this.state;
+    const { matchModel, bracket, scheme } = this.state;
     return (
       <UserService.WithApplicationMode>
         {mode => (
           <Paper elevation={4} style={{ backgroundColor: 'rgba(255, 255, 255, .9)' }}>
+            {scheme && <Typography align="center" variant="headline" style={{ padding: '2rem 0' }}>
+              Елиминационна фаза за
+              <Link to={`/editions/${scheme.edition.id}`}>
+                <Typography variant="display1">{scheme.edition.name}</Typography>
+              </Link>
+              -
+              <Link to={`/schemes/${scheme.id}`}>
+                <Typography variant="display1">{scheme.name}</Typography>
+              </Link>
+            </Typography>}
+
             {matchModel
               && <MatchFormModal
                 model={matchModel}

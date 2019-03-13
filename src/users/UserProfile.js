@@ -50,6 +50,10 @@ class UserProfile extends React.Component {
       .then(e => this.setState(e));
   }
 
+  identity() {
+    return this.props.match.params.id && this.state.loggedInUser && this.props.match.params.id == this.state.loggedInUser.id;
+  }
+
   render() {
     const {
       user,
@@ -82,10 +86,10 @@ class UserProfile extends React.Component {
               <UserPersonalInfo user={user} />
               <UserPlayerInfo user={user} style={{ marginLeft: '2rem' }} />
             </div>
-            <div>
+            {this.identity() && <div>
               <Button variant="contained" size="small" color="primary" onClick={() => this.setState({ userModel: Object.assign({}, user) })}>Промяна</Button>
               <Button variant="contained" size="small" color="primary" style={{ marginLeft: '.3rem' }} onClick={() => this.setState({ changePassword: true })}>Смяна на парола</Button>
-            </div>
+            </div>}
           </CardContent>
           <CardActions>
           </CardActions>

@@ -48,7 +48,7 @@ class SchemeService {
 
   formatModel(model) {
     model.ageFrom = parseInt(model.ageFrom) || null;
-    model.ageTo = parseInt(model.ageFrom) || null;
+    model.ageTo = parseInt(model.ageTo) || null;
     model.maxPlayerCount = parseInt(model.maxPlayerCount) || null;
     model.groupCount = parseInt(model.groupCount) || null;
     model.teamsPerGroup = parseInt(model.teamsPerGroup) || null;
@@ -91,14 +91,14 @@ class SchemeService {
       else if (scheme.bracketStatus == BracketStatus.GROUPS_END) {
         //draw elimination from groups
         const data = await MatchService.getGroupMatches(scheme);
-        const groups = data.map(group => {
+        let groups = data.map(group => {
           return {
             team1: group.teams[0].team,
             team2: group.teams[1].team
           }
         });
 
-        Bracket.fillGroups(groups);
+        groups = Bracket.fillGroups(groups);
         const matches = Bracket.drawEliminationsFromGroups(groups, scheme.id);
         await Matches.bulkCreate(matches, { transaction });
         await scheme.update({ bracketStatus: BracketStatus.ELIMINATION_DRAWN }, { transaction });

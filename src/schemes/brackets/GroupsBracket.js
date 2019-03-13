@@ -15,6 +15,7 @@ import QueryService from '../../services/query.service';
 import ConfirmationDialog from '../../components/ConfirmationDialog';
 import EditGroupModal from './EditGroupModal';
 import EditMatchModal from '../components/MatchFormModal';
+import { BracketStatus } from '../../enums';
 
 class GroupsBracket extends React.Component {
   constructor(props) {
@@ -25,7 +26,8 @@ class GroupsBracket extends React.Component {
         edition: {}
       },
       groupModel: null,
-      matchModel: null
+      matchModel: null,
+      enableActions: false
     }
   }
 
@@ -35,9 +37,10 @@ class GroupsBracket extends React.Component {
 
   getData() {
     return QueryService.get(`/schemes/${this.props.match.params.id}/matches/groups`)
-      .then(e => this.setState({
-        groups: e.groups,
-        scheme: e.scheme
+      .then(({ groups, scheme }) => this.setState({
+        groups,
+        scheme,
+        enableActions: scheme.bracketStatus == BracketStatus.GROUPS_DRAWN || scheme.bracketStatus == BracketStatus.GROUPS_END
       }));
   }
 
@@ -75,7 +78,7 @@ class GroupsBracket extends React.Component {
   }
 
   render() {
-    const { scheme, groups, groupModel, matchModel } = this.state;
+    const { scheme, groups, groupModel, matchModel, enableActions } = this.state;
 
     return (
       <UserService.WithApplicationMode>
@@ -113,7 +116,7 @@ class GroupsBracket extends React.Component {
               </Link>
             </Typography>
 
-            {mode == ApplicationMode.ADMIN
+            {mode == ApplicationMode.ADMIN && enableActions
               && <div style={{ margin: '1rem', display: 'flex', justifyContent: 'center' }}>
                 <Button variant="contained" color="primary" size="small" onClick={() => this.addGroup()}>Добави група</Button>
               </div>}
@@ -130,6 +133,7 @@ class GroupsBracket extends React.Component {
                     onAddMatch={() => this.addMatch(group)}
                     onEditMatch={(match) => this.setState({ matchModel: match })}
                     onDeleteMatch={(match) => this.deleteMatch(match)}
+                    enableActions={enableActions}
                   />
                 );
               })}
@@ -155,7 +159,7 @@ class Group extends React.Component {
   }
 
   render() {
-    const { mode, group, onEdit, onDelete, onAddMatch, onEditMatch, onDeleteMatch } = this.props;
+    const { mode, group, onEdit, onDelete, onAddMatch, onEditMatch, onDeleteMatch, enableActions } = this.props;
     const { tabIndex } = this.state;
 
     return (
@@ -180,7 +184,7 @@ class Group extends React.Component {
           {tabIndex == 1 && <GroupMatchesView mode={mode} matches={group.matches} onEditMatch={onEditMatch} onDeleteMatch={onDeleteMatch} />}
         </div>
 
-        {mode == ApplicationMode.ADMIN
+        {mode == ApplicationMode.ADMIN && enableActions
           && <div style={{ display: 'flex', padding: '1.5rem' }}>
             <Button variant="contained" color="primary" size="small" onClick={onEdit}>Промяна</Button>
             <Button variant="contained" color="primary" size="small" onClick={onAddMatch} style={{ margin: '0 .3rem' }}>Добавяне на мач</Button>
