@@ -37,17 +37,19 @@ alter "registrationEnd" type varchar(255);
 
 --------------UPDATE 3-------------
 -------DROP TOURNAMENTS AND RECREATE DB--------
-drop table "Enrollments";
-drop table "Sets";
-drop table "Matches";
-drop table "GroupTeams";
-drop table "Groups";
-drop table "Schemes";
-drop table "Editions";
-drop table "Rankings";
-drop table "Tournaments";
-
+drop table if exists "Enrollments";
+drop table if exists "Sets";
+drop table if exists "Matches";
+drop table if exists "GroupTeams";
+drop table if exists "Groups";
+drop table if exists "Schemes";
+drop table if exists "Editions";
+drop table if exists "Rankings";
+drop table if exists "Tournaments";
 drop type if exists "enum_Tournaments_status";
 drop type if exists "enum_Editions_status"; 
 drop type if exists "enum_Schemes_status";
 drop type if exists "enum_Schemes_schemeType";
+
+insert into "Teams"("createdAt", "updatedAt", "user1Id", "user2Id")
+select now(), now(), "Users"."id", null from "Users";
