@@ -79,7 +79,7 @@ class RecoveryStep2 extends React.Component {
           variant="contained"
           color="primary"
           size="small"
-          style={{ marginTop: '1rem', padding: '0 2rem' }}
+          style={{ marginTop: '1rem' }}
           onClick={() => this.recover()}
         >
           Потвърждаване
