@@ -82,7 +82,7 @@ class RegistrationStepper extends React.Component {
             телефонния номер, който сте предоставили.
           </em>
           <div className={classes.action}>
-            <Button style={{ marginRight: '.3rem', padding: '0 2rem' }} variant="contained" size="small" color="primary" onClick={() => this.register()}>
+            <Button style={{ marginRight: '.3rem', padding: '.3rem 2rem' }} variant="contained" color="primary" onClick={() => this.register()}>
               Регистрация
             </Button>
           </div>

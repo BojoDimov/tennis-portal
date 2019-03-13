@@ -74,6 +74,9 @@ class Schedule extends React.Component {
 
     const rootRef = document.getElementById('root');
     rootRef.onscroll = () => {
+      if (!this.tableRef)
+        return;
+
       const needScrollBtns = rootRef.clientWidth <= 600;
       const tableInViewport = rootRef.scrollTop + 200 >= this.tableRef.offsetTop;
 

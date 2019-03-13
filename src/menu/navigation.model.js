@@ -32,7 +32,8 @@ class NavigationModel {
       { id: 6, to: '/admin/users', name: 'Потребители', Icon: PersonIcon },
       { id: 5, to: '/admin/seasons', name: 'Сезони', Icon: WbSunnyRoundedIcon },
       { id: 4, to: '/admin/courts', name: 'Кортове', Icon: ViewQuiltRoundedIcon },
-      { id: 7, to: '/admin/statistics', name: 'Справки', Icon: AssessmentIcon }
+      { id: 7, to: '/admin/statistics', name: 'Справки', Icon: AssessmentIcon },
+      { id: 8, to: '/editions', name: 'Турнири', faIcon: 'trophy' }
       // { id: 7, to: '/admin/subscriptions', name: 'Абонаменти', Icon: LoyaltyIcon },
       // { id: 3, to: '/admin/config', name: 'Настройки', Icon: BuildRoundedIcon }
     ];

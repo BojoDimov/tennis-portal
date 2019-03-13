@@ -19,6 +19,14 @@ module.exports = (db, Sequelize) => {
         allowNull: true
       }
     });
+
+    models.Tournaments.hasMany(models.Rankings, {
+      as: 'rankings',
+      foreignKey: {
+        name: 'tournamentId',
+        allowNull: false
+      }
+    })
   }
 
   return Tournaments;

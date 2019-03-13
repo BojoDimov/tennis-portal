@@ -20,6 +20,11 @@ class UserService {
     else return false;
   }
 
+  isIdentity(userId) {
+    let user = this.getUser();
+    return user && user.id == userId;
+  }
+
   getUser() {
     let token = JSON.parse(localStorage.getItem('token'))
     let user = (token || { user: null }).user;

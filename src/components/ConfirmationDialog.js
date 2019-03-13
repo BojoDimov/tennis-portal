@@ -15,6 +15,10 @@ class ConfirmationDialog extends React.Component {
 
     this.open = (e) => this.setState({ isOpen: true });
     this.close = (e) => this.setState({ isOpen: false });
+    this.accept = (e) => {
+      this.close(e);
+      this.props.onAccept(e);
+    }
   }
 
   render() {
@@ -27,7 +31,7 @@ class ConfirmationDialog extends React.Component {
           <DialogTitle>{title}</DialogTitle>
           <DialogContent>{body}</DialogContent>
           <DialogActions className={classes.btnContainer}>
-            <Button variant="contained" color="primary" className={classes.btn} onClick={onAccept}>
+            <Button variant="contained" color="primary" className={classes.btn} onClick={this.accept}>
               Да
           </Button>
             <Button variant="outlined" color="primary" className={classes.btn} onClick={this.close}>

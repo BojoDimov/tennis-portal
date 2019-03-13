@@ -5,9 +5,16 @@ module.exports = {
     FINALIZED: 'finalized',
     INACTIVE: 'inactive'
   },
-  SchemeType: {
-    GROUP: 'round-robin',
-    ELIMINATION: 'elimination'
+  // SchemeType: {
+  //   GROUP: 'round-robin',
+  //   ELIMINATION: 'elimination'
+  // },
+  BracketStatus: {
+    UNDRAWN: 'undrawn',
+    GROUPS_DRAWN: 'groups-in-progress',
+    GROUPS_END: 'groups-finished',
+    ELIMINATION_DRAWN: 'elimination-in-progress',
+    ELIMINATION_END: 'elimination-finished'
   },
   Gender: {
     MALE: 'male',

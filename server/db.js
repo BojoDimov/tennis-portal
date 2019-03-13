@@ -14,9 +14,9 @@ const db = {
   sequelize: sequelize,
   Sequelize: Sequelize,
 
-  News: sequelize.import('./news/news.model.js'),
   Users: sequelize.import('./user/user.model.js'),
   Teams: sequelize.import('./team/team.model.js'),
+  Invitations: sequelize.import('./invitations/invitation.model.js'),
 
   Tournaments: sequelize.import('./tournament/tournament.model.js'),
   Editions: sequelize.import('./edition/edition.model.js'),

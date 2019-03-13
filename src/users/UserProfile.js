@@ -6,12 +6,16 @@ import List from '@material-ui/core/List';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
 
 import UserService from '../services/user.service';
 import QueryService from '../services/query.service';
 import { l10n_text } from '../components/L10n';
 import { getHour } from '../utils';
+import UserProfileFormModal from './UserProfileFormModal';
+import ChangePasswordModal from './ChangePasswordModal'
+import InvitationsComponent from './InvitationsComponent';
 
 class UserProfile extends React.Component {
   constructor(props) {
@@ -21,8 +25,12 @@ class UserProfile extends React.Component {
       user: {},
       subscriptions: null,
       reservations: null,
+      invitations: null,
       subsCollapsed: true,
-      resCollapsed: false
+      resCollapsed: true,
+      invCollapsed: true,
+      userModel: null,
+      changePassword: false
     }
   }
 
@@ -32,28 +40,71 @@ class UserProfile extends React.Component {
 
   getData() {
     const id = this.props.match.params.id || this.state.loggedInUser.id;
-    return QueryService
+
+    if (!this.props.match.params.id || this.props.match.params.id == this.state.loggedInUser.id)
+      QueryService.get('/invitations')
+        .then(invitations => this.setState({ invitations }));
+
+    QueryService
       .get(`/users/${id}`)
       .then(e => this.setState(e));
   }
 
   render() {
-    const { user, reservations, subscriptions, subsCollapsed, resCollapsed } = this.state;
+    const {
+      user,
+      userModel,
+      reservations,
+      subscriptions,
+      invitations,
+      subsCollapsed,
+      resCollapsed,
+      invCollapsed,
+      changePassword
+    } = this.state;
     const { mode, classes } = this.props;
 
     return (
       <div className="container">
+        {userModel
+          && <UserProfileFormModal
+            model={userModel}
+            onChange={() => { this.getData(); this.setState({ userModel: null }) }}
+            onClose={() => this.setState({ userModel: null })}
+          />}
+
+        {changePassword && <ChangePasswordModal onClose={() => this.setState({ changePassword: false })} />}
+
         <Card classes={{ root: classes.sectionRoot }}>
           <CardContent classes={{ root: classes.cardContentRoot }}>
             <Typography classes={{ root: classes.sectionHeadline }} variant="headline">{user.name}</Typography>
-            {/* <Typography variant="caption">
-              E-mail
-              <Typography>{user.email}</Typography>
-            </Typography> */}
+            <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+              <UserPersonalInfo user={user} />
+              <UserPlayerInfo user={user} style={{ marginLeft: '2rem' }} />
+            </div>
+            <div>
+              <Button variant="contained" size="small" color="primary" onClick={() => this.setState({ userModel: Object.assign({}, user) })}>Промяна</Button>
+              <Button variant="contained" size="small" color="primary" style={{ marginLeft: '.3rem' }} onClick={() => this.setState({ changePassword: true })}>Смяна на парола</Button>
+            </div>
           </CardContent>
           <CardActions>
           </CardActions>
         </Card>
+
+        {invitations && <Card classes={{ root: classes.sectionRoot }}>
+          <CardContent classes={{ root: classes.cardContentRoot }}>
+            <Typography
+              variant="headline"
+              classes={{ root: classes.sectionHeadline }}
+              onClick={() => this.setState({ invCollapsed: !invCollapsed })}
+            >
+              <span>Покани за турнири</span>
+              {invCollapsed && <ExpandLessIcon />}
+              {!invCollapsed && <ExpandMoreIcon />}
+            </Typography>
+            {invCollapsed && <InvitationsComponent invitations={this.state.invitations} onChange={() => this.getData()} />}
+          </CardContent>
+        </Card>}
 
         {reservations != null && <Card classes={{ root: classes.sectionRoot }}>
           <CardContent classes={{ root: classes.cardContentRoot }}>
@@ -125,6 +176,64 @@ class UserProfile extends React.Component {
               </React.Fragment>}
           </CardContent>
         </Card>}
+      </div>
+    );
+  }
+}
+
+class UserPersonalInfo extends React.Component {
+  render() {
+    const { user } = this.props;
+    return (
+      <div>
+        <Typography variant="caption">
+          Email
+          <Typography>{user.email}</Typography>
+        </Typography>
+
+        <Typography variant="caption">
+          Телефон
+          <Typography>{user.telephone || 'няма'}</Typography>
+        </Typography>
+
+        <Typography variant="caption">
+          Рожденна дата
+          <Typography>{user.birthDate || 'няма'}</Typography>
+        </Typography>
+
+        <Typography variant="caption">
+          Пол
+          <Typography>{l10n_text(user.gender, "Gender") || 'няма'}</Typography>
+        </Typography>
+      </div>
+    );
+  }
+}
+
+class UserPlayerInfo extends React.Component {
+  render() {
+    const { user, style } = this.props;
+    return (
+      <div style={style}>
+        <Typography variant="caption">
+          Играе от
+          <Typography>{user.startedPlaying ? user.startedPlaying + 'г.' : 'няма'}</Typography>
+        </Typography>
+
+        <Typography variant="caption">
+          Играе с
+          <Typography>{l10n_text(user.playStyle, "PlayStyle") || 'няма'}</Typography>
+        </Typography>
+
+        <Typography variant="caption">
+          Бекхенд
+          <Typography>{l10n_text(user.backhandType, "BackhandType") || 'няма'}</Typography>
+        </Typography>
+
+        <Typography variant="caption">
+          Любима настилка
+          <Typography>{l10n_text(user.courtType, "CourtType") || 'няма'}</Typography>
+        </Typography>
       </div>
     );
   }

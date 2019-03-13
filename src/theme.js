@@ -19,12 +19,33 @@ export default createMuiTheme({
         marginTop: '.5rem'
       }
     },
+    MuiDialog: {
+      paper: {
+        overflowY: 'visible'
+      }
+    },
     MuiTypography: {
       caption: {
         fontStyle: 'italic'
       },
       body2: {
-        color: '#629900'
+        color: '#828A00'
+      },
+      display1: {
+        color: '#828A00',
+        display: 'inline',
+        fontSize: '1.5rem',
+        margin: '0 0.3rem'
+      },
+      display2: {
+        fontSize: '1rem',
+        color: '#828A00',
+        fontWeight: 700
+      }
+    },
+    MuiCardActions: {
+      root: {
+        padding: 0
       }
     },
     MuiDrawer: {

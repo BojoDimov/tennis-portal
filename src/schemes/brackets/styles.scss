@@ -1,11 +1,12 @@
-$linesColor: rgb(153, 182, 48);
+//$linesColor: black;
+$linesColor: rgb(159, 197, 23);
 //$linesColor: grey;
 
 .match-box {
   position: relative;
   padding: .3rem .8rem;
   border: 1px solid $linesColor;
-  cursor: pointer;
+  min-width: 12rem;
 }
 
 .match-box-team {
@@ -17,24 +18,54 @@ $linesColor: rgb(153, 182, 48);
   }
 }
 
+.group-box {
+  display: flex;
+  flex-direction: column;
+  margin-top: 1rem;
+  border: 2px solid $linesColor;
+
+  .group-box-header {
+    display: flex;
+    align-items: center;
+  }
+
+  .group-box-team-info {
+    display: flex;
+    border-bottom: 1px solid lightgrey;
+    padding: .5rem 0;
+    align-items: center;
+
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+}
+
+
 // BRACKET
 .bracket {
+  // height: 100%;
   overflow-x: auto;
   display: flex;
-  background-color: whitesmoke;
+  // background-color: rgba(245, 245, 245, 1);
 }
 
 .round {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.round-title {
+  flex-basis: 2rem;
 }
 
 .list {
   display: flex;
   flex-direction: column;
   flex-flow: row wrap;
+  flex-grow: 1;
   justify-content: center;
-  height: 100%;
-  min-height: 100%;
   // border-right: 1px dashed #e2e2e2;
   list-style: none;
   margin: 0;

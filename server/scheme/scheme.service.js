@@ -3,17 +3,18 @@ const {
   Schemes,
   Matches,
   Groups,
-  GroupTeams
+  GroupTeams,
+  Teams,
+  Users,
+  Rankings
 } = require('../db');
-const { SchemeType } = require('../infrastructure/enums');
+const { BracketStatus } = require('../infrastructure/enums');
 const Enrollments = require('../enrollment/enrollment.service');
 const Bracket = require('./bracketFunctions');
+const MatchService = require('../match/match.service');
+const { getWinner, getStatsFromMatch } = require('../match/match.functions');
 
 class SchemeService {
-  async filter() {
-
-  }
-
   async get(id) {
     return await Schemes.findById(id, {
       include: [
@@ -38,8 +39,11 @@ class SchemeService {
     return await scheme.update(model);
   }
 
-  async remove(id) {
-
+  async delete(id) {
+    const scheme = await this.get(id);
+    if (!scheme)
+      throw { name: 'NotFound' };
+    await Schemes.destroy({ where: { id: scheme.id } });
   }
 
   formatModel(model) {
@@ -56,24 +60,138 @@ class SchemeService {
   }
 
   processModel(model) {
-    if (model.schemeType == SchemeType.GROUP)
+    if (model.hasGroupPhase)
       model.maxPlayerCount = model.groupCount * model.teamsPerGroup;
   }
 
   async drawBracket(scheme) {
-    const teams = await Enrollments.getPlayers(scheme);
+    let transaction;
+    try {
+      transaction = await sequelize.transaction();
+      const teams = await Enrollments.getPlayers(scheme);
 
-    if (scheme.schemeType == SchemeType.ELIMINATION) {
-      let matches = Bracket.drawEliminations(scheme, scheme.seed, teams)
-      return await Matches.bulkCreate(matches);
+      if (scheme.bracketStatus == BracketStatus.UNDRAWN && scheme.hasGroupPhase) {
+        //draw group phase
+        scheme.bracketStatus = BracketStatus.GROUPS_DRAWN;
+        await scheme.save({ transaction });
+        for (const group of Bracket.drawGroups(scheme, scheme.seed, teams)) {
+          await Groups.create(group, {
+            include: [{ model: GroupTeams, as: 'teams' }],
+            transaction
+          });
+        }
+      }
+      else if (scheme.bracketStatus == BracketStatus.UNDRAWN && !scheme.hasGroupPhase) {
+        //draw elimination phase
+        scheme.bracketStatus = BracketStatus.ELIMINATION_DRAWN;
+        await scheme.save();
+        let matches = Bracket.drawEliminations(scheme, scheme.seed, teams);
+        await Matches.bulkCreate(matches, { transaction });
+      }
+      else if (scheme.bracketStatus == BracketStatus.GROUPS_END) {
+        //draw elimination from groups
+        const data = await MatchService.getGroupMatches(scheme);
+        const groups = data.map(group => {
+          return {
+            team1: group.teams[0].team,
+            team2: group.teams[1].team
+          }
+        });
+
+        Bracket.fillGroups(groups);
+        const matches = Bracket.drawEliminationsFromGroups(groups, scheme.id);
+        await Matches.bulkCreate(matches, { transaction });
+        await scheme.update({ bracketStatus: BracketStatus.ELIMINATION_DRAWN }, { transaction });
+      }
+      else if (scheme.bracketStatus == BracketStatus.GROUPS_DRAWN)
+        await scheme.update({ bracketStatus: BracketStatus.GROUPS_END }, { transaction });
+      else if (scheme.bracketStatus == BracketStatus.ELIMINATION_DRAWN)
+        await scheme.update({ bracketStatus: BracketStatus.ELIMINATION_END }, { transaction });
+      else
+        throw { name: 'DomainActionError', error: 'invalidState' };
+
+      await transaction.commit();
     }
-    else if (scheme.schemeType == SchemeType.GROUP) {
-      let groups = Bracket.drawGroups(scheme, scheme.seed, teams);
-      return Promise.all(groups.map(group => Groups.create(group, {
-        include: [
-          { model: GroupTeams, as: 'teams' }
-        ]
-      })));
+    catch (err) {
+      await transaction.rollback();
+      throw err;
+    }
+  }
+
+  async getScore(scheme) {
+    if (scheme.bracketStatus != BracketStatus.ELIMINATION_END)
+      throw { name: 'DomainActionError', error: {} };
+
+    const matches = await Matches.findAll({
+      where: {
+        schemeId: scheme.id
+      },
+      include: MatchService.matchesIncludes(),
+      order: [['round', 'desc'], ['match', 'desc']]
+    });
+
+    const teamStats = [];
+    const teams = [];
+    matches.forEach(match => getStatsFromMatch(teamStats, match));
+    matches.forEach(match => {
+      if (match.team1Id && !teams[match.team1Id])
+        teams[match.team1Id] = {
+          team: match.team1,
+          score: 1
+        };
+
+      if (match.team2Id && !teams[match.team2Id])
+        teams[match.team2Id] = {
+          team: match.team2,
+          score: scheme.pPoints
+        };
+    });
+
+    for (let teamId in teamStats) {
+      teams[teamId].score += teamStats[teamId].wonMatches * scheme.wPoints;
+    }
+
+    let tournamentWinner = null;
+    let finale = matches.find(match => match.match && match.round && (match.sets.length > 0 || match.withdraw));
+    if (finale)
+      tournamentWinner = getWinner(finale);
+
+    if (tournamentWinner)
+      teams[tournamentWinner].score += scheme.cPoints;
+
+    teams.sort((a, b) => b.score - a.score);
+    return teams.filter(e => e);
+  }
+
+  async saveScore(scheme, scores) {
+    let transaction;
+    try {
+      transaction = await sequelize.transaction();
+      const rankings = await Rankings.findAll({
+        where: {
+          tournamentId: scheme.edition.tournamentId
+        }
+      });
+
+      for (let i = 0; i < scores.length; ++i) {
+        const ranking = rankings.find(e => e.teamId == scores[i].team.id);
+        if (!ranking)
+          await Rankings.create({
+            tournamentId: scheme.edition.tournamentId,
+            teamId: scores[i].team.id,
+            points: scores[i].score
+          }, { transaction });
+        else {
+          ranking.points += scores[i].score;
+          await ranking.save({ transaction });
+        }
+      }
+
+      await transaction.commit();
+    }
+    catch (err) {
+      await transaction.rollback();
+      throw err;
     }
   }
 }

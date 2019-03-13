@@ -192,7 +192,6 @@ class UserModel {
           label="Дата на раждане"
           labelFunc={(date) => date ? new Date(date).toLocaleDateString() : ''}
           clearable
-          required={true}
           fullWidth={true}
           value={user.birthDate}
           error={errors.birthDate.length > 0}
@@ -203,12 +202,12 @@ class UserModel {
         <EnumSelect
           label="Пол"
           value={user.gender}
-          required={true}
           error={errors.gender.length > 0}
           errorText={this.composeErrors(errors, 'gender')}
           onChange={onChange('gender')}
           EnumValues={Gender}
-          EnumName="Gender" />
+          EnumName="Gender"
+          allowClear={true} />
 
         <TextField
           id="startedPlaying"
@@ -228,7 +227,8 @@ class UserModel {
           errorText={this.composeErrors(errors, 'playStyle')}
           onChange={onChange('playStyle')}
           EnumValues={PlayStyle}
-          EnumName="PlayStyle" />
+          EnumName="PlayStyle"
+          allowClear={true} />
 
         <EnumSelect
           label="Бекхенд"
@@ -237,7 +237,8 @@ class UserModel {
           errorText={this.composeErrors(errors, 'backhandType')}
           onChange={onChange('backhandType')}
           EnumValues={BackhandType}
-          EnumName="BackhandType" />
+          EnumName="BackhandType"
+          allowClear={true} />
 
         <EnumSelect
           label="Любима настилка"
@@ -246,7 +247,8 @@ class UserModel {
           errorText={this.composeErrors(errors, 'courtType')}
           onChange={onChange('courtType')}
           EnumValues={CourtType}
-          EnumName="CourtType" />
+          EnumName="CourtType"
+          allowClear={true} />
       </React.Fragment>
     );
   }

@@ -32,7 +32,7 @@ function NoOptionsMessage(props) {
 }
 
 function inputComponent({ inputRef, ...props }) {
-  return <div ref={inputRef} {...props} />;
+  return <div ref={inputRef} {...props} style={{ cursor: 'pointer' }} />;
 }
 
 function Control(props) {
@@ -60,7 +60,7 @@ export function Option(props) {
       selected={props.isFocused}
       component="div"
       style={{
-        fontWeight: props.isSelected ? 500 : 400,
+        fontWeight: props.isSelected ? 500 : 400
       }}
       {...props.innerProps}
     >

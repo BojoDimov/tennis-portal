@@ -1,10 +1,16 @@
 const express = require('express');
 const router = express.Router();
 const EditionsService = require('./edition.service');
+const adminIdentity = require('../infrastructure/middlewares/adminIdentity');
+const identity = require('../infrastructure/middlewares/identity');
 
 const filter = async (req, res, next) => {
+  let isAdmin = false;
+  if (req.user && req.user.isAdmin)
+    isAdmin = true;
+
   try {
-    const items = await EditionsService.filter(req.body);
+    const items = await EditionsService.filter(isAdmin);
     return res.json(items);
   }
   catch (err) {
@@ -13,8 +19,12 @@ const filter = async (req, res, next) => {
 }
 
 const get = async (req, res, next) => {
+  let isAdmin = false;
+  if (req.user && req.user.isAdmin)
+    isAdmin = true;
+
   try {
-    const item = await EditionsService.get(req.params.id);
+    const item = await EditionsService.get(req.params.id, isAdmin);
     return res.json(item);
   }
   catch (err) {
@@ -34,7 +44,7 @@ const create = async (req, res, next) => {
 
 const update = async (req, res, next) => {
   try {
-    await EditionsService.get(req.params.id, req.body);
+    await EditionsService.update(req.params.id, req.body);
     return res.json({});
   }
   catch (err) {
@@ -44,7 +54,7 @@ const update = async (req, res, next) => {
 
 const remove = async (req, res, next) => {
   try {
-    await EditionsService.get(req.params.id);
+    await EditionsService.remove(req.params.id);
     return res.json({});
   }
   catch (err) {
@@ -52,10 +62,10 @@ const remove = async (req, res, next) => {
   }
 }
 
-router.post('/filter', filter);
-router.post('/', create);
-router.get('/:id', get);
-router.post('/:id', update);
-router.delete('/:id', remove);
+router.post('/filter', identity, filter);
+router.post('/', adminIdentity, create);
+router.get('/:id', identity, get);
+router.post('/:id', adminIdentity, update);
+router.delete('/:id', adminIdentity, remove);
 
 module.exports = router;

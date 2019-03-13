@@ -44,9 +44,18 @@ class UserService {
   async getById(userId) {
     return await Users.findById(userId, {
       attributes: {
-        exclude: ['passwordHash', 'passwordSalt', 'birthDate', 'gender', 'isActive', 'isAdmin']
+        exclude: ['passwordHash', 'passwordSalt', 'isActive', 'isAdmin']
       },
     });
+  }
+
+  async getPlayerInfo(id) {
+    const user = await Users.findById(id, {
+      attributes: ['id', 'name', 'startedPlaying', 'playStyle', 'backhandType', 'courtType']
+    });
+    if (!user)
+      throw { name: 'NotFound' };
+    return user;
   }
 
   async getByEmail(email) {
@@ -54,10 +63,23 @@ class UserService {
   }
 
   async create(model) {
-    model = this.trim(model);
-    model = await this.validate(model, false);
-    model = this.format(model);
-    return Users.create(model);
+    let transaction;
+    try {
+      transaction = await sequelize.transaction();
+
+      model = this.trim(model);
+      model = await this.validate(model, false);
+      model = this.format(model);
+      const user = await Users.create(model, { transaction });
+      const team = await Teams.create({ user1Id: user.id, user2Id: null }, { transaction });
+
+      await transaction.commit();
+      return user;
+    }
+    catch (err) {
+      await transaction.rollback();
+      throw err;
+    }
   }
 
   async update(id, model) {
@@ -76,6 +98,16 @@ class UserService {
       reservationDebt: model.reservationDebt,
       subscriptionDebt: model.subscriptionDebt
     });
+  }
+
+  async updateSecondaryData(user, model) {
+    user.birthDate = model.birthDate || null;
+    user.gender = model.gender || null;
+    user.playStyle = model.playStyle || null;
+    user.backhandType = model.backhandType || null;
+    user.courtType = model.courtType || null;
+    user.startedPlaying = parseInt(model.startedPlaying) || null;
+    await user.save();
   }
 
   //null if value is undefined, -1 if there is error, true if ok
@@ -286,6 +318,27 @@ class UserService {
       this.encryptPassword(uac.user, model.password);
       await uac.user.save({ transaction: trn });
     });
+  }
+
+  //Throws
+  //InvalidCredentialsException
+  //PasswordRequired
+  //PasswordDoesntMatch
+  async changePassword(userId, model) {
+    const user = await Users.findById(userId);
+    let hash = crypto.createHash('sha256');
+    hash.update(user.passwordSalt + model.currentPassword);
+
+    if (hash.digest('hex').slice(40) !== user.passwordHash)
+      throw { name: 'DomainActionError', error: { name: 'InvalidCredentialsException' } };
+    else if (!model.newPassword)
+      throw { name: 'DomainActionError', error: { name: 'PasswordRequired' } };
+    else if (model.newPassword != model.confirmNewPassword)
+      throw { name: 'DomainActionError', error: { name: 'PasswordDoesntMatch' } };
+    else {
+      this.encryptPassword(user, model.newPassword);
+      await user.save();
+    }
   }
 }
 

@@ -14,6 +14,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 import UserService from '../services/user.service';
 
@@ -98,6 +99,9 @@ class Admin extends React.Component {
                     <ListItem button>
                       {route.Icon && <ListItemIcon>
                         <route.Icon />
+                      </ListItemIcon>}
+                      {route.faIcon && <ListItemIcon>
+                        <FontAwesomeIcon icon={route.faIcon} style={{ marginLeft: '.2rem' }} />
                       </ListItemIcon>}
                       <ListItemText primary={route.name} />
                     </ListItem>

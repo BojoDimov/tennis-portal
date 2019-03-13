@@ -48,5 +48,5 @@ module.exports = (err, req, res, next) => {
       query: JSON.stringify(req.query),
       error: JSON.stringify(err)
     })
-    .then(() => res.status(500));
+    .then(() => res.status(500).send({}));
 }

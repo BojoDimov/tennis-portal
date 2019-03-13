@@ -35,10 +35,11 @@ function fillGroups(groups) {
   return result;
 }
 
-function drawEliminationsFromGroups(groups) {
+function drawEliminationsFromGroups(groups, schemeId) {
   let matches = [];
   for (let i = 0; i < groups.length / 2; i++) {
     matches.push({
+      schemeId,
       team1Id: groups[i].team1 ? groups[i].team1.id : null,
       team2Id: groups[groups.length - i - 1].team2 ? groups[groups.length - i - 1].team2.id : null,
       match: matches.length + 1,
@@ -48,6 +49,7 @@ function drawEliminationsFromGroups(groups) {
 
   for (let i = 0; i < groups.length / 2; i++) {
     matches.push({
+      schemeId,
       team2Id: groups[i].team2 ? groups[i].team2.id : null,
       team1Id: groups[groups.length - i - 1].team1 ? groups[groups.length - i - 1].team1.id : null,
       match: matches.length + 1,
@@ -74,7 +76,7 @@ function drawGroups(scheme, seed, enrollments) {
       };
 
     if (i < enrollments.length)
-      groups[g].teams.push({ teamId: enrollments[i].id, order: groups[g].teams.length + 1 });
+      groups[g].teams.push({ teamId: enrollments[i].teamId, order: groups[g].teams.length + 1 });
     else
       groups[g].teams.push({ teamId: null, order: groups[g].teams.length + 1 });
   }
@@ -101,11 +103,11 @@ function drawEliminations(scheme, seed, enrollments) {
   mapping.forEach((pos, s) => {
     let match = matches[Math.floor(pos / 2) + 1];
     if (pos % 2 == 0) {
-      match.team1Id = enrollments[s].id;
+      match.team1Id = enrollments[s].teamId;
       match.seed1 = s + 1;
     }
     else {
-      match.team2Id = enrollments[s].id;
+      match.team2Id = enrollments[s].teamId;
       match.seed2 = s + 1;
     }
   });
@@ -113,12 +115,38 @@ function drawEliminations(scheme, seed, enrollments) {
   remaining.forEach((pos, i) => {
     let match = matches[Math.floor(pos / 2) + 1];
     if (pos % 2 == 0)
-      match.team1Id = enrollments[mapping.length + i].id;
+      match.team1Id = enrollments[mapping.length + i].teamId;
     else
-      match.team2Id = enrollments[mapping.length + i].id;
+      match.team2Id = enrollments[mapping.length + i].teamId;
   });
 
-  return matches.slice(1);
+  matches = matches.slice(1);
+
+  //Handle default wins from bye's
+  let secondRound = [];
+  matches.forEach(match => {
+    if (match.team1Id && match.team2Id)
+      return;
+    let defaultWinner = match.team1Id || match.team2Id;
+    let existingMatch = secondRound.find(e => e.match == Math.ceil(match.match / 2));
+
+    if (!existingMatch) {
+      existingMatch = {
+        schemeId: match.schemeId,
+        round: 2,
+        match: Math.ceil(match.match / 2)
+      };
+      secondRound.push(existingMatch);
+    }
+
+    if (existingMatch.match % 2 == 0)
+      existingMatch.team2Id = defaultWinner;
+    else
+      existingMatch.team1Id = defaultWinner;
+  });
+  matches.push(...secondRound);
+
+  return matches;
 }
 
 function get_group_order(seed, nGroups, nTeamsPerGroup) {

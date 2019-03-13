@@ -21,8 +21,6 @@ import Checkbox from '@material-ui/core/Checkbox';
 import Select from '@material-ui/core/Select';
 
 import { withStyles } from '@material-ui/core/styles';
-
-import { SchemeType } from '../enums';
 import EnumSelect from '../components/EnumSelect';
 import EnumSelectToggle from '../components/EnumSelectToggle';
 import QueryService from '../services/query.service';
@@ -33,16 +31,6 @@ class SchemeFormModal extends React.Component {
     super(props);
     this.state = {
       model: {
-        // edition: null,
-        // singleTeams: true,
-        // maleTeams: false,
-        // femaleTeams: false,
-        // mixedTeams: false, 
-        // ageFrom: '',
-        // ageTo: '',
-        // date: null,
-        // registrationStartDate: null,
-        // registrationEndDate: null
       },
       errors: []
     }
@@ -60,14 +48,13 @@ class SchemeFormModal extends React.Component {
       if (prop === 'singleTeams')
         model.mixedTeams = false;
 
-      if (prop === 'schemeType') {
+      if (prop === 'hasGroupPhase') {
         model.maxPlayerCount = '';
         model.groupCount = '';
         model.teamsPerGroup = '';
       }
 
       model[prop] = value;
-      console.log(value);
       this.setState({ model });
     };
   }
@@ -125,16 +112,6 @@ class SchemeFormModal extends React.Component {
             onChange={this.handleChange('info')}
           />
 
-          <EnumSelect
-            label="Тип схема"
-            value={model.schemeType}
-            required
-            fullWidth={true}
-            onChange={e => this.handleCustomChange('schemeType')(e.target.value)}
-            EnumValues={SchemeType}
-            EnumName="SchemeType"
-          />
-
           <Typography variant="headline" style={{ marginTop: '2rem' }}>Параметри</Typography>
 
           <FormControl fullWidth={true} required>
@@ -159,6 +136,7 @@ class SchemeFormModal extends React.Component {
             }
             label="Мъже"
           />
+
           <FormControlLabel
             control={
               <Checkbox
@@ -182,7 +160,21 @@ class SchemeFormModal extends React.Component {
             label="Микс"
           />}
 
-          {model.schemeType == SchemeType.ELIMINATION
+          <div>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  color="primary"
+                  checked={model.hasGroupPhase}
+                  onChange={e => this.handleCustomChange('hasGroupPhase')(e.target.value === 'true')}
+                  value={!model.hasGroupPhase + ''}
+                />
+              }
+              label="Включване на групова фаза"
+            />
+          </div>
+
+          {!model.hasGroupPhase
             && <TextField
               label="Брой играчи"
               value={model.maxPlayerCount}
@@ -192,7 +184,7 @@ class SchemeFormModal extends React.Component {
               onChange={this.handleChange('maxPlayerCount')}
             />}
 
-          {model.schemeType == SchemeType.GROUP
+          {model.hasGroupPhase
             && <TextField
               label="Брой групи"
               value={model.groupCount}
@@ -202,7 +194,7 @@ class SchemeFormModal extends React.Component {
               onChange={this.handleChange('groupCount')}
             />}
 
-          {model.schemeType == SchemeType.GROUP
+          {model.hasGroupPhase
             && <TextField
               label="Брой играчи в група"
               value={model.teamsPerGroup}

@@ -47,6 +47,7 @@ class Login extends React.Component {
       .post(`/login`, this.state)
       .then(({ token }) => {
         UserService.login(token);
+        dispatchEvent('logged-in');
         this.props.onClose();
       })
       .catch(() => {
@@ -76,7 +77,7 @@ class Login extends React.Component {
         />
 
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <Button variant="contained" color="primary" size="small" style={{ marginTop: '1rem', padding: '0 4rem' }}
+          <Button variant="contained" color="primary" style={{ marginTop: '1rem', padding: '.3rem  4rem' }}
             onClick={() => this.login()}
           >
             Вход
