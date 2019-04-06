@@ -16,6 +16,7 @@ import TeamView from '../users/TeamView';
 import NavigationModel from '../menu/navigation.model';
 import UserService from '../services/user.service';
 import UserProfile from '../users/UserProfile';
+import AccountView from '../users/AccountView';
 import AccountActivation from '../login/Activation';
 import RecoveryStep1 from '../login/RecoveryStep1';
 import RecoveryStep2 from '../login/RecoveryStep2';
@@ -29,7 +30,7 @@ const routeMapping = {
   '/admin/seasons': Seasons,
   '/admin/users': Users,
   '/admin/statistics': Statistics,
-  '/account': UserProfile
+  '/account': AccountView
 };
 
 const AppRouting = () => (
@@ -55,7 +56,7 @@ const AppRouting = () => (
         );
       })}
 
-      {mode == ApplicationMode.USER && NavigationModel.userRoutes.map(route => {
+      {mode != ApplicationMode.GUEST && NavigationModel.userRoutes.map(route => {
         return (
           <Route key={route.id} path={route.to} component={routeMapping[route.to]} mode={mode} />
         );

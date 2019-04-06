@@ -33,13 +33,14 @@ class NavigationModel {
       { id: 5, to: '/admin/seasons', name: 'Сезони', Icon: WbSunnyRoundedIcon },
       { id: 4, to: '/admin/courts', name: 'Кортове', Icon: ViewQuiltRoundedIcon },
       { id: 7, to: '/admin/statistics', name: 'Справки', Icon: AssessmentIcon },
-      { id: 8, to: '/editions', name: 'Турнири', faIcon: 'trophy' }
+      { id: 8, to: '/editions', name: 'Турнири', faIcon: 'trophy' },
+      { id: 9, to: '/account', name: 'Профил', Icon: PersonIcon }
       // { id: 7, to: '/admin/subscriptions', name: 'Абонаменти', Icon: LoyaltyIcon },
       // { id: 3, to: '/admin/config', name: 'Настройки', Icon: BuildRoundedIcon }
     ];
 
     this.userRoutes = [
-      { id: 8, to: '/account', name: 'Профил', Icon: PersonIcon }
+      { id: 9, to: '/account', name: 'Профил', Icon: PersonIcon }
     ]
 
     this.Guest = withRoutes(this.routes)(withStyles(styles)(Guest));
