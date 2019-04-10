@@ -16,8 +16,8 @@ module.exports = {
       },
       operatorsAliases: false
     },
-    "client": "http://smilevent.net",
-    "backend": "http://smilevent.net:8080",
+    "client": "http://smileevent.net",
+    "backend": "http://smileevent.net:8080",
     "port": 8080,
     paymentsConfig: {
     }
