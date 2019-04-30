@@ -17,12 +17,9 @@
     "sequelize": "^4.37.6"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "npm run build-client && npm run build-admin",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
     "server": "node server/server.js",
     "build-client": "cd client && react-scripts build",
-    "build-admin": "cd admin && react-scripts build"
+    "build-admin": "cd admin && react-scripts build",
+    "build": "npm run build-client && npm run build-admin"
   }
 }
