@@ -10,14 +10,18 @@ using configuration "${env}":
 server listening on port ${config.port}`));
 
 app.use(cors());
-app.use('/', express.static('admin/build'));
+
 app.use('/api/payments', require('./controllers/payments'));
 app.use('/diagnostics', express.json(), require('./diagnostics'));
 app.use('/api/files', require('./controllers/files'));
 app.use('/api', express.json(), require('./controllers'));
+app.use(require('./middlewares/errors'));
 
-app.get('*', (req, res) => {
+app.use('/admin', express.static('admin/build'));
+app.get('/admin/*', (req,res) => {
   res.sendFile('admin/build/index.html', { root: './' });
 });
-
-app.use(require('./middlewares/errors'));
+app.use('/', express.static('client/build'));
+app.get('*', (req, res) => {
+  res.sendFile('client/build/index.html', { root: './' });
+});
