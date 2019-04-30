@@ -1,8 +1,4 @@
-const env = process.env.NODE_ENV;
-const config = require(__dirname + '/../clientConfig.js')[env];
-
-const config2 = window.config;
-console.log(config2);
+const config = window.config;
 
 module.exports = {
   imgUrl: function (id) {
