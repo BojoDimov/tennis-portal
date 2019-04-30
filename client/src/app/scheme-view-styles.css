@@ -1,0 +1,21 @@
+.scheme-list {
+  padding: 1rem 2rem;
+  border: 1px solid lightgrey;
+  border-radius: 10px;
+  display: flex;
+  margin-top: 1rem;
+  flex-direction: column;
+}
+
+.scheme-list-header {
+  cursor: pointer;
+  font-size: 2em;
+}
+
+.scheme-list-header + * {
+  margin-top: 1rem;
+}
+
+.scheme-list a {
+  border-bottom: none;
+}

@@ -10,14 +10,14 @@ using configuration "${env}":
 server listening on port ${config.port}`));
 
 app.use(cors());
-app.use('/', express.static('build'));
+app.use('/', express.static('client/build'));
 app.use('/api/payments', require('./controllers/payments'));
 app.use('/diagnostics', express.json(), require('./diagnostics'));
 app.use('/api/files', require('./controllers/files'));
 app.use('/api', express.json(), require('./controllers'));
 
 app.get('*', (req, res) => {
-  res.sendFile('build/index.html', { root: './' });
+  res.sendFile('client/build/index.html', { root: './' });
 });
 
 app.use(require('./middlewares/errors'));

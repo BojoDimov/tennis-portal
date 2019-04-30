@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
+  <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico">
+  <link rel="stylesheet" href="%PUBLIC_URL%/assets/css/main.css">
+  <script defer src="https://use.fontawesome.com/releases/v5.0.13/js/all.js" integrity="sha384-xymdQtn1n3lH2wcu0qhcdaOpQwyoarkgLVxC/wZ5q7h9gHtxICrpcaSUfygqZGOe"
+    crossorigin="anonymous"></script>
+  <title>Smile Cup</title>
+</head>
+
+<body>
+  <noscript>
+    You need to enable JavaScript to run this app.
+  </noscript>
+  <div id="root"></div>
+  <script>
+    document.addEventListener('react-load', (e) => {
+      let util = document.createElement('script');
+      let main = document.createElement('script');
+      util.src = "/assets/js/util.js";
+      main.src = "/assets/js/main.js";
+      document.body.appendChild(util);
+      document.body.appendChild(main);
+    })
+  </script>
+  <!-- Scripts -->
+  <script src="%PUBLIC_URL%/assets/js/jquery.min.js"></script>
+  <script src="%PUBLIC_URL%/assets/js/jquery.dropotron.min.js"></script>
+  <script src="%PUBLIC_URL%/assets/js/browser.min.js"></script>
+  <script src="%PUBLIC_URL%/assets/js/breakpoints.min.js"></script>
+</body>
+
+</html>

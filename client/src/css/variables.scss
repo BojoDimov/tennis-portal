@@ -1,0 +1,20 @@
+$primaryColor: #505050;
+$primary: #505050;
+
+$click: #0074B2;
+//$click: #518721;
+$messageSuccess: #518721;
+//$click: #B86511;
+$clickHover: lighten($primary, 0%);
+$border: lighten($primary, 30%);
+
+$statusColor: whitesmoke;
+$draft:#E56F36;
+$published: lighten($primaryColor, 15%);
+$inactive: #222222;
+$error: lightcoral;
+$menuBackground: #222222;
+$menuColor: #9EE5E5;
+
+$primaryFont: 'Open Sans', sans-serif;
+$secondaryFont: 'Poiret One', cursive;

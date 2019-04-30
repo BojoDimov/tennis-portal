@@ -1,0 +1,40 @@
+@import 'variables';
+
+@keyframes button-transition {
+  0%{
+    background-color: white;
+    color: $click;
+  }
+
+  100% {
+    background-color: $click;
+    color: white;
+  }
+}
+
+@keyframes link-transition {
+  0%{
+    color: $click;
+  }
+
+  100%{
+    color: $clickHover;
+  }
+}
+
+@mixin colorize($frames) {
+  animation: .2s ease-in $frames;
+}
+
+@keyframes init {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.fade-in {
+  animation: .5s ease-out init;
+}
