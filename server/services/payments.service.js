@@ -1,6 +1,4 @@
 const crypto = require('crypto');
-const env = process.env.NODE_ENV || 'dev';
-const config = require('../../config')[env].paymentsConfig;
 const { sequelize } = require('../db');
 const { Op } = require('../db').Sequelize;
 const {
@@ -40,8 +38,8 @@ function encodePayment(schemeId, userId) {
             if (!payment)
               return null;
 
-            let hmac = require('crypto').createHmac('sha1', config.secret);
-            let data = `MIN=${config.min}
+            let hmac = require('crypto').createHmac('sha1', process.env.PAYMENT_SECRET);
+            let data = `MIN=${process.env.PAYMENT_MIN_AMOUNT}
 INVOICE=${payment.id}
 AMOUNT=${payment.amount}
 DESCR=Плащане такса турнир ${payment.scheme.name}
@@ -49,7 +47,7 @@ ENCODING=utf-8`;
             let encoded = new Buffer(data).toString('base64');
             let checksum = hmac.update(encoded).digest('hex');
             return {
-              min: config.min,
+              min: process.env.PAYMENT_MIN_AMOUNT,
               description: `Плащане такса турнир ${payment.scheme.name}`,
               invoice: payment.id,
               amount: payment.amount,
@@ -63,7 +61,7 @@ ENCODING=utf-8`;
 }
 
 function decodePayment(encoded, checksum) {
-  let hmac = require('crypto').createHmac('sha1', config.secret);
+  let hmac = require('crypto').createHmac('sha1', process.env.PAYMENT_MIN_AMOUNT);
   let reject = (hmac.update(encoded).digest('hex') != checksum);
   let decoded = new Buffer(encoded, 'base64').toString('utf-8');
 

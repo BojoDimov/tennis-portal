@@ -7,9 +7,6 @@ const Op = require('../db').Sequelize.Op;
 const { sendEmail } = require('../emailService');
 const { EmailType } = require('../enums');
 const db = require('../db');
-// const env = process.argv.slice(-1)[0];
-const env = process.env.NODE_ENV || 'dev';
-const config = require('../../config')[env];
 
 function validatePassword(password) {
   password = password || '';
@@ -66,7 +63,7 @@ const registerUser = (req, res, next) => {
 
 function sendActivationEmail(user) {
   let token = crypto.randomBytes(16).toString('hex');
-  let activation = config.client + `/activation?token=${token}`;
+  let activation = `${process.env.CLIENT}/activation?token=${token}`;
   const expires = new Date();
   expires.setHours(expires.getHours() + 24);
 
@@ -77,7 +74,7 @@ function sendActivationEmail(user) {
 
 const sendPasswordRecovery = (req, res, next) => {
   let token = crypto.randomBytes(16).toString('hex');
-  let recovery = config.client + `/recovery?token=${token}`;
+  let recovery = `${process.env.CLIENT}/recovery?token=${token}`;
   const expires = new Date();
   expires.setHours(expires.getHours() + 24);
 
