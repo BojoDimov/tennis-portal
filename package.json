@@ -20,8 +20,11 @@
   },
   "scripts": {
     "server": "node server/server.js",
-    "build-client": "cd client && react-scripts build",
+    "setup": "npm run setup-admin && npm run setup-client",
+    "setup-admin": "cd client && npm i",
+    "setup-client": "cd client && npm i",
+    "build": "npm run build-client && npm run build-admin",
     "build-admin": "cd admin && react-scripts build",
-    "build": "npm run build-client && npm run build-admin"
+    "build-client": "cd client && react-scripts build"
   }
 }
