@@ -14,6 +14,7 @@
 /admin/build
 
 # misc
+/environments
 .DS_Store
 .env
 .env.local
@@ -30,3 +31,8 @@ src/css/main.css
 src/css/variables.css
 src/css/styles.min.css
 src/css/variables.min.css
+
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml

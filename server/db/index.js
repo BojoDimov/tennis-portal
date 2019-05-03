@@ -5,13 +5,14 @@ var path = require('path');
 var Sequelize = require('sequelize');
 var basename = path.basename(__filename);
 var sequelize = new Sequelize({
-    host: process.env.DB_HOST,
-    port: process.env.DB_PORT,
-    database: process.env.DB_NAME,
-    username: process.env.DB_USERNAME,
-    password: process.env.DB_PASSWORD,
-    dialect: 'postgres'
-  });
+  host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
+  database: process.env.DB_NAME,
+  username: process.env.DB_USERNAME,
+  password: process.env.DB_PASSWORD,
+  dialect: 'postgres',
+  logging: process.env.DB_ENABLE_LOGGING === 'true' ? console.log : null
+});
 var db = {};
 
 fs

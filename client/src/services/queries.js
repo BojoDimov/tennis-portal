@@ -1,8 +1,7 @@
 import * as Enums from '../enums';
 import * as UserService from './user';
 import { get } from './fetch';
-const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../clientConfig.js')[env];
+const config = window.config;
 
 const Queries = {
   Editions: {

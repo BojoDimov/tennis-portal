@@ -1,11 +1,8 @@
 import React from 'react'
-import { Link } from 'react-router-dom';
 
 import { createOpenModalEvent, createCloseModalEvent } from './Infrastructure';
 import { get, imgUrl } from '../services/fetch';
-const env = process.env.NODE_ENV || 'development';
-const config = require(__dirname + '/../clientConfig.js')[env];
-
+const config = window.config
 
 export default class Gallery extends React.Component {
   constructor(props) {
