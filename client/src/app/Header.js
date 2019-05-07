@@ -92,7 +92,7 @@ export class HeroComponent extends React.Component {
     return (
       <section id="hero" className="container" style={{ marginTop: '2rem' }}>
         <header>
-          <h2>Албена 2018</h2>
+          <h2>Албена 2019</h2>
         </header>
         <p>Плажът няма да е единственото горещо място</p>
         {!this.props.isLogged ? <ul className="actions">
