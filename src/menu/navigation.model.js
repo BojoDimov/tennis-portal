@@ -34,7 +34,10 @@ class NavigationModel {
       { id: 4, to: '/admin/courts', name: 'Кортове', Icon: ViewQuiltRoundedIcon },
       { id: 7, to: '/admin/statistics', name: 'Справки', Icon: AssessmentIcon },
       { id: 8, to: '/editions', name: 'Турнири', faIcon: 'trophy' },
-      { id: 9, to: '/account', name: 'Профил', Icon: PersonIcon }
+      { id: 9, to: '/account', name: 'Профил', Icon: PersonIcon },
+      { id: 11, to: '/account', name: 'Ранглисти', faIcon: 'list-ol' },
+      { id: 12, to: '/account', name: 'Играчи', faIcon: 'user-friends' },
+      { id: 13, to: '/account', name: 'Шампиони', faIcon: 'medal' },
       // { id: 7, to: '/admin/subscriptions', name: 'Абонаменти', Icon: LoyaltyIcon },
       // { id: 3, to: '/admin/config', name: 'Настройки', Icon: BuildRoundedIcon }
     ];

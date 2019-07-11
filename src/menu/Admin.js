@@ -97,10 +97,10 @@ class Admin extends React.Component {
                 return (
                   <Link to={route.to} key={route.id}>
                     <ListItem button>
-                      {route.Icon && <ListItemIcon>
+                      {route.Icon && <ListItemIcon style={{ width: '25px'}}>
                         <route.Icon />
                       </ListItemIcon>}
-                      {route.faIcon && <ListItemIcon>
+                      {route.faIcon && <ListItemIcon style={{ width: '25px'}}>
                         <FontAwesomeIcon icon={route.faIcon} style={{ marginLeft: '.2rem' }} />
                       </ListItemIcon>}
                       <ListItemText primary={route.name} />
