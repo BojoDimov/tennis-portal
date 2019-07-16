@@ -10,7 +10,8 @@
 #root {
   /* background-image: url('../assets/background1.png'); */
   height: 100vh;
-  overflow: auto;
+  overflow: scroll;
+  -webkit-overflow-scrolling: touch;
   /* Create the parallax scrolling effect */
   /* background-attachment: fixed;
   background-position: center;

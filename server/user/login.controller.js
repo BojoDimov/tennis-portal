@@ -7,7 +7,7 @@ const login = async (req, res, next) => {
   let password = req.body.password;
   const user = await Users.
     findOne({
-      where: { email: req.body.email, isActive: true }
+      where: { email: req.body.email.trim(), isActive: true }
     });
 
   if (!user)
