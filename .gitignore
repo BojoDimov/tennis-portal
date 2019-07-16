@@ -6,3 +6,6 @@ deployment/css
 deployment/index.html
 .env
 deployment/
+environments/
+.elasticbeanstalk
+client/
