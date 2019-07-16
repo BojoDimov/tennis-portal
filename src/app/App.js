@@ -7,6 +7,7 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 import AppRouting from './app.routing';
 import SignIn from '../login/SignIn';
 import Navigation from '../menu/Navigation';
+import Menu from '../menu/menu.configuration';
 import { catchEvent } from '../services/events.service';
 import UserService from '../services/user.service';
 import NavigationModel from '../menu/navigation.model';
@@ -67,7 +68,8 @@ class App extends React.Component {
           <UserService.SetApplicationMode value={this.state.applicationMode}>
             <NavigationModel.SetCurrentRoute value={this.state.currentRoute}>
               <div className="wrapper">
-                <Navigation />
+                {/* <Navigation /> */}
+                <Menu />
                 {/* <Home /> */}
                 <SignIn />
                 <AppRouting />
