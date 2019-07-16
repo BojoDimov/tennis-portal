@@ -1,0 +1,36 @@
+.baseline-clear {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  @extend .baseline-clear;
+}
+
+a {
+  text-decoration: none;
+}
+
+.container {
+  width: 980px;
+  box-sizing: border-box;
+  margin: auto;
+
+  @media screen and(max-width: 980px) {
+    width: 100%;
+  }
+}
+
+.spacing {
+  margin: 1rem 0;
+  
+  button + button {
+    margin-left: .5rem;
+  }
+}
+
+.simple-chart-bar { 
+  margin: .5rem;
+  background-color: rgb(199, 240, 199);
+}
+

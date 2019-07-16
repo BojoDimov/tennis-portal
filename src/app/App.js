@@ -1,76 +1,83 @@
-import React, { Component } from 'react';
-import { Admin } from '../admin/Admin';
-import { Public } from '../public/Public';
-import { Menu } from '../public/Menu';
-import { MessagesContainer } from '../public/Messages';
-import { Breadcrumb } from '../public/Breadcrumb';
-import { ProvideAuthenticatedUser, AuthenticatedUser } from './AuthenticatedUser';
-import { ModalHolder } from '../admin/Infrastructure';
-import '../css/styles.css';
+import React from 'react';
+import { withRouter } from 'react-router-dom';
+import MuiPickersUtilsProvider from 'material-ui-pickers/MuiPickersUtilsProvider';
+import DateFnsUtils from 'material-ui-pickers/utils/date-fns-utils';
+import { MuiThemeProvider } from '@material-ui/core/styles';
 
+import AppRouting from './app.routing';
+import SignIn from '../login/SignIn';
+import Navigation from '../menu/Navigation';
+import { catchEvent } from '../services/events.service';
+import UserService from '../services/user.service';
+import NavigationModel from '../menu/navigation.model';
+import { ApplicationMode } from '../enums';
+import theme from '../theme';
+import './app.styles.scss';
 
-const LoginGuard = ({ isLogged }) => {
-  if (isLogged)
-    return (<Admin />);
-  else
-    return (<Public />)
-}
-
-export class App extends Component {
+class App extends React.Component {
   constructor(props) {
     super(props);
+    const user = UserService.getUser();
     this.state = {
-      authenticatedUser: {
-        isLogged: JSON.parse(localStorage.getItem('token')) != null,
-        change: this.initAuthenticatedUser.bind(this)
-      },
-      breadcrumb: {
-        path: [],
-        updatePath: this.updateBreadcrumb.bind(this)
-      }
+      applicationMode: (user ? (
+        user.isAdmin ? ApplicationMode.ADMIN : ApplicationMode.USER)
+        : ApplicationMode.GUEST),
+      currentRoute: 0
     }
+
+    this.handleLoginTab = (event, index) => {
+      this.setState({ index });
+    };
   }
 
-  initAuthenticatedUser() {
-    let token = JSON.parse(localStorage.getItem('token'));
-    this.setState({
-      authenticatedUser: {
-        isLogged: token != null,
-        change: this.initAuthenticatedUser.bind(this)
-      }
+  componentDidMount() {
+    document.body.classList.add('background');
+    catchEvent('not-found', () => this.props.history.replace('/oops'));
+    catchEvent('login', () => this.setState({
+      applicationMode: UserService.isAdmin() ? ApplicationMode.ADMIN : ApplicationMode.USER
+    }));
+    catchEvent('logout', () => {
+      this.setState({
+        applicationMode: ApplicationMode.GUEST
+      });
+      this.props.history.replace('/');
     });
+    this.onRouteChanged(this.props.location);
   }
 
-  updateBreadcrumb(part) {
-    //debugger;
-    let path = this.state.breadcrumb.path;
-    let newPath = [];
-    let end = false;
-    for (let i = 0; i < path.length && !end; i++) {
-      if (part.category == path[i].category)
-        end = true;
-      else
-        newPath.push(path[i]);
+  componentDidUpdate(prevProps) {
+    if (this.props.location.pathname !== prevProps.location.pathname) {
+      this.onRouteChanged(this.props.location);
     }
-    newPath.push(part)
+  }
 
-    this.setState({
-      breadcrumb: {
-        path: newPath,
-        updatePath: this.updateBreadcrumb.bind(this)
-      }
-    })
+  onRouteChanged(location) {
+    var route = (NavigationModel.routes
+      .find(route => location.pathname.indexOf(route.to) != -1)
+      || NavigationModel.adminRoutes
+        .find(route => location.pathname.indexOf(route.to) != -1));
+    if (route)
+      this.setState({ currentRoute: route.id });
   }
 
   render() {
     return (
-      <ProvideAuthenticatedUser value={this.state.authenticatedUser}>
-        <ModalHolder />
-        <Menu />
-        <Breadcrumb path={this.state.breadcrumb.path} />
-        <LoginGuard isLogged={this.state.authenticatedUser.isLogged} />
-        <MessagesContainer />
-      </ProvideAuthenticatedUser>
+      <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <MuiThemeProvider theme={theme}>
+          <UserService.SetApplicationMode value={this.state.applicationMode}>
+            <NavigationModel.SetCurrentRoute value={this.state.currentRoute}>
+              <div className="wrapper">
+                <Navigation />
+                {/* <Home /> */}
+                <SignIn />
+                <AppRouting />
+              </div>
+            </NavigationModel.SetCurrentRoute>
+          </UserService.SetApplicationMode>
+        </MuiThemeProvider>
+      </MuiPickersUtilsProvider>
     );
   }
 }
+
+export default withRouter(App);
