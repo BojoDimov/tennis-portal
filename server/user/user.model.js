@@ -2,7 +2,8 @@ const {
   Gender,
   PlayStyle,
   CourtType,
-  BackhandType
+  BackhandType,
+  ReservationType
 } = require('../infrastructure/enums');
 
 module.exports = (db, Sequelize) => {
@@ -44,7 +45,9 @@ module.exports = (db, Sequelize) => {
     //system properties
     isAdmin: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false },
     isActive: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false },
-    isSuperAdmin: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false }
+    isSuperAdmin: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false },
+    isTrainer: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false },
+    isTournamentAdmin: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false }
   });
 
 

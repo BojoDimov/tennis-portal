@@ -155,6 +155,12 @@ class EditReservationModal extends React.Component {
             Администрирал
             <Typography>{reservation.administrator.name}</Typography>
           </Typography>}
+          {reservation.type == ReservationType.COMPETITOR
+            && reservation.customer
+            && <Typography variant="caption">
+              Резервирал
+              <Typography>{reservation.customer.name}</Typography>
+            </Typography>}
 
           <EnumSelect
             label="Вид резервация"

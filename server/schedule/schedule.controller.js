@@ -64,7 +64,7 @@ const createReservation = async (req, res, next) => {
     model.customerId = user.id;
     model.administratorId = null;
     model.payments = [];
-    model.type = ReservationType.USER;
+    model.type = user.isTrainer ? ReservationType.COMPETITOR : ReservationType.USER;
   }
 
   try {
