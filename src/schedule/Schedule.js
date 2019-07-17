@@ -63,7 +63,7 @@ class Schedule extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      administrator: UserService.getUser(),
+      administrator: null,
       counter: 0,
       season: null,
       courts: [],
@@ -88,6 +88,9 @@ class Schedule extends React.Component {
   }
 
   componentDidMount() {
+    UserService.getAuthenticatedUser()
+      .then(user => this.setState({ administrator: user }));
+
     QueryService
       .get(`/schedule/config`)
       .then(config => this.setState(config));
