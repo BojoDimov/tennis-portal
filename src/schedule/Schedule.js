@@ -23,6 +23,7 @@ import Legend from './Legend';
 import ConfirmationDialog from '../components/ConfirmationDialog';
 import { getHour } from '../utils';
 import { ApplicationMode } from '../enums';
+import { catchEvent } from '../services/events.service';
 
 const scrollButton = (theme) => ({
   zIndex: 1100,
@@ -88,14 +89,21 @@ class Schedule extends React.Component {
   }
 
   componentDidMount() {
-    UserService.getAuthenticatedUser()
-      .then(user => this.setState({ administrator: user }));
+    catchEvent('login', () => this.getAdministrator());
+    this.getAdministrator();
+    this.getConfig();
+    this.getData(this.state.date);
+  }
 
-    QueryService
+  getAdministrator() {
+    return UserService.getAuthenticatedUser()
+      .then(user => this.setState({ administrator: user }));
+  }
+
+  getConfig() {
+    return QueryService
       .get(`/schedule/config`)
       .then(config => this.setState(config));
-
-    this.getData(this.state.date);
   }
 
   getData(date) {

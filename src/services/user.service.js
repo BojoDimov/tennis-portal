@@ -14,15 +14,15 @@ class UserService {
   }
 
   async getAuthenticatedUser() {
-    if (this.cached)
-      return this.user;
+    if (!this.cached)
 
-    return QueryService.get('/login/authData')
-      .then(({ data }) => {
-        this.cached = true;
-        this.user = data;
-        return data;
-      });
+      this.user = QueryService.get('/login/authData')
+        .then(({ data }) => {
+          this.cached = true;
+          return data;
+        });
+
+    return this.user;
   }
 
   login(data) {
