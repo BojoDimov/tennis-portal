@@ -36,12 +36,12 @@ class AccountView extends React.Component {
   }
 
   componentDidMount() {
-    this.setUser();
-    this.getData();
+    this.setUser()
+      .then(() => this.getData());
   }
 
   setUser() {
-    UserService.getAuthenticatedUser()
+    return UserService.getAuthenticatedUser()
       .then(user => this.setState({ loggedInUser: user }));
   }
 
