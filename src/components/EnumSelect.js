@@ -24,7 +24,7 @@ class EnumSelect extends React.Component {
 
     return (
       <FormControl fullWidth={true} error={error}>
-        <InputLabel required={required} shrink={value}>
+        <InputLabel required={required} shrink={Boolean(value)}>
           {label}
         </InputLabel>
         <Select

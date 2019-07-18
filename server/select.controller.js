@@ -7,11 +7,13 @@ const {
   Groups,
   GroupTeams,
   Enrollments,
+  Seasons,
   Sequelize
 } = require('./db');
 const Op = Sequelize.Op;
 
 const auth = require('./infrastructure/middlewares/auth');
+const admin = require('./infrastructure/middlewares/adminIdentity');
 
 const selectUsers = async (request, response) => {
   const filter = request.body;
@@ -165,10 +167,37 @@ const selectInvited = async (request, response) => {
   });
 }
 
+const selectSeasons = async (request, response) => {
+  const filter = request.body;
+  const query = request.query;
+
+  const options = {
+    include: [],
+    order: [['seasonStart', 'desc']],
+    limit: filter.limit,
+    offset: filter.offset
+  };
+
+  if (filter.searchTerm)
+    options.where = {
+      name: {
+        [Op.iLike]: '%' + filter.searchTerm + '%'
+      }
+    };
+
+  const result = await Seasons.findAndCountAll(options);
+
+  return response.json({
+    totalCount: result.count,
+    options: result.rows
+  });
+}
+
 router.post('/users', selectUsers);
 router.post('/teams', selectTeams);
 router.post('/subscriptions', selectSubscriptions);
 router.post('/tournaments', selectTournament);
 router.post('/invitable', auth, selectInvited);
+router.post('/seasons', admin, selectSeasons);
 
 module.exports = router;

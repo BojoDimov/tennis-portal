@@ -104,7 +104,7 @@ class DateComponent extends React.Component {
           this.setState({ selected: value });
           onChange(moment({ year, month, date: value + 1 }));
         }}
-        scrollable
+        variant="scrollable"
         scrollButtons="on">
         {this.getDays().map(day => {
           let rootClass = classes.tab;
