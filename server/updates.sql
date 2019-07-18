@@ -60,3 +60,9 @@ add "isTrainer" boolean default false;
 
 alter table "Users"
 add "isTournamentAdmin" boolean default false;
+
+alter type "enum_Reservations_type"
+add value 'camp';
+
+alter type "enum_Reservations_type"
+add value 'other';

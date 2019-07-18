@@ -68,6 +68,8 @@ export const ReservationType = {
   TENNIS_SCHOOL: 'school',
   TOURNAMENT: 'tournament',
   SERVICE: 'service',
+  SUMMER_CAMP: 'camp',
+  OTHER: 'other'
 };
 
 export const SubscriptionType = {
@@ -113,6 +115,8 @@ export const EnumLocalization = {
     [ReservationType.ELDER_GROUP]: 'Група за възрастни',
     [ReservationType.TOURNAMENT]: 'Турнир',
     [ReservationType.SERVICE]: 'Неработещо игрище',
+    [ReservationType.SUMMER_CAMP]: 'Летен лагер',
+    [ReservationType.OTHER]: 'Друго'
   },
   'CustomReservationType': {
     [ReservationType.USER]: 'Резервация',
