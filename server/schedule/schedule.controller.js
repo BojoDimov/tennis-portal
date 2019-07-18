@@ -92,7 +92,7 @@ const updateReservation = async (req, res, next) => {
 
 const cancelReservation = async (req, res, next) => {
   try {
-    await ScheduleService.cancelReservation(req.params.id);
+    await ScheduleService.cancelReservation(req.params.id, req.user);
     return res.json({});
   }
   catch (err) {
