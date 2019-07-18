@@ -59,7 +59,10 @@ class Users extends React.Component {
 
   filterUsers() {
     if (this.state.usersFilter.length > 0)
-      return this.state.users.filter(e => e.name.indexOf(this.state.usersFilter) != -1);
+      return this.state.users.filter(e => {
+        return e.name.toLowerCase().includes(this.state.usersFilter) 
+          || e.email.toLowerCase().includes(this.state.usersFilter);
+      });
     else return this.state.users;
   }
 
