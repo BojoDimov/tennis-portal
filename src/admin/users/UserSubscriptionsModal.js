@@ -26,7 +26,7 @@ class UserSubscriptionsModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      administrator: UserService.getUser(),
+      administrator: null,
       subscriptions: []
     };
 
@@ -43,6 +43,11 @@ class UserSubscriptionsModal extends React.Component {
       this.setState({ subscriptions });
       this.props.onChange(subscriptions);
     }
+  }
+
+  componentDidMount() {
+    UserService.getAuthenticatedUser()
+      .then(user => this.setState({ administrator: user }));
   }
 
   componentDidUpdate(prevProps) {

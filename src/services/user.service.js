@@ -1,45 +1,39 @@
 import React from 'react';
 import { dispatchEvent } from './events.service';
+import QueryService from './query.service';
 import { ApplicationMode } from '../enums';
+
 
 class UserService {
   constructor() {
     const { Provider, Consumer } = React.createContext(ApplicationMode.GUEST);
     this.SetApplicationMode = Provider;
     this.WithApplicationMode = Consumer;
+    this.cached = false;
+    this.user = null;
   }
 
-  isLogged() {
-    return localStorage.getItem('token') != null;
+  async getAuthenticatedUser() {
+    if (!this.cached)
+
+      this.user = QueryService.get('/login/authData')
+        .then(({ data }) => {
+          this.cached = true;
+          return data;
+        });
+
+    return this.user;
   }
 
-  isAdmin() {
-    const user = this.getUser();
-    if (user && user.isAdmin)
-      return true;
-    else return false;
-  }
-
-  isIdentity(userId) {
-    let user = this.getUser();
-    return user && user.id == userId;
-  }
-
-  getUser() {
-    let token = JSON.parse(localStorage.getItem('token'))
-    let user = (token || { user: null }).user;
-    if (user && new Date(token.expires) > new Date())
-      return user;
-    else return null;
-  }
-
-  login(token) {
-    localStorage.setItem('token', JSON.stringify(token));
+  login(data) {
+    localStorage.setItem('token', data.token);
+    this.cached = false;
     dispatchEvent('login');
   }
 
   logout() {
     localStorage.removeItem('token');
+    this.cached = false;
     dispatchEvent('logout');
   }
 }

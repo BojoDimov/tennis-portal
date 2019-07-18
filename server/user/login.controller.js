@@ -2,6 +2,7 @@ const router = require('express').Router();
 const crypto = require('crypto');
 const { Users } = require('../db');
 const UserService = require('./user.service');
+const identity = require('../infrastructure/middlewares/identity');
 
 const login = async (req, res, next) => {
   let password = req.body.password;
@@ -24,6 +25,11 @@ const login = async (req, res, next) => {
     return next({ name: 'DomainActionError', error: { login: 'invalid credentials' } }, req, res, null);
 };
 
+const getAuthenticatedData = async (req, res, next) => {
+  return res.json({ data: req.user });
+}
+
+router.get('/authData', identity, getAuthenticatedData);
 router.post('/', login);
 
 module.exports = router;

@@ -10,13 +10,27 @@ class Reservation extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      userId: (UserService.getUser() || { id: null }).id
+      userId: null
     };
+  }
+
+  setUserId() {
+    UserService.getAuthenticatedUser()
+      .then(user => {
+        if (user)
+          this.setState({ userId: user.id });
+        else
+          this.setState({ userId: null });
+      });
+  }
+
+  componentDidMount() {
+    this.setUserId();
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.mode != this.props.mode)
-      this.setState({ userId: (UserService.getUser() || { id: null }).id });
+      this.setUserId();
   }
 
   render() {
