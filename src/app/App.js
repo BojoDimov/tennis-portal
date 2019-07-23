@@ -6,11 +6,10 @@ import { MuiThemeProvider } from '@material-ui/core/styles';
 
 import AppRouting from './app.routing';
 import SignIn from '../login/SignIn';
-import Navigation from '../menu/Navigation';
-import Menu from '../menu/menu.configuration';
+import Menu from '../menu';
+import MenuContext from '../menu/menu.context';
 import { catchEvent } from '../services/events.service';
 import UserService from '../services/user.service';
-import NavigationModel from '../menu/navigation.model';
 import { ApplicationMode } from '../enums';
 import theme from '../theme';
 import './app.styles.scss';
@@ -53,12 +52,12 @@ class App extends React.Component {
   }
 
   onRouteChanged(location) {
-    var route = (NavigationModel.routes
-      .find(route => location.pathname.indexOf(route.to) != -1)
-      || NavigationModel.adminRoutes
-        .find(route => location.pathname.indexOf(route.to) != -1));
-    if (route)
-      this.setState({ currentRoute: route.id });
+    // var route = (NavigationModel.routes
+    //   .find(route => location.pathname.indexOf(route.to) != -1)
+    //   || NavigationModel.adminRoutes
+    //     .find(route => location.pathname.indexOf(route.to) != -1));
+    // if (route)
+    //   this.setState({ currentRoute: route.id });
   }
 
   render() {
@@ -66,7 +65,7 @@ class App extends React.Component {
       <MuiPickersUtilsProvider utils={DateFnsUtils}>
         <MuiThemeProvider theme={theme}>
           <UserService.SetApplicationMode value={this.state.applicationMode}>
-            <NavigationModel.SetCurrentRoute value={this.state.currentRoute}>
+            <MenuContext.SetCurrentRoute value={this.state.currentRoute}>
               <div className="wrapper">
                 {/* <Navigation /> */}
                 <Menu />
@@ -74,7 +73,7 @@ class App extends React.Component {
                 <SignIn />
                 <AppRouting />
               </div>
-            </NavigationModel.SetCurrentRoute>
+            </MenuContext.SetCurrentRoute>
           </UserService.SetApplicationMode>
         </MuiThemeProvider>
       </MuiPickersUtilsProvider>

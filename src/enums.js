@@ -1,7 +1,8 @@
 export const ApplicationMode = {
   GUEST: 'guest',
   USER: 'user',
-  ADMIN: 'admin'
+  ADMIN: 'admin',
+  TRAINER: 'trainer'
 };
 
 export const RouteTypeEnum = {
