@@ -31,8 +31,7 @@ class Menu extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      drawerOpen: false,
-      user: UserService.getUser()
+      drawerOpen: false
     }
 
     this.login = () => {
@@ -73,7 +72,6 @@ class Menu extends React.Component {
   }
 
   render() {
-    const { user } = this.state;
     const { classes } = this.props;
 
     return (
