@@ -7,6 +7,10 @@ import SchemesRoot from '../schemes/SchemesRoot';
 import GroupsBracket from '../schemes/brackets/GroupsBracket';
 import EliminationBracket from '../schemes/brackets/EliminationBracket';
 import EditionsRoot from '../editions/EditionsRoot';
+import TournamentsRoot from '../tournaments/TournamentsRoot';
+import ChampionsRoot from '../tournaments/ChampionsRoot';
+import PlayersRoot from '../tournaments/PlayersRoot';
+
 import Schedule from '../schedule/Schedule';
 import Courts from '../admin/courts/Courts';
 import Seasons from '../admin/seasons/Seasons';
@@ -33,9 +37,9 @@ const routeMapping = {
   '/editions': EditionsRoot,
 
   //tournament routes
-  '/players': NotFoundPage,
-  '/ranklist': NotFoundPage,
-  '/champions': NotFoundPage,
+  '/players': PlayersRoot,
+  '/leagues': TournamentsRoot,
+  '/champions': ChampionsRoot,
 
   //admin routes
   '/admin/courts': Courts,

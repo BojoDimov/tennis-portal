@@ -20,7 +20,7 @@ export const adminRoutes = [
 
 export const tournamentAdditional = [
   { id: 8, to: '/players', name: 'Играчи', faIcon: 'user-friends' },
-  { id: 9, to: '/ranklist', name: 'Ранглисти', faIcon: 'list-ol' },
+  { id: 9, to: '/leagues', name: 'Ранглисти', faIcon: 'list-ol' },
   { id: 10, to: '/champions', name: 'Шампиони', faIcon: 'medal' },
 ];
 

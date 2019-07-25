@@ -3,15 +3,15 @@ const router = express.Router();
 const TournamentsService = require('./tournament.service');
 const adminIdentity = require('../infrastructure/middlewares/adminIdentity');
 
-// const filter = async (req, res, next) => {
-//   try {
-//     const items = await TournamentsService.filter(req.body);
-//     return res.json(items);
-//   }
-//   catch (err) {
-//     return next(err, req, res, null);
-//   }
-// }
+const filter = async (req, res, next) => {
+  try {
+    const items = await TournamentsService.filter(req.body);
+    return res.json(items);
+  }
+  catch (err) {
+    return next(err, req, res, null);
+  }
+}
 
 const get = async (req, res, next) => {
   try {
@@ -53,7 +53,7 @@ const create = async (req, res, next) => {
 //   }
 // }
 
-//router.post('/filter', filter);
+router.post('/filter', filter);
 router.post('/', adminIdentity, create);
 router.get('/:id', get);
 //router.post('/:id', adminIdentity, update);

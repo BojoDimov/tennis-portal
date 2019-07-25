@@ -2,7 +2,7 @@ const { Tournaments, Rankings, Teams, Users } = require('../db');
 const { Status } = require('../infrastructure/enums');
 class TournamentsService {
   async filter() {
-    return await Tournaments.findAll({ include: ['thumbnail'] });
+    return await Tournaments.findAll();
   }
 
   async get(id) {

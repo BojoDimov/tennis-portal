@@ -41,6 +41,9 @@ export default createMuiTheme({
         fontSize: '1rem',
         color: '#828A00',
         fontWeight: 700
+      },
+      h4: {
+        color: '#828A00'
       }
     },
     MuiCardActions: {
