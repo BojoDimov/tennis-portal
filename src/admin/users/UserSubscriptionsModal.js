@@ -20,13 +20,14 @@ import L10n from '../../components/L10n';
 import QueryService from '../../services/query.service';
 import { SubscriptionType } from '../../enums';
 import ConfirmationDialog from '../../components/ConfirmationDialog';
+import AsyncSelect from '../../components/select/AsyncSelect';
 import EnumSelect from '../../components/EnumSelect';
 
 class UserSubscriptionsModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      administrator: UserService.getUser(),
+      administrator: null,
       subscriptions: []
     };
 
@@ -43,6 +44,11 @@ class UserSubscriptionsModal extends React.Component {
       this.setState({ subscriptions });
       this.props.onChange(subscriptions);
     }
+  }
+
+  componentDidMount() {
+    UserService.getAuthenticatedUser()
+      .then(user => this.setState({ administrator: user }));
   }
 
   componentDidUpdate(prevProps) {
@@ -131,12 +137,23 @@ class Subscription extends React.Component {
     this.state = {
       administrator: {},
       season: {},
+      seasonId: null,
       type: '',
       totalHours: 0,
       remainingHours: 0,
       isEditMode: false,
       expanded: false
     }
+  }
+
+  changeSeason(season) {
+    if (!season)
+      return;
+
+    this.setState({
+      season: season,
+      seasonId: season.id
+    });
   }
 
   componentDidMount() {
@@ -206,6 +223,19 @@ class Subscription extends React.Component {
             Администрирал:
             <Typography>{model.administrator.name}</Typography>
           </Typography>
+
+          <AsyncSelect
+            label="Сезон"
+            disableClear={true}
+            disableSearch={true}
+            disabled={!model.isEditMode}
+            value={model.season}
+            query="seasons"
+            formatOptionLabel={(option) => <Typography component="span">
+              {option.name}
+            </Typography>}
+            onChange={season => this.changeSeason(season)}
+          />
 
           {!this.state.isEditMode && <React.Fragment>
             <Typography variant="caption">

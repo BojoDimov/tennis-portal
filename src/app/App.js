@@ -17,11 +17,8 @@ import './app.styles.scss';
 class App extends React.Component {
   constructor(props) {
     super(props);
-    const user = UserService.getUser();
     this.state = {
-      applicationMode: (user ? (
-        user.isAdmin ? ApplicationMode.ADMIN : ApplicationMode.USER)
-        : ApplicationMode.GUEST),
+      applicationMode: ApplicationMode.GUEST,
       currentRoute: 0
     }
 
@@ -30,12 +27,25 @@ class App extends React.Component {
     };
   }
 
+  setApplicationMode() {
+    UserService.getAuthenticatedUser()
+      .then(user => {
+        let mode = ApplicationMode.GUEST
+        if (user)
+          mode = ApplicationMode.USER;
+
+        if (user && user.isAdmin)
+          mode = ApplicationMode.ADMIN;
+        this.setState({ applicationMode: mode });
+      });
+  }
+
   componentDidMount() {
     document.body.classList.add('background');
+    this.setApplicationMode();
+
     catchEvent('not-found', () => this.props.history.replace('/oops'));
-    catchEvent('login', () => this.setState({
-      applicationMode: UserService.isAdmin() ? ApplicationMode.ADMIN : ApplicationMode.USER
-    }));
+    catchEvent('login', () => this.setApplicationMode());
     catchEvent('logout', () => {
       this.setState({
         applicationMode: ApplicationMode.GUEST

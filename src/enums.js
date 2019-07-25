@@ -69,6 +69,8 @@ export const ReservationType = {
   TENNIS_SCHOOL: 'school',
   TOURNAMENT: 'tournament',
   SERVICE: 'service',
+  SUMMER_CAMP: 'camp',
+  OTHER: 'other'
 };
 
 export const SubscriptionType = {
@@ -109,15 +111,18 @@ export const EnumLocalization = {
     [ReservationType.GUEST]: 'Гост',
     [ReservationType.USER]: 'Потребител',
     [ReservationType.SUBSCRIPTION]: 'Абонат',
-    [ReservationType.COMPETITOR]: 'Съзтезатели',
+    [ReservationType.COMPETITOR]: 'Състезатели',
     [ReservationType.TENNIS_SCHOOL]: 'Тенис училище',
     [ReservationType.ELDER_GROUP]: 'Група за възрастни',
     [ReservationType.TOURNAMENT]: 'Турнир',
     [ReservationType.SERVICE]: 'Неработещо игрище',
+    [ReservationType.SUMMER_CAMP]: 'Летен лагер',
+    [ReservationType.OTHER]: 'Друго'
   },
   'CustomReservationType': {
     [ReservationType.USER]: 'Резервация',
-    [ReservationType.SUBSCRIPTION]: 'Абонамент'
+    [ReservationType.SUBSCRIPTION]: 'Абонамент',
+    [ReservationType.COMPETITOR]: 'Състезатели'
   },
   'SubscriptionType': {
     [SubscriptionType.ZONE_1]: 'ЗОНА 1',

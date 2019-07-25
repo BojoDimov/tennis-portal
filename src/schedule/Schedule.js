@@ -21,8 +21,10 @@ import ShuffleItem from './reservation/ShuffleItem';
 import Calendar from '../components/calendar/Calendar';
 import Legend from './Legend';
 import ConfirmationDialog from '../components/ConfirmationDialog';
+import AsyncSelect from '../components/select/AsyncSelect';
 import { getHour } from '../utils';
 import { ApplicationMode } from '../enums';
+import { catchEvent } from '../services/events.service';
 
 const scrollButton = (theme) => ({
   zIndex: 1100,
@@ -63,7 +65,7 @@ class Schedule extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      administrator: UserService.getUser(),
+      administrator: null,
       counter: 0,
       season: null,
       courts: [],
@@ -88,11 +90,21 @@ class Schedule extends React.Component {
   }
 
   componentDidMount() {
-    QueryService
+    catchEvent('login', () => this.getAdministrator());
+    this.getAdministrator();
+    this.getConfig();
+    this.getData(this.state.date);
+  }
+
+  getAdministrator() {
+    return UserService.getAuthenticatedUser()
+      .then(user => this.setState({ administrator: user }));
+  }
+
+  getConfig() {
+    return QueryService
       .get(`/schedule/config`)
       .then(config => this.setState(config));
-
-    this.getData(this.state.date);
   }
 
   getData(date) {
@@ -221,6 +233,20 @@ class Schedule extends React.Component {
                     <ShuffleIcon />
                     Разместване
                   </Button>}
+                  <div style={{ position: 'relative' }}>
+                    <AsyncSelect
+                      label="Сезон"
+                      disableClear={true}
+                      disableSearch={true}
+                      value={season}
+                      query="seasons"
+                      formatOptionLabel={(option) => <Typography component="span">
+                        {option.name}
+                      </Typography>}
+                      onChange={season => this.setState({ season })}
+                    />
+                  </div>
+
                 </React.Fragment>}
             </div>
 

@@ -53,3 +53,16 @@ drop type if exists "enum_Schemes_schemeType";
 
 insert into "Teams"("createdAt", "updatedAt", "user1Id", "user2Id")
 select now(), now(), "Users"."id", null from "Users";
+
+--------------UPDATE 4-------------
+alter table "Users"
+add "isTrainer" boolean default false;
+
+alter table "Users"
+add "isTournamentAdmin" boolean default false;
+
+alter type "enum_Reservations_type"
+add value 'camp';
+
+alter type "enum_Reservations_type"
+add value 'other';

@@ -67,9 +67,9 @@ class QueryService {
   }
 
   request(resource, options) {
-    let tokenInfo = JSON.parse(window.localStorage.getItem('token'));
-    if (tokenInfo)
-      options.headers['Authorization'] = 'Bearer ' + tokenInfo.token;
+    let token = window.localStorage.getItem('token');
+    if (token)
+      options.headers['Authorization'] = 'Bearer ' + token;
 
     return fetch(this.backend + resource, options)
       .then(res => this.errorHandling(res))

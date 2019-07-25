@@ -17,12 +17,26 @@ class InvitationsComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      userId: UserService.getUser().id,
+      userId: null,
       page: 0,
       rowsPerPage: 10,
       // Handle errors: ExistingEnrollment, RequirementsNotMet, UserHasNoInfo
       err: null
     }
+  }
+
+  componentDidMount() {
+    this.setUserId();
+  }
+
+  setUserId() {
+    UserService.getAuthenticatedUser()
+      .then(user => {
+        if (user)
+          this.setState({ userId: user.id });
+        else
+          this.setState({ userId: null });
+      });
   }
 
   accept(invitation) {

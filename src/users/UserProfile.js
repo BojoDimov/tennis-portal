@@ -21,7 +21,7 @@ class UserProfile extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      loggedInUser: UserService.getUser(),
+      loggedInUser: null,
       user: {},
       subscriptions: null,
       reservations: null,
@@ -35,7 +35,13 @@ class UserProfile extends React.Component {
   }
 
   componentDidMount() {
-    this.getData();
+    this.setUser()
+      .then(() => this.getData());
+  }
+
+  setUser() {
+    return UserService.getAuthenticatedUser()
+      .then(user => this.setState({ loggedInUser: user }));
   }
 
   getData() {
