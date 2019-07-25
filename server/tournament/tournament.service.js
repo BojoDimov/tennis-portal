@@ -2,13 +2,16 @@ const { Tournaments, Rankings, Teams, Users } = require('../db');
 const { Status } = require('../infrastructure/enums');
 class TournamentsService {
   async filter() {
-    return await Tournaments.findAll();
+    return await Tournaments.findAll({
+      order: [
+        ['id', 'desc']
+      ]
+    });
   }
 
   async get(id) {
     const tournament = await Tournaments.findById(id, {
       include: [
-        'thumbnail',
         {
           model: Rankings, as: 'rankings',
           include: [{
@@ -35,12 +38,12 @@ class TournamentsService {
   }
 
   async update(id, model) {
-    const tournament = this.get(id);
+    const tournament = await this.get(id);
     return await tournament.update(model);
   }
 
   async remove(id) {
-    const tournament = this.get(id);
+    const tournament = await this.get(id);
     return await tournament.destroy();
   }
 }

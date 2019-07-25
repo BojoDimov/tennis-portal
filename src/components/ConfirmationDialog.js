@@ -13,9 +13,16 @@ class ConfirmationDialog extends React.Component {
       isOpen: false
     };
 
-    this.open = (e) => this.setState({ isOpen: true });
-    this.close = (e) => this.setState({ isOpen: false });
+    this.open = (e) => {
+      e.stopPropagation();
+      this.setState({ isOpen: true });
+    };
+    this.close = (e) => {
+      e.stopPropagation();
+      this.setState({ isOpen: false });
+    }
     this.accept = (e) => {
+      e.stopPropagation();
       this.close(e);
       this.props.onAccept(e);
     }

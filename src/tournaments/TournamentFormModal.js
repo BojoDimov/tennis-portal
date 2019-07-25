@@ -76,6 +76,7 @@ class TournamentFormModal extends React.Component {
         onClose={onClose}
         fullScreen={fullScreen}
         classes={{ paper: classes.root }}
+        onClick={e => e.stopPropagation()}
       >
         <DialogTitle>
           <Typography component="span" variant="headline">Създаване/промяна на лига</Typography>
