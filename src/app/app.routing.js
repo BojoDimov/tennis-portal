@@ -39,7 +39,7 @@ const routeMapping = {
   //tournament routes
   '/players': PlayersRoot,
   '/leagues': TournamentsRoot,
-  '/champions': ChampionsRoot,
+  //'/champions': ChampionsRoot,
 
   //admin routes
   '/admin/courts': Courts,
