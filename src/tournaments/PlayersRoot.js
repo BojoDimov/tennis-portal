@@ -9,6 +9,10 @@ import TableRow from '@material-ui/core/TableRow';
 import TextField from '@material-ui/core/TextField';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import Hidden from '@material-ui/core/Hidden';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import Divider from '@material-ui/core/Divider';
 import TablePagination from '@material-ui/core/TablePagination';
 
 class PlayersRoot extends React.Component {
@@ -48,30 +52,50 @@ class PlayersRoot extends React.Component {
             <Tab value="double" label="Двойки"></Tab>
           </Tabs>
 
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Име</TableCell>
-                <TableCell>Мачове</TableCell>
-                <TableCell>Спечелени мачове</TableCell>
-                <TableCell>Турнири</TableCell>
-                <TableCell>Спечелени турнири</TableCell>
-              </TableRow>
+          <Hidden smDown>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Име</TableCell>
+                  <TableCell>Мачове</TableCell>
+                  <TableCell>Спечелени мачове</TableCell>
+                  <TableCell>Турнири</TableCell>
+                  <TableCell>Спечелени турнири</TableCell>
+                </TableRow>
 
-            </TableHead>
-            <TableBody>
+              </TableHead>
+              <TableBody>
+                {teams.map(team => {
+                  return (
+                    <TableRow>
+                      <TableCell>Име Фамилия</TableCell>
+                      <TableCell>50</TableCell>
+                      <TableCell>35</TableCell>
+                      <TableCell>10</TableCell>
+                      <TableCell>5</TableCell>
+                    </TableRow>);
+                })}
+              </TableBody>
+            </Table>
+          </Hidden>
+
+          <Hidden smUp>
+            <List>
               {teams.map(team => {
                 return (
-                  <TableRow>
-                    <TableCell>Име Фамилия</TableCell>
-                    <TableCell>50</TableCell>
-                    <TableCell>35</TableCell>
-                    <TableCell>10</TableCell>
-                    <TableCell>5</TableCell>
-                  </TableRow>);
+                  <React.Fragment>
+                    <ListItem style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+                      <Typography variant="body2">Име Фамилия</Typography>
+                      <Typography variant="caption">Турнири: 58 / 400 (14.5% win ratio)</Typography>
+                      <Typography variant="caption">Мачове: 58 / 400 (14.5% win ratio)</Typography>
+                    </ListItem>
+                    <Divider />
+                  </React.Fragment>
+                );
               })}
-            </TableBody>
-          </Table>
+            </List>
+          </Hidden>
+
           <TablePagination
             component="div"
             count={totalCount}
