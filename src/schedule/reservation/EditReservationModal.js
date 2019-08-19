@@ -190,7 +190,6 @@ class EditReservationModal extends React.Component {
               value={reservation.subscription}
               query="subscriptions"
               filter={{
-                seasonId: reservation.seasonId,
                 userId: reservation.customerId
               }}
               noOptionsMessage={() => 'Няма регистрирани абонаменти'}
@@ -242,7 +241,6 @@ class EditReservationModal extends React.Component {
                     value={payment.subscription}
                     query="subscriptions"
                     filter={{
-                      seasonId: reservation.seasonId,
                       userId: reservation.customerId,
                       type: payment.type,
                       onlyAvailable: true
