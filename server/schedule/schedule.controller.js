@@ -64,7 +64,7 @@ const createReservation = async (req, res, next) => {
     model.customerId = user.id;
     model.administratorId = null;
     model.payments = [];
-    model.type = ReservationType.USER;
+    model.type = user.isTrainer ? ReservationType.COMPETITOR : ReservationType.USER;
   }
 
   try {
@@ -92,7 +92,7 @@ const updateReservation = async (req, res, next) => {
 
 const cancelReservation = async (req, res, next) => {
   try {
-    await ScheduleService.cancelReservation(req.params.id);
+    await ScheduleService.cancelReservation(req.params.id, req.user);
     return res.json({});
   }
   catch (err) {

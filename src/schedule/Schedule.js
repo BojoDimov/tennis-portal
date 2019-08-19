@@ -21,6 +21,7 @@ import ShuffleItem from './reservation/ShuffleItem';
 import Calendar from '../components/calendar/Calendar';
 import Legend from './Legend';
 import ConfirmationDialog from '../components/ConfirmationDialog';
+import AsyncSelect from '../components/select/AsyncSelect';
 import { getHour } from '../utils';
 import { ApplicationMode } from '../enums';
 import { catchEvent } from '../services/events.service';
@@ -232,6 +233,20 @@ class Schedule extends React.Component {
                     <ShuffleIcon />
                     Разместване
                   </Button>}
+                  <div style={{ position: 'relative' }}>
+                    <AsyncSelect
+                      label="Сезон"
+                      disableClear={true}
+                      disableSearch={true}
+                      value={season}
+                      query="seasons"
+                      formatOptionLabel={(option) => <Typography component="span">
+                        {option.name}
+                      </Typography>}
+                      onChange={season => this.setState({ season })}
+                    />
+                  </div>
+
                 </React.Fragment>}
             </div>
 

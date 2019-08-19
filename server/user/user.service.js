@@ -32,7 +32,7 @@ class UserService {
           }
         ],
         attributes: {
-          exclude: ['passwordHash', 'passwordSalt', 'birthDate', 'gender']
+          exclude: ['passwordHash', 'passwordSalt']
         },
         order: [
           'name',
@@ -44,7 +44,7 @@ class UserService {
   async getById(userId) {
     return await Users.findById(userId, {
       attributes: {
-        exclude: ['passwordHash', 'passwordSalt', 'isActive', 'isAdmin']
+        exclude: ['passwordHash', 'passwordSalt']
       },
     });
   }
@@ -90,6 +90,8 @@ class UserService {
       throw { name: 'NotFound' };
     return await user.update({
       isActive: model.isActive,
+      isTrainer: model.isTrainer,
+      isTournamentAdmin: model.isTournamentAdmin,
       email: model.email,
       name: model.firstName.charAt(0).toUpperCase() + model.firstName.substr(1)
         + ' ' +

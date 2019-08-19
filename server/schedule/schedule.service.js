@@ -163,39 +163,6 @@ class ScheduleService {
     }
   }
 
-  //this may be a little unnecessary,
-  //so i am using less restricting version of this.
-  async loadReservationIsolationLocks(id, transaction) {
-    const reservation = await Reservations.findById(id, {
-      include: [
-        'subscription',
-        {
-          model: ReservationPayments,
-          as: 'payments',
-          include: [
-            {
-              model: Subscriptions,
-              as: 'subscription',
-              lock: {
-                level: transaction.LOCK.UPDATE,
-                of: Subscriptions
-              }
-            }
-          ]
-        }
-      ],
-      lock: {
-        level: transaction.LOCK.UPDATE,
-        of: Subscriptions
-      }
-    });
-
-    if (!reservation)
-      throw { name: 'NotFound' };
-
-    return reservation;
-  }
-
   async loadReservation(id, transaction) {
     const reservation = await Reservations.findById(id, {
       include: [
@@ -291,11 +258,13 @@ class ScheduleService {
 
   //Throws:
   //maxAllowedTimeDiff
-  async cancelReservation(id) {
+  //notEnoughPermissions
+  async cancelReservation(id, user) {
     let transaction;
     try {
       transaction = await sequelize.transaction();
       const reservation = await this.loadReservation(id, transaction);
+      this.validateHasPermissionToCancel(reservation, user);
       this.validateCanBeCanceled(reservation);
 
       if (reservation.type == ReservationType.SUBSCRIPTION) {
@@ -504,6 +473,19 @@ class ScheduleService {
   }
 
   //Throws:
+  //notEnoughPermissions
+  validateHasPermissionToCancel(reservation, user) {
+    if (user.isAdmin)
+      return;
+    if (reservation.customerId == user.id)
+      return;
+    if (reservation.type == ReservationType.COMPETITOR && user.isTrainer)
+      return;
+
+    throw { name: 'DomainActionError', error: ['notEnoughPermissions'] };
+  }
+
+  //Throws:
   //maxAllowedTimeDiff
   validateCanBeCanceled(reservation) {
     if (reservation.type == ReservationType.TOURNAMENT
@@ -524,7 +506,7 @@ class ScheduleService {
   }
 }
 
-//closed hours in interval
+//Closed Hours In Interval
 //'end' is always within working hours
 //'start' can be anytime
 //ws  = work start

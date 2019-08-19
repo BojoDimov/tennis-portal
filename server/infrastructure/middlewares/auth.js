@@ -7,9 +7,13 @@ passport.use(new HttpBearerStrategy(async (bearer, next) => {
     const token = await Tokens
       .findOne({
         where: { token: bearer },
-        include: [
-          { model: Users, as: 'user', attributes: ['id', 'name', 'email', 'birthDate', 'gender', 'isAdmin'] }
-        ]
+        include: [{
+          model: Users,
+          as: 'user',
+          attributes: {
+            exclude: ['passwordHash', 'passwordSalt']
+          }
+        }]
       });
     if (token && token.expires > new Date())
       next(null, token.user);
