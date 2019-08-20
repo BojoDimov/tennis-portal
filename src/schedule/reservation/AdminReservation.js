@@ -18,7 +18,7 @@ class AdminReservation extends React.Component {
   getCellLabel(reservation) {
     if (reservation.type == ReservationType.COMPETITOR)
       return (<L10n translate="ReservationType">{ReservationType.COMPETITOR}</L10n>);
-    else if (reservation.type == ReservationType.USER)
+    else if (reservation.type == ReservationType.USER && reservation.customer)
       return (<span>{reservation.customer.name}</span>);
     else
       return (<L10n translate="ReservationType">{reservation.type}</L10n>);
