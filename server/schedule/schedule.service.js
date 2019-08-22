@@ -120,25 +120,29 @@ class ScheduleService {
         await ReservationPayments.destroy({
           where: {
             reservationId: reservation.id
-          }
+          },
+          transaction
         });
         await Reservations.destroy({
           where: {
             id: reservation.id
-          }
+          },
+          transaction
         });
       }
 
       await Subscriptions.destroy({
         where: {
           seasonId: entity.id
-        }
+        },
+        transaction
       });
 
       await Seasons.destroy({
         where: {
           id: entity.id
-        }
+        },
+        transaction
       });
       return transaction.commit();
     }
