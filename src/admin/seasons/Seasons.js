@@ -76,6 +76,7 @@ class Seasons extends React.Component {
                 season={season}
                 onChange={model => this.updateModel(model, index)}
                 onCreateCancel={() => this.removeSeason(index)}
+                refresh={() => this.getData()}
               />
             );
           })}

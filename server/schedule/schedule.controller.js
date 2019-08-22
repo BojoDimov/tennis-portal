@@ -42,6 +42,16 @@ const updateSeason = (req, res, next) => {
     .then(e => res.json(e));
 }
 
+const deleteSeason = async (req, res, next) => {
+  try {
+    await ScheduleService.deleteSeason(req.params.id);
+    return res.json({});
+  }
+  catch (ex) {
+    return next(ex, req, res, null);
+  }
+}
+
 const createCourt = (req, res, next) => {
   return ScheduleService
     .createCourt(req.body)
@@ -117,6 +127,7 @@ router.get('/courts', adminIdentity, getCourts);
 
 router.post('/seasons', adminIdentity, createSeason);
 router.post('/seasons/:id', adminIdentity, updateSeason);
+router.delete('/seasons/:id', adminIdentity, deleteSeason);
 
 router.post('/courts', adminIdentity, createCourt);
 router.post('/courts/:id', adminIdentity, updateCourt);

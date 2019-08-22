@@ -9,6 +9,7 @@ import CardContent from '@material-ui/core/CardContent';
 import DatePicker from 'material-ui-pickers/DatePicker';
 import { withStyles } from '@material-ui/core/styles';
 
+import ConfirmationDialog from '../../components/ConfirmationDialog';
 import QueryService from '../../services/query.service';
 import { getHour } from '../../utils';
 
@@ -55,6 +56,11 @@ class SeasonItem extends React.Component {
     else this.props.onCreateCancel();
   }
 
+  onDelete() {
+    QueryService.delete(`/schedule/seasons/${this.props.season.id}`)
+      .then(() => this.props.refresh());
+  }
+
   render() {
     const { mode } = this.state;
     const { classes, season } = this.props;
@@ -87,6 +93,20 @@ class SeasonItem extends React.Component {
           </CardContent>
           <CardActions classes={{ root: classes.cardActions }}>
             <Button variant="contained" color="primary" size="small" onClick={() => this.setState({ mode: 'edit' })}>Промяна</Button>
+            <ConfirmationDialog
+              title="Изтриване на сезон"
+              body={
+                <React.Fragment>
+                  <Typography>Сигурни ли сте че искате да изтриете сезон "{season.name}"</Typography>
+                  <Typography variant="caption">Това ще доведе до изтриване на всички данни за резервации,
+                  плащания на часове и абонаменти свързани с този сезон.
+                  Информацията която ще бъде изтрита няма да може да бъде възвърната</Typography>
+                </React.Fragment>
+              }
+              onAccept={() => this.onDelete()}
+            >
+              <Button variant="contained" color="secondary" size="small" >Изтриване</Button>
+            </ConfirmationDialog>
           </CardActions>
         </Card >
       );
