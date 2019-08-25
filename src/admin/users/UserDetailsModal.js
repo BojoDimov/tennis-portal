@@ -82,7 +82,29 @@ class UserDetailsModal extends React.Component {
                 onClick={() => this.handleChange('isActive', true)(!user.isActive)}
               />
             }
-            label={user.isActive ? 'Активен' : 'Неактивен'}
+            label="Активен"
+          />
+
+          <FormControlLabel
+            control={
+              <Switch
+                color="primary"
+                checked={user.isTrainer}
+                onClick={() => this.handleChange('isTrainer', true)(!user.isTrainer)}
+              />
+            }
+            label="Треньор"
+          />
+
+          <FormControlLabel
+            control={
+              <Switch
+                color="primary"
+                checked={user.isTournamentAdmin}
+                onClick={() => this.handleChange('isTournamentAdmin', true)(!user.isTournamentAdmin)}
+              />
+            }
+            label="Турнири"
           />
 
           <UserModel.UserAccountData user={user} onChange={this.handleChange} errors={errors} />

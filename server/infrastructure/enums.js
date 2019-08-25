@@ -64,12 +64,13 @@ module.exports = {
     GUEST: 'guest',
     USER: 'user',
     SUBSCRIPTION: 'subscription',
-
     COMPETITOR: 'competitor',
     ELDER_GROUP: 'elder',
     TENNIS_SCHOOL: 'school',
     TOURNAMENT: 'tournament',
-    SERVICE: 'service'
+    SERVICE: 'service',
+    SUMMER_CAMP: 'camp',
+    OTHER: 'other'
   },
   SubscriptionType: {
     ZONE_1: 'zone1',

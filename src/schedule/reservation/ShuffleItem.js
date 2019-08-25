@@ -46,7 +46,7 @@ class ShuffleItem extends React.Component {
     if (reservation.type == ReservationType.USER || reservation.type == ReservationType.SUBSCRIPTION)
       return (
         <TableCell padding="none" className={type} onClick={() => this.select()}>
-          {type != classes.free && <span>{reservation.customer.name}</span>}
+          {type != classes.free && reservation.customer && <span>{reservation.customer.name}</span>}
         </TableCell>
       );
 

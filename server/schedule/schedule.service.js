@@ -91,7 +91,65 @@ class ScheduleService {
   async updateSeason(id, model) {
     //TODO: add seasons overlap validation
     const entity = await Seasons.findById(id);
+    if (entity == null)
+      throw { name: 'NotFound' };
     return entity.update(model);
+  }
+
+  async deleteSeason(id) {
+    let transaction;
+    try {
+      transaction = await sequelize.transaction();
+      const entity = await Seasons.findById(id);
+      if (entity == null)
+        throw { name: 'NotFound' };
+
+      var reservations = await Reservations.findAll({
+        where: {
+          seasonId: entity.id
+        },
+        include: [
+          {
+            model: ReservationPayments,
+            as: 'payments'
+          }
+        ]
+      });
+
+      for (let reservation of reservations) {
+        await ReservationPayments.destroy({
+          where: {
+            reservationId: reservation.id
+          },
+          transaction
+        });
+        await Reservations.destroy({
+          where: {
+            id: reservation.id
+          },
+          transaction
+        });
+      }
+
+      await Subscriptions.destroy({
+        where: {
+          seasonId: entity.id
+        },
+        transaction
+      });
+
+      await Seasons.destroy({
+        where: {
+          id: entity.id
+        },
+        transaction
+      });
+      return transaction.commit();
+    }
+    catch (ex) {
+      await transaction.rollback();
+      throw ex;
+    }
   }
 
   createCourt(model) {
@@ -100,6 +158,8 @@ class ScheduleService {
 
   async updateCourt(id, model) {
     const entity = await Courts.findById(id);
+    if (entity == null)
+      throw { name: 'NotFound' };
     return entity.update(model);
   }
 
@@ -161,39 +221,6 @@ class ScheduleService {
       await transaction.rollback();
       throw err;
     }
-  }
-
-  //this may be a little unnecessary,
-  //so i am using less restricting version of this.
-  async loadReservationIsolationLocks(id, transaction) {
-    const reservation = await Reservations.findById(id, {
-      include: [
-        'subscription',
-        {
-          model: ReservationPayments,
-          as: 'payments',
-          include: [
-            {
-              model: Subscriptions,
-              as: 'subscription',
-              lock: {
-                level: transaction.LOCK.UPDATE,
-                of: Subscriptions
-              }
-            }
-          ]
-        }
-      ],
-      lock: {
-        level: transaction.LOCK.UPDATE,
-        of: Subscriptions
-      }
-    });
-
-    if (!reservation)
-      throw { name: 'NotFound' };
-
-    return reservation;
   }
 
   async loadReservation(id, transaction) {
@@ -291,11 +318,13 @@ class ScheduleService {
 
   //Throws:
   //maxAllowedTimeDiff
-  async cancelReservation(id) {
+  //notEnoughPermissions
+  async cancelReservation(id, user) {
     let transaction;
     try {
       transaction = await sequelize.transaction();
       const reservation = await this.loadReservation(id, transaction);
+      this.validateHasPermissionToCancel(reservation, user);
       this.validateCanBeCanceled(reservation);
 
       if (reservation.type == ReservationType.SUBSCRIPTION) {
@@ -504,6 +533,19 @@ class ScheduleService {
   }
 
   //Throws:
+  //notEnoughPermissions
+  validateHasPermissionToCancel(reservation, user) {
+    if (user.isAdmin)
+      return;
+    if (reservation.customerId == user.id)
+      return;
+    if (reservation.type == ReservationType.COMPETITOR && user.isTrainer)
+      return;
+
+    throw { name: 'DomainActionError', error: ['notEnoughPermissions'] };
+  }
+
+  //Throws:
   //maxAllowedTimeDiff
   validateCanBeCanceled(reservation) {
     if (reservation.type == ReservationType.TOURNAMENT
@@ -524,7 +566,7 @@ class ScheduleService {
   }
 }
 
-//closed hours in interval
+//Closed Hours In Interval
 //'end' is always within working hours
 //'start' can be anytime
 //ws  = work start

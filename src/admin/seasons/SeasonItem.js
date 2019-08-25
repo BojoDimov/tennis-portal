@@ -8,7 +8,12 @@ import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import DatePicker from 'material-ui-pickers/DatePicker';
 import { withStyles } from '@material-ui/core/styles';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
+import Snackbar from '@material-ui/core/Snackbar';
+import CircularProgress from '@material-ui/core/CircularProgress';
 
+import ConfirmationDialog from '../../components/ConfirmationDialog';
 import QueryService from '../../services/query.service';
 import { getHour } from '../../utils';
 
@@ -34,7 +39,9 @@ class SeasonItem extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      mode: 'view'
+      mode: 'view',
+      loading: false,
+      error: null
     }
   }
 
@@ -53,6 +60,19 @@ class SeasonItem extends React.Component {
     if (this.state.mode == 'edit')
       this.setState({ mode: 'view' });
     else this.props.onCreateCancel();
+  }
+
+  onDelete() {
+    this.setState({ loading: true });
+
+    QueryService.delete(`/schedule/seasons/${this.props.season.id}`)
+      .then(() => {
+        this.setState({ loading: false });
+        this.props.onDelete()
+      })
+      .catch(error => {
+        this.setState({ loading: false, error });
+      });
   }
 
   render() {
@@ -87,7 +107,42 @@ class SeasonItem extends React.Component {
           </CardContent>
           <CardActions classes={{ root: classes.cardActions }}>
             <Button variant="contained" color="primary" size="small" onClick={() => this.setState({ mode: 'edit' })}>Промяна</Button>
+            <ConfirmationDialog
+              title="Изтриване на сезон"
+              body={
+                <React.Fragment>
+                  <Typography>Сигурни ли сте че искате да изтриете сезон "{season.name}"</Typography>
+                  <Typography variant="caption">Това ще доведе до изтриване на всички данни за резервации,
+                  плащания на часове и абонаменти свързани с този сезон.
+                  Информацията която ще бъде изтрита няма да може да бъде възвърната</Typography>
+                </React.Fragment>
+              }
+              onAccept={() => this.onDelete()}
+            >
+              {!this.state.loading && <Button variant="contained" color="secondary" size="small" >Изтриване</Button>}
+              {this.state.loading && <CircularProgress color="secondary" />}
+            </ConfirmationDialog>
           </CardActions>
+          <Snackbar
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+            }}
+            open={Boolean(this.state.error)}
+            autoHideDuration={6000}
+            onClose={() => this.setState({ error: null })}
+            message={typeof this.state.error === 'string' ? <span>{this.state.error}</span> : "Възникна грешка"}
+            action={[
+              <IconButton
+                key="close"
+                aria-label="close"
+                color="inherit"
+                onClick={() => this.setState({ error: null })}
+              >
+                <CloseIcon />
+              </IconButton>
+            ]}
+          />
         </Card >
       );
   }

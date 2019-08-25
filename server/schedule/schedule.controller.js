@@ -42,6 +42,16 @@ const updateSeason = (req, res, next) => {
     .then(e => res.json(e));
 }
 
+const deleteSeason = async (req, res, next) => {
+  try {
+    await ScheduleService.deleteSeason(req.params.id);
+    return res.json({});
+  }
+  catch (ex) {
+    return next(ex, req, res, null);
+  }
+}
+
 const createCourt = (req, res, next) => {
   return ScheduleService
     .createCourt(req.body)
@@ -64,7 +74,7 @@ const createReservation = async (req, res, next) => {
     model.customerId = user.id;
     model.administratorId = null;
     model.payments = [];
-    model.type = ReservationType.USER;
+    model.type = user.isTrainer ? ReservationType.COMPETITOR : ReservationType.USER;
   }
 
   try {
@@ -92,7 +102,7 @@ const updateReservation = async (req, res, next) => {
 
 const cancelReservation = async (req, res, next) => {
   try {
-    await ScheduleService.cancelReservation(req.params.id);
+    await ScheduleService.cancelReservation(req.params.id, req.user);
     return res.json({});
   }
   catch (err) {
@@ -117,6 +127,7 @@ router.get('/courts', adminIdentity, getCourts);
 
 router.post('/seasons', adminIdentity, createSeason);
 router.post('/seasons/:id', adminIdentity, updateSeason);
+router.delete('/seasons/:id', adminIdentity, deleteSeason);
 
 router.post('/courts', adminIdentity, createCourt);
 router.post('/courts/:id', adminIdentity, updateCourt);

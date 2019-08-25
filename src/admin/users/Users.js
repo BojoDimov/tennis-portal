@@ -59,7 +59,10 @@ class Users extends React.Component {
 
   filterUsers() {
     if (this.state.usersFilter.length > 0)
-      return this.state.users.filter(e => e.name.indexOf(this.state.usersFilter) != -1);
+      return this.state.users.filter(e => {
+        return e.name.toLowerCase().includes(this.state.usersFilter) 
+          || e.email.toLowerCase().includes(this.state.usersFilter);
+      });
     else return this.state.users;
   }
 
@@ -133,7 +136,9 @@ class Users extends React.Component {
                   <TableCell>Име</TableCell>
                   <TableCell>Създаден</TableCell>
                   <TableCell style={{ textAlign: 'center' }}>Активен</TableCell>
-                  <TableCell style={{ textAlign: 'center' }}>Администратор</TableCell>
+                  <TableCell style={{ textAlign: 'center' }}>Треньор</TableCell>
+                  <TableCell style={{ textAlign: 'center' }}>Турнири</TableCell>
+                  <TableCell style={{ textAlign: 'center' }}>Админ</TableCell>
                   <TableCell></TableCell>
                 </TableRow>
               </TableHead>
@@ -152,6 +157,8 @@ class Users extends React.Component {
 
                       <TableCell>{new Date(user.createdAt).toLocaleDateString()}</TableCell>
                       <TableCell style={{ textAlign: 'center' }}>{user.isActive && <DoneIcon color="action" />}</TableCell>
+                      <TableCell style={{ textAlign: 'center' }}>{user.isTrainer && <DoneIcon color="action" />}</TableCell>
+                      <TableCell style={{ textAlign: 'center' }}>{user.isTournamentAdmin && <DoneIcon color="action" />}</TableCell>
                       <TableCell style={{ textAlign: 'center' }}>{user.isAdmin && <DoneIcon color="action" />}</TableCell>
                       <TableCell>
                         <Tooltip title="редакция" placement="top-start" TransitionComponent={Zoom} enterDelay={500}>

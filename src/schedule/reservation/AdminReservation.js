@@ -15,6 +15,15 @@ class AdminReservation extends React.Component {
     }
   }
 
+  getCellLabel(reservation) {
+    if (reservation.type == ReservationType.COMPETITOR)
+      return (<L10n translate="ReservationType">{ReservationType.COMPETITOR}</L10n>);
+    else if (reservation.type == ReservationType.USER && reservation.customer)
+      return (<span>{reservation.customer.name}</span>);
+    else
+      return (<L10n translate="ReservationType">{reservation.type}</L10n>);
+  }
+
   render() {
     const { reservation, onChange, classes } = this.props;
     let type = classes.free;
@@ -36,12 +45,7 @@ class AdminReservation extends React.Component {
           className={type}
           onClick={() => this.setState({ modal: true })}
         >
-          {reservation.customer && <span>{reservation.customer.name}</span>}
-          {!reservation.customer && <L10n
-            translate="ReservationType"
-          >
-            {reservation.type}
-          </L10n>}
+          {this.getCellLabel(reservation)}
         </TableCell>
 
         <EditReservationModal

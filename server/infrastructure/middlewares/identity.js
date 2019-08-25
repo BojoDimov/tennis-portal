@@ -1,4 +1,4 @@
-const { Tokens } = require('../../db');
+const { Tokens, Users } = require('../../db');
 
 module.exports = async (req, _, next) => {
   const header = req.get('Authorization');
@@ -10,7 +10,16 @@ module.exports = async (req, _, next) => {
     return next();
 
   tokenValue = tokenValue.trim();
-  const token = await Tokens.findOne({ where: { token: tokenValue }, include: ['user'] });
+  const token = await Tokens.findOne({
+    where: { token: tokenValue },
+    include: [{
+      model: Users,
+      as: 'user',
+      attributes: {
+        exclude: ['passwordSalt', 'passwordHash']
+      }
+    }]
+  });
   if (!token)
     return next();
 

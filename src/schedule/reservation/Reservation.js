@@ -10,17 +10,28 @@ class Reservation extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      userId: (UserService.getUser() || { id: null }).id
+      user: null
     };
+  }
+
+  setUser() {
+    UserService.getAuthenticatedUser()
+      .then(user => this.setState({ user }));
+  }
+
+  componentDidMount() {
+    this.setUser();
   }
 
   componentDidUpdate(prevProps) {
     if (prevProps.mode != this.props.mode)
-      this.setState({ userId: (UserService.getUser() || { id: null }).id });
+      this.setUser();
   }
 
   render() {
     const { reservation, mode } = this.props;
+    const { user } = this.state;
+
     const available = reservation.hour <= reservation.court.workingHoursEnd - 1
       && reservation.hour >= reservation.court.workingHoursStart;
 
@@ -33,10 +44,13 @@ class Reservation extends React.Component {
     if (mode == ApplicationMode.GUEST)
       return <GuestReservation {...this.props} available={available} />
 
+    if (user && user.isTrainer && reservation.type == ReservationType.COMPETITOR)
+      return <UserReservation {...this.props} />
+
     if (!reservation.id)
       return <UserReservation {...this.props} />
 
-    if (reservation.customerId && reservation.customerId == this.state.userId)
+    if (reservation.customerId && user && reservation.customerId == user.id)
       return <UserReservation {...this.props} />
 
     return <GuestReservation {...this.props} available={available} />;

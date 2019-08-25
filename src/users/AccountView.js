@@ -13,11 +13,12 @@ import UserService from '../services/user.service';
 import QueryService from '../services/query.service';
 import { l10n_text } from '../components/L10n';
 import { getHour } from '../utils';
+import { UserPersonalInfo, UserPlayerInfo } from './UserProfile';
 import UserProfileFormModal from './UserProfileFormModal';
 import ChangePasswordModal from './ChangePasswordModal'
 import InvitationsComponent from './InvitationsComponent';
 
-class UserProfile extends React.Component {
+class AccountView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -56,10 +57,6 @@ class UserProfile extends React.Component {
       .then(e => this.setState(e));
   }
 
-  identity() {
-    return this.props.match.params.id && this.state.loggedInUser && this.props.match.params.id == this.state.loggedInUser.id;
-  }
-
   render() {
     const {
       user,
@@ -91,6 +88,10 @@ class UserProfile extends React.Component {
             <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
               <UserPersonalInfo user={user} />
               <UserPlayerInfo user={user} style={{ marginLeft: '2rem' }} />
+            </div>
+            <div>
+              <Button variant="contained" size="small" color="primary" onClick={() => this.setState({ userModel: Object.assign({}, user) })}>Промяна</Button>
+              <Button variant="contained" size="small" color="primary" style={{ marginLeft: '.3rem' }} onClick={() => this.setState({ changePassword: true })}>Смяна на парола</Button>
             </div>
           </CardContent>
           <CardActions>
@@ -187,64 +188,6 @@ class UserProfile extends React.Component {
   }
 }
 
-export class UserPersonalInfo extends React.Component {
-  render() {
-    const { user } = this.props;
-    return (
-      <div>
-        <Typography variant="caption">
-          Email
-          <Typography>{user.email}</Typography>
-        </Typography>
-
-        <Typography variant="caption">
-          Телефон
-          <Typography>{user.telephone || 'няма'}</Typography>
-        </Typography>
-
-        <Typography variant="caption">
-          Рожденна дата
-          <Typography>{user.birthDate || 'няма'}</Typography>
-        </Typography>
-
-        <Typography variant="caption">
-          Пол
-          <Typography>{l10n_text(user.gender, "Gender") || 'няма'}</Typography>
-        </Typography>
-      </div>
-    );
-  }
-}
-
-export class UserPlayerInfo extends React.Component {
-  render() {
-    const { user, style } = this.props;
-    return (
-      <div style={style}>
-        <Typography variant="caption">
-          Играе от
-          <Typography>{user.startedPlaying ? user.startedPlaying + 'г.' : 'няма'}</Typography>
-        </Typography>
-
-        <Typography variant="caption">
-          Играе с
-          <Typography>{l10n_text(user.playStyle, "PlayStyle") || 'няма'}</Typography>
-        </Typography>
-
-        <Typography variant="caption">
-          Бекхенд
-          <Typography>{l10n_text(user.backhandType, "BackhandType") || 'няма'}</Typography>
-        </Typography>
-
-        <Typography variant="caption">
-          Любима настилка
-          <Typography>{l10n_text(user.courtType, "CourtType") || 'няма'}</Typography>
-        </Typography>
-      </div>
-    );
-  }
-}
-
 const styles = (theme) => ({
   sectionRoot: {
     marginBottom: '1rem'
@@ -264,4 +207,4 @@ const styles = (theme) => ({
   }
 });
 
-export default withStyles(styles)(UserProfile);
+export default withStyles(styles)(AccountView);

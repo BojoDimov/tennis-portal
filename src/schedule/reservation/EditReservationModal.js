@@ -155,6 +155,12 @@ class EditReservationModal extends React.Component {
             Администрирал
             <Typography>{reservation.administrator.name}</Typography>
           </Typography>}
+          {reservation.type == ReservationType.COMPETITOR
+            && reservation.customer
+            && <Typography variant="caption">
+              Резервирал
+              <Typography>{reservation.customer.name}</Typography>
+            </Typography>}
 
           <EnumSelect
             label="Вид резервация"
@@ -184,7 +190,6 @@ class EditReservationModal extends React.Component {
               value={reservation.subscription}
               query="subscriptions"
               filter={{
-                seasonId: reservation.seasonId,
                 userId: reservation.customerId
               }}
               noOptionsMessage={() => 'Няма регистрирани абонаменти'}
@@ -236,7 +241,6 @@ class EditReservationModal extends React.Component {
                     value={payment.subscription}
                     query="subscriptions"
                     filter={{
-                      seasonId: reservation.seasonId,
                       userId: reservation.customerId,
                       type: payment.type,
                       onlyAvailable: true

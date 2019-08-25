@@ -126,30 +126,32 @@ class SchemeView extends React.Component {
                     </Button>
                   </ConfirmationDialog>}
 
-                <Button
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                  style={{ marginLeft: '.3rem' }}
-                  onClick={() => this.getScores()}
-                >
-                  Резултати
-                </Button>
-
-                <ConfirmationDialog
-                  title="Изтриване на турнир"
-                  body={<Typography>Сигурни ли сте че искате да изтриете схема {scheme.name}?</Typography>}
-                  onAccept={() => this.deleteScheme()}
-                >
-                  <Button
+                {scheme.bracketStatus == BracketStatus.ELIMINATION_END
+                  && <Button
                     variant="contained"
-                    color="secondary"
+                    color="primary"
                     size="small"
                     style={{ marginLeft: '.3rem' }}
+                    onClick={() => this.getScores()}
                   >
-                    Изтриване
-              </Button>
-                </ConfirmationDialog>
+                    Резултати
+                </Button>}
+
+                {scheme.bracketStatus == BracketStatus.UNDRAWN
+                  && <ConfirmationDialog
+                    title="Изтриване на турнир"
+                    body={<Typography>Сигурни ли сте че искате да изтриете схема {scheme.name}?</Typography>}
+                    onAccept={() => this.deleteScheme()}
+                  >
+                    <Button
+                      variant="contained"
+                      color="secondary"
+                      size="small"
+                      style={{ marginLeft: '.3rem' }}
+                    >
+                      Изтриване
+                  </Button>
+                  </ConfirmationDialog>}
 
               </div>}
 

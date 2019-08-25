@@ -51,6 +51,7 @@ class AsyncSelect extends React.Component {
     const {
       disableClear,
       disableSearch,
+      disabled,
       label,
       value,
       query,
@@ -95,6 +96,7 @@ class AsyncSelect extends React.Component {
           <Select
             isClearable={!disableClear}
             isSearchable={!disableSearch}
+            isDisabled={Boolean(disabled)}
             textFieldProps={{
               label,
               InputLabelProps: {
