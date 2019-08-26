@@ -14,6 +14,9 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import Divider from '@material-ui/core/Divider';
 import TablePagination from '@material-ui/core/TablePagination';
+import EditIcon from '@material-ui/icons/Edit';
+import IconButton from '@material-ui/core/IconButton';
+import Button from '@material-ui/core/Button';
 
 class PlayersRoot extends React.Component {
   constructor(props) {
@@ -52,27 +55,34 @@ class PlayersRoot extends React.Component {
             <Tab value="double" label="Двойки"></Tab>
           </Tabs>
 
-          <Hidden smDown>
+          <Hidden xsDown>
             <Table>
               <TableHead>
                 <TableRow>
+                  <TableCell padding="dense">#</TableCell>
                   <TableCell>Име</TableCell>
                   <TableCell>Мачове</TableCell>
                   <TableCell>Спечелени мачове</TableCell>
                   <TableCell>Турнири</TableCell>
                   <TableCell>Спечелени турнири</TableCell>
+                  <TableCell padding="none"></TableCell>
                 </TableRow>
 
               </TableHead>
               <TableBody>
-                {teams.map(team => {
+                {teams.map((team, i) => {
                   return (
                     <TableRow>
+                      <TableCell padding="dense">{i + 1}</TableCell>
                       <TableCell>Име Фамилия</TableCell>
                       <TableCell>50</TableCell>
                       <TableCell>35</TableCell>
                       <TableCell>10</TableCell>
                       <TableCell>5</TableCell>
+                      <TableCell padding="none">
+                        <IconButton color="primary">
+                          <EditIcon />
+                        </IconButton></TableCell>
                     </TableRow>);
                 })}
               </TableBody>
@@ -88,6 +98,7 @@ class PlayersRoot extends React.Component {
                       <Typography variant="body2">Име Фамилия</Typography>
                       <Typography variant="caption">Турнири: 58 / 400 (14.5% win ratio)</Typography>
                       <Typography variant="caption">Мачове: 58 / 400 (14.5% win ratio)</Typography>
+                      <Button variant="contained" size="small" color="primary">Промяна</Button>
                     </ListItem>
                     <Divider />
                   </React.Fragment>

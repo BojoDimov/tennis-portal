@@ -66,3 +66,16 @@ add value 'camp';
 
 alter type "enum_Reservations_type"
 add value 'other';
+
+--------------UPDATE 5-------------
+alter table "Teams"
+add "wonMatches" integer default 0;
+
+alter table "Teams"
+add "totalMatches" integer default 0;
+
+alter table "Teams"
+add "wonTournaments" integer default 0;
+
+alter table "Teams"
+add "totalTournaments" integer default 0;

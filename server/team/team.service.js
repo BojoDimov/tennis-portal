@@ -1,29 +1,37 @@
 const { Teams, Users, sequelize } = require('../db');
-const UserService = require('../user/user.service');
 const { Gender } = require('../infrastructure/enums');
 
 class TeamsService {
-  getAll() {
-    return Teams
-      .findAll({
-        include: [
-          { model: Users, as: 'user1', attributes: ['id', 'name', 'email'] },
-          { model: Users, as: 'user2', attributes: ['id', 'name', 'email'] }
-        ]
-      });
-  }
-
-  async get(id) {
-    const team = await Teams.findById(id, {
+  getAll(filter) {
+    let options = {
+      limit: (filter.limit | 25),
+      offset: (filter.offset | 0),
       include: [
-        { model: Users, as: 'user1', attributes: ['id', 'name', 'startedPlaying', 'playStyle', 'backhandType', 'courtType'] },
-        { model: Users, as: 'user2', attributes: ['id', 'name', 'startedPlaying', 'playStyle', 'backhandType', 'courtType'] }
+        { model: Users, as: 'user1', attributes: ['id', 'name', 'email'] },
+        { model: Users, as: 'user2', attributes: ['id', 'name', 'email'] }
       ]
-    });
+    };
 
-    if (!team)
-      throw { name: 'NotFound' };
-    return team;
+    if (filter.searchTerm) {
+      options.where = {
+        [sequelize.Op.or]: {
+          '$user1.name$': {
+            [sequelize.Op.iLike]: '%' + filter.searchTerm + '%'
+          },
+          '$user2.name$': {
+            [sequelize.Op.iLike]: '%' + filter.searchTerm + '%'
+          },
+          '$user1.email$': {
+            [sequelize.Op.iLike]: '%' + filter.searchTerm + '%'
+          },
+          '$user2.email$': {
+            [sequelize.Op.iLike]: '%' + filter.searchTerm + '%'
+          }
+        }
+      }
+    }
+
+    return Teams.findAndCountAll(options);
   }
 
   getUserTeam(userId) {
@@ -76,19 +84,27 @@ class TeamsService {
     }
   }
 
-  delete(id) {
-    return sequelize.transaction((trn) => {
-      return Teams
-        .findById(id)
-        .then(team => {
-          if (!team)
-            return;
-          if (team.user1Id && team.user2Id)
-            return Teams.destroy({ where: { id: id } });
-          else return UserService.delete(team.user1Id);
-        });
-    });
-  };
+  async update(id, model) {
+    let entity = await Teams.findById(id);
+    if (!entity)
+      throw { name: 'NotFound' };
+    else
+      return await entity.update(model);
+  }
+
+  // delete(id) {
+  //   return sequelize.transaction((trn) => {
+  //     return Teams
+  //       .findById(id)
+  //       .then(team => {
+  //         if (!team)
+  //           return;
+  //         if (team.user1Id && team.user2Id)
+  //           return Teams.destroy({ where: { id: id } });
+  //         else return UserService.delete(team.user1Id);
+  //       });
+  //   });
+  // };
 }
 
 module.exports = new TeamsService();

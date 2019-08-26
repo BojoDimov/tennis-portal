@@ -8,7 +8,6 @@ import GroupsBracket from '../schemes/brackets/GroupsBracket';
 import EliminationBracket from '../schemes/brackets/EliminationBracket';
 import EditionsRoot from '../editions/EditionsRoot';
 import TournamentsRoot from '../tournaments/TournamentsRoot';
-import ChampionsRoot from '../tournaments/ChampionsRoot';
 import PlayersRoot from '../tournaments/PlayersRoot';
 
 import Schedule from '../schedule/Schedule';
