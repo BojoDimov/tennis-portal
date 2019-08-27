@@ -123,7 +123,7 @@ class PlayersRoot extends React.Component {
                       </TableCell>
                       <TableCell>
                         <Typography className={classes[prefix + 'Typography']}>
-                          {team.wonMatches}
+                          {team.wonMatches} ({team.totalMatches != 0 ? 100 * team.wonMatches / team.totalMatches : 0}%)
                         </Typography></TableCell>
                       <TableCell>
                         <Typography className={classes[prefix + 'Typography']}>
@@ -131,7 +131,7 @@ class PlayersRoot extends React.Component {
                         </Typography></TableCell>
                       <TableCell>
                         <Typography className={classes[prefix + 'Typography']}>
-                          {team.wonTournaments}
+                          {team.wonTournaments} ({team.totalTournaments != 0 ? 100 * team.wonTournaments / team.totalTournaments : 0}%)
                         </Typography></TableCell>
                       <TableCell>
                         <Typography className={classes[prefix + 'Typography']}>
@@ -182,11 +182,11 @@ class PlayersRoot extends React.Component {
                         <div style={{ width: '100%' }}>
                           <Typography variant="caption">
                             <span>Мачове: {team.wonMatches}/{team.totalMatches}</span>
-                            <span style={{ marginLeft: '.3em' }}>({team.totalMatches != 0 ? team.wonMatches / team.totalMatches : 0}% win ratio)</span>
+                            <span style={{ marginLeft: '.3em' }}>({team.totalMatches != 0 ? 100 * team.wonMatches / team.totalMatches : 0}% win ratio)</span>
                           </Typography>
                           <Typography variant="caption">
                             <span>Турнири: {team.wonTournaments}/{team.totalTournaments}</span>
-                            <span style={{ marginLeft: '.3em' }}>({team.totalTournaments != 0 ? team.wonTournaments / team.totalTournaments : 0}% win ratio)</span>
+                            <span style={{ marginLeft: '.3em' }}>({team.totalTournaments != 0 ? 100 * team.wonTournaments / team.totalTournaments : 0}% win ratio)</span>
                           </Typography>
                         </div>
                       </div>
