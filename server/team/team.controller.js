@@ -14,7 +14,7 @@ const getAll = async (req, res, next) => {
 }
 
 const update = async (req, res, next) => {
-  if (!req.user.isAdmin && req.user.isTournamentAdmin)
+  if (!req.user || (!req.user.isAdmin && req.user.isTournamentAdmin))
     return next({ name: 'DomainActionError', error: 'notEnoughPermissions' }, req, res, null);
   try {
     await TeamsService.update(req.params.id, req.body);

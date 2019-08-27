@@ -4,32 +4,41 @@ const { Gender } = require('../infrastructure/enums');
 class TeamsService {
   getAll(filter) {
     let options = {
-      limit: (filter.limit | 25),
-      offset: (filter.offset | 0),
+      where: {},
+      limit: (filter.limit || 25),
+      offset: (filter.offset || 0),
       include: [
         { model: Users, as: 'user1', attributes: ['id', 'name', 'email'] },
         { model: Users, as: 'user2', attributes: ['id', 'name', 'email'] }
-      ]
+      ],
+      order: [['globalRank', 'asc']]
     };
 
-    if (filter.searchTerm) {
-      options.where = {
-        [sequelize.Op.or]: {
-          '$user1.name$': {
-            [sequelize.Op.iLike]: '%' + filter.searchTerm + '%'
-          },
-          '$user2.name$': {
-            [sequelize.Op.iLike]: '%' + filter.searchTerm + '%'
-          },
-          '$user1.email$': {
-            [sequelize.Op.iLike]: '%' + filter.searchTerm + '%'
-          },
-          '$user2.email$': {
-            [sequelize.Op.iLike]: '%' + filter.searchTerm + '%'
-          }
-        }
+    const searchQuery = {
+      '$user1.name$': {
+        [sequelize.Op.iLike]: '%' + filter.searchTerm + '%'
+      },
+      '$user2.name$': {
+        [sequelize.Op.iLike]: '%' + filter.searchTerm + '%'
+      },
+      '$user1.email$': {
+        [sequelize.Op.iLike]: '%' + filter.searchTerm + '%'
+      },
+      '$user2.email$': {
+        [sequelize.Op.iLike]: '%' + filter.searchTerm + '%'
       }
-    }
+    };
+
+
+    if (filter.searchTerm)
+      options.where[sequelize.Op.or] = searchQuery;
+
+    if (filter.type === 'single')
+      options.where['user2Id'] = null;
+    else if (filter.type === 'double')
+      options.where['user2Id'] = {
+        [sequelize.Op.not]: null
+      };
 
     return Teams.findAndCountAll(options);
   }
@@ -84,12 +93,32 @@ class TeamsService {
     }
   }
 
-  async update(id, model) {
+  async update(id, model, transaction) {
     let entity = await Teams.findById(id);
     if (!entity)
       throw { name: 'NotFound' };
-    else
-      return await entity.update(model);
+
+    let wonMatches = parseInt(model.wonMatches) || 0;
+    let totalMatches = parseInt(model.totalMatches) || 0;
+    let wonTournaments = parseInt(model.wonTournaments) || 0;
+    let totalTournaments = parseInt(model.totalTournaments) || 0;
+
+    let matchesCoefficient = (totalMatches != 0) ? wonMatches / totalMatches : 0;
+    let tournamentsCoefficient = (totalTournaments != 0) ? wonTournaments / totalTournaments : 0;
+    let rankingCoefficient = matchesCoefficient + 1.2 * tournamentsCoefficient;
+
+    if (entity.rankingCoefficient != rankingCoefficient)
+      entity.rankingCoefficient = rankingCoefficient;
+    if (entity.wonMatches != wonMatches)
+      entity.wonMatches = wonMatches;
+    if (entity.totalMatches != totalMatches)
+      entity.totalMatches = totalMatches;
+    if (entity.wonTournaments != wonTournaments)
+      entity.wonTournaments = wonTournaments;
+    if (entity.totalTournaments != totalTournaments)
+      entity.totalTournaments = totalTournaments;
+
+    return entity.save({ transaction });
   }
 
   // delete(id) {

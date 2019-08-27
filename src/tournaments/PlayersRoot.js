@@ -18,37 +18,63 @@ import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 
+import TeamStatisticsFormModal from './TeamStatisticsFormModal';
+import QueryService from '../services/query.service';
+
 class PlayersRoot extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      teams: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15],
+      teams: [],
       teamsMode: 'single',
       page: 0,
-      itemsPerPage: 25,
-      totalCount: 100,
-      searchTerm: ''
+      itemsPerPage: 10,
+      totalCount: 0,
+      searchTerm: '',
+      editTeamModel: null
     }
   }
+
+  componentDidMount() {
+    this.getData();
+  }
+
+  getData() {
+    const { teamsMode, searchTerm, page, itemsPerPage } = this.state;
+
+    return QueryService.get(`/teams?searchTerm=${searchTerm}&type=${teamsMode}&limit=${itemsPerPage}&offset=${page * itemsPerPage}`)
+      .then(({ count, rows }) => {
+        this.setState({
+          totalCount: count,
+          teams: rows
+        })
+      });
+  }
+
   render() {
-    const { teams, totalCount, page, itemsPerPage, searchTerm, teamsMode } = this.state;
+    const { teams, totalCount, page, itemsPerPage, searchTerm, teamsMode, editTeamModel } = this.state;
 
     return (
       <div className="container">
+        {editTeamModel && <TeamStatisticsFormModal
+          team={editTeamModel}
+          onClose={() => this.setState({ editTeamModel: null })}
+          onUpdate={() => this.setState({ editTeamModel: null }, () => this.getData())}
+        />}
+
         <Paper style={{ padding: '1rem' }}>
           <Typography variant="headline" color="primary">Вечна класация на играчите</Typography>
 
-
           <TextField
-            label="Търсене по име"
+            label="Търсене"
             fullWidth
             value={searchTerm}
-            onChange={e => this.setState({ searchTerm: e.target.value })}
+            onChange={e => this.setState({ searchTerm: e.target.value }, () => this.getData())}
           />
 
           <Tabs
             value={teamsMode}
-            onChange={(_, e) => this.setState({ teamsMode: e })}
+            onChange={(_, e) => this.setState({ teamsMode: e }, () => this.getData())}
             textColor="primary"
             variant="fullWidth">
             <Tab value="single" label="Сингъл"></Tab>
@@ -72,15 +98,21 @@ class PlayersRoot extends React.Component {
               <TableBody>
                 {teams.map((team, i) => {
                   return (
-                    <TableRow>
-                      <TableCell padding="dense">{i + 1}</TableCell>
-                      <TableCell>Име Фамилия</TableCell>
-                      <TableCell>50</TableCell>
-                      <TableCell>35</TableCell>
-                      <TableCell>10</TableCell>
-                      <TableCell>5</TableCell>
+                    <TableRow key={team.id}>
+                      <TableCell padding="dense">{team.globalRank}</TableCell>
+                      <TableCell>
+                        {!team.user2 && <Typography>{team.user1.name}</Typography>}
+                        {team.user2 && <React.Fragment>
+                          <Typography>{team.user1.name}</Typography>
+                          <Typography>{team.user2.name}</Typography>
+                        </React.Fragment>}
+                      </TableCell>
+                      <TableCell>{team.totalMatches}</TableCell>
+                      <TableCell>{team.wonMatches}</TableCell>
+                      <TableCell>{team.totalTournaments}</TableCell>
+                      <TableCell>{team.wonTournaments}</TableCell>
                       <TableCell padding="none">
-                        <IconButton color="primary">
+                        <IconButton color="primary" onClick={() => this.setState({ editTeamModel: team })}>
                           <EditIcon />
                         </IconButton></TableCell>
                     </TableRow>);
@@ -93,7 +125,7 @@ class PlayersRoot extends React.Component {
             <List>
               {teams.map(team => {
                 return (
-                  <React.Fragment>
+                  <div key={team.id}>
                     <ListItem style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
                       <Typography variant="body2">Име Фамилия</Typography>
                       <Typography variant="caption">Турнири: 58 / 400 (14.5% win ratio)</Typography>
@@ -101,7 +133,7 @@ class PlayersRoot extends React.Component {
                       <Button variant="contained" size="small" color="primary">Промяна</Button>
                     </ListItem>
                     <Divider />
-                  </React.Fragment>
+                  </div>
                 );
               })}
             </List>
@@ -115,8 +147,8 @@ class PlayersRoot extends React.Component {
             labelRowsPerPage="Покажи:"
             labelDisplayedRows={({ from, to, count }) => `${from}-${to} от ${count}`}
             page={page}
-            onChangePage={(e, page) => this.setState({ page })}
-            onChangeRowsPerPage={e => this.setState({ itemsPerPage: e.target.value, page: 0 })}
+            onChangePage={(e, page) => this.setState({ page }, () => this.getData())}
+            onChangeRowsPerPage={e => this.setState({ itemsPerPage: e.target.value, page: 0 }, () => this.getData())}
           />
         </Paper>
       </div>

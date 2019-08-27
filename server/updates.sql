@@ -79,3 +79,40 @@ add "wonTournaments" integer default 0;
 
 alter table "Teams"
 add "totalTournaments" integer default 0;
+
+alter table "Teams"
+add "rankingCoefficient" real default 0;
+
+alter table "Teams"
+add "globalRank" integer default -1;
+
+UPDATE "Teams"
+SET 
+	"globalRank" = subquery."pos"
+FROM (select id, row_number() over (order by "rankingCoefficient" desc) as "pos" 
+	from "Teams" ) AS subquery
+WHERE "Teams".id=subquery.id;
+
+create or replace function recalculateGlobalRanking()
+returns trigger as
+$$
+begin
+	update "Teams"
+	set 
+		"globalRank" = subquery."pos"
+	from (select id, row_number() over (order by "rankingCoefficient" desc) as "pos" from "Teams" ) as subquery
+	where "Teams".id=subquery.id; 
+	return null;
+end
+$$ language plpgsql;
+
+
+create trigger teams_reorder_by_ranking
+after update of "rankingCoefficient" on "Teams"
+for each statement 
+execute procedure recalculateGlobalRanking();
+
+create trigger teams_reorder_by_ranking_after_insert
+after insert on "Teams"
+for each statement
+execute procedure recalculateGlobalRanking();
