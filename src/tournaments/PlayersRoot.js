@@ -151,7 +151,7 @@ class PlayersRoot extends React.Component {
           <Hidden smUp>
             <List>
               {teams.map(team => {
-                let prefix = '';
+                let prefix = 'basic';
                 if (team.globalRank === 1)
                   prefix = 'gold'
                 else if (team.globalRank === 2)
@@ -160,22 +160,55 @@ class PlayersRoot extends React.Component {
                   prefix = 'bronze'
 
                 return (
-                  <div key={team.id} >
-                    <ListItem style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <div className={classes[prefix + 'Root']} style={{ borderRadius: '50%', border: '1px solid lightgray', flexBasis: '50px', height: '50px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        <Typography className={classes[prefix + 'Typography']}>#{team.globalRank}</Typography>
+                  <React.Fragment key={team.id}>
+                    <ListItem style={{ display: 'flex' }}>
+                      <div style={{ flexBasis: '34%', display: 'flex' }}>
+                        <div className={classes.badge + ' ' + classes[prefix + 'Badge']}>
+                          <Typography className={classes[prefix + 'Typography']}>#{team.globalRank}</Typography>
+                        </div>
                       </div>
-                      <div style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-                        <Typography>{team.user1.name}</Typography>
-                        <Typography>Турнири: {team.wonMatches} / {team.totalMatches} ({team.totalMatches != 0 ? team.wonMatches / team.totalMatches : 0}% win ratio)</Typography>
-                        <Typography>Турнири: {team.wonTournaments} / {team.totalTournaments} ({team.totalTournaments != 0 ? team.wonTournaments / team.totalTournaments : 0}% win ratio)</Typography>
-                        {/* <IconButton color="primary" onClick={() => this.setState({ editTeamModel: team })}>
-                          <EditIcon />
-                        </IconButton> */}
+                      <div style={{ flexBasis: '66%', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                        <div style={{ display: 'flex', width: '100%' }}>
+                          <div style={{ flexBasis: '85%', display: 'flex', alignItems: 'center' }}>
+                            <Typography>{team.user1.name}</Typography>
+                            {team.user2 && <Typography>{team.user2.name}</Typography>}
+                          </div>
+                          <div style={{ flexBasis: '15%' }}>
+                            <IconButton color="primary" onClick={() => this.setState({ editTeamModel: team })} >
+                              <EditIcon />
+                            </IconButton>
+                          </div>
+                        </div>
+                        <div style={{ width: '100%' }}>
+                          <Typography variant="caption">
+                            <span>Мачове: {team.wonMatches}/{team.totalMatches}</span>
+                            <span style={{ marginLeft: '.3em' }}>({team.totalMatches != 0 ? team.wonMatches / team.totalMatches : 0}% win ratio)</span>
+                          </Typography>
+                          <Typography variant="caption">
+                            <span>Турнири: {team.wonTournaments}/{team.totalTournaments}</span>
+                            <span style={{ marginLeft: '.3em' }}>({team.totalTournaments != 0 ? team.wonTournaments / team.totalTournaments : 0}% win ratio)</span>
+                          </Typography>
+                        </div>
                       </div>
                     </ListItem>
                     <Divider />
-                  </div>
+                  </React.Fragment>
+                  // <div key={team.id}>
+                  //   <ListItem style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  //     <div className={classes[prefix + 'Root']} style={{ borderRadius: '50%', border: '1px solid lightgray', flexBasis: '50px', height: '50px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  //       <Typography className={classes[prefix + 'Typography']}>#{team.globalRank}</Typography>
+                  //     </div>
+                  //     <div style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+                  //       <Typography>{team.user1.name}</Typography>
+                  //       <Typography>Турнири: {team.wonMatches} / {team.totalMatches} ({team.totalMatches != 0 ? team.wonMatches / team.totalMatches : 0}% win ratio)</Typography>
+                  //       <Typography>Турнири: {team.wonTournaments} / {team.totalTournaments} ({team.totalTournaments != 0 ? team.wonTournaments / team.totalTournaments : 0}% win ratio)</Typography>
+                  //       { <IconButton color="primary" onClick={() => this.setState({ editTeamModel: team })}>
+                  //         <EditIcon />
+                  //       </IconButton> }
+                  //     </div>
+                  //   </ListItem>
+                  //   <Divider />
+                  // </div>
                 );
               })}
             </List>
@@ -202,15 +235,38 @@ const styles = (theme) => ({
   mobileRoot: {
     display: 'flex'
   },
+  badge: {
+    borderRadius: '50%',
+    width: '50px',
+    height: '50px',
+    margin: 'auto',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  basicBadge: {
+    border: '1px solid lightgray'
+  },
+  goldBadge: {
+    backgroundColor: '#FFD200',
+    backgroundImage: 'linear-gradient(15deg, #FFD200 0%, #F7971E 74%);'
+  },
+  silverBadge: {
+    backgroundColor: '#b8c6db',
+    backgroundImage: 'linear-gradient(315deg, #8ba2c3 0%, #f5f7fa 74%)'
+  },
+  bronzeBadge: {
+    backgroundColor: '#772f1a',
+    backgroundImage: 'linear-gradient(315deg, #772f1a 0%, #f2a65a 74%)'
+  },
   goldRoot: {
-    backgroundColor: '#facc6b',
-    backgroundImage: 'linear-gradient(315deg, #facc6b 0%, #fabc3c 74%)',
+    backgroundColor: '#FFD200',
+    backgroundImage: 'linear-gradient(15deg, #FFD200 0%, #F7971E 74%);',
     border: 'none'
   },
   goldTypography: {
     fontWeight: 700,
-    color: 'whitesmoke',
-    fontSize: '1.2em'
+    color: 'white'
   },
   silverRoot: {
     backgroundColor: '#b8c6db',
@@ -218,9 +274,7 @@ const styles = (theme) => ({
     border: 'none'
   },
   silverTypography: {
-    fontWeight: 700,
-    color: 'dark gray',
-    fontSize: '1.2em'
+    fontWeight: 700
   },
   bronzeRoot: {
     backgroundColor: '#772f1a',
@@ -229,8 +283,7 @@ const styles = (theme) => ({
   },
   bronzeTypography: {
     fontWeight: 700,
-    color: 'whitesmoke',
-    fontSize: '1.2em'
+    color: 'whitesmoke'
   }
 });
 
