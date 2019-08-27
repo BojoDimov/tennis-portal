@@ -1,4 +1,5 @@
 import React from 'react';
+import { withStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import Table from '@material-ui/core/Table';
@@ -53,6 +54,7 @@ class PlayersRoot extends React.Component {
 
   render() {
     const { teams, totalCount, page, itemsPerPage, searchTerm, teamsMode, editTeamModel } = this.state;
+    const { classes } = this.props;
 
     return (
       <div className="container">
@@ -87,30 +89,55 @@ class PlayersRoot extends React.Component {
                 <TableRow>
                   <TableCell padding="dense">#</TableCell>
                   <TableCell>Име</TableCell>
-                  <TableCell>Мачове</TableCell>
                   <TableCell>Спечелени мачове</TableCell>
-                  <TableCell>Турнири</TableCell>
+                  <TableCell>Общо мачове</TableCell>
                   <TableCell>Спечелени турнири</TableCell>
+                  <TableCell>Общо турнири</TableCell>
                   <TableCell padding="none"></TableCell>
                 </TableRow>
 
               </TableHead>
               <TableBody>
                 {teams.map((team, i) => {
+                  let prefix = '';
+                  if (team.globalRank === 1)
+                    prefix = 'gold'
+                  else if (team.globalRank === 2)
+                    prefix = 'silver'
+                  else if (team.globalRank === 3)
+                    prefix = 'bronze'
+
                   return (
-                    <TableRow key={team.id}>
-                      <TableCell padding="dense">{team.globalRank}</TableCell>
+                    <TableRow key={team.id} className={classes[prefix + 'Root']}>
+                      <TableCell padding="dense">
+                        <Typography className={classes[prefix + 'Typography']}>
+                          {team.globalRank}
+                        </Typography>
+                      </TableCell>
                       <TableCell>
-                        {!team.user2 && <Typography>{team.user1.name}</Typography>}
+                        {!team.user2 && <Typography className={classes[prefix + 'Typography']}>{team.user1.name}</Typography>}
                         {team.user2 && <React.Fragment>
-                          <Typography>{team.user1.name}</Typography>
-                          <Typography>{team.user2.name}</Typography>
+                          <Typography className={classes[prefix + 'Typography']}>{team.user1.name}</Typography>
+                          <Typography className={classes[prefix + 'Typography']}>{team.user2.name}</Typography>
                         </React.Fragment>}
                       </TableCell>
-                      <TableCell>{team.totalMatches}</TableCell>
-                      <TableCell>{team.wonMatches}</TableCell>
-                      <TableCell>{team.totalTournaments}</TableCell>
-                      <TableCell>{team.wonTournaments}</TableCell>
+                      <TableCell>
+                        <Typography className={classes[prefix + 'Typography']}>
+                          {team.wonMatches}
+                        </Typography></TableCell>
+                      <TableCell>
+                        <Typography className={classes[prefix + 'Typography']}>
+                          {team.totalMatches}
+                        </Typography></TableCell>
+                      <TableCell>
+                        <Typography className={classes[prefix + 'Typography']}>
+                          {team.wonTournaments}
+                        </Typography></TableCell>
+                      <TableCell>
+                        <Typography className={classes[prefix + 'Typography']}>
+                          {team.totalTournaments}
+                        </Typography>
+                      </TableCell>
                       <TableCell padding="none">
                         <IconButton color="primary" onClick={() => this.setState({ editTeamModel: team })}>
                           <EditIcon />
@@ -124,13 +151,28 @@ class PlayersRoot extends React.Component {
           <Hidden smUp>
             <List>
               {teams.map(team => {
+                let prefix = '';
+                if (team.globalRank === 1)
+                  prefix = 'gold'
+                else if (team.globalRank === 2)
+                  prefix = 'silver'
+                else if (team.globalRank === 3)
+                  prefix = 'bronze'
+
                 return (
-                  <div key={team.id}>
-                    <ListItem style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-                      <Typography variant="body2">Име Фамилия</Typography>
-                      <Typography variant="caption">Турнири: 58 / 400 (14.5% win ratio)</Typography>
-                      <Typography variant="caption">Мачове: 58 / 400 (14.5% win ratio)</Typography>
-                      <Button variant="contained" size="small" color="primary">Промяна</Button>
+                  <div key={team.id} >
+                    <ListItem style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div className={classes[prefix + 'Root']} style={{ borderRadius: '50%', border: '1px solid lightgray', flexBasis: '50px', height: '50px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <Typography className={classes[prefix + 'Typography']}>#{team.globalRank}</Typography>
+                      </div>
+                      <div style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
+                        <Typography>{team.user1.name}</Typography>
+                        <Typography>Турнири: {team.wonMatches} / {team.totalMatches} ({team.totalMatches != 0 ? team.wonMatches / team.totalMatches : 0}% win ratio)</Typography>
+                        <Typography>Турнири: {team.wonTournaments} / {team.totalTournaments} ({team.totalTournaments != 0 ? team.wonTournaments / team.totalTournaments : 0}% win ratio)</Typography>
+                        {/* <IconButton color="primary" onClick={() => this.setState({ editTeamModel: team })}>
+                          <EditIcon />
+                        </IconButton> */}
+                      </div>
                     </ListItem>
                     <Divider />
                   </div>
@@ -156,4 +198,40 @@ class PlayersRoot extends React.Component {
   }
 }
 
-export default PlayersRoot;
+const styles = (theme) => ({
+  mobileRoot: {
+    display: 'flex'
+  },
+  goldRoot: {
+    backgroundColor: '#facc6b',
+    backgroundImage: 'linear-gradient(315deg, #facc6b 0%, #fabc3c 74%)',
+    border: 'none'
+  },
+  goldTypography: {
+    fontWeight: 700,
+    color: 'whitesmoke',
+    fontSize: '1.2em'
+  },
+  silverRoot: {
+    backgroundColor: '#b8c6db',
+    backgroundImage: 'linear-gradient(315deg, #8ba2c3 0%, #f5f7fa 74%)',
+    border: 'none'
+  },
+  silverTypography: {
+    fontWeight: 700,
+    color: 'dark gray',
+    fontSize: '1.2em'
+  },
+  bronzeRoot: {
+    backgroundColor: '#772f1a',
+    backgroundImage: 'linear-gradient(315deg, #772f1a 0%, #f2a65a 74%)',
+    border: 'none'
+  },
+  bronzeTypography: {
+    fontWeight: 700,
+    color: 'whitesmoke',
+    fontSize: '1.2em'
+  }
+});
+
+export default withStyles(styles)(PlayersRoot);

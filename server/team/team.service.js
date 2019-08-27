@@ -20,14 +20,15 @@ class TeamsService {
       },
       '$user2.name$': {
         [sequelize.Op.iLike]: '%' + filter.searchTerm + '%'
-      },
-      '$user1.email$': {
-        [sequelize.Op.iLike]: '%' + filter.searchTerm + '%'
-      },
-      '$user2.email$': {
-        [sequelize.Op.iLike]: '%' + filter.searchTerm + '%'
       }
     };
+
+    // '$user1.email$': {
+    //   [sequelize.Op.iLike]: '%' + filter.searchTerm + '%'
+    // },
+    // '$user2.email$': {
+    //   [sequelize.Op.iLike]: '%' + filter.searchTerm + '%'
+    // }
 
 
     if (filter.searchTerm)
