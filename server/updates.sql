@@ -113,6 +113,6 @@ for each statement
 execute procedure recalculateGlobalRanking();
 
 create trigger teams_reorder_by_ranking_after_insert
-after insert on "Teams"
+after insert or delete on "Teams"
 for each statement
 execute procedure recalculateGlobalRanking();
