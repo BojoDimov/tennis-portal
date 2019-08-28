@@ -123,7 +123,7 @@ class PlayersRoot extends React.Component {
                       </TableCell>
                       <TableCell>
                         <Typography className={classes[prefix + 'Typography']}>
-                          {team.wonMatches} ({team.totalMatches != 0 ? 100 * team.wonMatches / team.totalMatches : 0}%)
+                          {team.wonMatches} ({getWinRatio(team, 'Matches')}%)
                         </Typography></TableCell>
                       <TableCell>
                         <Typography className={classes[prefix + 'Typography']}>
@@ -131,7 +131,7 @@ class PlayersRoot extends React.Component {
                         </Typography></TableCell>
                       <TableCell>
                         <Typography className={classes[prefix + 'Typography']}>
-                          {team.wonTournaments} ({team.totalTournaments != 0 ? 100 * team.wonTournaments / team.totalTournaments : 0}%)
+                          {team.wonTournaments} ({getWinRatio(team, 'Tournaments')}%)
                         </Typography></TableCell>
                       <TableCell>
                         <Typography className={classes[prefix + 'Typography']}>
@@ -182,33 +182,17 @@ class PlayersRoot extends React.Component {
                         <div style={{ width: '100%' }}>
                           <Typography variant="caption">
                             <span>Мачове: {team.wonMatches}/{team.totalMatches}</span>
-                            <span style={{ marginLeft: '.3em' }}>({team.totalMatches != 0 ? 100 * team.wonMatches / team.totalMatches : 0}% win ratio)</span>
+                            <span style={{ marginLeft: '.3em' }}>({getWinRatio(team, 'Matches')}% win ratio)</span>
                           </Typography>
                           <Typography variant="caption">
                             <span>Турнири: {team.wonTournaments}/{team.totalTournaments}</span>
-                            <span style={{ marginLeft: '.3em' }}>({team.totalTournaments != 0 ? 100 * team.wonTournaments / team.totalTournaments : 0}% win ratio)</span>
+                            <span style={{ marginLeft: '.3em' }}>({getWinRatio(team, 'Tournaments')}% win ratio)</span>
                           </Typography>
                         </div>
                       </div>
                     </ListItem>
                     <Divider />
                   </React.Fragment>
-                  // <div key={team.id}>
-                  //   <ListItem style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  //     <div className={classes[prefix + 'Root']} style={{ borderRadius: '50%', border: '1px solid lightgray', flexBasis: '50px', height: '50px', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                  //       <Typography className={classes[prefix + 'Typography']}>#{team.globalRank}</Typography>
-                  //     </div>
-                  //     <div style={{ flexDirection: 'column', alignItems: 'flex-start' }}>
-                  //       <Typography>{team.user1.name}</Typography>
-                  //       <Typography>Турнири: {team.wonMatches} / {team.totalMatches} ({team.totalMatches != 0 ? team.wonMatches / team.totalMatches : 0}% win ratio)</Typography>
-                  //       <Typography>Турнири: {team.wonTournaments} / {team.totalTournaments} ({team.totalTournaments != 0 ? team.wonTournaments / team.totalTournaments : 0}% win ratio)</Typography>
-                  //       { <IconButton color="primary" onClick={() => this.setState({ editTeamModel: team })}>
-                  //         <EditIcon />
-                  //       </IconButton> }
-                  //     </div>
-                  //   </ListItem>
-                  //   <Divider />
-                  // </div>
                 );
               })}
             </List>
@@ -229,6 +213,12 @@ class PlayersRoot extends React.Component {
       </div>
     )
   }
+}
+
+function getWinRatio(team, suffix) {
+  if (team['total' + suffix] == 0)
+    return 0;
+  return Math.round(100 * 100 * team['won' + suffix] / team['total' + suffix]) / 100;
 }
 
 const styles = (theme) => ({
