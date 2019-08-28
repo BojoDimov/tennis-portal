@@ -67,7 +67,7 @@ class EnrollmentsComponent extends React.Component {
   render() {
     const { enrolled, openTeamModal } = this.state;
     const { scheme, classes, mode } = this.props;
-    const isAdmin = (mode == ApplicationMode.ADMIN);
+    let hasPermission = mode == ApplicationMode.ADMIN || mode == ApplicationMode.TOURNAMENT;
 
     return (
       <ExpansionPanel style={{ marginTop: '1rem' }} defaultExpanded>
@@ -84,11 +84,10 @@ class EnrollmentsComponent extends React.Component {
             onClose={() => this.setState({ openTeamModal: false })}
           />}
 
-          {mode == ApplicationMode.ADMIN
-            && <div><Button variant="outlined" color="primary" size="small"
-              onClick={() => this.setState({ openTeamModal: true })}
-            >
-              Добави
+          {hasPermission && <div><Button variant="outlined" color="primary" size="small"
+            onClick={() => this.setState({ openTeamModal: true })}
+          >
+            Добави
             </Button></div>}
 
           <Table>
@@ -98,7 +97,7 @@ class EnrollmentsComponent extends React.Component {
 
                 <TableCell>Отбор</TableCell>
                 <TableCell padding="dense">Точки</TableCell>
-                {isAdmin && <TableCell padding="none"></TableCell>}
+                {hasPermission && <TableCell padding="none"></TableCell>}
               </TableRow>
             </TableHead>
             <TableBody>
@@ -133,7 +132,7 @@ class EnrollmentsComponent extends React.Component {
                         {(!enrollment.team.rankings || !enrollment.team.rankings[0])
                           && <Typography variant="caption">няма</Typography>}
                       </TableCell>
-                      {isAdmin && <TableCell padding="none">
+                      {hasPermission && <TableCell padding="none">
                         <Button variant="text" color="secondary" size="small"
                           onClick={() => this.removeEnrollment(enrollment.id)}
                         >

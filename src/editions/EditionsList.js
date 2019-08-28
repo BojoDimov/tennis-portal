@@ -50,24 +50,26 @@ class EditionsList extends React.Component {
 
     return (
       <UserService.WithApplicationMode>
-        {mode => (
-          <div className="container">
-            {editionModel
-              && <EditionFormModal
-                model={editionModel}
-                onChange={() => { this.setState({ editionModel: null }); this.getData(); }}
-                onClose={() => this.setState({ editionModel: null })}
-              />}
+        {mode => {
+          let hasPermission = mode == ApplicationMode.ADMIN || mode == ApplicationMode.TOURNAMENT;
 
-            {tournamentModel
-              && <TournamentFormModal
-                model={tournamentModel}
-                onChange={() => { this.setState({ tournamentModel: null }); this.getData(); }}
-                onClose={() => this.setState({ tournamentModel: null })}
-              />}
+          return (
+            <div className="container">
+              {hasPermission && editionModel
+                && <EditionFormModal
+                  model={editionModel}
+                  onChange={() => { this.setState({ editionModel: null }); this.getData(); }}
+                  onClose={() => this.setState({ editionModel: null })}
+                />}
 
-            {mode == ApplicationMode.ADMIN
-              && <React.Fragment>
+              {hasPermission && tournamentModel
+                && <TournamentFormModal
+                  model={tournamentModel}
+                  onChange={() => { this.setState({ tournamentModel: null }); this.getData(); }}
+                  onClose={() => this.setState({ tournamentModel: null })}
+                />}
+
+              {hasPermission && <React.Fragment>
                 <Button
                   variant="contained"
                   color="primary"
@@ -88,24 +90,25 @@ class EditionsList extends React.Component {
                   </Button>
               </React.Fragment>}
 
-            <ExpansionPanel defaultExpanded={true}>
-              <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="headline">Турнири</Typography>
-              </ExpansionPanelSummary>
-              <ExpansionPanelDetails>
+              <ExpansionPanel defaultExpanded={true}>
+                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography variant="headline">Турнири</Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
 
-                {editions.length == 0 && <Typography variant="caption">Няма регистрирани турнири</Typography>}
-                {editions.length > 0 && <Hidden smDown>
-                  <EditionsDesktopView editions={editions} actions={actions} />
-                </Hidden>}
+                  {editions.length == 0 && <Typography variant="caption">Няма регистрирани турнири</Typography>}
+                  {editions.length > 0 && <Hidden smDown>
+                    <EditionsDesktopView editions={editions} actions={actions} />
+                  </Hidden>}
 
-                {editions.length > 0 && <Hidden mdUp>
-                  <EditionsMobileView editions={editions} actions={actions} />
-                </Hidden>}
-              </ExpansionPanelDetails>
-            </ExpansionPanel>
-          </div>
-        )}
+                  {editions.length > 0 && <Hidden mdUp>
+                    <EditionsMobileView editions={editions} actions={actions} />
+                  </Hidden>}
+                </ExpansionPanelDetails>
+              </ExpansionPanel>
+            </div>
+          );
+        }}
       </UserService.WithApplicationMode>
     );
   }

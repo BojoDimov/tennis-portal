@@ -82,64 +82,68 @@ class GroupsBracket extends React.Component {
 
     return (
       <UserService.WithApplicationMode>
-        {mode => (
-          <Paper elevation={4} style={{ padding: '2rem 0 3rem 0', backgroundColor: 'rgba(255, 255, 255, .9)' }}>
-            {groupModel
-              && <EditGroupModal
-                model={groupModel}
-                scheme={scheme}
-                onChange={() => {
-                  this.getData();
-                  this.setState({ groupModel: null })
-                }}
-                onClose={() => this.setState({ groupModel: null })}
-              />}
+        {mode => {
+          let hasPermission = mode == ApplicationMode.ADMIN || mode == ApplicationMode.TOURNAMENT;
 
-            {matchModel
-              && <EditMatchModal
-                model={matchModel}
-                onChange={() => {
-                  this.getData();
-                  this.setState({ matchModel: null })
-                }}
-                onClose={() => this.setState({ matchModel: null })}
-              />}
+          return (
+            <Paper elevation={4} style={{ padding: '2rem 0 3rem 0', backgroundColor: 'rgba(255, 255, 255, .9)' }}>
+              {groupModel
+                && <EditGroupModal
+                  model={groupModel}
+                  scheme={scheme}
+                  onChange={() => {
+                    this.getData();
+                    this.setState({ groupModel: null })
+                  }}
+                  onClose={() => this.setState({ groupModel: null })}
+                />}
 
-            <Typography align="center" variant="headline">
-              Групова фаза за
+              {matchModel
+                && <EditMatchModal
+                  model={matchModel}
+                  onChange={() => {
+                    this.getData();
+                    this.setState({ matchModel: null })
+                  }}
+                  onClose={() => this.setState({ matchModel: null })}
+                />}
+
+              <Typography align="center" variant="headline">
+                Групова фаза за
               <Link to={`/editions/${scheme.edition.id}`}>
-                <Typography variant="display1">{scheme.edition.name}</Typography>
-              </Link>
-              -
+                  <Typography variant="display1">{scheme.edition.name}</Typography>
+                </Link>
+                -
               <Link to={`/schemes/${scheme.id}`}>
-                <Typography variant="display1">{scheme.name}</Typography>
-              </Link>
-            </Typography>
+                  <Typography variant="display1">{scheme.name}</Typography>
+                </Link>
+              </Typography>
 
-            {mode == ApplicationMode.ADMIN && enableActions
-              && <div style={{ margin: '1rem', display: 'flex', justifyContent: 'center' }}>
-                <Button variant="contained" color="primary" size="small" onClick={() => this.addGroup()}>Добави група</Button>
-              </div>}
+              {hasPermission && enableActions
+                && <div style={{ margin: '1rem', display: 'flex', justifyContent: 'center' }}>
+                  <Button variant="contained" color="primary" size="small" onClick={() => this.addGroup()}>Добави група</Button>
+                </div>}
 
-            <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '2rem', flexWrap: 'wrap' }}>
-              {groups.map(group => {
-                return (
-                  <Group
-                    key={group.id}
-                    group={group}
-                    mode={mode}
-                    onEdit={() => this.setState({ groupModel: group })}
-                    onDelete={() => this.deleteGroup(group)}
-                    onAddMatch={() => this.addMatch(group)}
-                    onEditMatch={(match) => this.setState({ matchModel: match })}
-                    onDeleteMatch={(match) => this.deleteMatch(match)}
-                    enableActions={enableActions}
-                  />
-                );
-              })}
-            </div>
-          </Paper>
-        )}
+              <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '2rem', flexWrap: 'wrap' }}>
+                {groups.map(group => {
+                  return (
+                    <Group
+                      key={group.id}
+                      group={group}
+                      hasPermission={hasPermission}
+                      onEdit={() => this.setState({ groupModel: group })}
+                      onDelete={() => this.deleteGroup(group)}
+                      onAddMatch={() => this.addMatch(group)}
+                      onEditMatch={(match) => this.setState({ matchModel: match })}
+                      onDeleteMatch={(match) => this.deleteMatch(match)}
+                      enableActions={enableActions}
+                    />
+                  );
+                })}
+              </div>
+            </Paper>
+          );
+        }}
       </UserService.WithApplicationMode>
 
     );
@@ -159,7 +163,7 @@ class Group extends React.Component {
   }
 
   render() {
-    const { mode, group, onEdit, onDelete, onAddMatch, onEditMatch, onDeleteMatch, enableActions } = this.props;
+    const { hasPermission, group, onEdit, onDelete, onAddMatch, onEditMatch, onDeleteMatch, enableActions } = this.props;
     const { tabIndex } = this.state;
 
     return (
@@ -181,10 +185,10 @@ class Group extends React.Component {
 
         <div style={{ padding: '1.5rem', flexGrow: 1, transition: 'flex-grow .3s ease-out' }}>
           {tabIndex == 0 && <GroupRankingView groupTeams={group.teams} />}
-          {tabIndex == 1 && <GroupMatchesView mode={mode} matches={group.matches} onEditMatch={onEditMatch} onDeleteMatch={onDeleteMatch} />}
+          {tabIndex == 1 && <GroupMatchesView hasPermission={hasPermission} matches={group.matches} onEditMatch={onEditMatch} onDeleteMatch={onDeleteMatch} />}
         </div>
 
-        {mode == ApplicationMode.ADMIN && enableActions
+        {hasPermission && enableActions
           && <div style={{ display: 'flex', padding: '1.5rem' }}>
             <Button variant="contained" color="primary" size="small" onClick={onEdit}>Промяна</Button>
             <Button variant="contained" color="primary" size="small" onClick={onAddMatch} style={{ margin: '0 .3rem' }}>Добавяне на мач</Button>
@@ -221,7 +225,7 @@ class GroupRankingView extends React.Component {
 
 class GroupMatchesView extends React.Component {
   render() {
-    const { mode, matches, onEditMatch, onDeleteMatch } = this.props;
+    const { hasPermission, matches, onEditMatch, onDeleteMatch } = this.props;
 
     if (!matches || !matches.length)
       return (<Typography variant="caption" align="center">Няма изиграни мачове</Typography>);
@@ -261,17 +265,16 @@ class GroupMatchesView extends React.Component {
                   </Typography>}
               </div>
 
-              {mode == ApplicationMode.ADMIN
-                && <div>
-                  <EditIcon color="primary" style={{ cursor: 'pointer' }} onClick={() => onEditMatch(match)}></EditIcon>
-                  <ConfirmationDialog
-                    title="Изтриване на мач"
-                    body={<Typography>Сигурни ли сте че искате да изтриете мача?</Typography>}
-                    onAccept={() => onDeleteMatch(match)}
-                  >
-                    <DeleteForeverIcon color="secondary" style={{ cursor: 'pointer' }}></DeleteForeverIcon>
-                  </ConfirmationDialog>
-                </div>}
+              {hasPermission && <div>
+                <EditIcon color="primary" style={{ cursor: 'pointer' }} onClick={() => onEditMatch(match)}></EditIcon>
+                <ConfirmationDialog
+                  title="Изтриване на мач"
+                  body={<Typography>Сигурни ли сте че искате да изтриете мача?</Typography>}
+                  onAccept={() => onDeleteMatch(match)}
+                >
+                  <DeleteForeverIcon color="secondary" style={{ cursor: 'pointer' }}></DeleteForeverIcon>
+                </ConfirmationDialog>
+              </div>}
             </div>
           );
         })}
