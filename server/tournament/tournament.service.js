@@ -57,12 +57,12 @@ class TournamentsService {
   }
 
   async update(id, model) {
-    const tournament = await this.get(id);
+    const tournament = await this.get(id, true);
     return await tournament.update(model);
   }
 
   async remove(id) {
-    const tournament = await this.get(id);
+    const tournament = await this.get(id, true);
     return await tournament.destroy();
   }
 }

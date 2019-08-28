@@ -1,9 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const MatchesService = require('./match.service');
-const adminIdentity = require('../infrastructure/middlewares/adminIdentity');
+const identity = require('../infrastructure/middlewares/identity');
 
 const update = async (req, res, next) => {
+  if (!req.user || (!req.user.isAdmin && !req.user.isTournamentAdmin))
+    return next({ name: 'DomainActionError', error: 'notEnoughPermissions' }, req, res, null);
+
   try {
     await MatchesService.update(req.params.matchId, req.body, req.scheme);
     return res.json({});
@@ -14,6 +17,9 @@ const update = async (req, res, next) => {
 }
 
 const create = async (req, res, next) => {
+  if (!req.user || (!req.user.isAdmin && !req.user.isTournamentAdmin))
+    return next({ name: 'DomainActionError', error: 'notEnoughPermissions' }, req, res, null);
+
   try {
     await MatchesService.create(req.body, req.scheme);
     return res.json({});
@@ -24,6 +30,9 @@ const create = async (req, res, next) => {
 }
 
 const remove = async (req, res, next) => {
+  if (!req.user || (!req.user.isAdmin && !req.user.isTournamentAdmin))
+    return next({ name: 'DomainActionError', error: 'notEnoughPermissions' }, req, res, null);
+
   try {
     await MatchesService.delete(req.params.matchId, req.scheme);
     return res.json({});
@@ -53,7 +62,7 @@ const getGroupMatches = async (req, res, next) => {
 
 router.get('/elimination', getEliminationMatches);
 router.get('/groups', getGroupMatches);
-router.post('/:matchId', adminIdentity, update);
-router.post('/', adminIdentity, create);
-router.delete('/:matchId', adminIdentity, remove);
+router.post('/:matchId', identity, update);
+router.post('/', identity, create);
+router.delete('/:matchId', identity, remove);
 module.exports = router;

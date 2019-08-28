@@ -26,7 +26,7 @@ const get = async (req, res, next) => {
 }
 
 const create = async (req, res, next) => {
-  if (!req.user.isAdmin && !req.user.isTournamentAdmin)
+  if (!req.user || (!req.user.isAdmin && !req.user.isTournamentAdmin))
     return next({ name: 'DomainActionError', error: 'notEnoughPermissions' }, req, res, null);
 
   try {
@@ -39,7 +39,7 @@ const create = async (req, res, next) => {
 }
 
 const update = async (req, res, next) => {
-  if (!req.user.isAdmin && !req.user.isTournamentAdmin)
+  if (!req.user || (!req.user.isAdmin && !req.user.isTournamentAdmin))
     return next({ name: 'DomainActionError', error: 'notEnoughPermissions' }, req, res, null);
 
   try {
@@ -52,7 +52,7 @@ const update = async (req, res, next) => {
 }
 
 const remove = async (req, res, next) => {
-  if (!req.user.isAdmin && !req.user.isTournamentAdmin)
+  if (!req.user || (!req.user.isAdmin && !req.user.isTournamentAdmin))
     return next({ name: 'DomainActionError', error: 'notEnoughPermissions' }, req, res, null);
 
   try {
