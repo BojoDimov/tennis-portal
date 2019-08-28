@@ -5,7 +5,8 @@ const identity = require('../infrastructure/middlewares/identity');
 
 const filter = async (req, res, next) => {
   try {
-    const items = await TournamentsService.filter(req.body);
+    let includeDrafts = req.user && (req.user.isAdmin || req.user.isTournamentAdmin);
+    const items = await TournamentsService.filter(includeDrafts);
     return res.json(items);
   }
   catch (err) {
@@ -15,7 +16,8 @@ const filter = async (req, res, next) => {
 
 const get = async (req, res, next) => {
   try {
-    const tournament = await TournamentsService.get(req.params.id);
+    let includeDrafts = req.user && (req.user.isAdmin || req.user.isTournamentAdmin);
+    const tournament = await TournamentsService.get(req.params.id, includeDrafts);
     return res.json(tournament);
   }
   catch (err) {
@@ -62,9 +64,9 @@ const remove = async (req, res, next) => {
   }
 }
 
-router.post('/filter', filter);
+router.post('/filter', identity, filter);
 router.post('/', identity, create);
-router.get('/:id', get);
+router.get('/:id', identity, get);
 router.post('/:id', identity, update);
 router.delete('/:id', identity, remove);
 

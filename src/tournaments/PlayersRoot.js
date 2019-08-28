@@ -21,6 +21,8 @@ import Button from '@material-ui/core/Button';
 
 import TeamStatisticsFormModal from './TeamStatisticsFormModal';
 import QueryService from '../services/query.service';
+import UserService from '../services/user.service';
+import { ApplicationMode } from '../enums';
 
 class PlayersRoot extends React.Component {
   constructor(props) {
@@ -57,161 +59,171 @@ class PlayersRoot extends React.Component {
     const { classes } = this.props;
 
     return (
-      <div className="container">
-        {editTeamModel && <TeamStatisticsFormModal
-          team={editTeamModel}
-          onClose={() => this.setState({ editTeamModel: null })}
-          onUpdate={() => this.setState({ editTeamModel: null }, () => this.getData())}
-        />}
+      <UserService.WithApplicationMode>
+        {mode => {
+          let hasPermission = mode == ApplicationMode.ADMIN || mode == ApplicationMode.TOURNAMENT;
 
-        <Paper style={{ padding: '1rem' }}>
-          <Typography variant="headline" color="primary">Вечна класация на играчите</Typography>
+          return (
+            <div className="container">
+              {hasPermission && editTeamModel && <TeamStatisticsFormModal
+                team={editTeamModel}
+                onClose={() => this.setState({ editTeamModel: null })}
+                onUpdate={() => this.setState({ editTeamModel: null }, () => this.getData())}
+              />}
 
-          <TextField
-            label="Търсене"
-            fullWidth
-            value={searchTerm}
-            onChange={e => this.setState({ searchTerm: e.target.value }, () => this.getData())}
-          />
+              <Paper style={{ padding: '1rem' }}>
+                <Typography variant="headline" color="primary">Вечна класация на играчите</Typography>
 
-          <Tabs
-            value={teamsMode}
-            onChange={(_, e) => this.setState({ teamsMode: e }, () => this.getData())}
-            textColor="primary"
-            variant="fullWidth">
-            <Tab value="single" label="Сингъл"></Tab>
-            <Tab value="double" label="Двойки"></Tab>
-          </Tabs>
+                <TextField
+                  label="Търсене"
+                  fullWidth
+                  value={searchTerm}
+                  onChange={e => this.setState({ searchTerm: e.target.value }, () => this.getData())}
+                />
 
-          <Hidden xsDown>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell padding="dense">#</TableCell>
-                  <TableCell>Име</TableCell>
-                  <TableCell>Спечелени мачове</TableCell>
-                  <TableCell>Общо мачове</TableCell>
-                  <TableCell>Спечелени турнири</TableCell>
-                  <TableCell>Общо турнири</TableCell>
-                  <TableCell padding="none"></TableCell>
-                </TableRow>
+                <Tabs
+                  value={teamsMode}
+                  onChange={(_, e) => this.setState({ teamsMode: e }, () => this.getData())}
+                  textColor="primary"
+                  variant="fullWidth">
+                  <Tab value="single" label="Сингъл"></Tab>
+                  <Tab value="double" label="Двойки"></Tab>
+                </Tabs>
 
-              </TableHead>
-              <TableBody>
-                {teams.map((team, i) => {
-                  let prefix = '';
-                  if (team.globalRank === 1)
-                    prefix = 'gold'
-                  else if (team.globalRank === 2)
-                    prefix = 'silver'
-                  else if (team.globalRank === 3)
-                    prefix = 'bronze'
+                <Hidden xsDown>
+                  <Table>
+                    <TableHead>
+                      <TableRow>
+                        <TableCell padding="dense">#</TableCell>
+                        <TableCell>Име</TableCell>
+                        <TableCell>Спечелени мачове</TableCell>
+                        <TableCell>Общо мачове</TableCell>
+                        <TableCell>Спечелени турнири</TableCell>
+                        <TableCell>Общо турнири</TableCell>
+                        {hasPermission && <TableCell padding="none"></TableCell>}
+                      </TableRow>
 
-                  return (
-                    <TableRow key={team.id} className={classes[prefix + 'Root']}>
-                      <TableCell padding="dense">
-                        <Typography className={classes[prefix + 'Typography']}>
-                          {team.globalRank}
-                        </Typography>
-                      </TableCell>
-                      <TableCell>
-                        {!team.user2 && <Typography className={classes[prefix + 'Typography']}>{team.user1.name}</Typography>}
-                        {team.user2 && <React.Fragment>
-                          <Typography className={classes[prefix + 'Typography']}>{team.user1.name}</Typography>
-                          <Typography className={classes[prefix + 'Typography']}>{team.user2.name}</Typography>
-                        </React.Fragment>}
-                      </TableCell>
-                      <TableCell>
-                        <Typography className={classes[prefix + 'Typography']}>
-                          {team.wonMatches} ({getWinRatio(team, 'Matches')}%)
-                        </Typography></TableCell>
-                      <TableCell>
-                        <Typography className={classes[prefix + 'Typography']}>
-                          {team.totalMatches}
-                        </Typography></TableCell>
-                      <TableCell>
-                        <Typography className={classes[prefix + 'Typography']}>
-                          {team.wonTournaments} ({getWinRatio(team, 'Tournaments')}%)
-                        </Typography></TableCell>
-                      <TableCell>
-                        <Typography className={classes[prefix + 'Typography']}>
-                          {team.totalTournaments}
-                        </Typography>
-                      </TableCell>
-                      <TableCell padding="none">
-                        <IconButton color="primary" onClick={() => this.setState({ editTeamModel: team })}>
-                          <EditIcon />
-                        </IconButton></TableCell>
-                    </TableRow>);
-                })}
-              </TableBody>
-            </Table>
-          </Hidden>
+                    </TableHead>
+                    <TableBody>
+                      {teams.map((team, i) => {
+                        let prefix = '';
+                        if (team.globalRank === 1)
+                          prefix = 'gold'
+                        else if (team.globalRank === 2)
+                          prefix = 'silver'
+                        else if (team.globalRank === 3)
+                          prefix = 'bronze'
 
-          <Hidden smUp>
-            <List>
-              {teams.map(team => {
-                let prefix = 'basic';
-                if (team.globalRank === 1)
-                  prefix = 'gold'
-                else if (team.globalRank === 2)
-                  prefix = 'silver'
-                else if (team.globalRank === 3)
-                  prefix = 'bronze'
+                        return (
+                          <TableRow key={team.id} className={classes[prefix + 'Root']}>
+                            <TableCell padding="dense">
+                              <Typography className={classes[prefix + 'Typography']}>
+                                {team.globalRank}
+                              </Typography>
+                            </TableCell>
+                            <TableCell>
+                              {!team.user2 && <Typography className={classes[prefix + 'Typography']}>{team.user1.name}</Typography>}
+                              {team.user2 && <React.Fragment>
+                                <Typography className={classes[prefix + 'Typography']}>{team.user1.name}</Typography>
+                                <Typography className={classes[prefix + 'Typography']}>{team.user2.name}</Typography>
+                              </React.Fragment>}
+                            </TableCell>
+                            <TableCell>
+                              <Typography className={classes[prefix + 'Typography']}>
+                                {team.wonMatches} ({getWinRatio(team, 'Matches')}%)
+                              </Typography>
+                            </TableCell>
+                            <TableCell>
+                              <Typography className={classes[prefix + 'Typography']}>
+                                {team.totalMatches}
+                              </Typography></TableCell>
+                            <TableCell>
+                              <Typography className={classes[prefix + 'Typography']}>
+                                {team.wonTournaments} ({getWinRatio(team, 'Tournaments')}%)
+                              </Typography>
+                            </TableCell>
+                            <TableCell>
+                              <Typography className={classes[prefix + 'Typography']}>
+                                {team.totalTournaments}
+                              </Typography>
+                            </TableCell>
+                            {hasPermission && <TableCell padding="none">
+                              <IconButton color="primary" onClick={() => this.setState({ editTeamModel: team })}>
+                                <EditIcon />
+                              </IconButton></TableCell>}
+                          </TableRow>);
+                      })}
+                    </TableBody>
+                  </Table>
+                </Hidden>
 
-                return (
-                  <React.Fragment key={team.id}>
-                    <ListItem style={{ display: 'flex' }}>
-                      <div style={{ flexBasis: '34%', display: 'flex' }}>
-                        <div className={classes.badge + ' ' + classes[prefix + 'Badge']}>
-                          <Typography className={classes[prefix + 'Typography']}>#{team.globalRank}</Typography>
-                        </div>
-                      </div>
-                      <div style={{ flexBasis: '66%', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-                        <div style={{ display: 'flex', width: '100%' }}>
-                          <div style={{ flexBasis: '85%', display: 'flex', alignItems: 'center' }}>
-                            <Typography>{team.user1.name}</Typography>
-                            {team.user2 && <Typography>{team.user2.name}</Typography>}
-                          </div>
-                          <div style={{ flexBasis: '15%' }}>
-                            <IconButton color="primary" onClick={() => this.setState({ editTeamModel: team })} >
-                              <EditIcon />
-                            </IconButton>
-                          </div>
-                        </div>
-                        <div style={{ width: '100%' }}>
-                          <Typography variant="caption">
-                            <span>Мачове: {team.wonMatches}/{team.totalMatches}</span>
-                            <span style={{ marginLeft: '.3em' }}>({getWinRatio(team, 'Matches')}% win ratio)</span>
-                          </Typography>
-                          <Typography variant="caption">
-                            <span>Турнири: {team.wonTournaments}/{team.totalTournaments}</span>
-                            <span style={{ marginLeft: '.3em' }}>({getWinRatio(team, 'Tournaments')}% win ratio)</span>
-                          </Typography>
-                        </div>
-                      </div>
-                    </ListItem>
-                    <Divider />
-                  </React.Fragment>
-                );
-              })}
-            </List>
-          </Hidden>
+                <Hidden smUp>
+                  <List>
+                    {teams.map(team => {
+                      let prefix = 'basic';
+                      if (team.globalRank === 1)
+                        prefix = 'gold'
+                      else if (team.globalRank === 2)
+                        prefix = 'silver'
+                      else if (team.globalRank === 3)
+                        prefix = 'bronze'
 
-          <TablePagination
-            component="div"
-            count={totalCount}
-            rowsPerPage={itemsPerPage}
-            rowsPerPageOptions={[10, 25, 50]}
-            labelRowsPerPage="Покажи:"
-            labelDisplayedRows={({ from, to, count }) => `${from}-${to} от ${count}`}
-            page={page}
-            onChangePage={(e, page) => this.setState({ page }, () => this.getData())}
-            onChangeRowsPerPage={e => this.setState({ itemsPerPage: e.target.value, page: 0 }, () => this.getData())}
-          />
-        </Paper>
-      </div>
-    )
+                      return (
+                        <React.Fragment key={team.id}>
+                          <ListItem style={{ display: 'flex' }}>
+                            <div style={{ flexBasis: '34%', display: 'flex' }}>
+                              <div className={classes.badge + ' ' + classes[prefix + 'Badge']}>
+                                <Typography className={classes[prefix + 'Typography']}>#{team.globalRank}</Typography>
+                              </div>
+                            </div>
+                            <div style={{ flexBasis: '66%', display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+                              <div style={{ display: 'flex', width: '100%' }}>
+                                <div style={{ flexBasis: '85%', display: 'flex', alignItems: 'center' }}>
+                                  <Typography>{team.user1.name}</Typography>
+                                  {team.user2 && <Typography>{team.user2.name}</Typography>}
+                                </div>
+                                {hasPermission && <div style={{ flexBasis: '15%' }}>
+                                  <IconButton color="primary" onClick={() => this.setState({ editTeamModel: team })} >
+                                    <EditIcon />
+                                  </IconButton>
+                                </div>}
+                              </div>
+                              <div style={{ width: '100%' }}>
+                                <Typography variant="caption">
+                                  <span>Мачове: {team.wonMatches}/{team.totalMatches}</span>
+                                  <span style={{ marginLeft: '.3em' }}>({getWinRatio(team, 'Matches')}% win ratio)</span>
+                                </Typography>
+                                <Typography variant="caption">
+                                  <span>Турнири: {team.wonTournaments}/{team.totalTournaments}</span>
+                                  <span style={{ marginLeft: '.3em' }}>({getWinRatio(team, 'Tournaments')}% win ratio)</span>
+                                </Typography>
+                              </div>
+                            </div>
+                          </ListItem>
+                          <Divider />
+                        </React.Fragment>
+                      );
+                    })}
+                  </List>
+                </Hidden>
+
+                <TablePagination
+                  component="div"
+                  count={totalCount}
+                  rowsPerPage={itemsPerPage}
+                  rowsPerPageOptions={[10, 25, 50]}
+                  labelRowsPerPage="Покажи:"
+                  labelDisplayedRows={({ from, to, count }) => `${from}-${to} от ${count}`}
+                  page={page}
+                  onChangePage={(e, page) => this.setState({ page }, () => this.getData())}
+                  onChangeRowsPerPage={e => this.setState({ itemsPerPage: e.target.value, page: 0 }, () => this.getData())}
+                />
+              </Paper>
+            </div>
+          );
+        }}
+      </UserService.WithApplicationMode >
+    );
   }
 }
 

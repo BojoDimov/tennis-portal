@@ -36,6 +36,10 @@ class App extends React.Component {
 
         if (user && user.isAdmin)
           mode = ApplicationMode.ADMIN;
+
+        if (user && user.isTournamentAdmin)
+          mode = ApplicationMode.TOURNAMENT;
+
         this.setState({ applicationMode: mode });
       });
   }

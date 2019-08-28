@@ -78,10 +78,11 @@ class TournamentsRoot extends React.Component {
   render() {
     const { classes, mode } = this.props;
     const { tournaments, tournamentModel } = this.state;
+    let hasPermission = (mode == ApplicationMode.ADMIN || mode == ApplicationMode.TOURNAMENT);
 
     return (
       <div className="container">
-        {tournamentModel
+        {hasPermission && tournamentModel
           && <TournamentFormModal
             model={tournamentModel}
             onChange={() => this.refresh()}
@@ -90,8 +91,7 @@ class TournamentsRoot extends React.Component {
 
         <div style={{ margin: '0 .5rem' }}>
           <div>
-            {(mode == ApplicationMode.ADMIN || mode == ApplicationMode.TOURNAMENT)
-              && <Button variant="contained" size="medium" color="primary" onClick={() => this.openTournamentModal()} >Нова лига</Button>}
+            {hasPermission && <Button variant="contained" size="medium" color="primary" onClick={() => this.openTournamentModal()} >Нова лига</Button>}
           </div>
           <div className={classes.previewContainer}>
             {tournaments.map(tournament => <TournamentPreview
@@ -125,6 +125,7 @@ class TournamentPreview extends React.Component {
 
   render() {
     const { tournament, classes, mode } = this.props;
+    let hasPermission = (mode == ApplicationMode.ADMIN || mode == ApplicationMode.TOURNAMENT);
 
     return (
       <Paper className={classes.previewRoot} elevation={5} onClick={() => this.navigate()}>
@@ -138,18 +139,17 @@ class TournamentPreview extends React.Component {
         </div>
         <Typography variant="caption" className={classes.previewBodyPart} style={{ flexGrow: 2 }}>{tournament.info}</Typography>
 
-        {(mode == ApplicationMode.ADMIN || mode == ApplicationMode.TOURNAMENT)
-          && <div className={classes.previewBodyPart}>
-            <Button variant="text" size="small" color="primary" onClick={(e) => this.edit(e)}>Промяна</Button>
+        {hasPermission && <div className={classes.previewBodyPart}>
+          <Button variant="text" size="small" color="primary" onClick={(e) => this.edit(e)}>Промяна</Button>
 
-            <ConfirmationDialog
-              title="Изтриване на лига"
-              body={<Typography>Сигурни ли сте че искате да изтриете лигата {tournament.name}?</Typography>}
-              onAccept={() => this.remove()}
-            >
-              <Button variant="text" size="small" color="secondary">Изтриване</Button>
-            </ConfirmationDialog>
-          </div>}
+          <ConfirmationDialog
+            title="Изтриване на лига"
+            body={<Typography>Сигурни ли сте че искате да изтриете лигата {tournament.name}?</Typography>}
+            onAccept={() => this.remove()}
+          >
+            <Button variant="text" size="small" color="secondary">Изтриване</Button>
+          </ConfirmationDialog>
+        </div>}
       </Paper>
     );
   }

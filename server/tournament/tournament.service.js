@@ -1,16 +1,28 @@
 const { Tournaments, Rankings, Teams, Users } = require('../db');
+const Op = require('../db').Sequelize.Op;
 const { Status } = require('../infrastructure/enums');
+
 class TournamentsService {
-  async filter() {
-    return await Tournaments.findAll({
+  async filter(includeDraft) {
+    let options = {
       order: [
         ['id', 'desc']
       ]
-    });
+    };
+
+    if (!includeDraft)
+      options.where = {
+        [Op.not]: {
+          status: Status.DRAFT
+        }
+      };
+
+    return await Tournaments.findAll(options);
   }
 
-  async get(id) {
-    const tournament = await Tournaments.findById(id, {
+  async get(id, includeDraft) {
+    const options = {
+      where: { id },
       include: [
         {
           model: Rankings, as: 'rankings',
@@ -26,7 +38,14 @@ class TournamentsService {
           ]
         }
       ]
-    });
+    };
+
+    if (!includeDraft)
+      options.where[Op.not] = {
+        status: Status.DRAFT
+      };
+
+    const tournament = await Tournaments.findOne(options);
     if (!tournament)
       throw { name: 'NotFound' };
     return tournament;
