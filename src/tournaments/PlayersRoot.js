@@ -107,12 +107,12 @@ class PlayersRoot extends React.Component {
                     <TableBody>
                       {teams.map((team, i) => {
                         let prefix = '';
-                        if (team.globalRank === 1)
-                          prefix = 'gold'
-                        else if (team.globalRank === 2)
-                          prefix = 'silver'
-                        else if (team.globalRank === 3)
-                          prefix = 'bronze'
+                        // if (team.globalRank === 1)
+                        //   prefix = 'gold'
+                        // else if (team.globalRank === 2)
+                        //   prefix = 'silver'
+                        // else if (team.globalRank === 3)
+                        //   prefix = 'bronze'
 
                         return (
                           <TableRow key={team.id} className={classes[prefix + 'Root']}>
@@ -161,12 +161,12 @@ class PlayersRoot extends React.Component {
                   <List>
                     {teams.map(team => {
                       let prefix = 'basic';
-                      if (team.globalRank === 1)
-                        prefix = 'gold'
-                      else if (team.globalRank === 2)
-                        prefix = 'silver'
-                      else if (team.globalRank === 3)
-                        prefix = 'bronze'
+                      // if (team.globalRank === 1)
+                      //   prefix = 'gold'
+                      // else if (team.globalRank === 2)
+                      //   prefix = 'silver'
+                      // else if (team.globalRank === 3)
+                      //   prefix = 'bronze'
 
                       return (
                         <React.Fragment key={team.id}>
