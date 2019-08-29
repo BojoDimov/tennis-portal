@@ -64,51 +64,37 @@ class SchemeService {
       model.maxPlayerCount = model.groupCount * model.teamsPerGroup;
   }
 
-  async drawBracket(scheme) {
+  async getTeamsFromGroups(scheme) {
+    const data = await MatchService.getGroupMatches(scheme);
+
+    let teams = data.reduce((acc, curr) => acc.concat(curr.teams), []);
+    teams.sort((a, b) => a.order - b.order);
+    return teams;
+  }
+
+  async previewEliminationPhase(scheme) {
+    let teams = [];
+    if (scheme.bracketStatus == BracketStatus.UNDRAWN && !scheme.hasGroupPhase)
+      teams = Enrollments.getPlayers(scheme);
+    else if (scheme.bracketStatus == BracketStatus.GROUPS_END)
+      teams = this.getTeamsFromGroups(scheme);
+    else
+      throw { name: 'DomainActionError', error: 'invalidState' };
+
+    return teams;
+  }
+
+  async drawEliminationPhase(scheme, teams) {
     let transaction;
     try {
       transaction = await sequelize.transaction();
-      const teams = await Enrollments.getPlayers(scheme);
 
-      if (scheme.bracketStatus == BracketStatus.UNDRAWN && scheme.hasGroupPhase) {
-        //draw group phase
-        scheme.bracketStatus = BracketStatus.GROUPS_DRAWN;
-        await scheme.save({ transaction });
-        for (const group of Bracket.drawGroups(scheme, scheme.seed, teams)) {
-          await Groups.create(group, {
-            include: [{ model: GroupTeams, as: 'teams' }],
-            transaction
-          });
-        }
-      }
-      else if (scheme.bracketStatus == BracketStatus.UNDRAWN && !scheme.hasGroupPhase) {
-        //draw elimination phase
-        scheme.bracketStatus = BracketStatus.ELIMINATION_DRAWN;
-        await scheme.save();
-        let matches = Bracket.drawEliminations(scheme, scheme.seed, teams);
-        await Matches.bulkCreate(matches, { transaction });
-      }
-      else if (scheme.bracketStatus == BracketStatus.GROUPS_END) {
-        //draw elimination from groups
-        const data = await MatchService.getGroupMatches(scheme);
-        let groups = data.map(group => {
-          return {
-            team1: group.teams[0].team,
-            team2: group.teams[1].team
-          }
-        });
+      teams = teams.filter(team => team.order);
 
-        groups = Bracket.fillGroups(groups);
-        const matches = Bracket.drawEliminationsFromGroups(groups, scheme.id);
-        await Matches.bulkCreate(matches, { transaction });
-        await scheme.update({ bracketStatus: BracketStatus.ELIMINATION_DRAWN }, { transaction });
-      }
-      else if (scheme.bracketStatus == BracketStatus.GROUPS_DRAWN)
-        await scheme.update({ bracketStatus: BracketStatus.GROUPS_END }, { transaction });
-      else if (scheme.bracketStatus == BracketStatus.ELIMINATION_DRAWN)
-        await scheme.update({ bracketStatus: BracketStatus.ELIMINATION_END }, { transaction });
-      else
-        throw { name: 'DomainActionError', error: 'invalidState' };
+      scheme.bracketStatus = BracketStatus.ELIMINATION_DRAWN;
+      await scheme.save({ transaction });
+      let matches = Bracket.drawEliminations(scheme, scheme.seed, teams);
+      await Matches.bulkCreate(matches, { transaction });
 
       await transaction.commit();
     }
@@ -117,6 +103,86 @@ class SchemeService {
       throw err;
     }
   }
+
+  async drawGroupPhase(scheme) {
+    if (scheme.bracketStatus != BracketStatus.UNDRAWN || !scheme.hasGroupPhase)
+      throw { name: 'DomainActionError', error: 'invalidState' };
+
+    let transaction;
+    try {
+      transaction = await sequelize.transaction();
+
+      const teams = await Enrollments.getPlayers(scheme);
+      scheme.bracketStatus = BracketStatus.GROUPS_DRAWN;
+      await scheme.save({ transaction });
+      for (const group of Bracket.drawGroups(scheme, scheme.seed, teams)) {
+        await Groups.create(group, {
+          include: [{ model: GroupTeams, as: 'teams' }],
+          transaction
+        });
+      }
+
+      await transaction.commit();
+    }
+    catch (err) {
+      await transaction.rollback();
+      throw err;
+    }
+  }
+
+  // async drawBracket(scheme, data) {
+  //   let transaction;
+  //   try {
+  //     transaction = await sequelize.transaction();
+  //     const teams = await Enrollments.getPlayers(scheme);
+
+  //     if (scheme.bracketStatus == BracketStatus.UNDRAWN && scheme.hasGroupPhase) {
+  //       //draw group phase
+  //       scheme.bracketStatus = BracketStatus.GROUPS_DRAWN;
+  //       await scheme.save({ transaction });
+  //       for (const group of Bracket.drawGroups(scheme, scheme.seed, teams)) {
+  //         await Groups.create(group, {
+  //           include: [{ model: GroupTeams, as: 'teams' }],
+  //           transaction
+  //         });
+  //       }
+  //     }
+  //     else if (scheme.bracketStatus == BracketStatus.UNDRAWN && !scheme.hasGroupPhase) {
+  //       //draw elimination phase
+  //       scheme.bracketStatus = BracketStatus.ELIMINATION_DRAWN;
+  //       await scheme.save();
+  //       let matches = Bracket.drawEliminations(scheme, scheme.seed, teams);
+  //       await Matches.bulkCreate(matches, { transaction });
+  //     }
+  //     else if (scheme.bracketStatus == BracketStatus.GROUPS_END) {
+  //       //draw elimination from groups
+  //       const data = await MatchService.getGroupMatches(scheme);
+  //       let groups = data.map(group => {
+  //         return {
+  //           team1: group.teams[0].team,
+  //           team2: group.teams[1].team
+  //         }
+  //       });
+
+  //       groups = Bracket.fillGroups(groups);
+  //       const matches = Bracket.drawEliminationsFromGroups(groups, scheme.id);
+  //       await Matches.bulkCreate(matches, { transaction });
+  //       await scheme.update({ bracketStatus: BracketStatus.ELIMINATION_DRAWN }, { transaction });
+  //     }
+  //     else if (scheme.bracketStatus == BracketStatus.GROUPS_DRAWN)
+  //       await scheme.update({ bracketStatus: BracketStatus.GROUPS_END }, { transaction });
+  //     else if (scheme.bracketStatus == BracketStatus.ELIMINATION_DRAWN)
+  //       await scheme.update({ bracketStatus: BracketStatus.ELIMINATION_END }, { transaction });
+  //     else
+  //       throw { name: 'DomainActionError', error: 'invalidState' };
+
+  //     await transaction.commit();
+  //   }
+  //   catch (err) {
+  //     await transaction.rollback();
+  //     throw err;
+  //   }
+  // }
 
   async getScore(scheme) {
     if (scheme.bracketStatus != BracketStatus.ELIMINATION_END)

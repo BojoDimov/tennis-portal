@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import Paper from '@material-ui/core/Paper';
 import Hidden from '@material-ui/core/Hidden';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -90,7 +91,20 @@ class EditionsList extends React.Component {
                   </Button>
               </React.Fragment>}
 
-              <ExpansionPanel defaultExpanded={true}>
+              <Paper style={{ padding: '1em' }}>
+                <Typography variant="headline" color="primary">Турнири</Typography>
+                {editions.length == 0 && <Typography variant="caption">Няма регистрирани турнири</Typography>}
+                {editions.length != 0 && <React.Fragment>
+                  <Hidden smDown>
+                    <EditionsDesktopView editions={editions} actions={actions} />
+                  </Hidden>
+                  <Hidden mdUp>
+                    <EditionsMobileView editions={editions} actions={actions} />
+                  </Hidden>
+                </React.Fragment>}
+              </Paper>
+
+              {/* <ExpansionPanel defaultExpanded={true}>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                   <Typography variant="headline">Турнири</Typography>
                 </ExpansionPanelSummary>
@@ -105,7 +119,7 @@ class EditionsList extends React.Component {
                     <EditionsMobileView editions={editions} actions={actions} />
                   </Hidden>}
                 </ExpansionPanelDetails>
-              </ExpansionPanel>
+              </ExpansionPanel> */}
             </div>
           );
         }}

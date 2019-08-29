@@ -118,13 +118,16 @@ class EnrollmentsComponent extends React.Component {
                     <TableRow className={borderClass}>
                       <TableCell padding="none">{index + 1}</TableCell>
                       <TableCell>
-                        <Link to={`/teams/${enrollment.team.user1.id}`} >
+                        <Typography variant="body2">{enrollment.team.user1.name}</Typography>
+                        {enrollment.team.user2 &&
+                          <Typography variant="body2">{enrollment.team.user2.name}</Typography>}
+                        {/* <Link to={`/teams/${enrollment.team.user1.id}`} >
                           <Typography variant="body2">{enrollment.team.user1.name}</Typography>
                         </Link>
                         {enrollment.team.user2 &&
                           <Link to={`/teams/${enrollment.team.user2.id}`} >
                             <Typography variant="body2">{enrollment.team.user2.name}</Typography>
-                          </Link>}
+                          </Link>} */}
                       </TableCell>
                       <TableCell padding="dense">
                         {enrollment.team.rankings && enrollment.team.rankings[0]

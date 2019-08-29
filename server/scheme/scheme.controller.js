@@ -64,19 +64,6 @@ const include = async (req, res, next) => {
   }
 }
 
-const drawBracket = async (req, res, next) => {
-  if (!req.user || (!req.user.isAdmin && !req.user.isTournamentAdmin))
-    return next({ name: 'DomainActionError', error: 'notEnoughPermissions' }, req, res, null);
-
-  try {
-    await SchemeService.drawBracket(req.scheme);
-    return res.json({});
-  }
-  catch (err) {
-    return next(err, req, res, null);
-  }
-}
-
 const getScore = async (req, res, next) => {
   if (!req.user || (!req.user.isAdmin && !req.user.isTournamentAdmin))
     return next({ name: 'DomainActionError', error: 'notEnoughPermissions' }, req, res, null);
@@ -103,13 +90,12 @@ const saveScore = async (req, res, next) => {
   }
 }
 
-
-router.get('/:id/scores', identity, include, getScore);
-router.post('/:id/scores/save', identity, include, saveScore);
-router.get('/:id/drawBracket', identity, include, drawBracket);
+router.use('/:id/draw', include, require('./draw.controller'));
 router.use('/:id/enrollments', include, require('../enrollment/enrollment.controller'));
 router.use('/:id/matches', include, require('../match/match.controller'));
 router.use('/:id/groups', include, require('../group/group.controller'));
+router.get('/:id/scores', identity, include, getScore);
+router.post('/:id/scores/save', identity, include, saveScore);
 router.get('/:id', get);
 router.post('/:id', identity, update);
 router.post('/', identity, create);

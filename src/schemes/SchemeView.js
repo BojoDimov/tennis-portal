@@ -12,6 +12,7 @@ import { BracketStatus, ApplicationMode } from '../enums';
 import { catchEvent } from '../services/events.service';
 import MessageModal from '../components/MessageModal';
 import ScoresModal from './components/ScoresModal';
+import EliminationPreviewModal from './components/EliminationPreviewModal';
 
 class SchemeView extends React.Component {
 
@@ -24,7 +25,8 @@ class SchemeView extends React.Component {
       schemeModel: null,
       enrolled: [],
       hasError: false,
-      scores: null
+      scores: null,
+      eliminationPreview: null
     }
   }
 
@@ -64,8 +66,13 @@ class SchemeView extends React.Component {
       .then(scores => this.setState({ scores }));
   }
 
+  previewElimination() {
+    return QueryService.get(`/schemes/${this.state.scheme.id}/draw/eliminationPhase/preview`)
+      .then(eliminationPreview => this.setState({ eliminationPreview }));
+  }
+
   render() {
-    const { scheme, schemeModel, enrolled, scores } = this.state;
+    const { scheme, schemeModel, enrolled, scores, eliminationPreview } = this.state;
 
     return (
       <UserService.WithApplicationMode>
@@ -96,6 +103,16 @@ class SchemeView extends React.Component {
                   }}
                   onClose={() => this.setState({ scores: null })}
                 />}
+
+              {eliminationPreview && <EliminationPreviewModal
+                teams={eliminationPreview}
+                scheme={scheme}
+                onClose={() => this.setState({ eliminationPreview: null })}
+                onDraw={() => {
+                  console.log('DRAW WAS SUCCESSFUl');
+                  this.setState({ eliminationPreview: null });
+                }}
+              />}
 
               {hasPermission &&
                 <div style={{ margin: '.5rem 0' }}>
@@ -139,6 +156,16 @@ class SchemeView extends React.Component {
                     >
                       Резултати
                 </Button>}
+
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    style={{ marginLeft: '.3rem' }}
+                    onClick={() => this.previewElimination()}
+                  >
+                    Преглед на елиминационна схем
+                </Button>
 
                   {scheme.bracketStatus == BracketStatus.UNDRAWN
                     && <ConfirmationDialog
