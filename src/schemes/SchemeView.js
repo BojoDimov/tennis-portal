@@ -30,47 +30,6 @@ class SchemeView extends React.Component {
     }
   }
 
-  componentDidMount() {
-    this.getData();
-    catchEvent('logged-in', () => {
-      this.getData();
-    })
-  }
-
-  getData() {
-    const { id } = this.props.match.params;
-
-    QueryService
-      .get(`/schemes/${id}`)
-      .then(e => this.setState({ scheme: e }));
-
-    QueryService
-      .get('/users/enrollments')
-      .then(enrolled => this.setState({ enrolled }));
-  }
-
-  deleteScheme() {
-    this.setState({ hasError: false });
-    return QueryService.delete(`/schemes/${this.state.scheme.id}`)
-      .then(e => this.props.history.replace(`/editions/${this.state.scheme.edition.id}`))
-      .catch(err => this.setState({ hasError: true }));
-  }
-
-  drawBracket() {
-    return QueryService.get(`/schemes/${this.state.scheme.id}/drawBracket`)
-      .then(() => this.getData());
-  }
-
-  getScores() {
-    return QueryService.get(`/schemes/${this.state.scheme.id}/scores`)
-      .then(scores => this.setState({ scores }));
-  }
-
-  previewElimination() {
-    return QueryService.get(`/schemes/${this.state.scheme.id}/draw/eliminationPhase/preview`)
-      .then(eliminationPreview => this.setState({ eliminationPreview }));
-  }
-
   render() {
     const { scheme, schemeModel, enrolled, scores, eliminationPreview } = this.state;
 
@@ -108,82 +67,10 @@ class SchemeView extends React.Component {
                 teams={eliminationPreview}
                 scheme={scheme}
                 onClose={() => this.setState({ eliminationPreview: null })}
-                onDraw={() => {
-                  console.log('DRAW WAS SUCCESSFUl');
-                  this.setState({ eliminationPreview: null });
-                }}
+                onDraw={() => this.setState({ eliminationPreview: null }, this.getData())}
               />}
 
-              {hasPermission &&
-                <div style={{ margin: '.5rem 0' }}>
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    onClick={() => this.setState({ schemeModel: scheme })}
-                  >
-                    Промяна
-                </Button>
-                  {scheme.bracketStatus != BracketStatus.ELIMINATION_END
-                    && <ConfirmationDialog
-                      title="Изтегляне/приключване на текуща фаза"
-                      body={<Typography>Сигурни ли сте че искате да извършите действието?</Typography>}
-                      onAccept={() => this.drawBracket()}
-                      style={{ marginTop: '.5rem' }}
-                    >
-                      <Button
-                        variant="contained"
-                        color="primary"
-                        size="small"
-                        style={{ marginLeft: '.3rem' }}
-                      >
-                        {scheme.bracketStatus == BracketStatus.UNDRAWN
-                          && <span>Изтегляне</span>}
-                        {(scheme.bracketStatus == BracketStatus.GROUPS_DRAWN || scheme.bracketStatus == BracketStatus.ELIMINATION_DRAWN)
-                          && <span>Приключване на фаза</span>}
-                        {scheme.bracketStatus == BracketStatus.GROUPS_END
-                          && <span>Следваща фаза</span>}
-                      </Button>
-                    </ConfirmationDialog>}
-
-                  {scheme.bracketStatus == BracketStatus.ELIMINATION_END
-                    && <Button
-                      variant="contained"
-                      color="primary"
-                      size="small"
-                      style={{ marginLeft: '.3rem' }}
-                      onClick={() => this.getScores()}
-                    >
-                      Резултати
-                </Button>}
-
-                  <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    style={{ marginLeft: '.3rem' }}
-                    onClick={() => this.previewElimination()}
-                  >
-                    Преглед на елиминационна схем
-                </Button>
-
-                  {scheme.bracketStatus == BracketStatus.UNDRAWN
-                    && <ConfirmationDialog
-                      title="Изтриване на турнир"
-                      body={<Typography>Сигурни ли сте че искате да изтриете схема {scheme.name}?</Typography>}
-                      onAccept={() => this.deleteScheme()}
-                    >
-                      <Button
-                        variant="contained"
-                        color="secondary"
-                        size="small"
-                        style={{ marginLeft: '.3rem' }}
-                      >
-                        Изтриване
-                  </Button>
-                    </ConfirmationDialog>}
-
-                </div>}
+              {hasPermission && this.getButtons()}
 
               <SchemeDetails
                 scheme={scheme}
@@ -198,6 +85,140 @@ class SchemeView extends React.Component {
         }}
       </UserService.WithApplicationMode>
     );
+  }
+
+  getButtons() {
+    const { scheme } = this.state;
+
+    return (
+      <div style={{ margin: '.5rem 0' }}>
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          onClick={() => this.setState({ schemeModel: scheme })}
+        >
+          Промяна
+        </Button>
+
+        {scheme.bracketStatus == BracketStatus.UNDRAWN
+          && <ConfirmationDialog
+            title="Изтриване на турнир"
+            body={<Typography>Сигурни ли сте че искате да изтриете схема {scheme.name}?</Typography>}
+            onAccept={() => this.deleteScheme()}
+          >
+            <Button
+              variant="contained"
+              color="secondary"
+              size="small"
+              style={{ marginLeft: '.3rem' }}
+            >
+              Изтриване
+                  </Button>
+          </ConfirmationDialog>}
+
+        {((scheme.bracketStatus == BracketStatus.UNDRAWN && !scheme.hasGroupPhase)
+          || (scheme.bracketStatus == BracketStatus.GROUPS_END))
+          && <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            style={{ marginLeft: '.3rem' }}
+            onClick={() => this.previewElimination()}
+          >
+            Изтегляне
+        </Button>}
+
+        {scheme.bracketStatus == BracketStatus.UNDRAWN && scheme.hasGroupPhase
+          && <ConfirmationDialog
+            title="Изтегляне на схема"
+            body={<Typography>Сигурни ли сте, че искате да изтеглите схемата?</Typography>}
+            onAccept={() => this.drawGroupPhase()}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              style={{ marginLeft: '.3rem' }}
+            >
+              Изтегляне
+            </Button>
+          </ConfirmationDialog>}
+
+        {(scheme.bracketStatus == BracketStatus.GROUPS_DRAWN || scheme.bracketStatus == BracketStatus.ELIMINATION_DRAWN)
+          && <ConfirmationDialog
+            title="Приключване на фаза"
+            body={<Typography>Сигурни ли сте че искате да приключите текущата фаза?</Typography>}
+            onAccept={() => this.finishPhase()}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              style={{ marginLeft: '.3rem' }}
+            >
+              Приключване на фаза
+            </Button>
+          </ConfirmationDialog>}
+
+        {scheme.bracketStatus == BracketStatus.ELIMINATION_END
+          && <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            style={{ marginLeft: '.3rem' }}
+            onClick={() => this.getScores()}
+          >
+            Резултати
+          </Button>}
+      </div>
+    );
+  }
+
+  componentDidMount() {
+    this.getData();
+    catchEvent('logged-in', () => {
+      this.getData();
+    })
+  }
+
+  getData() {
+    const { id } = this.props.match.params;
+
+    QueryService
+      .get(`/schemes/${id}`)
+      .then(e => this.setState({ scheme: e }));
+
+    QueryService
+      .get('/users/enrollments')
+      .then(enrolled => this.setState({ enrolled }));
+  }
+
+  deleteScheme() {
+    this.setState({ hasError: false });
+    return QueryService.delete(`/schemes/${this.state.scheme.id}`)
+      .then(e => this.props.history.replace(`/editions/${this.state.scheme.edition.id}`))
+      .catch(err => this.setState({ hasError: true }));
+  }
+
+  getScores() {
+    return QueryService.get(`/schemes/${this.state.scheme.id}/scores`)
+      .then(scores => this.setState({ scores }));
+  }
+
+  previewElimination() {
+    return QueryService.get(`/schemes/${this.state.scheme.id}/draw/eliminationPhase/preview`)
+      .then(eliminationPreview => this.setState({ eliminationPreview }));
+  }
+
+  drawGroupPhase() {
+    return QueryService.get(`/schemes/${this.state.scheme.id}/draw/groupPhase`)
+      .then(() => this.getData());
+  }
+
+  finishPhase() {
+    return QueryService.get(`/schemes/${this.state.scheme.id}/draw/finish`)
+      .then(() => this.getData());
   }
 }
 

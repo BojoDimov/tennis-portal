@@ -70,7 +70,7 @@ class EditionsList extends React.Component {
                   onClose={() => this.setState({ tournamentModel: null })}
                 />}
 
-              {hasPermission && <React.Fragment>
+              {hasPermission && <div style={{ margin: '.5rem 0' }}>
                 <Button
                   variant="contained"
                   color="primary"
@@ -89,7 +89,7 @@ class EditionsList extends React.Component {
                 >
                   Нов Турнир
                   </Button>
-              </React.Fragment>}
+              </div>}
 
               <Paper style={{ padding: '1em' }}>
                 <Typography variant="headline" color="primary">Турнири</Typography>

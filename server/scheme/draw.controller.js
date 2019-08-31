@@ -42,8 +42,22 @@ const previewEliminationPhase = async (req, res, next) => {
   }
 }
 
+const finishPhase = async (req, res, next) => {
+  if (!req.user || (!req.user.isAdmin && !req.user.isTournamentAdmin))
+    return next({ name: 'DomainActionError', error: 'notEnoughPermissions' }, req, res, null);
+
+  try {
+    await SchemeService.finishPhase(req.scheme);
+    return res.json({});
+  }
+  catch (err) {
+    return next(err, req, res, null);
+  }
+}
+
 router.get('/groupPhase', identity, drawGroupPhase);
 router.get('/eliminationPhase/preview', identity, previewEliminationPhase);
 router.post('/eliminationPhase', identity, drawEliminationPhase);
+router.get('/finish', identity, finishPhase);
 
 module.exports = router;

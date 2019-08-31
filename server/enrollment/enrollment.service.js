@@ -54,11 +54,13 @@ class EnrollmentService {
         limit: scheme.maxPlayerCount,
       })
       .then(enrollments => {
-        return enrollments.sort((a, b) => {
+        enrollments.sort((a, b) => {
           let ap = ((a.team.rankings && a.team.rankings[0]) || { points: 0 }).points;
           let bp = ((b.team.rankings && b.team.rankings[0]) || { points: 0 }).points;
           return bp - ap;
         });
+        enrollments.forEach((e, i) => e.dataValues.order = i + 1);
+        return enrollments;
       });
   }
 

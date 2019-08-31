@@ -64,20 +64,15 @@ class SchemeService {
       model.maxPlayerCount = model.groupCount * model.teamsPerGroup;
   }
 
-  async getTeamsFromGroups(scheme) {
-    const data = await MatchService.getGroupMatches(scheme);
-
-    let teams = data.reduce((acc, curr) => acc.concat(curr.teams), []);
-    teams.sort((a, b) => a.order - b.order);
-    return teams;
-  }
-
   async previewEliminationPhase(scheme) {
     let teams = [];
     if (scheme.bracketStatus == BracketStatus.UNDRAWN && !scheme.hasGroupPhase)
       teams = Enrollments.getPlayers(scheme);
-    else if (scheme.bracketStatus == BracketStatus.GROUPS_END)
-      teams = this.getTeamsFromGroups(scheme);
+    else if (scheme.bracketStatus == BracketStatus.GROUPS_END) {
+      const data = await MatchService.getGroupMatches(scheme);
+      teams = data.reduce((acc, curr) => acc.concat(curr.teams), []);
+      teams.sort((a, b) => a.order - b.order);
+    }
     else
       throw { name: 'DomainActionError', error: 'invalidState' };
 
@@ -128,6 +123,16 @@ class SchemeService {
       await transaction.rollback();
       throw err;
     }
+  }
+
+  async finishPhase(scheme) {
+    if (scheme.bracketStatus == BracketStatus.GROUPS_DRAWN)
+      scheme.bracketStatus = BracketStatus.GROUPS_END;
+    else if (scheme.bracketStatus == BracketStatus.ELIMINATION_DRAWN)
+      scheme.bracketStatus = BracketStatus.ELIMINATION_END;
+    else
+      throw { name: 'DomainActionError', error: 'invalidState' };
+    await scheme.save();
   }
 
   // async drawBracket(scheme, data) {
