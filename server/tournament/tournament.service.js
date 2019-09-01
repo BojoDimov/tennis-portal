@@ -32,12 +32,10 @@ class TournamentsService {
               { model: Users, as: 'user1', attributes: ['id', 'name'] },
               { model: Users, as: 'user2', attributes: ['id', 'name'] }
             ]
-          }],
-          order: [
-            ['points', 'desc']
-          ]
+          }]
         }
-      ]
+      ],
+      order: [[{ model: Rankings, as: 'rankings' }, 'points', 'desc']]
     };
 
     if (!includeDraft)

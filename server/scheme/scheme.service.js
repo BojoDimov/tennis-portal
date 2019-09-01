@@ -12,6 +12,7 @@ const { BracketStatus } = require('../infrastructure/enums');
 const Enrollments = require('../enrollment/enrollment.service');
 const Bracket = require('./bracketFunctions');
 const MatchService = require('../match/match.service');
+const TeamService = require('../team/team.service');
 const { getWinner, getStatsFromMatch } = require('../match/match.functions');
 
 class SchemeService {
@@ -208,18 +209,26 @@ class SchemeService {
       if (match.team1Id && !teams[match.team1Id])
         teams[match.team1Id] = {
           team: match.team1,
-          score: 1
+          score: scheme.pPoints,
+          wonMatches: 0,
+          totalMatches: 0,
+          isWinner: false
         };
 
       if (match.team2Id && !teams[match.team2Id])
         teams[match.team2Id] = {
           team: match.team2,
-          score: scheme.pPoints
+          score: scheme.pPoints,
+          wonMatches: 0,
+          totalMatches: 0,
+          isWinner: false
         };
     });
 
     for (let teamId in teamStats) {
       teams[teamId].score += teamStats[teamId].wonMatches * scheme.wPoints;
+      teams[teamId].wonMatches += teamStats[teamId].wonMatches;
+      teams[teamId].totalMatches += teamStats[teamId].totalMatches;
     }
 
     let tournamentWinner = null;
@@ -227,8 +236,10 @@ class SchemeService {
     if (finale)
       tournamentWinner = getWinner(finale);
 
-    if (tournamentWinner)
+    if (tournamentWinner) {
       teams[tournamentWinner].score += scheme.cPoints;
+      teams[tournamentWinner].isWinner = true;
+    }
 
     teams.sort((a, b) => b.score - a.score);
     return teams.filter(e => e);
@@ -246,6 +257,7 @@ class SchemeService {
 
       for (let i = 0; i < scores.length; ++i) {
         const ranking = rankings.find(e => e.teamId == scores[i].team.id);
+        const team = await Teams.findById(scores[i].team.id);
         if (!ranking)
           await Rankings.create({
             tournamentId: scheme.edition.tournamentId,
@@ -256,6 +268,13 @@ class SchemeService {
           ranking.points += scores[i].score;
           await ranking.save({ transaction });
         }
+
+        team.wonMatches += scores[i].wonMatches;
+        team.totalMatches += scores[i].totalMatches;
+        team.wonTournaments += (scores[i].isWinner ? 1 : 0);
+        team.totalTournaments += 1;
+        TeamService.calculateCoefficients(team);
+        await team.save({ transaction });
       }
 
       await transaction.commit();

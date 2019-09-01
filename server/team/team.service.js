@@ -104,12 +104,6 @@ class TeamsService {
     let wonTournaments = parseInt(model.wonTournaments) || 0;
     let totalTournaments = parseInt(model.totalTournaments) || 0;
 
-    let matchesCoefficient = (totalMatches != 0) ? wonMatches / totalMatches : 0;
-    let tournamentsCoefficient = (totalTournaments != 0) ? wonTournaments / totalTournaments : 0;
-    let rankingCoefficient = matchesCoefficient + 1.2 * tournamentsCoefficient;
-
-    if (entity.rankingCoefficient != rankingCoefficient)
-      entity.rankingCoefficient = rankingCoefficient;
     if (entity.wonMatches != wonMatches)
       entity.wonMatches = wonMatches;
     if (entity.totalMatches != totalMatches)
@@ -119,7 +113,17 @@ class TeamsService {
     if (entity.totalTournaments != totalTournaments)
       entity.totalTournaments = totalTournaments;
 
+    this.calculateCoefficients(entity);
     return entity.save({ transaction });
+  }
+
+  calculateCoefficients(entity) {
+    let matchesCoefficient = (entity.totalMatches != 0) ? entity.wonMatches / entity.totalMatches : 0;
+    let tournamentsCoefficient = (entity.totalTournaments != 0) ? entity.wonTournaments / entity.totalTournaments : 0;
+    let rankingCoefficient = matchesCoefficient + 1.2 * tournamentsCoefficient;
+
+    if (entity.rankingCoefficient != rankingCoefficient)
+      entity.rankingCoefficient = rankingCoefficient;
   }
 
   // delete(id) {
