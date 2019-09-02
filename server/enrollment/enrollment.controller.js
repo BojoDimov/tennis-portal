@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const adminIdentity = require('../infrastructure/middlewares/adminIdentity');
+const identity = require('../infrastructure/middlewares/identity');
 const auth = require('../infrastructure/middlewares/auth');
 const TeamsService = require('../team/team.service');
 const EnrollmentsService = require('./enrollment.service');
@@ -14,6 +14,9 @@ const getAll = (req, res, next) => {
 }
 
 const create = async (req, res, next) => {
+  if (!req.user || (!req.user.isAdmin && !req.user.isTournamentAdmin))
+    return next({ name: 'DomainActionError', error: 'notEnoughPermissions' }, req, res, null);
+
   let transaction;
   try {
     transaction = await sequelize.transaction();
@@ -40,6 +43,9 @@ const create = async (req, res, next) => {
 }
 
 const remove = (req, res, next) => {
+  if (!req.user || (!req.user.isAdmin && !req.user.isTournamentAdmin))
+    return next({ name: 'DomainActionError', error: 'notEnoughPermissions' }, req, res, null);
+
   return EnrollmentsService
     .cancelEnroll(req.params.id)
     .then(e => res.json({}));
@@ -77,6 +83,6 @@ const cancelEnroll = async (req, res, next) => {
 router.get('/enroll', auth, enroll);
 router.delete('/:enrollmentId/cancelEnroll', auth, cancelEnroll);
 router.get('/', getAll);
-router.post('/', adminIdentity, create);
-router.delete('/:id', adminIdentity, remove);
+router.post('/', identity, create);
+router.delete('/:id', identity, remove);
 module.exports = router;

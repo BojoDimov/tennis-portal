@@ -1,5 +1,12 @@
 module.exports = (db, Sequelize) => {
-  const Teams = db.define("Teams");
+  const Teams = db.define("Teams", {
+    wonMatches: { type: Sequelize.INTEGER, default: 0 },
+    totalMatches: { type: Sequelize.INTEGER, default: 0 },
+    wonTournaments: { type: Sequelize.INTEGER, default: 0 },
+    totalTournaments: { type: Sequelize.INTEGER, default: 0 },
+    rankingCoefficient: { type: Sequelize.REAL, default: 0 },
+    globalRank: { type: Sequelize.INTEGER, default: -1 }
+  });
 
   Teams.associate = function (models) {
     models.Teams.belongsTo(models.Users, {

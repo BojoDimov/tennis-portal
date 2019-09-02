@@ -1,16 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const EditionsService = require('./edition.service');
-const adminIdentity = require('../infrastructure/middlewares/adminIdentity');
 const identity = require('../infrastructure/middlewares/identity');
 
 const filter = async (req, res, next) => {
-  let isAdmin = false;
-  if (req.user && req.user.isAdmin)
-    isAdmin = true;
-
   try {
-    const items = await EditionsService.filter(isAdmin);
+    let includeDrafts = req.user && (req.user.isAdmin || req.user.isTournamentAdmin);
+    const items = await EditionsService.filter(includeDrafts);
     return res.json(items);
   }
   catch (err) {
@@ -19,12 +15,9 @@ const filter = async (req, res, next) => {
 }
 
 const get = async (req, res, next) => {
-  let isAdmin = false;
-  if (req.user && req.user.isAdmin)
-    isAdmin = true;
-
   try {
-    const item = await EditionsService.get(req.params.id, isAdmin);
+    let includeDrafts = req.user && (req.user.isAdmin || req.user.isTournamentAdmin);
+    const item = await EditionsService.get(req.params.id, includeDrafts);
     return res.json(item);
   }
   catch (err) {
@@ -33,6 +26,9 @@ const get = async (req, res, next) => {
 }
 
 const create = async (req, res, next) => {
+  if (!req.user || (!req.user.isAdmin && !req.user.isTournamentAdmin))
+    return next({ name: 'DomainActionError', error: 'notEnoughPermissions' }, req, res, null);
+
   try {
     await EditionsService.create(req.body);
     return res.json({});
@@ -43,6 +39,9 @@ const create = async (req, res, next) => {
 }
 
 const update = async (req, res, next) => {
+  if (!req.user || (!req.user.isAdmin && !req.user.isTournamentAdmin))
+    return next({ name: 'DomainActionError', error: 'notEnoughPermissions' }, req, res, null);
+
   try {
     await EditionsService.update(req.params.id, req.body);
     return res.json({});
@@ -53,6 +52,9 @@ const update = async (req, res, next) => {
 }
 
 const remove = async (req, res, next) => {
+  if (!req.user || (!req.user.isAdmin && !req.user.isTournamentAdmin))
+    return next({ name: 'DomainActionError', error: 'notEnoughPermissions' }, req, res, null);
+
   try {
     await EditionsService.remove(req.params.id);
     return res.json({});
@@ -63,9 +65,9 @@ const remove = async (req, res, next) => {
 }
 
 router.post('/filter', identity, filter);
-router.post('/', adminIdentity, create);
 router.get('/:id', identity, get);
-router.post('/:id', adminIdentity, update);
-router.delete('/:id', adminIdentity, remove);
+router.post('/:id', identity, update);
+router.post('/', identity, create);
+router.delete('/:id', identity, remove);
 
 module.exports = router;

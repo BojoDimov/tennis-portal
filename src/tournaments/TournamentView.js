@@ -54,13 +54,8 @@ class TournamentView extends React.Component {
                       <TableRow>
                         <TableCell padding="none">{index + 1}</TableCell>
                         <TableCell>
-                          <Link to={`/teams/${ranking.team.user1.id}`} >
-                            <Typography variant="body2">{ranking.team.user1.name}</Typography>
-                          </Link>
-                          {ranking.team.user2 &&
-                            <Link to={`/teams/${ranking.team.user2.id}`} >
-                              <Typography variant="body2">{ranking.team.user2.name}</Typography>
-                            </Link>}
+                          <Typography variant="body2">{ranking.team.user1.name}</Typography>
+                          {ranking.team.user2 && <Typography variant="body2">{ranking.team.user2.name}</Typography>}
                         </TableCell>
                         <TableCell padding="dense">
                           <Typography variant="caption">{ranking.points}</Typography>

@@ -164,7 +164,6 @@ class MatchesService {
 
     groups.forEach(group => {
       generateStats(group);
-      group.test = 'test'
     });
     return groups;
   }

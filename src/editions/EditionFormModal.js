@@ -58,7 +58,10 @@ class EditionFormModal extends React.Component {
   }
 
   save() {
-    const model = this.state.model;
+    const model = JSON.parse(JSON.stringify(this.state.model));
+    model.tournament = null;
+    model.schemes = null;
+
     return QueryService
       .post(`/editions/${model.id ? model.id : ''}`, model)
       .then(e => this.props.onChange(e));
