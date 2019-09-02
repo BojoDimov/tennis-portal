@@ -7,13 +7,15 @@ import SchemesRoot from '../schemes/SchemesRoot';
 import GroupsBracket from '../schemes/brackets/GroupsBracket';
 import EliminationBracket from '../schemes/brackets/EliminationBracket';
 import EditionsRoot from '../editions/EditionsRoot';
+import TournamentsRoot from '../tournaments/TournamentsRoot';
+import PlayersRoot from '../tournaments/PlayersRoot';
+
 import Schedule from '../schedule/Schedule';
 import Courts from '../admin/courts/Courts';
 import Seasons from '../admin/seasons/Seasons';
 import Statistics from '../admin/statistics/Statistics';
 import Users from '../admin/users/Users';
 import TeamView from '../users/TeamView';
-import NavigationModel from '../menu/navigation.model';
 import UserService from '../services/user.service';
 import UserProfile from '../users/UserProfile';
 import AccountView from '../users/AccountView';
@@ -22,41 +24,60 @@ import RecoveryStep1 from '../login/RecoveryStep1';
 import RecoveryStep2 from '../login/RecoveryStep2';
 import { ApplicationMode } from '../enums';
 
+import {
+  adminRoutes,
+  tournamentAdditional,
+  desktopRoutes,
+  userRoutes
+} from '../menu/menu.configuration';
+
 const routeMapping = {
-  '/editions': EditionsRoot,
   '/schedule': Schedule,
-  '/players': NotFoundPage,
+  '/editions': EditionsRoot,
+
+  //tournament routes
+  '/players': PlayersRoot,
+  '/leagues': TournamentsRoot,
+  //'/champions': ChampionsRoot,
+
+  //admin routes
   '/admin/courts': Courts,
   '/admin/seasons': Seasons,
   '/admin/users': Users,
   '/admin/statistics': Statistics,
+
+  //user routes
   '/account': AccountView
 };
 
 const AppRouting = () => (
   <UserService.WithApplicationMode>
     {mode => <Switch>
-      {/* <Route path="/tournaments" component={null} /> 
-      <Route path="/editions" component={EditionsRoot} />*/}
       <Route path="/tournaments/:id" component={TournamentView} />
       <Route path="/schemes/:id/groups" component={GroupsBracket} />
       <Route path="/schemes/:id/elimination" component={EliminationBracket} />
       <Route path="/schemes" component={SchemesRoot} />
       <Route path="/teams/:id" component={TeamView} />
 
-      {NavigationModel.routes.map(route => {
+      {desktopRoutes.map(route => {
         return (
           <Route key={route.id} path={route.to} component={routeMapping[route.to]} mode={mode} />
         );
       })}
 
-      {mode == ApplicationMode.ADMIN && NavigationModel.adminRoutes.map(route => {
+      {tournamentAdditional.map(route => {
         return (
           <Route key={route.id} path={route.to} component={routeMapping[route.to]} mode={mode} />
         );
       })}
 
-      {mode != ApplicationMode.GUEST && NavigationModel.userRoutes.map(route => {
+      {mode == ApplicationMode.ADMIN && adminRoutes.map(route => {
+        return (
+          <Route key={route.id} path={route.to} component={routeMapping[route.to]} mode={mode} />
+        );
+      })}
+
+      {mode != ApplicationMode.GUEST && userRoutes.map(route => {
         return (
           <Route key={route.id} path={route.to} component={routeMapping[route.to]} mode={mode} />
         );

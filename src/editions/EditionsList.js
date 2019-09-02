@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
+import Paper from '@material-ui/core/Paper';
 import Hidden from '@material-ui/core/Hidden';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
@@ -50,24 +51,26 @@ class EditionsList extends React.Component {
 
     return (
       <UserService.WithApplicationMode>
-        {mode => (
-          <div className="container">
-            {editionModel
-              && <EditionFormModal
-                model={editionModel}
-                onChange={() => { this.setState({ editionModel: null }); this.getData(); }}
-                onClose={() => this.setState({ editionModel: null })}
-              />}
+        {mode => {
+          let hasPermission = mode == ApplicationMode.ADMIN || mode == ApplicationMode.TOURNAMENT;
 
-            {tournamentModel
-              && <TournamentFormModal
-                model={tournamentModel}
-                onChange={() => { this.setState({ tournamentModel: null }); this.getData(); }}
-                onClose={() => this.setState({ tournamentModel: null })}
-              />}
+          return (
+            <div className="container">
+              {hasPermission && editionModel
+                && <EditionFormModal
+                  model={editionModel}
+                  onChange={() => { this.setState({ editionModel: null }); this.getData(); }}
+                  onClose={() => this.setState({ editionModel: null })}
+                />}
 
-            {mode == ApplicationMode.ADMIN
-              && <React.Fragment>
+              {hasPermission && tournamentModel
+                && <TournamentFormModal
+                  model={tournamentModel}
+                  onChange={() => { this.setState({ tournamentModel: null }); this.getData(); }}
+                  onClose={() => this.setState({ tournamentModel: null })}
+                />}
+
+              {hasPermission && <div style={{ margin: '.5rem 0' }}>
                 <Button
                   variant="contained"
                   color="primary"
@@ -86,26 +89,40 @@ class EditionsList extends React.Component {
                 >
                   Нов Турнир
                   </Button>
-              </React.Fragment>}
+              </div>}
 
-            <ExpansionPanel defaultExpanded={true}>
-              <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography variant="headline">Турнири</Typography>
-              </ExpansionPanelSummary>
-              <ExpansionPanelDetails>
-
+              <Paper style={{ padding: '1em' }}>
+                <Typography variant="headline" color="primary">Турнири</Typography>
                 {editions.length == 0 && <Typography variant="caption">Няма регистрирани турнири</Typography>}
-                {editions.length > 0 && <Hidden smDown>
-                  <EditionsDesktopView editions={editions} actions={actions} />
-                </Hidden>}
+                {editions.length != 0 && <React.Fragment>
+                  <Hidden smDown>
+                    <EditionsDesktopView editions={editions} actions={actions} />
+                  </Hidden>
+                  <Hidden mdUp>
+                    <EditionsMobileView editions={editions} actions={actions} />
+                  </Hidden>
+                </React.Fragment>}
+              </Paper>
 
-                {editions.length > 0 && <Hidden mdUp>
-                  <EditionsMobileView editions={editions} actions={actions} />
-                </Hidden>}
-              </ExpansionPanelDetails>
-            </ExpansionPanel>
-          </div>
-        )}
+              {/* <ExpansionPanel defaultExpanded={true}>
+                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography variant="headline">Турнири</Typography>
+                </ExpansionPanelSummary>
+                <ExpansionPanelDetails>
+
+                  {editions.length == 0 && <Typography variant="caption">Няма регистрирани турнири</Typography>}
+                  {editions.length > 0 && <Hidden smDown>
+                    <EditionsDesktopView editions={editions} actions={actions} />
+                  </Hidden>}
+
+                  {editions.length > 0 && <Hidden mdUp>
+                    <EditionsMobileView editions={editions} actions={actions} />
+                  </Hidden>}
+                </ExpansionPanelDetails>
+              </ExpansionPanel> */}
+            </div>
+          );
+        }}
       </UserService.WithApplicationMode>
     );
   }

@@ -91,94 +91,98 @@ class EditionView extends React.Component {
 
     return (
       <UserService.WithApplicationMode>
-        {mode => (
-          <div className="container">
-            <MessageModal activation={this.state.hasError}>
-              <Typography>Неуспешно изтриване на турнир. Възможна причина за грешката е съществуващи схеми със записани играчи в тях.</Typography>
-            </MessageModal>
-            {editionModel
-              && <EditionFormModal
-                model={editionModel}
-                onChange={() => {
-                  this.setState({ editionModel: null });
-                  this.getData();
-                }}
-                onClose={() => this.setState({ editionModel: null })}
-              />}
+        {mode => {
+          let hasPermission = mode == ApplicationMode.ADMIN || mode == ApplicationMode.TOURNAMENT;
 
-            {schemeModel
-              && <SchemeFormModal
-                model={schemeModel}
-                onChange={() => {
-                  this.setState({ schemeModel: null });
-                  this.getData();
-                }}
-                onClose={() => this.setState({ schemeModel: null })}
-              />}
+          return (
+            <div className="container">
+              <MessageModal activation={this.state.hasError}>
+                <Typography>Неуспешно изтриване на турнир. Възможна причина за грешката е съществуващи схеми със записани играчи в тях.</Typography>
+              </MessageModal>
+              {hasPermission && editionModel
+                && <EditionFormModal
+                  model={editionModel}
+                  onChange={() => {
+                    this.setState({ editionModel: null });
+                    this.getData();
+                  }}
+                  onClose={() => this.setState({ editionModel: null })}
+                />}
 
-            {mode == ApplicationMode.ADMIN && <div style={{ margin: '.5rem 0' }}>
-              <Button variant="contained" color="primary" size="small" onClick={() => this.initSchemeModel()}>Добави схема</Button>
-              <Button variant="contained" color="primary" size="small" style={{ marginLeft: '.3rem' }} onClick={() => this.setState({ editionModel: edition })}>Промяна</Button>
-              <ConfirmationDialog
-                title="Изтриване на турнир"
-                body={<Typography>Сигурни ли сте че искате да изтриете турнир {edition.name}?</Typography>}
-                onAccept={() => this.remove()}
-              >
-                <Button variant="contained" color="secondary" size="small" style={{ marginLeft: '.3rem' }}>Изтриване</Button>
-              </ConfirmationDialog>
+              {hasPermission && schemeModel
+                && <SchemeFormModal
+                  model={schemeModel}
+                  onChange={() => {
+                    this.setState({ schemeModel: null });
+                    this.getData();
+                  }}
+                  onClose={() => this.setState({ schemeModel: null })}
+                />}
 
-            </div>}
+              {hasPermission && <div style={{ margin: '.5rem 0' }}>
+                <Button variant="contained" color="primary" size="small" onClick={() => this.initSchemeModel()}>Добави схема</Button>
+                <Button variant="contained" color="primary" size="small" style={{ marginLeft: '.3rem' }} onClick={() => this.setState({ editionModel: edition })}>Промяна</Button>
+                <ConfirmationDialog
+                  title="Изтриване на турнир"
+                  body={<Typography>Сигурни ли сте че искате да изтриете турнир {edition.name}?</Typography>}
+                  onAccept={() => this.remove()}
+                >
+                  <Button variant="contained" color="secondary" size="small" style={{ marginLeft: '.3rem' }}>Изтриване</Button>
+                </ConfirmationDialog>
 
-            <Card>
-              <CardContent>
-                <Typography variant="headline">
-                  {edition.name}
-                </Typography>
-                <Typography variant="caption">{edition.info}</Typography>
+              </div>}
 
-                <Typography variant="caption" style={{ marginTop: '1rem' }}>Лига</Typography>
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  {edition.tournament.thumbnail
-                    && <DisplayImage image={edition.tournament.thumbnail} style={{ maxWidth: '50px', marginRight: '.5rem' }} />}
-                  <Link to={`/tournaments/${edition.tournament.id}`}>
-                    <Typography variant="body2">{edition.tournament.name}</Typography>
-                  </Link>
-                </div>
+              <Card>
+                <CardContent>
+                  <Typography variant="headline">
+                    {edition.name}
+                  </Typography>
+                  <Typography variant="caption">{edition.info}</Typography>
 
-                <div style={{ display: 'flex', marginTop: '1rem' }}>
-                  <Typography variant="caption" style={{ paddingRight: '1rem' }}>
-                    Начало
+                  <Typography variant="caption" style={{ marginTop: '1rem' }}>Лига</Typography>
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    {edition.tournament.thumbnail
+                      && <DisplayImage image={edition.tournament.thumbnail} style={{ maxWidth: '50px', marginRight: '.5rem' }} />}
+                    <Link to={`/tournaments/${edition.tournament.id}`}>
+                      <Typography variant="body2">{edition.tournament.name}</Typography>
+                    </Link>
+                  </div>
+
+                  <div style={{ display: 'flex', marginTop: '1rem' }}>
+                    <Typography variant="caption" style={{ paddingRight: '1rem' }}>
+                      Начало
               <Typography>{moment(edition.startDate).format('DD.MM.YYYY')}</Typography>
-                  </Typography>
+                    </Typography>
 
-                  <Typography variant="caption">
-                    Край
+                    <Typography variant="caption">
+                      Край
               <Typography>{moment(edition.endDate).format('DD.MM.YYYY')}</Typography>
-                  </Typography>
-                </div>
-              </CardContent>
-            </Card>
+                    </Typography>
+                  </div>
+                </CardContent>
+              </Card>
 
-            <div className={classes.schemesRoot}>
-              {edition.schemes.map(scheme => {
-                const actions = <SchemeDetailsActions
-                  scheme={scheme}
-                  enableViewLink
-                  enrollment={enrolled[scheme.id]}
-                  mode={mode}
-                  reload={() => this.getData()}
-                />;
-                return <SchemeDetails
-                  key={scheme.id}
-                  scheme={scheme}
-                  actions={actions}
-                  CardProps={{
-                    className: classes.schemesItem
-                  }} />
-              })}
+              <div className={classes.schemesRoot}>
+                {edition.schemes.map(scheme => {
+                  const actions = <SchemeDetailsActions
+                    scheme={scheme}
+                    enableViewLink
+                    enrollment={enrolled[scheme.id]}
+                    mode={mode}
+                    reload={() => this.getData()}
+                  />;
+                  return <SchemeDetails
+                    key={scheme.id}
+                    scheme={scheme}
+                    actions={actions}
+                    CardProps={{
+                      className: classes.schemesItem
+                    }} />
+                })}
+              </div>
             </div>
-          </div>
-        )}
+          );
+        }}
       </UserService.WithApplicationMode>
     );
   }

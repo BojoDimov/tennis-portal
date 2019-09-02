@@ -4,11 +4,9 @@ const moment = require('moment-timezone');
 const { Status } = require('../infrastructure/enums');
 
 class EditionsService {
-  async filter(isAdmin) {
-    return await Editions.findAll({
-      where: isAdmin ? {} : {
-        status: Status.PUBLISHED
-      },
+  async filter(includeDraft) {
+    let options = {
+      where: {},
       include: [
         {
           model: Tournaments,
@@ -17,11 +15,21 @@ class EditionsService {
         }
       ],
       order: [['id', 'desc']]
-    });
+    };
+
+    if (!includeDraft)
+      options.where[Op.not] = {
+        status: Status.DRAFT
+      };
+
+    return await Editions.findAll(options);
   }
 
-  async get(id, isAdmin = true) {
-    const edition = await Editions.findById(id, {
+  async get(id, includeDraft) {
+    let options = {
+      where: {
+        id
+      },
       include: [
         {
           model: Tournaments,
@@ -31,13 +39,20 @@ class EditionsService {
         {
           model: Schemes,
           as: 'schemes',
-          where: isAdmin ? {} : {
+          where: includeDraft ? {} : {
             status: Status.PUBLISHED
           },
           required: false
         }
       ]
-    });
+    };
+
+    if (!includeDraft)
+      options.where[Op.not] = {
+        status: Status.DRAFT
+      };
+
+    const edition = await Editions.findOne(options);
     if (!edition)
       throw { name: 'NotFound' };
     return edition;
@@ -50,7 +65,7 @@ class EditionsService {
   }
 
   async update(id, model) {
-    const edition = await this.get(id);
+    const edition = await this.get(id, true);
     model.startDate = moment(model.startDate).format('YYYY-MM-DD');
     model.endDate = moment(model.endDate).format('YYYY-MM-DD');
     return await edition.update(model);
@@ -60,7 +75,7 @@ class EditionsService {
     let transaction;
     try {
       transaction = await sequelize.transaction();
-      const edition = await this.get(id);
+      const edition = await this.get(id, true);
       if (!edition)
         throw { name: 'NotFound' };
 

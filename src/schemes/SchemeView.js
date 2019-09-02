@@ -12,6 +12,7 @@ import { BracketStatus, ApplicationMode } from '../enums';
 import { catchEvent } from '../services/events.service';
 import MessageModal from '../components/MessageModal';
 import ScoresModal from './components/ScoresModal';
+import EliminationPreviewModal from './components/EliminationPreviewModal';
 
 class SchemeView extends React.Component {
 
@@ -24,8 +25,154 @@ class SchemeView extends React.Component {
       schemeModel: null,
       enrolled: [],
       hasError: false,
-      scores: null
+      scores: null,
+      eliminationPreview: null
     }
+  }
+
+  render() {
+    const { scheme, schemeModel, enrolled, scores, eliminationPreview } = this.state;
+
+    return (
+      <UserService.WithApplicationMode>
+        {mode => {
+          let hasPermission = mode == ApplicationMode.ADMIN || mode == ApplicationMode.TOURNAMENT;
+
+          return (
+            <div className="container">
+              <MessageModal activation={this.state.hasError}>
+                <Typography>Неуспешно изтриване на схема. Възможна причина за грешката е съществуващи записи на играчи.</Typography>
+              </MessageModal>
+              {hasPermission && schemeModel
+                && <SchemeFormModal
+                  model={schemeModel}
+                  onChange={() => {
+                    this.setState({ schemeModel: null });
+                    this.getData();
+                  }}
+                  onClose={() => this.setState({ schemeModel: null })}
+                />}
+              {scores && scores.length > 0
+                && <ScoresModal
+                  scores={scores}
+                  scheme={scheme}
+                  onChange={() => {
+                    this.setState({ scores: null });
+                    this.getData();
+                  }}
+                  onClose={() => this.setState({ scores: null })}
+                />}
+
+              {eliminationPreview && <EliminationPreviewModal
+                teams={eliminationPreview}
+                scheme={scheme}
+                onClose={() => this.setState({ eliminationPreview: null })}
+                onDraw={() => this.setState({ eliminationPreview: null }, this.getData())}
+              />}
+
+              {hasPermission && this.getButtons()}
+
+              <SchemeDetails
+                scheme={scheme}
+                actions={
+                  <SchemeDetailsActions mode={mode} scheme={scheme} reload={() => this.getData()} enrollment={enrolled[scheme.id]} />
+                }
+                enableEditionLink
+              />
+              <EnrollmentsComponent scheme={scheme} style={{ marginTop: '1rem' }} mode={mode} />
+            </div>
+          );
+        }}
+      </UserService.WithApplicationMode>
+    );
+  }
+
+  getButtons() {
+    const { scheme } = this.state;
+
+    return (
+      <div style={{ margin: '.5rem 0' }}>
+        <Button
+          variant="contained"
+          color="primary"
+          size="small"
+          onClick={() => this.setState({ schemeModel: scheme })}
+        >
+          Промяна
+        </Button>
+
+        {scheme.bracketStatus == BracketStatus.UNDRAWN
+          && <ConfirmationDialog
+            title="Изтриване на турнир"
+            body={<Typography>Сигурни ли сте че искате да изтриете схема {scheme.name}?</Typography>}
+            onAccept={() => this.deleteScheme()}
+          >
+            <Button
+              variant="contained"
+              color="secondary"
+              size="small"
+              style={{ marginLeft: '.3rem' }}
+            >
+              Изтриване
+                  </Button>
+          </ConfirmationDialog>}
+
+        {((scheme.bracketStatus == BracketStatus.UNDRAWN && !scheme.hasGroupPhase)
+          || (scheme.bracketStatus == BracketStatus.GROUPS_END))
+          && <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            style={{ marginLeft: '.3rem' }}
+            onClick={() => this.previewElimination()}
+          >
+            Изтегляне
+        </Button>}
+
+        {scheme.bracketStatus == BracketStatus.UNDRAWN && scheme.hasGroupPhase
+          && <ConfirmationDialog
+            title="Изтегляне на схема"
+            body={<Typography>Сигурни ли сте, че искате да изтеглите схемата?</Typography>}
+            onAccept={() => this.drawGroupPhase()}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              style={{ marginLeft: '.3rem' }}
+            >
+              Изтегляне
+            </Button>
+          </ConfirmationDialog>}
+
+        {(scheme.bracketStatus == BracketStatus.GROUPS_DRAWN || scheme.bracketStatus == BracketStatus.ELIMINATION_DRAWN)
+          && <ConfirmationDialog
+            title="Приключване на фаза"
+            body={<Typography>Сигурни ли сте че искате да приключите текущата фаза?</Typography>}
+            onAccept={() => this.finishPhase()}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              style={{ marginLeft: '.3rem' }}
+            >
+              Приключване на фаза
+            </Button>
+          </ConfirmationDialog>}
+
+        {scheme.bracketStatus == BracketStatus.ELIMINATION_END
+          && <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            style={{ marginLeft: '.3rem' }}
+            onClick={() => this.getScores()}
+          >
+            Резултати
+          </Button>}
+      </div>
+    );
   }
 
   componentDidMount() {
@@ -54,119 +201,24 @@ class SchemeView extends React.Component {
       .catch(err => this.setState({ hasError: true }));
   }
 
-  drawBracket() {
-    return QueryService.get(`/schemes/${this.state.scheme.id}/drawBracket`)
-      .then(() => this.getData());
-  }
-
   getScores() {
     return QueryService.get(`/schemes/${this.state.scheme.id}/scores`)
       .then(scores => this.setState({ scores }));
   }
 
-  render() {
-    const { scheme, schemeModel, enrolled, scores } = this.state;
+  previewElimination() {
+    return QueryService.get(`/schemes/${this.state.scheme.id}/draw/eliminationPhase/preview`)
+      .then(eliminationPreview => this.setState({ eliminationPreview }));
+  }
 
-    return (
-      <UserService.WithApplicationMode>
-        {mode => (
-          <div className="container">
-            <MessageModal activation={this.state.hasError}>
-              <Typography>Неуспешно изтриване на схема. Възможна причина за грешката е съществуващи записи на играчи.</Typography>
-            </MessageModal>
-            {schemeModel
-              && <SchemeFormModal
-                model={schemeModel}
-                onChange={() => {
-                  this.setState({ schemeModel: null });
-                  this.getData();
-                }}
-                onClose={() => this.setState({ schemeModel: null })}
-              />}
-            {scores && scores.length > 0
-              && <ScoresModal
-                scores={scores}
-                scheme={scheme}
-                onChange={() => {
-                  this.setState({ scores: null });
-                  this.getData();
-                }}
-                onClose={() => this.setState({ scores: null })}
-              />}
+  drawGroupPhase() {
+    return QueryService.get(`/schemes/${this.state.scheme.id}/draw/groupPhase`)
+      .then(() => this.getData());
+  }
 
-            {mode == ApplicationMode.ADMIN &&
-              <div style={{ margin: '.5rem 0' }}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  size="small"
-                  onClick={() => this.setState({ schemeModel: scheme })}
-                >
-                  Промяна
-                </Button>
-                {scheme.bracketStatus != BracketStatus.ELIMINATION_END
-                  && <ConfirmationDialog
-                    title="Изтегляне/приключване на текуща фаза"
-                    body={<Typography>Сигурни ли сте че искате да извършите действието?</Typography>}
-                    onAccept={() => this.drawBracket()}
-                    style={{ marginTop: '.5rem' }}
-                  >
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      size="small"
-                      style={{ marginLeft: '.3rem' }}
-                    >
-                      {scheme.bracketStatus == BracketStatus.UNDRAWN
-                        && <span>Изтегляне</span>}
-                      {(scheme.bracketStatus == BracketStatus.GROUPS_DRAWN || scheme.bracketStatus == BracketStatus.ELIMINATION_DRAWN)
-                        && <span>Приключване на фаза</span>}
-                      {scheme.bracketStatus == BracketStatus.GROUPS_END
-                        && <span>Следваща фаза</span>}
-                    </Button>
-                  </ConfirmationDialog>}
-
-                {scheme.bracketStatus == BracketStatus.ELIMINATION_END
-                  && <Button
-                    variant="contained"
-                    color="primary"
-                    size="small"
-                    style={{ marginLeft: '.3rem' }}
-                    onClick={() => this.getScores()}
-                  >
-                    Резултати
-                </Button>}
-
-                {scheme.bracketStatus == BracketStatus.UNDRAWN
-                  && <ConfirmationDialog
-                    title="Изтриване на турнир"
-                    body={<Typography>Сигурни ли сте че искате да изтриете схема {scheme.name}?</Typography>}
-                    onAccept={() => this.deleteScheme()}
-                  >
-                    <Button
-                      variant="contained"
-                      color="secondary"
-                      size="small"
-                      style={{ marginLeft: '.3rem' }}
-                    >
-                      Изтриване
-                  </Button>
-                  </ConfirmationDialog>}
-
-              </div>}
-
-            <SchemeDetails
-              scheme={scheme}
-              actions={
-                <SchemeDetailsActions mode={mode} scheme={scheme} reload={() => this.getData()} enrollment={enrolled[scheme.id]} />
-              }
-              enableEditionLink
-            />
-            <EnrollmentsComponent scheme={scheme} style={{ marginTop: '1rem' }} mode={mode} />
-          </div>
-        )}
-      </UserService.WithApplicationMode>
-    );
+  finishPhase() {
+    return QueryService.get(`/schemes/${this.state.scheme.id}/draw/finish`)
+      .then(() => this.getData());
   }
 }
 

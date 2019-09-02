@@ -7,25 +7,32 @@ import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import { l10n_text } from '../../components/L10n';
+import { withStyles } from '@material-ui/core/styles';
+
 class SchemeDetails extends React.Component {
   render() {
-    const { scheme, enableEditionLink } = this.props;
+    const { scheme, enableEditionLink, classes } = this.props;
 
     return (
       <Card {...this.props.CardProps}>
         <CardContent>
-          <Typography variant="headline">{scheme.name}</Typography>
-          <Typography variant="caption">{scheme.info}</Typography>
-
-          {enableEditionLink && <Typography variant="caption" style={{ marginTop: '.5rem' }}>
-            Турнир
-            <Link to={`/editions/${scheme.editionId}`}>
-              <Typography variant="body2">
-                <ReplyIcon style={{ fontSize: '14px' }} />
-                {scheme.edition.name}
-              </Typography>
+          <Typography variant="headline">
+            Схема
+            <Link to={`/schemes/${scheme.id}`}>
+              <span className={classes.schemeAccent}>{scheme.name}</span>
             </Link>
-          </Typography>}
+            {enableEditionLink && <span>
+              към турнир
+              <Link to={`/editions/${scheme.editionId}`}>
+                <span className={classes.editionAccent}>{scheme.edition.name}</span>
+                {/* <Typography variant="body2">
+                    <ReplyIcon style={{ fontSize: '14px' }} />
+                    {scheme.edition.name}
+                  </Typography> */}
+              </Link>
+            </span>}
+          </Typography>
+          <Typography variant="caption">{scheme.info}</Typography>
 
           <div style={{ display: 'flex', flexWrap: 'wrap', margin: '.5rem 0' }}>
             <Typography
@@ -106,4 +113,17 @@ function getSchemeTraits(scheme) {
   return traits.join(', ');
 }
 
-export default SchemeDetails;
+const styles = (theme) => ({
+  schemeAccent: {
+    margin: '0 .3rem',
+    fontStyle: 'italic',
+    color: theme.palette.primary.main
+  },
+  editionAccent: {
+    margin: '0 .3rem',
+    fontStyle: 'italic',
+    color: theme.palette.secondary.main
+  }
+});
+
+export default withStyles(styles)(SchemeDetails);

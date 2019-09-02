@@ -86,57 +86,61 @@ class EliminationBracket extends React.Component {
     const { matchModel, bracket, scheme } = this.state;
     return (
       <UserService.WithApplicationMode>
-        {mode => (
-          <Paper elevation={4} style={{ backgroundColor: 'rgba(255, 255, 255, .9)' }}>
-            {scheme && <Typography align="center" variant="headline" style={{ padding: '2rem 0' }}>
-              Елиминационна фаза за
+        {mode => {
+          let hasPermission = mode == ApplicationMode.ADMIN || mode == ApplicationMode.TOURNAMENT;
+
+          return (
+            <Paper elevation={4} style={{ backgroundColor: 'rgba(255, 255, 255, .9)' }}>
+              {scheme && <Typography align="center" variant="headline" style={{ padding: '2rem 0' }}>
+                Елиминационна фаза за
               <Link to={`/editions/${scheme.edition.id}`}>
-                <Typography variant="display1">{scheme.edition.name}</Typography>
-              </Link>
-              -
+                  <Typography variant="display1">{scheme.edition.name}</Typography>
+                </Link>
+                -
               <Link to={`/schemes/${scheme.id}`}>
-                <Typography variant="display1">{scheme.name}</Typography>
-              </Link>
-            </Typography>}
+                  <Typography variant="display1">{scheme.name}</Typography>
+                </Link>
+              </Typography>}
 
-            {matchModel
-              && <MatchFormModal
-                model={matchModel}
-                onChange={() => {
-                  this.setState({ matchModel: null });
-                  this.getData();
-                }}
-                onClose={() => this.setState({ matchModel: null })}
-              />}
+              {matchModel
+                && <MatchFormModal
+                  model={matchModel}
+                  onChange={() => {
+                    this.setState({ matchModel: null });
+                    this.getData();
+                  }}
+                  onClose={() => this.setState({ matchModel: null })}
+                />}
 
-            <div className="bracket">
-              {bracket.map((round, index) => {
-                return (
-                  <div key={index} className="round">
-                    <h3 className="round-title" style={{ padding: '.5rem' }}>
-                      {this.getRoundName(round.length * 2)}
-                    </h3>
-                    <ul className="list">
-                      {round.map((match, i) => {
-                        return (
-                          <li className="item" key={i}>
-                            <div className="match">
-                              <Match
-                                match={match}
-                                onEvent={() => this.setState({ matchModel: match })}
-                                mode={mode}
-                              />
-                            </div>
-                          </li>
-                        )
-                      })}
-                    </ul>
-                  </div>
-                )
-              })}
-            </div>
-          </Paper>
-        )}
+              <div className="bracket">
+                {bracket.map((round, index) => {
+                  return (
+                    <div key={index} className="round">
+                      <h3 className="round-title" style={{ padding: '.5rem' }}>
+                        {this.getRoundName(round.length * 2)}
+                      </h3>
+                      <ul className="list">
+                        {round.map((match, i) => {
+                          return (
+                            <li className="item" key={i}>
+                              <div className="match">
+                                <Match
+                                  match={match}
+                                  onEvent={() => this.setState({ matchModel: match })}
+                                  hasPermission={hasPermission}
+                                />
+                              </div>
+                            </li>
+                          )
+                        })}
+                      </ul>
+                    </div>
+                  )
+                })}
+              </div>
+            </Paper>
+          );
+        }}
       </UserService.WithApplicationMode>
     );
   }
@@ -144,9 +148,9 @@ class EliminationBracket extends React.Component {
 
 class Match extends React.Component {
   render() {
-    const { match, mode } = this.props;
+    const { match, hasPermission } = this.props;
 
-    if (mode == ApplicationMode.ADMIN)
+    if (hasPermission)
       return (
         <Tooltip
           title="Въвеждане/промяна на резултат"

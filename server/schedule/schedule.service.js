@@ -91,7 +91,65 @@ class ScheduleService {
   async updateSeason(id, model) {
     //TODO: add seasons overlap validation
     const entity = await Seasons.findById(id);
+    if (entity == null)
+      throw { name: 'NotFound' };
     return entity.update(model);
+  }
+
+  async deleteSeason(id) {
+    let transaction;
+    try {
+      transaction = await sequelize.transaction();
+      const entity = await Seasons.findById(id);
+      if (entity == null)
+        throw { name: 'NotFound' };
+
+      var reservations = await Reservations.findAll({
+        where: {
+          seasonId: entity.id
+        },
+        include: [
+          {
+            model: ReservationPayments,
+            as: 'payments'
+          }
+        ]
+      });
+
+      for (let reservation of reservations) {
+        await ReservationPayments.destroy({
+          where: {
+            reservationId: reservation.id
+          },
+          transaction
+        });
+        await Reservations.destroy({
+          where: {
+            id: reservation.id
+          },
+          transaction
+        });
+      }
+
+      await Subscriptions.destroy({
+        where: {
+          seasonId: entity.id
+        },
+        transaction
+      });
+
+      await Seasons.destroy({
+        where: {
+          id: entity.id
+        },
+        transaction
+      });
+      return transaction.commit();
+    }
+    catch (ex) {
+      await transaction.rollback();
+      throw ex;
+    }
   }
 
   createCourt(model) {
@@ -100,6 +158,8 @@ class ScheduleService {
 
   async updateCourt(id, model) {
     const entity = await Courts.findById(id);
+    if (entity == null)
+      throw { name: 'NotFound' };
     return entity.update(model);
   }
 
