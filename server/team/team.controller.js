@@ -16,6 +16,7 @@ const getAll = async (req, res, next) => {
 const update = async (req, res, next) => {
   if (!req.user || (!req.user.isAdmin && req.user.isTournamentAdmin))
     return next({ name: 'DomainActionError', error: 'notEnoughPermissions' }, req, res, null);
+
   try {
     await TeamsService.update(req.params.id, req.body);
     return res.json({});
@@ -25,7 +26,21 @@ const update = async (req, res, next) => {
   }
 }
 
-//router.get('/:id', get);
+const participateInTournaments = async (req, res, next) => {
+  if (!req.user || req.user.team.id != req.params.id)
+    return next({ name: 'DomainActionError', error: 'notEnoughPermissions' }, req, res, null);
+
+  try {
+    await TeamsService.participateInTournaments(req.params.id);
+    return res.json({});
+  }
+  catch (err) {
+    return next(err, req, res, null);
+  }
+}
+
+
+router.get('/:id/participateInTournaments', identity, participateInTournaments);
 router.get('/', getAll);
 router.post('/:id', identity, update);
 module.exports = router;

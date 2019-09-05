@@ -17,7 +17,8 @@ module.exports = async (req, _, next) => {
       as: 'user',
       attributes: {
         exclude: ['passwordSalt', 'passwordHash']
-      }
+      },
+      include: ['team']
     }]
   });
   if (!token)

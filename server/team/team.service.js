@@ -4,7 +4,9 @@ const { Gender } = require('../infrastructure/enums');
 class TeamsService {
   getAll(filter) {
     let options = {
-      where: {},
+      where: {
+        participateInTournaments: true
+      },
       limit: (filter.limit || 25),
       offset: (filter.offset || 0),
       include: [
@@ -22,13 +24,6 @@ class TeamsService {
         [sequelize.Op.iLike]: '%' + filter.searchTerm + '%'
       }
     };
-
-    // '$user1.email$': {
-    //   [sequelize.Op.iLike]: '%' + filter.searchTerm + '%'
-    // },
-    // '$user2.email$': {
-    //   [sequelize.Op.iLike]: '%' + filter.searchTerm + '%'
-    // }
 
 
     if (filter.searchTerm)
@@ -115,6 +110,25 @@ class TeamsService {
 
     this.calculateCoefficients(entity);
     return entity.save({ transaction });
+  }
+
+  async participateInTournaments(id) {
+    let entity = await Teams.findById(id);
+    if (!entity)
+      throw { name: 'NotFound' };
+
+    entity.participateInTournaments = !entity.participateInTournaments;
+
+    if (!entity.participateInTournaments) {
+      entity.rankingCoefficient = 0;
+      entity.globalRank = -1;
+    } else {
+      entity.rankingCoefficient = -1
+      await entity.save();
+      this.calculateCoefficients(entity);
+    }
+
+    await entity.save();
   }
 
   calculateCoefficients(entity) {

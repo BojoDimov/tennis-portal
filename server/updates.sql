@@ -116,3 +116,29 @@ create trigger teams_reorder_by_ranking_after_insert
 after insert or delete on "Teams"
 for each statement
 execute procedure recalculateGlobalRanking();
+
+--------------UPDATE 6-------------
+alter table "Teams"
+add "participateInTournaments" boolean default false;
+
+create or replace function recalculateGlobalRanking()
+returns trigger as
+$$
+begin
+	update "Teams"
+	set 
+		"globalRank" = subquery."pos"
+	from (select 
+		  	id, 
+		  	row_number() over (order by "rankingCoefficient" desc) as "pos" 
+		  from "Teams"
+		  where "participateInTournaments" = true) as subquery
+	where "Teams".id=subquery.id;
+	
+	update "Teams"
+	set "globalRank" = -1
+	where "participateInTournaments" = false;
+	
+	return null;
+end
+$$ language plpgsql;
