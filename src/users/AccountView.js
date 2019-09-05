@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useReducer } from 'react';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
@@ -8,6 +8,8 @@ import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Switch from '@material-ui/core/Switch';
 
 import UserService from '../services/user.service';
 import QueryService from '../services/query.service';
@@ -23,7 +25,9 @@ class AccountView extends React.Component {
     super(props);
     this.state = {
       loggedInUser: null,
-      user: {},
+      user: {
+        team: {}
+      },
       subscriptions: null,
       reservations: null,
       invitations: null,
@@ -57,6 +61,15 @@ class AccountView extends React.Component {
       .then(e => this.setState(e));
   }
 
+  participateInTournaments() {
+    QueryService.get(`/teams/${this.state.user.team.id}/participateInTournaments?timestamp=${new Date().getTime()}`)
+      .then(_ => {
+        let user = this.state.user;
+        user.team.participateInTournaments = !user.team.participateInTournaments;
+        this.setState({ user });
+      });
+  }
+
   render() {
     const {
       user,
@@ -88,6 +101,21 @@ class AccountView extends React.Component {
             <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
               <UserPersonalInfo user={user} />
               <UserPlayerInfo user={user} style={{ marginLeft: '2rem' }} />
+            </div>
+            <div style={{ marginBottom: '1rem' }}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    color="primary"
+                    checked={Boolean(user.team.participateInTournaments)}
+                    onClick={() => this.participateInTournaments()}
+                  />
+                }
+                label="Участие в турнири"
+              />
+              <Typography variant="caption" color="secondary">
+                При активиране на тази опция се съгласявате с условията и правилата на клуба спрямо провеждането на турнири по тенис и ще бъдете включени в класацията на играчите.
+              </Typography>
             </div>
             <div>
               <Button variant="contained" size="small" color="primary" onClick={() => this.setState({ userModel: Object.assign({}, user) })}>Промяна</Button>

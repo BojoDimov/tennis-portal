@@ -46,6 +46,7 @@ class UserService {
       attributes: {
         exclude: ['passwordHash', 'passwordSalt']
       },
+      include: ['team']
     });
   }
 
