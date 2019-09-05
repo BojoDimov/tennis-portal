@@ -5,7 +5,8 @@ module.exports = (db, Sequelize) => {
     wonTournaments: { type: Sequelize.INTEGER, default: 0 },
     totalTournaments: { type: Sequelize.INTEGER, default: 0 },
     rankingCoefficient: { type: Sequelize.REAL, default: 0 },
-    globalRank: { type: Sequelize.INTEGER, default: -1 }
+    globalRank: { type: Sequelize.INTEGER, default: -1 },
+    participateInTournaments: { type: Sequelize.BOOLEAN, default: false }
   });
 
   Teams.associate = function (models) {
