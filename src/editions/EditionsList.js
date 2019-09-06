@@ -95,10 +95,10 @@ class EditionsList extends React.Component {
                 <Typography variant="headline" color="primary">Турнири</Typography>
                 {editions.length == 0 && <Typography variant="caption">Няма регистрирани турнири</Typography>}
                 {editions.length != 0 && <React.Fragment>
-                  <Hidden smDown>
+                  {/* <Hidden smDown>
                     <EditionsDesktopView editions={editions} actions={actions} />
-                  </Hidden>
-                  <Hidden mdUp>
+                  </Hidden> */}
+                  <Hidden>
                     <EditionsMobileView editions={editions} actions={actions} />
                   </Hidden>
                 </React.Fragment>}
