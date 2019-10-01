@@ -6,7 +6,7 @@ import TournamentView from '../tournaments/TournamentView';
 import SchemesRoot from '../schemes/SchemesRoot';
 import GroupsBracket from '../schemes/brackets/GroupsBracket';
 import EliminationBracket from '../schemes/brackets/EliminationBracket';
-import EditionsRoot from '../editions/EditionsRoot';
+import EditionsRoot from '../tournaments/EditionsRoot';
 import TournamentsRoot from '../tournaments/TournamentsRoot';
 import PlayersRoot from '../tournaments/PlayersRoot';
 

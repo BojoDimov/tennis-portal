@@ -12,15 +12,36 @@ class EditionsService {
           model: Tournaments,
           as: 'tournament',
           include: ['thumbnail']
+        },
+        {
+          model: Schemes,
+          as: 'schemes'
         }
       ],
       order: [['id', 'desc']]
     };
 
-    if (!includeDraft)
+    if (!includeDraft) {
       options.where[Op.not] = {
         status: Status.DRAFT
       };
+      options.include = [
+        {
+          model: Tournaments,
+          as: 'tournament',
+          include: ['thumbnail']
+        },
+        {
+          model: Schemes,
+          as: 'schemes',
+          where: {
+            [Op.not]: {
+              status: Status.DRAFT
+            }
+          }
+        }
+      ]
+    }
 
     return await Editions.findAll(options);
   }
