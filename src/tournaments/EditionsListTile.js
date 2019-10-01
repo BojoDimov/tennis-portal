@@ -5,6 +5,9 @@ import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
 import { ApplicationMode, Status } from '../enums';
 
+import SnowIcon from '../components/icons/SnowIcon';
+import PlayersIcon from '../components/icons/PlayersIcon';
+
 class EditionsListTile extends React.Component {
   navigate() {
     const { edition, history, mode } = this.props;
@@ -39,11 +42,13 @@ class EditionsListTile extends React.Component {
         </div>
         <div className={classes.info_root + ongoingSuffix}>
           <div>
-            <Typography>
-              Зима 2020
+            <Typography color="primary" className={classes.icon_and_text}>
+              <SnowIcon width="25px" height="25px" />
+              {edition.tournament.name}
             </Typography>
 
-            <Typography>
+            <Typography color="secondary" className={classes.icon_and_text}>
+              <PlayersIcon width="20px" height="20px" />
               64
             </Typography>
           </div>
@@ -110,6 +115,11 @@ const styles = (theme) => ({
     '&.ongoing *': {
       color: theme.palette.text.primary
     }
+  },
+  icon_and_text: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   info_root: {
     fontWeight: 700,
