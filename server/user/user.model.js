@@ -59,6 +59,14 @@ module.exports = (db, Sequelize) => {
         allowNull: false
       }
     });
+
+    models.Users.hasOne(models.Teams, {
+      as: 'team',
+      foreignKey: {
+        name: 'user1Id',
+        allowNull: false
+      }
+    });
   }
 
   return Users;
