@@ -12,6 +12,8 @@ import UserService from '../services/user.service';
 import QueryService from '../services/query.service';
 import SnowIcon from '../components/icons/SnowIcon';
 import PlayersIcon from '../components/icons/PlayersIcon';
+import GroupIcon from '../components/icons/GroupIcon';
+import BracketIcon from '../components/icons/BracketIcon';
 import TournamentIcon from '../components/icons/TournamentIcon';
 import { ApplicationMode, BracketStatus } from '../enums';
 import { catchEvent } from '../services/events.service';
@@ -41,7 +43,7 @@ class SchemeView extends React.Component {
 
   render() {
     const { scheme, schemeModel, enrolled, scores, eliminationPreview } = this.state;
-    const { classes } = this.props;
+    const { classes, history } = this.props;
 
     return (
       <UserService.WithApplicationMode>
@@ -89,7 +91,8 @@ class SchemeView extends React.Component {
                 <Typography style={{ marginBottom: '1em' }}>{scheme.info}</Typography>
                 <div className={classes.widgets_root}>
                   <div style={{ flexBasis: '40%' }}>
-                    <RegisterWidget scheme={scheme} refresh={() => this.getData()} classes={classes} />
+                    {/* <RegisterWidget scheme={scheme} refresh={() => this.getData()} classes={classes} /> */}
+                    <SchemesWidget scheme={scheme} classes={classes} history={history} />
                   </div>
                   <div style={{ flexGrow: 1, marginLeft: '2em' }}>
                     <EnrollmentsComponent scheme={scheme} mode={mode} />
@@ -277,6 +280,38 @@ const RegisterWidget = ({ scheme, refresh, classes }) => {
   );
 }
 
+const SchemesWidget = ({ scheme, classes, history }) => {
+  const navigateBracket = () => {
+    if (scheme.bracketStatus == BracketStatus.ELIMINATION_DRAWN || scheme.status == BracketStatus.ELIMINATION_END)
+      history.push(`/schemes/${scheme.id}/elimination`);
+  };
+
+  const navigateGroups = () => {
+    if (scheme.bracketStatus != BracketStatus.UNDRAWN)
+      history.push(`/schemes/${scheme.id}/groups`);
+  };
+
+  return (
+    <ExpansionPanel defaultExpanded style={{ flexBasis: '40%' }}>
+      <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+        <Typography variant="headline">Схема</Typography>
+      </ExpansionPanelSummary>
+      <ExpansionPanelDetails className={classes.schemes_widget}>
+        {scheme.hasGroupPhase && <Paper elevation={1} className={classes.schemes_widget_tile} onClick={navigateGroups}>
+          <GroupIcon width="100px" height="100px" />
+          <Typography>Групи</Typography>
+        </Paper>}
+
+        <Paper elevation={1} className={classes.schemes_widget_tile} onClick={navigateBracket}>
+          <BracketIcon width="100px" height="100px" />
+          <Typography>Преглед</Typography>
+        </Paper>
+
+      </ExpansionPanelDetails >
+    </ExpansionPanel >
+  );
+}
+
 const styles = (theme) => ({
   root: {
     padding: '2em'
@@ -300,6 +335,22 @@ const styles = (theme) => ({
   },
   widgets_root: {
     display: 'flex'
+  },
+  schemes_widget: {
+    display: 'flex',
+    padding: '2em',
+    justifyContent: 'space-around',
+    alignItems: 'center'
+  },
+  schemes_widget_tile: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: '.3em 1em',
+    background: 'linear-gradient(0deg, rgb(255, 232, 217) 0%, rgb(255, 255, 255) 100%)',
+    color: theme.palette.secondary.main,
+    cursor: 'pointer'
   },
   register_widget: {
     display: 'flex',
