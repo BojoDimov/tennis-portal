@@ -3,7 +3,7 @@ import moment from 'moment-timezone';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
-import { ApplicationMode, Status } from '../enums';
+import { ApplicationMode, Status, BracketStatus } from '../enums';
 
 import SnowIcon from '../components/icons/SnowIcon';
 import PlayersIcon from '../components/icons/PlayersIcon';
@@ -22,6 +22,7 @@ class EditionsListTile extends React.Component {
   render() {
     const { edition, classes, history } = this.props;
 
+    let showSchemeInfo = edition.schemes && edition.schemes.length === 1;
     let ongoingSuffix = '';
     if (moment(edition.startDate).isSameOrAfter(moment(), 'date'))
       ongoingSuffix = ' ongoing'
@@ -40,22 +41,23 @@ class EditionsListTile extends React.Component {
           <Typography className="title">{edition.name}</Typography>
           <Typography variant="caption">{edition.info}</Typography>
         </div>
-        <div className={classes.info_root + ongoingSuffix}>
+        {showSchemeInfo && <div className={classes.info_root + ongoingSuffix}>
           <div>
-            <Typography color="primary" className={classes.icon_and_text}>
+            <Typography color="secondary" className={classes.icon_and_text}>
               <SnowIcon width="25px" height="25px" />
               {edition.tournament.name}
             </Typography>
 
-            <Typography color="secondary" className={classes.icon_and_text}>
+            <Typography color="primary" className={classes.icon_and_text}>
               <PlayersIcon width="20px" height="20px" />
               64
             </Typography>
           </div>
-          <div>
-
+          <div className="schemeType">
+            {edition.schemes[0].hasGroupPhase && <Typography align="center" color="primary">Групова фаза</Typography>}
+            {!edition.schemes[0].hasGroupPhase && <Typography align="center" color="primary">Директна елиминация</Typography>}
           </div>
-        </div>
+        </div>}
       </Paper>
     );
   }
@@ -132,6 +134,10 @@ const styles = (theme) => ({
         marginRight: '.3em'
       }
     },
+    '& > .schemeType': {
+      display: 'flex',
+      justifyContent: 'flex-end'
+    }
   }
 });
 

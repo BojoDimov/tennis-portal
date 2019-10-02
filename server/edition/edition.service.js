@@ -18,7 +18,7 @@ class EditionsService {
           as: 'schemes'
         }
       ],
-      order: [['id', 'desc']]
+      order: [['startDate', 'desc']]
     };
 
     if (!includeDraft) {
