@@ -2,7 +2,7 @@ import React from 'react';
 
 
 const GroupIcon = ({width, height}) => <svg x="0px" y="0px" width={width} height={height}
-viewBox="0 90 612 470" enable-background="new 0 90 612 470">
+viewBox="0 90 612 470" enableBackground="new 0 90 612 470">
 <path fill="currentColor" d="M287.6,247.7h13.9v55.5h13.9v-69.3h-27.7V247.7z M109.4,383.4h32.4v13.9h-32.4v41.6h46.2V425h-32.4v-13.9
 			h32.4v-41.6h-46.2V383.4z M455.7,371.5v13.9h32.4v13.9h-16.2v13.9h16.2V427h-32.4v13.9h46.2v-69.3H455.7z"/>
 <path fill="currentColor" d="M590.1,534.7l-56-56c0.8-1.4,1.2-2.9,1.2-4.4v-72.9l12.4,12.4c3.8,3.8,9.8,3.8,13.6,0l28.8-28.8

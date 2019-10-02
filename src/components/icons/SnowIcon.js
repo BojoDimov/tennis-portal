@@ -1,8 +1,8 @@
 import React from 'react';
 
 
-const SnowIcon = ({width, height}) => <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width={width} height={height}
-viewBox="0 0 15.3 13.7" enable-background="new 0 0 15.3 13.7">
+const SnowIcon = ({width, height}) => <svg version="1.1" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width={width} height={height}
+viewBox="0 0 15.3 13.7" enableBackground="new 0 0 15.3 13.7">
 <path fill="currentColor" d="M12.8,9l-1.1-0.6L12.5,8c0.2-0.1,0.3-0.3,0.2-0.5c-0.1-0.2-0.3-0.3-0.5-0.2L10.9,8L9,6.9l1.9-1.1l1.3,0.6
 c0,0,0.1,0,0.1,0c0.1,0,0.3-0.1,0.3-0.2c0.1-0.2,0-0.4-0.2-0.5l-0.9-0.4l1.1-0.6C13,4.5,13.1,4.2,13,3.9c-0.2-0.3-0.5-0.4-0.8-0.2
 l-1.1,0.6l0.1-0.9c0-0.2-0.1-0.4-0.3-0.4c-0.2,0-0.4,0.1-0.4,0.3l-0.2,1.5L8.4,5.9V3.7l1.2-0.9c0.2-0.1,0.2-0.3,0.1-0.5

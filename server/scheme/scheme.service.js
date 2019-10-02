@@ -1,6 +1,7 @@
 const {
   sequelize,
   Schemes,
+  Editions,
   Matches,
   Groups,
   GroupTeams,
@@ -19,7 +20,11 @@ class SchemeService {
   async get(id) {
     return await Schemes.findById(id, {
       include: [
-        'edition'
+        {
+          model: Editions,
+          as: 'edition',
+          include: ['tournament']
+        }
       ]
     });
   }
