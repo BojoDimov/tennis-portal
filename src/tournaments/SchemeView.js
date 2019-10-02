@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment-timezone';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
@@ -14,6 +15,7 @@ import SnowIcon from '../components/icons/SnowIcon';
 import PlayersIcon from '../components/icons/PlayersIcon';
 import GroupIcon from '../components/icons/GroupIcon';
 import BracketIcon from '../components/icons/BracketIcon';
+import CalendarIcon from '../components/icons/CalendarIcon';
 import TournamentIcon from '../components/icons/TournamentIcon';
 import { ApplicationMode, BracketStatus } from '../enums';
 import { catchEvent } from '../services/events.service';
@@ -90,9 +92,12 @@ class SchemeView extends React.Component {
                 <SchemeInfoBar scheme={scheme} playerCount={enrolled.length} classes={classes} />
                 <Typography style={{ marginBottom: '1em' }}>{scheme.info}</Typography>
                 <div className={classes.widgets_root}>
+                  <div style={{ flexBasis: '100%', marginBottom: '2em' }}>
+                    <FinalMatchWidget scheme={scheme} classes={classes} />
+                  </div>
                   <div style={{ flexBasis: '40%' }}>
-                    {/* <RegisterWidget scheme={scheme} refresh={() => this.getData()} classes={classes} /> */}
-                    <SchemesWidget scheme={scheme} classes={classes} history={history} />
+                    <RegisterWidget scheme={scheme} refresh={() => this.getData()} classes={classes} />
+                    {/* <SchemesWidget scheme={scheme} classes={classes} history={history} /> */}
                   </div>
                   <div style={{ flexGrow: 1, marginLeft: '2em' }}>
                     <EnrollmentsComponent scheme={scheme} mode={mode} />
@@ -260,21 +265,48 @@ const SchemeInfoBar = ({ scheme, playerCount, classes }) => {
         {!scheme.singleTeams && "DBL "}
         ({scheme.hasGroupPhase && "Групи ->"}Дир.ел.)
       </Typography>
+
+      <Typography color="primary">
+        <CalendarIcon width="25px" height="25px" />
+        {moment(scheme.date).format('DD.MM.YYYY')}
+      </Typography>
     </div>
   );
 }
 
 const RegisterWidget = ({ scheme, refresh, classes }) => {
+  let start = moment(scheme.registrationStart);
+  let end = moment(scheme.registrationEnd);
+  let duration = moment.duration(start.diff(moment()));
+
+  if (moment().isBetween(start, end))
+    duration = moment.duration(end.diff(moment()));
+
   return (
     <ExpansionPanel defaultExpanded style={{ flexBasis: '40%' }}>
       <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-        <Typography variant="headline">Записване</Typography>
+        <Typography variant="title">Записване</Typography>
       </ExpansionPanelSummary>
       <ExpansionPanelDetails className={classes.register_widget}>
-        <Typography>Остават 8 дена 3 часа и 5 минути до края на записването.</Typography>
-        <div className="buttons">
-          <Button variant="contained" color="primary">Записване</Button>
-        </div>
+        {moment().isBefore(start) && <React.Fragment>
+          <Typography>Остават <b>{duration.days()} дни, {duration.hours()} часа</b> и <b> {duration.minutes()} минути</b> до началото на записването.</Typography>
+          <div className="buttons">
+            <Button variant="contained" color="primary" disabled>Записване</Button>
+          </div>
+        </React.Fragment>}
+
+        {moment().isBetween(start, end) && <React.Fragment>
+          <Typography>Остават <b>{duration.days()} дни, {duration.hours()} часа</b> и <b> {duration.minutes()} минути</b> до края на записването.</Typography>
+          <div className="buttons">
+            <Button variant="contained" color="primary">Записване</Button>
+          </div>
+        </React.Fragment>}
+
+        {moment().isAfter(end) && <React.Fragment>
+          <Typography>Записването за този турнир е приключило.</Typography>
+        </React.Fragment>}
+
+
       </ExpansionPanelDetails>
     </ExpansionPanel>
   );
@@ -294,7 +326,7 @@ const SchemesWidget = ({ scheme, classes, history }) => {
   return (
     <ExpansionPanel defaultExpanded style={{ flexBasis: '40%' }}>
       <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-        <Typography variant="headline">Схема</Typography>
+        <Typography variant="title">Схема</Typography>
       </ExpansionPanelSummary>
       <ExpansionPanelDetails className={classes.schemes_widget}>
         {scheme.hasGroupPhase && <Paper elevation={1} className={classes.schemes_widget_tile} onClick={navigateGroups}>
@@ -309,6 +341,19 @@ const SchemesWidget = ({ scheme, classes, history }) => {
 
       </ExpansionPanelDetails >
     </ExpansionPanel >
+  );
+}
+
+const FinalMatchWidget = ({ scheme, classes }) => {
+  return (
+    <ExpansionPanel defaultExpanded>
+      <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+        <Typography variant="title">Финал</Typography>
+      </ExpansionPanelSummary>
+      <ExpansionPanelDetails>
+        skrrrr
+      </ExpansionPanelDetails>
+    </ExpansionPanel>
   );
 }
 
@@ -334,7 +379,8 @@ const styles = (theme) => ({
     }
   },
   widgets_root: {
-    display: 'flex'
+    display: 'flex',
+    flexWrap: 'wrap'
   },
   schemes_widget: {
     display: 'flex',
