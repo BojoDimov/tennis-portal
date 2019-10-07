@@ -142,3 +142,8 @@ begin
 	return null;
 end
 $$ language plpgsql;
+
+
+--------------UPDATE 7-------------
+alter table "Schemes"
+alter "date" type timestamp with time zone;
