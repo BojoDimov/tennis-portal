@@ -95,11 +95,11 @@ class SchemeView extends React.Component {
                   <div style={{ flexBasis: '100%', marginBottom: '2em' }}>
                     <FinalMatchWidget scheme={scheme} classes={classes} />
                   </div>
-                  <div style={{ flexBasis: '40%' }}>
+                  <div style={{ flexBasis: '50%', marginRight: '1em' }}>
                     <RegisterWidget scheme={scheme} refresh={() => this.getData()} classes={classes} />
-                    {/* <SchemesWidget scheme={scheme} classes={classes} history={history} /> */}
+                    <SchemesWidget scheme={scheme} classes={classes} history={history} />
                   </div>
-                  <div style={{ flexGrow: 1, marginLeft: '2em' }}>
+                  <div style={{ flexGrow: 1, marginLeft: '1em' }}>
                     <EnrollmentsComponent scheme={scheme} mode={mode} />
                   </div>
                 </div>
@@ -345,13 +345,37 @@ const SchemesWidget = ({ scheme, classes, history }) => {
 }
 
 const FinalMatchWidget = ({ scheme, classes }) => {
+  if (!scheme || !scheme.matches || !scheme.matches.length || scheme.bracketRounds != scheme.matches[0].round)
+    return null;
+
+  let match = scheme.matches[0];
+
   return (
     <ExpansionPanel defaultExpanded>
       <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
         <Typography variant="title">Финал</Typography>
       </ExpansionPanelSummary>
-      <ExpansionPanelDetails>
-        skrrrr
+      <ExpansionPanelDetails style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
+          <Typography style={{ margin: '0 2em' }}>
+            {match.team1.user1.name}
+            {match.winnerId == match.team1Id && <Typography color="primary">Победител</Typography>}
+            {match.winnerId && match.winnerId != match.team1Id && <Typography color="primary">Финалист</Typography>}
+          </Typography>
+          <div>
+            {match.sets.map(set => {
+              return (
+                <Typography>{set.team1} - {set.team2} {set.tiebreaker && <sup>({set.tiebreaker})</sup>}</Typography>
+              );
+            })}
+          </div>
+
+          <Typography style={{ margin: '0 2em' }}>
+            {match.team2.user1.name}
+            {match.winnerId == match.team2Id && <Typography color="primary">Победител</Typography>}
+            {match.winnerId && match.winnerId != match.team2Id && <Typography color="primary">Финалист</Typography>}
+          </Typography>
+        </div>
       </ExpansionPanelDetails>
     </ExpansionPanel>
   );

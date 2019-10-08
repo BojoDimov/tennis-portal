@@ -109,11 +109,7 @@ class GroupsBracket extends React.Component {
                 />}
 
               <Typography align="center" variant="headline">
-                Групова фаза за
-              <Link to={`/editions/${scheme.edition.id}`}>
-                  <Typography variant="display1">{scheme.edition.name}</Typography>
-                </Link>
-                -
+                Групова фаза
               <Link to={`/schemes/${scheme.id}`}>
                   <Typography variant="display1">{scheme.name}</Typography>
                 </Link>

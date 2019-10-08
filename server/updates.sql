@@ -147,3 +147,12 @@ $$ language plpgsql;
 --------------UPDATE 7-------------
 alter table "Schemes"
 alter "date" type timestamp with time zone;
+
+alter table "Schemes"
+add "bracketRounds" integer default 0;
+
+alter table "Matches"
+add "winnerId" integer;
+
+alter table "Matches"
+add constraint FK_Matches_Winner foreign key ("winnerId") references "Teams" (id);

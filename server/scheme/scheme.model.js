@@ -19,6 +19,7 @@ module.exports = (db, Sequelize) => {
     registrationStart: { type: Sequelize.DATE, allowNull: false, },
     registrationEnd: { type: Sequelize.DATE, allowNull: false },
     hasGroupPhase: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false },
+    bracketRounds: { type: Sequelize.INTEGER, allowNull: false, defaultValue: 0 },
     bracketStatus: {
       type: Sequelize.ENUM, allowNull: false,
       values: [

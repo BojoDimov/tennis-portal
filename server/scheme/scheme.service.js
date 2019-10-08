@@ -7,7 +7,8 @@ const {
   GroupTeams,
   Teams,
   Users,
-  Rankings
+  Rankings,
+  Sets
 } = require('../db');
 const { BracketStatus } = require('../infrastructure/enums');
 const Enrollments = require('../enrollment/enrollment.service');
@@ -24,7 +25,17 @@ class SchemeService {
           model: Editions,
           as: 'edition',
           include: ['tournament']
+        },
+        {
+          model: Matches,
+          as: 'matches',
+          include: MatchService.matchesIncludes()
         }
+      ],
+      order: [
+        [{ model: Matches, as: 'matches' }, 'round', 'desc'],
+        [{ model: Matches, as: 'matches' }, 'match', 'desc'],
+        [{ model: Matches, as: 'matches' }, { model: Sets, as: 'sets' }, 'order', 'asc']
       ]
     });
   }
@@ -91,9 +102,10 @@ class SchemeService {
       transaction = await sequelize.transaction();
 
       teams = teams.filter(team => team.order);
-
+      scheme.bracketRounds = Math.ceil(Math.log2(teams.length));
       scheme.bracketStatus = BracketStatus.ELIMINATION_DRAWN;
       await scheme.save({ transaction });
+
       let matches = Bracket.drawEliminations(scheme, scheme.seed, teams);
       await Matches.bulkCreate(matches, { transaction });
 
@@ -239,7 +251,7 @@ class SchemeService {
     let tournamentWinner = null;
     let finale = matches.find(match => match.match && match.round && (match.sets.length > 0 || match.withdraw));
     if (finale)
-      tournamentWinner = getWinner(finale);
+      tournamentWinner = finale.winnerId;//getWinner(finale);
 
     if (tournamentWinner) {
       teams[tournamentWinner].score += scheme.cPoints;

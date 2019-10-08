@@ -92,11 +92,7 @@ class EliminationBracket extends React.Component {
           return (
             <Paper elevation={4} style={{ backgroundColor: 'rgba(255, 255, 255, .9)' }}>
               {scheme && <Typography align="center" variant="headline" style={{ padding: '2rem 0' }}>
-                Елиминационна фаза за
-              <Link to={`/editions/${scheme.edition.id}`}>
-                  <Typography variant="display1">{scheme.edition.name}</Typography>
-                </Link>
-                -
+                Елиминационна фаза
               <Link to={`/schemes/${scheme.id}`}>
                   <Typography variant="display1">{scheme.name}</Typography>
                 </Link>
