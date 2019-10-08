@@ -10,8 +10,7 @@ class EditionsService {
       include: [
         {
           model: Tournaments,
-          as: 'tournament',
-          include: ['thumbnail']
+          as: 'tournament'
         },
         {
           model: Schemes,
@@ -28,8 +27,7 @@ class EditionsService {
       options.include = [
         {
           model: Tournaments,
-          as: 'tournament',
-          include: ['thumbnail']
+          as: 'tournament'
         },
         {
           model: Schemes,
@@ -54,8 +52,7 @@ class EditionsService {
       include: [
         {
           model: Tournaments,
-          as: 'tournament',
-          include: ['thumbnail']
+          as: 'tournament'
         },
         {
           model: Schemes,
