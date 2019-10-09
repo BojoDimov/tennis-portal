@@ -146,8 +146,10 @@ class SchemeService {
   async finishPhase(scheme) {
     if (scheme.bracketStatus == BracketStatus.GROUPS_DRAWN)
       scheme.bracketStatus = BracketStatus.GROUPS_END;
-    else if (scheme.bracketStatus == BracketStatus.ELIMINATION_DRAWN)
+    else if (scheme.bracketStatus == BracketStatus.ELIMINATION_DRAWN) {
       scheme.bracketStatus = BracketStatus.ELIMINATION_END;
+      scheme.finalId = scheme.matches[0].id;
+    }
     else
       throw { name: 'DomainActionError', error: 'invalidState' };
     await scheme.save();
@@ -249,7 +251,7 @@ class SchemeService {
     }
 
     let tournamentWinner = null;
-    let finale = matches.find(match => match.match && match.round && (match.sets.length > 0 || match.withdraw));
+    let finale = matches.find(match => match.round == scheme.bracketSize);
     if (finale)
       tournamentWinner = finale.winnerId;//getWinner(finale);
 

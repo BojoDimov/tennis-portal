@@ -268,7 +268,7 @@ const SchemeInfoBar = ({ scheme, playerCount, classes }) => {
 
       <Typography color="primary">
         <CalendarIcon width="25px" height="25px" />
-        {moment(scheme.date).format('DD.MM.YYYY')}
+        {moment(scheme.date).format('DD.MM.YYYY  HH:mm')}
       </Typography>
     </div>
   );
@@ -358,8 +358,8 @@ const FinalMatchWidget = ({ scheme, classes }) => {
       <ExpansionPanelDetails style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
           <Typography style={{ margin: '0 2em' }}>
-            {match.team1.user1.name}
-            {match.winnerId == match.team1Id && <Typography color="primary">Победител</Typography>}
+            {match.team1 ? match.team1.user1.name : 'TBD'}
+            {match.winnerId && match.winnerId == match.team1Id && <Typography color="primary">Победител</Typography>}
             {match.winnerId && match.winnerId != match.team1Id && <Typography color="primary">Финалист</Typography>}
           </Typography>
           <div>
@@ -371,8 +371,8 @@ const FinalMatchWidget = ({ scheme, classes }) => {
           </div>
 
           <Typography style={{ margin: '0 2em' }}>
-            {match.team2.user1.name}
-            {match.winnerId == match.team2Id && <Typography color="primary">Победител</Typography>}
+            {match.team2 ? match.team2.user1.name : 'TBD'}
+            {match.winnerId && match.winnerId == match.team2Id && <Typography color="primary">Победител</Typography>}
             {match.winnerId && match.winnerId != match.team2Id && <Typography color="primary">Финалист</Typography>}
           </Typography>
         </div>

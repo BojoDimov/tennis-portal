@@ -7,6 +7,7 @@ import { ApplicationMode, Status, BracketStatus } from '../enums';
 
 import SnowIcon from '../components/icons/SnowIcon';
 import PlayersIcon from '../components/icons/PlayersIcon';
+import WinnerIcon from '../components/icons/WinnerIcon';
 
 class EditionsListTile extends React.Component {
   navigate() {
@@ -27,6 +28,9 @@ class EditionsListTile extends React.Component {
     if (moment(edition.startDate).isSameOrAfter(moment(), 'date'))
       ongoingSuffix = ' ongoing'
 
+    if (edition.schemes && edition.schemes.length === 1 && edition.schemes[0].bracketStatus == BracketStatus.ELIMINATION_END)
+      ongoingSuffix = '';
+
     return (
       <Paper elevation={1} className={classes.tileRoot + ongoingSuffix} onClick={() => this.navigate()}>
         <div className={classes.date_root + ongoingSuffix}>
@@ -40,6 +44,18 @@ class EditionsListTile extends React.Component {
         <div className={classes.name_root + ongoingSuffix}>
           <Typography className="title">{edition.name}</Typography>
           <Typography variant="caption">{edition.info}</Typography>
+          {edition.schemes && edition.schemes.length === 1 && edition.schemes[0].bracketStatus != BracketStatus.ELIMINATION_END
+            && <Typography style={{ display: 'flex', alignItems: 'center' }}>
+              {moment(edition.schemes[0].date).format('hh:mm A')}
+              {moment().isAfter(moment(edition.schemes[0].date)) && <Typography variant="caption" style={{ marginLeft: '.3em' }}>(Играе се)</Typography>}
+            </Typography>}
+          {edition.schemes && edition.schemes.length === 1 && edition.schemes[0].final
+            && <div className={classes.finale}>
+              {edition.schemes[0].final.winnerId == edition.schemes[0].final.team1Id && <WinnerIcon width="18px" height="18px" />}
+              <Typography>{edition.schemes[0].final.team1.user1.name}</Typography>
+              {edition.schemes[0].final.winnerId == edition.schemes[0].final.team2Id && <WinnerIcon width="18px" height="18px" />}
+              <Typography>{edition.schemes[0].final.team2.user1.name}</Typography>
+            </div>}
         </div>
         {showSchemeInfo && <div className={classes.info_root + ongoingSuffix}>
           <div>
@@ -116,6 +132,15 @@ const styles = (theme) => ({
     },
     '&.ongoing *': {
       color: theme.palette.text.primary
+    }
+  },
+  finale: {
+    display: 'flex',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    fontWeight: 700,
+    '& > *+*': {
+      marginLeft: '.3em'
     }
   },
   icon_and_text: {

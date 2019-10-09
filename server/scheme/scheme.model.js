@@ -103,6 +103,14 @@ module.exports = (db, Sequelize) => {
       }
     });
 
+    models.Schemes.belongsTo(models.Matches, {
+      as: 'final',
+      foreignKey: {
+        name: 'finalId',
+        allowNull: true
+      }
+    });
+
     // models.Schemes.hasMany(models.Groups, {
     //   as: 'groups',
 

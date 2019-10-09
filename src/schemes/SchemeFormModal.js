@@ -231,11 +231,12 @@ class SchemeFormModal extends React.Component {
 
           <Typography variant="headline" style={{ marginTop: '2rem' }}>Дати</Typography>
 
-          <DatePicker
+          <DateTimePicker
             autoOk
-            label="Дата на схемата"
-            labelFunc={(date) => date ? moment(model.date).format('DD.MM.YYYY') : ''}
+            label="Дата"
+            labelFunc={(date) => date ? moment(model.date).format('DD.MM.YYYY  HH:mm') : ''}
             clearable
+            ampm={false}
             required={true}
             fullWidth={true}
             value={model.date}

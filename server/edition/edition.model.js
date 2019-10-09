@@ -5,11 +5,7 @@ module.exports = (db, Sequelize) => {
     .define('Editions', {
       name: { type: Sequelize.STRING, allowNull: false },
       info: Sequelize.TEXT,
-<<<<<<< HEAD
-      startDate: Sequelize.STRING,
-=======
       startDate: Sequelize.DATE,
->>>>>>> wip
       // endDate: Sequelize.STRING,
       status: {
         type: Sequelize.ENUM, allowNull: false,

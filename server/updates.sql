@@ -156,3 +156,9 @@ add "winnerId" integer;
 
 alter table "Matches"
 add constraint FK_Matches_Winner foreign key ("winnerId") references "Teams" (id);
+
+alter table "Schemes"
+add "finalId" int null;
+
+alter table "Schemes"
+add constraint FK_Schemes_Final foreign key ("finalId") references "Matches"("id");

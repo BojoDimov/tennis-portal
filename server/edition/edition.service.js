@@ -1,7 +1,8 @@
-const { Tournaments, Editions, Schemes, sequelize } = require('../db');
+const { Tournaments, Editions, Schemes, sequelize, Matches } = require('../db');
 const Op = sequelize.Op;
 const moment = require('moment-timezone');
 const { Status } = require('../infrastructure/enums');
+const MatchService = require('../match/match.service');
 
 class EditionsService {
   async filter(includeDraft) {
@@ -14,7 +15,10 @@ class EditionsService {
         },
         {
           model: Schemes,
-          as: 'schemes'
+          as: 'schemes',
+          include: [
+            { model: Matches, as: 'final', include: MatchService.matchesIncludes() }
+          ]
         }
       ],
       order: [['startDate', 'desc']]
@@ -36,7 +40,10 @@ class EditionsService {
             [Op.not]: {
               status: Status.DRAFT
             }
-          }
+          },
+          include: [
+            { model: Matches, as: 'final', include: MatchService.matchesIncludes() }
+          ]
         }
       ]
     }
