@@ -44,9 +44,6 @@ class AccountView extends React.Component {
 
     this.handleThumbnail = (e, isDelete) => {
       const user = this.state.user;
-      if (!e || !e.target.files || !e.target.files[0])
-        return;
-
       if (isDelete) {
         user.team.thumbnail = null;
         user.team.thumbnailId = null;
@@ -58,6 +55,9 @@ class AccountView extends React.Component {
             setTimeout(() => this.setState({ errorMessage: null }), 60 * 1000);
           });
       }
+
+      if (!e || !e.target.files || !e.target.files[0])
+        return;
 
       return QueryService
         .uploadFile(e.target.files[0])
@@ -142,7 +142,7 @@ class AccountView extends React.Component {
                 {!user.team.thumbnailId && <img src="/assets/tennis-player-free-vector.jpg" style={{ borderRadius: '5px', height: '150px' }} />}
                 {user.team.thumbnailId && <img src={QueryService.getFileUrl(user.team.thumbnailId)} style={{ borderRadius: '5px', height: '150px' }} />}
                 <EditIcon color="primary" style={{ position: 'absolute', top: '5px', left: '5px', height: '25px', cursor: 'pointer' }} onClick={() => this.inputRef.click()} />
-                <ClearIcon color="secondary" style={{ position: 'absolute', top: '5px', right: '5px', height: '25px', cursor: 'pointer' }} onClick={(e) => this.handleThumbnail(e, true)} />
+                {user.team.thumbnailId && <ClearIcon color="secondary" style={{ position: 'absolute', top: '5px', right: '5px', height: '25px', cursor: 'pointer' }} onClick={(e) => this.handleThumbnail(e, true)} />}
               </div>
               <UserPersonalInfo user={user} style={{ marginLeft: '1.1rem' }} />
               <UserPlayerInfo user={user} style={{ marginLeft: '1.1rem' }} />
