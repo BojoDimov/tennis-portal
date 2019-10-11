@@ -162,3 +162,9 @@ add "finalId" int null;
 
 alter table "Schemes"
 add constraint FK_Schemes_Final foreign key ("finalId") references "Matches"("id");
+
+alter table "Teams"
+add "thumbnailId" int null;
+
+alter table "Teams"
+add constraint "FK_Teams_Files" foreign key ("thumbnailId") references "Files" (id);

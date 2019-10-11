@@ -4,7 +4,10 @@ const { Files } = require('../db');
 
 const upload = (req, res, next) => {
   if (req.file.mimetype.indexOf('image') == -1)
-    next({ name: 'DomainActionError', error: { message: 'Invalid scheme' } }, req, res, null);
+    next({ name: 'DomainActionError', error: { message: 'Невалиден формат. Допустими формати са всички стандартни изображения.' } }, req, res, null);
+
+  if (req.file.size > process.env.MAX_FILE_SIZE)
+    next({ name: 'DomainActionError', error: { message: `Файлът е прекалено голям. Допустим размер ${process.env.MAX_FILE_SIZE / 1024}KB.` } }, req, res, null);
 
   return Files
     .create({

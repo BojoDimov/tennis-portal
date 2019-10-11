@@ -79,7 +79,7 @@ class Menu extends React.Component {
         {currentRoute => (<UserService.WithApplicationMode>
           {mode => (
             <div className={"container " + classes.root}>
-              <img src="assets/logo3.png" />
+              <img src="/assets/logo3.png" />
               <Toolbar className={classes.toolbar} >
                 <Hidden smDown>
                   {desktopRoutes.map(route => this.mapToolbarRoute(route, currentRoute))}
