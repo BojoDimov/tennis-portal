@@ -33,7 +33,18 @@ class SchemeView extends React.Component {
       scheme: {
         edition: {
           tournament: {}
-        }
+        },
+        matches: [{
+          team1: {
+            user1: {},
+            user2: {}
+          },
+          team2: {
+            user1: {},
+            user2: {}
+          },
+          sets: []
+        }]
       },
       schemeModel: null,
       enrolled: [],
@@ -93,7 +104,7 @@ class SchemeView extends React.Component {
                 <Typography style={{ marginBottom: '1em' }}>{scheme.info}</Typography>
                 <div className={classes.widgets_root}>
                   <div style={{ flexBasis: '100%', marginBottom: '2em' }}>
-                    <FinalMatchWidget scheme={scheme} classes={classes} />
+                    <SingleTeamsFinalMatchWidget scheme={scheme} classes={classes} match={scheme.matches[0]} />
                   </div>
                   <div style={{ flexBasis: '50%', marginRight: '1em' }}>
                     <RegisterWidget scheme={scheme} refresh={() => this.getData()} classes={classes} />
@@ -344,12 +355,7 @@ const SchemesWidget = ({ scheme, classes, history }) => {
   );
 }
 
-const FinalMatchWidget = ({ scheme, classes }) => {
-  if (!scheme || !scheme.matches || !scheme.matches.length || scheme.bracketRounds != scheme.matches[0].round)
-    return null;
-
-  let match = scheme.matches[0];
-
+const SingleTeamsFinalMatchWidget = ({ scheme, classes, match }) => {
   return (
     <ExpansionPanel defaultExpanded>
       <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
@@ -358,9 +364,14 @@ const FinalMatchWidget = ({ scheme, classes }) => {
       <ExpansionPanelDetails style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
           <Typography style={{ margin: '0 2em' }}>
-            {match.team1 ? match.team1.user1.name : 'TBD'}
-            {match.winnerId && match.winnerId == match.team1Id && <Typography color="primary">Победител</Typography>}
-            {match.winnerId && match.winnerId != match.team1Id && <Typography color="primary">Финалист</Typography>}
+            {!match.team1 && <Typography>TBD</Typography>}
+            {match.team1 && <React.Fragment>
+              {!match.team1.user1.thumbnailId && <img src="/assets/tennis-player-free-vector.jpg" style={{ borderRadius: '5px', height: '150px' }} />}
+              {match.team1.user1.thumbnailId && <img src={QueryService.getFileUrl(match.team1.user1.thumbnailId)} style={{ borderRadius: '5px', height: '150px' }} />}
+              <Typography>{match.team1.user1.name}</Typography>
+              {match.winnerId && match.winnerId == match.team1Id && <Typography color="primary">Победител</Typography>}
+              {match.winnerId && match.winnerId != match.team1Id && <Typography color="primary">Финалист</Typography>}
+            </React.Fragment>}
           </Typography>
           <div>
             {match.sets.map(set => {
@@ -379,6 +390,19 @@ const FinalMatchWidget = ({ scheme, classes }) => {
       </ExpansionPanelDetails>
     </ExpansionPanel>
   );
+}
+
+const DoubleTeamsFinalMatchWidget = ({ scheme, classes, match }) => {
+
+}
+
+const FinalMatchWidget = ({ scheme, classes }) => {
+  if (!scheme || !scheme.matches || !scheme.matches.length || scheme.bracketRounds != scheme.matches[0].round)
+    return null;
+
+  let match = scheme.matches[0];
+
+
 }
 
 const styles = (theme) => ({

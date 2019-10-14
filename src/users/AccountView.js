@@ -45,11 +45,11 @@ class AccountView extends React.Component {
     this.handleThumbnail = (e, isDelete) => {
       const user = this.state.user;
       if (isDelete) {
-        user.team.thumbnail = null;
-        user.team.thumbnailId = null;
+        user.thumbnail = null;
+        user.thumbnailId = null;
         this.setState({ user, errorMessage: null });
         return QueryService
-          .post(`/teams/${user.team.id}/updateThumbnail`, { fileId: null })
+          .post(`/users/${user.team.id}/updateThumbnail`, { fileId: null })
           .catch(({ message }) => {
             this.setState({ errorMessage: message });
             setTimeout(() => this.setState({ errorMessage: null }), 60 * 1000);
@@ -62,11 +62,11 @@ class AccountView extends React.Component {
       return QueryService
         .uploadFile(e.target.files[0])
         .then(file => {
-          user.team.thumbnail = file;
-          user.team.thumbnailId = file.id;
-          return QueryService.post(`/teams/${user.team.id}/updateThumbnail`, { fileId: file.id });
+          user.thumbnail = file;
+          user.thumbnailId = file.id;
+          return QueryService.post(`/users/${user.team.id}/updateThumbnail`, { fileId: file.id });
         }).then(({ thumbnailId }) => {
-          user.team.thumbnailId = thumbnailId;
+          user.thumbnailId = thumbnailId;
           this.setState({ user, errorMessage: null });
         }).catch(({ message }) => {
           this.setState({ errorMessage: message });
@@ -139,10 +139,10 @@ class AccountView extends React.Component {
             <div style={{ display: 'flex', justifyContent: 'flex-start', flexWrap: 'wrap', marginLeft: '-1rem' }}>
               <div style={{ position: 'relative', margin: '0 1rem' }}>
                 <input ref={ref => this.inputRef = ref} onChange={this.handleThumbnail} type="file" style={{ display: 'none' }} accept="image/*" />
-                {!user.team.thumbnailId && <img src="/assets/tennis-player-free-vector.jpg" style={{ borderRadius: '5px', height: '150px' }} />}
-                {user.team.thumbnailId && <img src={QueryService.getFileUrl(user.team.thumbnailId)} style={{ borderRadius: '5px', height: '150px' }} />}
+                {!user.thumbnailId && <img src="/assets/tennis-player-free-vector.jpg" style={{ borderRadius: '5px', height: '150px' }} />}
+                {user.thumbnailId && <img src={QueryService.getFileUrl(user.thumbnailId)} style={{ borderRadius: '5px', height: '150px' }} />}
                 <EditIcon color="primary" style={{ position: 'absolute', top: '5px', left: '5px', height: '25px', cursor: 'pointer' }} onClick={() => this.inputRef.click()} />
-                {user.team.thumbnailId && <ClearIcon color="secondary" style={{ position: 'absolute', top: '5px', right: '5px', height: '25px', cursor: 'pointer' }} onClick={(e) => this.handleThumbnail(e, true)} />}
+                {user.thumbnailId && <ClearIcon color="secondary" style={{ position: 'absolute', top: '5px', right: '5px', height: '25px', cursor: 'pointer' }} onClick={(e) => this.handleThumbnail(e, true)} />}
               </div>
               <UserPersonalInfo user={user} style={{ marginLeft: '1.1rem' }} />
               <UserPlayerInfo user={user} style={{ marginLeft: '1.1rem' }} />

@@ -89,30 +89,6 @@ class TeamsService {
     }
   }
 
-  async updateThumbnail(id, model) {
-    let entity = await Teams.findById(id);
-    if (!entity)
-      throw { name: 'NotFound' };
-
-    let transaction;
-
-    try {
-      transaction = await sequelize.transaction();
-
-      let originalThumbnailId = entity.thumbnailId;
-      entity.thumbnailId = model.fileId;
-      await entity.save({ transaction });
-      await Files.destroy({ where: { id: originalThumbnailId }, transaction });
-
-      await transaction.commit();
-      return entity.thumbnailId;
-    }
-    catch (ex) {
-      await transaction.rollback();
-      throw ex;
-    }
-  }
-
   async update(id, model, transaction) {
     let entity = await Teams.findById(id);
     if (!entity)

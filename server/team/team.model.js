@@ -43,14 +43,6 @@ module.exports = (db, Sequelize) => {
         allowNull: false
       }
     });
-
-    models.Teams.belongsTo(models.Files, {
-      as: 'thumbnail',
-      foreignKey: {
-        name: 'thumbnailId',
-        allowNull: true
-      }
-    });
   }
 
   return Teams;

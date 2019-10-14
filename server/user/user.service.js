@@ -113,6 +113,31 @@ class UserService {
     await user.save();
   }
 
+
+  async updateThumbnail(id, model) {
+    let entity = await Users.findById(id);
+    if (!entity)
+      throw { name: 'NotFound' };
+
+    let transaction;
+
+    try {
+      transaction = await sequelize.transaction();
+
+      let originalThumbnailId = entity.thumbnailId;
+      entity.thumbnailId = model.fileId;
+      await entity.save({ transaction });
+      await Files.destroy({ where: { id: originalThumbnailId }, transaction });
+
+      await transaction.commit();
+      return entity.thumbnailId;
+    }
+    catch (ex) {
+      await transaction.rollback();
+      throw ex;
+    }
+  }
+
   //null if value is undefined, -1 if there is error, true if ok
   validateEnum(Enum, value) {
     if (!value)

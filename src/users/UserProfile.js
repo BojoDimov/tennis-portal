@@ -92,8 +92,8 @@ class UserProfile extends React.Component {
             <Typography classes={{ root: classes.sectionHeadline }} variant="headline">{user.name}</Typography>
             <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
               <div style={{ position: 'relative', margin: '0 1rem' }}>
-                {!user.team.thumbnailId && <img src="/assets/tennis-player-free-vector.jpg" style={{ borderRadius: '5px', height: '150px' }} />}
-                {user.team.thumbnailId && <img src={QueryService.getFileUrl(user.team.thumbnailId)} style={{ borderRadius: '5px', height: '150px' }} />}
+                {!user.thumbnailId && <img src="/assets/tennis-player-free-vector.jpg" style={{ borderRadius: '5px', height: '150px' }} />}
+                {user.thumbnailId && <img src={QueryService.getFileUrl(user.thumbnailId)} style={{ borderRadius: '5px', height: '150px' }} />}
               </div>
               <UserPersonalInfo user={user} />
               <UserPlayerInfo user={user} style={{ marginLeft: '2rem' }} />
