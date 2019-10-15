@@ -100,15 +100,21 @@ class SchemeView extends React.Component {
                 <SchemeInfoBar scheme={scheme} playerCount={enrolled.length} classes={classes} />
                 <Typography style={{ marginBottom: '1em' }}>{scheme.info}</Typography>
                 <div className={classes.widgets_root}>
-                  <div style={{ flexBasis: '100%', marginBottom: '2em' }}>
+                  <div style={{ width: '100%', marginBottom: '1em' }}>
                     <SingleTeamsFinalMatchWidget scheme={scheme} classes={classes} match={scheme.matches[0]} />
                   </div>
-                  <div style={{ flexBasis: '50%', marginRight: '1em' }}>
-                    <RegisterWidget scheme={scheme} refresh={() => this.getData()} classes={classes} />
-                    <SchemesWidget scheme={scheme} classes={classes} history={history} />
-                  </div>
-                  <div style={{ flexGrow: 1, marginLeft: '1em' }}>
-                    <EnrollmentsComponent scheme={scheme} mode={mode} />
+                  <div className={classes.widgets_second_row}>
+                    <div className="left">
+                      <div style={{ marginBottom: '1em' }}>
+                        <RegisterWidget scheme={scheme} refresh={() => this.getData()} classes={classes} />
+                      </div>
+                      <div>
+                        <SchemesWidget scheme={scheme} classes={classes} history={history} />
+                      </div>
+                    </div>
+                    <div className="right">
+                      <EnrollmentsComponent scheme={scheme} mode={mode} />
+                    </div>
                   </div>
                 </div>
               </Paper>

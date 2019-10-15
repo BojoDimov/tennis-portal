@@ -54,7 +54,7 @@ export const RegisterWidget = ({ scheme, refresh, classes }) => {
     duration = moment.duration(end.diff(moment()));
 
   return (
-    <ExpansionPanel defaultExpanded style={{ flexBasis: '40%' }}>
+    <ExpansionPanel defaultExpanded>
       <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
         <Typography variant="title">Записване</Typography>
       </ExpansionPanelSummary>
@@ -95,7 +95,7 @@ export const SchemesWidget = ({ scheme, classes, history }) => {
   };
 
   return (
-    <ExpansionPanel defaultExpanded style={{ flexBasis: '40%' }}>
+    <ExpansionPanel defaultExpanded>
       <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
         <Typography variant="title">Схема</Typography>
       </ExpansionPanelSummary>

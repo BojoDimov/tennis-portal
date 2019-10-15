@@ -21,7 +21,31 @@ export default (theme) => ({
   },
   widgets_root: {
     display: 'flex',
-    flexWrap: 'wrap'
+    flexDirection: 'column',
+    alignItems: 'center'
+  },
+  widgets_second_row: {
+    display: 'flex',
+    width: '100%',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    '& > .left': {
+      flexGrow: 1,
+      flexBasis: '40%',
+      [theme.breakpoints.down('sm')]: {
+        flexBasis: '100%'
+      }
+    },
+    '& > .right': {
+      flexGrow: 1,
+      flexBasis: '40%',
+      marginLeft: '1em',
+      [theme.breakpoints.down('sm')]: {
+        flexBasis: '100%',
+        marginLeft: '0',
+        marginTop: '1em'
+      }
+    }
   },
   schemes_widget: {
     display: 'flex',
