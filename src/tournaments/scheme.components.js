@@ -159,7 +159,7 @@ export const EnrollmentsWidget = ({ scheme, mode, enrolled, classes }) => {
             display: 'flex',
             justifyContent: 'space-between'
           }}>
-            <div>
+            <div style={{ flexBasis: '45%' }}>
               {enrolled.slice(0, enrolled.length / 2).map((enrollment, index) => {
                 return (
                   <React.Fragment key={index}>
@@ -170,7 +170,7 @@ export const EnrollmentsWidget = ({ scheme, mode, enrolled, classes }) => {
                 );
               })}
             </div>
-            <div>
+            <div style={{ flexBasis: '45%' }}>
               {enrolled.slice(enrolled.length / 2).map((enrollment, index) => {
                 return (
                   <React.Fragment key={index}>
