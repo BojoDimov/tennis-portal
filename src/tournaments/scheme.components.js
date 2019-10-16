@@ -14,6 +14,7 @@ import GroupIcon from '../components/icons/GroupIcon';
 import BracketIcon from '../components/icons/BracketIcon';
 import CalendarIcon from '../components/icons/CalendarIcon';
 import TournamentIcon from '../components/icons/TournamentIcon';
+import EditBoxedIcon from '../components/icons/EditBoxedIcon';
 import QueryService from '../services/query.service';
 import EnrollmentsComponent from '../schemes/components/Enrollments';
 import { BracketStatus } from '../enums';
@@ -55,33 +56,51 @@ export const RegisterWidget = ({ scheme, refresh, classes }) => {
   if (moment().isBetween(start, end))
     duration = moment.duration(end.diff(moment()));
 
+  const Body = (
+    <React.Fragment>
+      {moment().isBefore(start) && <React.Fragment>
+        <Typography>Остават <b>{duration.days()} дни, {duration.hours()} часа</b> и <b> {duration.minutes()} минути</b> до началото на записването.</Typography>
+        <div className="buttons">
+          <Button variant="contained" color="primary" disabled>
+            <EditBoxedIcon width="1em" height="1em" style={{ marginRight: '.3em' }} />
+            Записване
+          </Button>
+        </div>
+      </React.Fragment>}
+
+      {moment().isBetween(start, end) && <React.Fragment>
+        <Typography>Остават <b>{duration.days()} дни, {duration.hours()} часа</b> и <b> {duration.minutes()} минути</b> до края на записването.</Typography>
+        <div className="buttons">
+          <Button variant="contained" color="primary">
+            <EditBoxedIcon width="1em" height="1em" style={{ marginRight: '.3em' }} />
+            Записване
+            </Button>
+        </div>
+      </React.Fragment>}
+
+      {moment().isAfter(end) && <React.Fragment>
+        <Typography>Записването за този турнир е приключило.</Typography>
+      </React.Fragment>}
+    </React.Fragment>
+  );
+
   return (
-    <ExpansionPanel defaultExpanded>
-      <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-        <Typography variant="title">Записване</Typography>
-      </ExpansionPanelSummary>
-      <ExpansionPanelDetails className={classes.register_widget}>
-        {moment().isBefore(start) && <React.Fragment>
-          <Typography>Остават <b>{duration.days()} дни, {duration.hours()} часа</b> и <b> {duration.minutes()} минути</b> до началото на записването.</Typography>
-          <div className="buttons">
-            <Button variant="contained" color="primary" disabled>Записване</Button>
-          </div>
-        </React.Fragment>}
+    <React.Fragment>
+      <Hidden smUp>
+        {Body}
+      </Hidden>
 
-        {moment().isBetween(start, end) && <React.Fragment>
-          <Typography>Остават <b>{duration.days()} дни, {duration.hours()} часа</b> и <b> {duration.minutes()} минути</b> до края на записването.</Typography>
-          <div className="buttons">
-            <Button variant="contained" color="primary">Записване</Button>
-          </div>
-        </React.Fragment>}
-
-        {moment().isAfter(end) && <React.Fragment>
-          <Typography>Записването за този турнир е приключило.</Typography>
-        </React.Fragment>}
-
-
-      </ExpansionPanelDetails>
-    </ExpansionPanel>
+      <Hidden xsDown>
+        <ExpansionPanel defaultExpanded>
+          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography variant="title">Записване</Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails className={classes.register_widget}>
+            {Body}
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
+      </Hidden>
+    </React.Fragment>
   );
 }
 
@@ -130,12 +149,12 @@ export const SchemesWidget = ({ scheme, classes, history }) => {
   );
 }
 
-export const EnrollmentsWidget = ({ scheme, mode, enrolled }) => {
+export const EnrollmentsWidget = ({ scheme, mode, enrolled, classes }) => {
   return (
     <React.Fragment>
       <Hidden smUp>
-        <Paper style={{ padding: '1em', background: 'linear-gradient(0deg, rgb(220, 220, 220) 0%, rgb(239, 239, 239) 100%)' }}>
-          <Typography variant="title" style={{ margin: '0 0 .5em 0' }}> Играчи</Typography>
+        <Typography variant="title" style={{ margin: '0 0 .3em 0', fontWeight: 700, fontSize: '1.1em' }}>Записани участници</Typography>
+        <Paper className={classes.enrollments_widget}>
           <div style={{
             display: 'flex',
             justifyContent: 'space-between'
@@ -210,14 +229,25 @@ export const SingleTeamsFinalMatchWidget = ({ scheme, classes, match }) => {
 
 
   return (
-    <ExpansionPanel defaultExpanded>
-      <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-        <Typography variant="title">Финал</Typography>
-      </ExpansionPanelSummary>
-      <ExpansionPanelDetails className={classes.single_teams_finale}>
-        {Body}
-      </ExpansionPanelDetails>
-    </ExpansionPanel>
+    <React.Fragment>
+      <Hidden smUp>
+        <Typography variant="title" style={{ margin: '0 0 .3em 0', fontWeight: 700, fontSize: '1.1em' }}>Финал</Typography>
+        <Paper className={classes.single_teams_finale_mobile}>
+          {Body}
+        </Paper>
+      </Hidden>
+
+      <Hidden xsDown>
+        <ExpansionPanel defaultExpanded>
+          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography variant="title">Финал</Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails className={classes.single_teams_finale}>
+            {Body}
+          </ExpansionPanelDetails>
+        </ExpansionPanel>
+      </Hidden>
+    </React.Fragment>
   );
 }
 

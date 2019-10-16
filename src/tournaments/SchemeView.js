@@ -100,6 +100,7 @@ class SchemeView extends React.Component {
                 <SchemeInfoBar scheme={scheme} playerCount={enrolled.length} classes={classes} />
                 <Typography style={{ marginBottom: '1em' }}>{scheme.info}</Typography>
                 <div className={classes.widgets_root}>
+                  {/* && scheme.bracketSize == scheme.matches[0].round */}
                   {scheme.matches && scheme.matches[0]
                     && <div style={{ width: '100%', marginBottom: '1em' }}>
                       <SingleTeamsFinalMatchWidget scheme={scheme} classes={classes} match={scheme.matches[0]} />
@@ -114,7 +115,7 @@ class SchemeView extends React.Component {
                       </div>
                     </div>
                     <div className="right">
-                      <EnrollmentsWidget scheme={scheme} mode={mode} enrolled={enrolled} />
+                      <EnrollmentsWidget scheme={scheme} mode={mode} classes={classes} enrolled={enrolled} />
                     </div>
                   </div>
                 </div>

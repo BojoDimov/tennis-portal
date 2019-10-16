@@ -79,7 +79,7 @@ class EnrollmentsComponent extends React.Component {
     return (
       <ExpansionPanel defaultExpanded className={classes.root}>
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="title">Играчи</Typography>
+          <Typography variant="title">Записани участници</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails style={{ flexDirection: 'column' }}>
           {openTeamModal && <SelectTeamModal

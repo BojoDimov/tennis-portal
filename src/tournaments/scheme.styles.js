@@ -77,6 +77,31 @@ export default (theme) => ({
       alignItems: 'center',
     }
   },
+  enrollments_widget: {
+    padding: '1em',
+    background: 'linear-gradient(0deg, rgb(220, 220, 220) 0%, rgb(239, 239, 239) 100%)'
+  },
+  single_teams_finale_mobile: {
+    padding: '1em',
+    background: 'linear-gradient(0deg, rgb(239, 239, 239) 0%, rgb(253, 253, 253) 100%)',
+    '& .root': {
+      flexDirection: 'column',
+      alignItems: 'center',
+      flexGrow: 1
+    },
+    '& .player': {
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      margin: '.5em 0',
+      '& img': {
+        width: '50px !important',
+        height: '50px !important'
+      }
+    },
+    '& .score': {
+      alignSelf: 'center'
+    }
+  },
   single_teams_finale: {
     display: 'flex',
     justifyContent: 'center',
