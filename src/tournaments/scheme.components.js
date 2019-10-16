@@ -15,6 +15,7 @@ import BracketIcon from '../components/icons/BracketIcon';
 import CalendarIcon from '../components/icons/CalendarIcon';
 import TournamentIcon from '../components/icons/TournamentIcon';
 import EditBoxedIcon from '../components/icons/EditBoxedIcon';
+import WinnerIcon from '../components/icons/WinnerIcon';
 import QueryService from '../services/query.service';
 import EnrollmentsComponent from '../schemes/components/Enrollments';
 import { BracketStatus } from '../enums';
@@ -186,6 +187,78 @@ export const EnrollmentsWidget = ({ scheme, mode, enrolled, classes }) => {
       </Hidden>
       <Hidden xsDown>
         <EnrollmentsComponent scheme={scheme} mode={mode} />
+      </Hidden>
+    </React.Fragment>
+  );
+}
+
+export const FinalMatchWidget = ({ scheme, classes, match }) => {
+  const TableRow = ({ team, isWinner }) => {
+    if (!team)
+      return (<Typography variant="headline" align="center">TBD</Typography>);
+
+    return (
+      <Paper className={isWinner ? 'row-root winner' : 'row-root'}>
+        <div>
+          <Thumbnail fileId={team.user1.thumbnailId} default="/assets/tennis-player-free-vector.jpg" style={{ height: '35px', width: '35px' }} />
+          {team.user2 && <Thumbnail fileId={team.user2.thumbnailId} default="/assets/tennis-player-free-vector.jpg" style={{ height: '35px', width: '35px', marginLeft: '.3em' }} />}
+        </div>
+
+        <div style={{
+          flexGrow: 1,
+          textTransform: 'uppercase',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          marginLeft: '.5em'
+        }}>
+          <Typography>{team.user1.name}</Typography>
+          {team.user2 && <Typography>{team.user2.name}</Typography>}
+        </div>
+
+        {isWinner && <Typography variant="title" color="primary" style={{
+          display: 'flex',
+          alignItems: 'center'
+        }}>
+          <WinnerIcon height="1em" width="1em" />
+        </Typography>}
+
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          marginLeft: '1em'
+        }}>
+          <Typography>6</Typography>
+          <Typography>3</Typography>
+          <Typography>5</Typography>
+          <Typography><sup>(11)</sup></Typography>
+        </div>
+      </Paper>
+    );
+  }
+
+  const TableView = (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+      <TableRow team={match.team1} isWinner={true} />
+      <TableRow team={match.team2} isWinner={match.winnerId && match.winnerId == match.team2.id} />
+    </div>
+  );
+
+  return (
+    <React.Fragment>
+      <Hidden smUp>
+        <div className={classes.finale_widget}>
+          <Typography variant="title" style={{ fontWeight: 600, marginBottom: '1em' }}>Финал</Typography>
+          {TableView}
+        </div>
+
+      </Hidden>
+
+      <Hidden xsDown>
+        <Paper style={{ padding: '1em 0' }} className={classes.finale_widget}>
+          <Typography align="center" variant="title" style={{ fontWeight: 600, marginBottom: '1em' }}>Финал</Typography>
+          {TableView}
+        </Paper>
       </Hidden>
     </React.Fragment>
   );

@@ -143,5 +143,19 @@ export default (theme) => ({
         margin: '0 0 0 50px'
       }
     }
+  },
+  finale_widget: {
+    background: 'linear-gradient(0deg, rgb(239, 239, 239) 0%, rgb(253, 253, 253) 100%)',
+    '& .row-root': {
+      marginBottom: '1em',
+      display: 'flex',
+      width: '67%',
+      marginBottom: '1em',
+      padding: '.5em .8em',
+      background: 'linear-gradient(0deg, rgb(239, 239, 239) 0%, rgb(253, 253, 253) 100%)',
+      '&.winner': {
+        background: 'linear-gradient(0deg, #b2cc81 0%, rgb(253, 253, 253) 50%)'
+      }
+    }
   }
 });

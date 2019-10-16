@@ -20,7 +20,8 @@ import {
   SchemesWidget,
   EnrollmentsWidget,
   SingleTeamsFinalMatchWidget,
-  DoubleTeamsFinalMatchWidget
+  DoubleTeamsFinalMatchWidget,
+  FinalMatchWidget
 } from './scheme.components';
 
 class SchemeView extends React.Component {
@@ -103,7 +104,8 @@ class SchemeView extends React.Component {
                   {/* && scheme.bracketSize == scheme.matches[0].round */}
                   {scheme.matches && scheme.matches[0]
                     && <div style={{ width: '100%', marginBottom: '1em' }}>
-                      <SingleTeamsFinalMatchWidget scheme={scheme} classes={classes} match={scheme.matches[0]} />
+                      {/* <SingleTeamsFinalMatchWidget scheme={scheme} classes={classes} match={scheme.matches[0]} /> */}
+                      <FinalMatchWidget match={scheme.matches[0]} classes={classes} />
                     </div>}
                   <div className={classes.widgets_second_row}>
                     <div className="left">
