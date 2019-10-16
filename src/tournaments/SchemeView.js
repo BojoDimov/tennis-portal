@@ -8,7 +8,6 @@ import UserService from '../services/user.service';
 import QueryService from '../services/query.service';
 import { ApplicationMode, BracketStatus } from '../enums';
 import { catchEvent } from '../services/events.service';
-import EnrollmentsComponent from '../schemes/components/Enrollments';
 import SchemeFormModal from '../schemes/SchemeFormModal';
 import MessageModal from '../components/MessageModal';
 import ScoresModal from '../schemes/components/ScoresModal';
@@ -19,6 +18,7 @@ import {
   SchemeInfoBar,
   RegisterWidget,
   SchemesWidget,
+  EnrollmentsWidget,
   SingleTeamsFinalMatchWidget,
   DoubleTeamsFinalMatchWidget
 } from './scheme.components';
@@ -114,7 +114,7 @@ class SchemeView extends React.Component {
                       </div>
                     </div>
                     <div className="right">
-                      <EnrollmentsComponent scheme={scheme} mode={mode} />
+                      <EnrollmentsWidget scheme={scheme} mode={mode} enrolled={enrolled} />
                     </div>
                   </div>
                 </div>

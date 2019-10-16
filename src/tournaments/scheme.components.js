@@ -1,4 +1,5 @@
 import React from 'react';
+import Hidden from '@material-ui/core/Hidden';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
@@ -14,6 +15,7 @@ import BracketIcon from '../components/icons/BracketIcon';
 import CalendarIcon from '../components/icons/CalendarIcon';
 import TournamentIcon from '../components/icons/TournamentIcon';
 import QueryService from '../services/query.service';
+import EnrollmentsComponent from '../schemes/components/Enrollments';
 import { BracketStatus } from '../enums';
 import Thumbnail from '../components/ThumbnailOrDefault';
 
@@ -94,68 +96,126 @@ export const SchemesWidget = ({ scheme, classes, history }) => {
       history.push(`/schemes/${scheme.id}/groups`);
   };
 
+  const Body = (
+    <React.Fragment>
+      {scheme.hasGroupPhase && <Paper elevation={1} className={classes.schemes_widget_tile} onClick={navigateGroups}>
+        <GroupIcon width="100px" height="100px" />
+        <Typography>Групи</Typography>
+      </Paper>}
+
+      <Paper elevation={1} className={classes.schemes_widget_tile} onClick={navigateBracket}>
+        <BracketIcon width="100px" height="100px" />
+        <Typography>Преглед</Typography>
+      </Paper>
+    </React.Fragment>
+  );
+
   return (
-    <ExpansionPanel defaultExpanded>
-      <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-        <Typography variant="title">Схема</Typography>
-      </ExpansionPanelSummary>
-      <ExpansionPanelDetails className={classes.schemes_widget}>
-        {scheme.hasGroupPhase && <Paper elevation={1} className={classes.schemes_widget_tile} onClick={navigateGroups}>
-          <GroupIcon width="100px" height="100px" />
-          <Typography>Групи</Typography>
-        </Paper>}
+    <React.Fragment>
+      <Hidden smUp>
+        {Body}
+      </Hidden>
 
-        <Paper elevation={1} className={classes.schemes_widget_tile} onClick={navigateBracket}>
-          <BracketIcon width="100px" height="100px" />
-          <Typography>Преглед</Typography>
+      <Hidden xsDown>
+        <ExpansionPanel defaultExpanded>
+          <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+            <Typography variant="title">Схема</Typography>
+          </ExpansionPanelSummary>
+          <ExpansionPanelDetails className={classes.schemes_widget}>
+            {Body}
+          </ExpansionPanelDetails >
+        </ExpansionPanel >
+      </Hidden>
+    </React.Fragment>
+  );
+}
+
+export const EnrollmentsWidget = ({ scheme, mode, enrolled }) => {
+  return (
+    <React.Fragment>
+      <Hidden smUp>
+        <Paper style={{ padding: '1em', background: 'linear-gradient(0deg, rgb(220, 220, 220) 0%, rgb(239, 239, 239) 100%)' }}>
+          <Typography variant="title" style={{ margin: '0 0 .5em 0' }}> Играчи</Typography>
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between'
+          }}>
+            <div>
+              {enrolled.slice(0, enrolled.length / 2).map((enrollment, index) => {
+                return (
+                  <React.Fragment key={index}>
+                    <Typography>{enrollment.team.user1.name}</Typography>
+                    {enrollment.team.user2
+                      && <Typography style={{ marginBottom: '.3em' }}>{enrollment.team.user2.name}</Typography>}
+                  </React.Fragment>
+                );
+              })}
+            </div>
+            <div>
+              {enrolled.slice(enrolled.length / 2).map((enrollment, index) => {
+                return (
+                  <React.Fragment key={index}>
+                    <Typography>{enrollment.team.user1.name}</Typography>
+                    {enrollment.team.user2
+                      && <Typography style={{ marginBottom: '.3em' }}>{enrollment.team.user2.name}</Typography>}
+                  </React.Fragment>
+                );
+              })}
+            </div>
+          </div>
         </Paper>
-
-      </ExpansionPanelDetails >
-    </ExpansionPanel >
+      </Hidden>
+      <Hidden xsDown>
+        <EnrollmentsComponent scheme={scheme} mode={mode} />
+      </Hidden>
+    </React.Fragment>
   );
 }
 
 export const SingleTeamsFinalMatchWidget = ({ scheme, classes, match }) => {
+  const Body = (<div className="root">
+    <div className="player">
+      {!match.team1 && <Typography>TBD</Typography>}
+      {match.team1 && <React.Fragment>
+        <Thumbnail fileId={match.team1.user1.thumbnailId} default="/assets/tennis-player-free-vector.jpg" />
+        <div>
+          <Typography variant="headline">{match.team1.user1.name}</Typography>
+          {match.winnerId && match.winnerId == match.team1Id && <Typography color="primary">Победител</Typography>}
+          {match.winnerId && match.winnerId != match.team1Id && <Typography color="primary">Финалист</Typography>}
+        </div>
+      </React.Fragment>}
+    </div>
+
+    <div className="score">
+      {match.sets.map(set => {
+        return (
+          <Typography variant="title" style={{ fontStyle: 'italic' }}>{set.team1} - {set.team2} {set.tiebreaker && <sup>({set.tiebreaker})</sup>}</Typography>
+        );
+      })}
+      {!match.sets.length && <Typography variant="headline" style={{ fontStyle: 'italic' }}>VS</Typography>}
+    </div>
+
+    <div className="player">
+      {!match.team2 && <Typography>TBD</Typography>}
+      {match.team2 && <React.Fragment>
+        <Thumbnail fileId={match.team2.user1.thumbnailId} default="/assets/tennis-player-free-vector.jpg" />
+        <div>
+          <Typography variant="headline">{match.team2.user1.name}</Typography>
+          {match.winnerId && match.winnerId == match.team2Id && <Typography color="primary">Победител</Typography>}
+          {match.winnerId && match.winnerId != match.team2Id && <Typography color="primary">Финалист</Typography>}
+        </div>
+      </React.Fragment>}
+    </div>
+  </div>);
+
+
   return (
     <ExpansionPanel defaultExpanded>
       <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
         <Typography variant="title">Финал</Typography>
       </ExpansionPanelSummary>
       <ExpansionPanelDetails className={classes.single_teams_finale}>
-        <div className="root">
-          <div className="player">
-            {!match.team1 && <Typography>TBD</Typography>}
-            {match.team1 && <React.Fragment>
-              <Thumbnail fileId={match.team1.user1.thumbnailId} default="/assets/tennis-player-free-vector.jpg" />
-              <div>
-                <Typography variant="headline">{match.team1.user1.name}</Typography>
-                {match.winnerId && match.winnerId == match.team1Id && <Typography color="primary">Победител</Typography>}
-                {match.winnerId && match.winnerId != match.team1Id && <Typography color="primary">Финалист</Typography>}
-              </div>
-            </React.Fragment>}
-          </div>
-
-          <div className="score">
-            {match.sets.map(set => {
-              return (
-                <Typography variant="title" style={{ fontStyle: 'italic' }}>{set.team1} - {set.team2} {set.tiebreaker && <sup>({set.tiebreaker})</sup>}</Typography>
-              );
-            })}
-            {!match.sets.length && <Typography variant="headline" style={{ fontStyle: 'italic' }}>VS</Typography>}
-          </div>
-
-          <div className="player">
-            {!match.team2 && <Typography>TBD</Typography>}
-            {match.team2 && <React.Fragment>
-              <Thumbnail fileId={match.team2.user1.thumbnailId} default="/assets/tennis-player-free-vector.jpg" />
-              <div>
-                <Typography variant="headline">{match.team2.user1.name}</Typography>
-                {match.winnerId && match.winnerId == match.team2Id && <Typography color="primary">Победител</Typography>}
-                {match.winnerId && match.winnerId != match.team2Id && <Typography color="primary">Финалист</Typography>}
-              </div>
-            </React.Fragment>}
-          </div>
-        </div>
+        {Body}
       </ExpansionPanelDetails>
     </ExpansionPanel>
   );

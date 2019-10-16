@@ -28,6 +28,13 @@ class EnrollmentsComponent extends React.Component {
     }
   }
 
+  componentDidMount() {
+    if (!this.props.enrolled)
+      this.getData();
+    else
+      this.setState({ enrolled: this.props.enrolled });
+  }
+
   componentDidUpdate(prevProps) {
     if (prevProps.scheme != this.props.scheme)
       this.getData();
