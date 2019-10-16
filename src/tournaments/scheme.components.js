@@ -121,19 +121,21 @@ export const SingleTeamsFinalMatchWidget = ({ scheme, classes, match }) => {
       <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
         <Typography variant="title">Финал</Typography>
       </ExpansionPanelSummary>
-      <ExpansionPanelDetails style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
-          <div style={{ margin: '0 2em', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+      <ExpansionPanelDetails className={classes.single_teams_finale}>
+        <div className="root">
+          <div className="player">
             {!match.team1 && <Typography>TBD</Typography>}
             {match.team1 && <React.Fragment>
               <Thumbnail fileId={match.team1.user1.thumbnailId} default="/assets/tennis-player-free-vector.jpg" />
-              <Typography variant="headline">{match.team1.user1.name}</Typography>
-              {match.winnerId && match.winnerId == match.team1Id && <Typography color="primary">Победител</Typography>}
-              {match.winnerId && match.winnerId != match.team1Id && <Typography color="primary">Финалист</Typography>}
+              <div>
+                <Typography variant="headline">{match.team1.user1.name}</Typography>
+                {match.winnerId && match.winnerId == match.team1Id && <Typography color="primary">Победител</Typography>}
+                {match.winnerId && match.winnerId != match.team1Id && <Typography color="primary">Финалист</Typography>}
+              </div>
             </React.Fragment>}
           </div>
 
-          <div>
+          <div className="score">
             {match.sets.map(set => {
               return (
                 <Typography variant="title" style={{ fontStyle: 'italic' }}>{set.team1} - {set.team2} {set.tiebreaker && <sup>({set.tiebreaker})</sup>}</Typography>
@@ -142,13 +144,15 @@ export const SingleTeamsFinalMatchWidget = ({ scheme, classes, match }) => {
             {!match.sets.length && <Typography variant="headline" style={{ fontStyle: 'italic' }}>VS</Typography>}
           </div>
 
-          <div style={{ margin: '0 2em', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+          <div className="player">
             {!match.team2 && <Typography>TBD</Typography>}
             {match.team2 && <React.Fragment>
               <Thumbnail fileId={match.team2.user1.thumbnailId} default="/assets/tennis-player-free-vector.jpg" />
-              <Typography variant="headline">{match.team2.user1.name}</Typography>
-              {match.winnerId && match.winnerId == match.team2Id && <Typography color="primary">Победител</Typography>}
-              {match.winnerId && match.winnerId != match.team2Id && <Typography color="primary">Финалист</Typography>}
+              <div>
+                <Typography variant="headline">{match.team2.user1.name}</Typography>
+                {match.winnerId && match.winnerId == match.team2Id && <Typography color="primary">Победител</Typography>}
+                {match.winnerId && match.winnerId != match.team2Id && <Typography color="primary">Финалист</Typography>}
+              </div>
             </React.Fragment>}
           </div>
         </div>

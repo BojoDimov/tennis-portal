@@ -17,6 +17,9 @@ export default (theme) => ({
       marginRight: '.5em',
       display: 'flex',
       alignItems: 'center'
+    },
+    [theme.breakpoints.down('sm')]: {
+      flexDirection: 'column'
     }
   },
   widgets_root: {
@@ -72,6 +75,48 @@ export default (theme) => ({
       display: 'flex',
       justifyContent: 'space-around',
       alignItems: 'center',
+    }
+  },
+  single_teams_finale: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    '& .player': {
+      margin: '0 2em',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center'
+    },
+    '& .root': {
+      display: 'flex',
+      justifyContent: 'space-around',
+      alignItems: 'center'
+    },
+    '& .score': {
+
+    },
+    [theme.breakpoints.down('xs')]: {
+      // justifyContent: 'flex-start',
+      '& .root': {
+        flexDirection: 'column',
+        alignItems: 'flex-start'
+      },
+      '& *': {
+        fontSize: '1em'
+      },
+      '& .player': {
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        margin: '.5em 0',
+        '& img': {
+          width: '50px !important',
+          height: '50px !important'
+        }
+      },
+      '& .score': {
+        margin: '0 0 0 50px'
+      }
     }
   }
 });
