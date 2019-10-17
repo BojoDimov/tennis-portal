@@ -6,6 +6,11 @@ export default (theme) => ({
     fontWeight: 700,
     fontSize: '1.3em'
   },
+  mobile_heading: {
+    margin: '0 0 .3em 0',
+    fontWeight: 700,
+    fontSize: '1.1em'
+  },
   info_bar_root: {
     display: 'flex',
     justifyContent: 'flex-start',
@@ -146,6 +151,13 @@ export default (theme) => ({
   },
   finale_widget: {
     background: 'linear-gradient(0deg, rgb(239, 239, 239) 0%, rgb(253, 253, 253) 100%)',
+    '& .table-root': {
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: '100%'
+    },
     '& .row-root': {
       marginBottom: '1em',
       display: 'flex',
@@ -155,6 +167,16 @@ export default (theme) => ({
       background: 'linear-gradient(0deg, rgb(239, 239, 239) 0%, rgb(253, 253, 253) 100%)',
       '&.winner': {
         background: 'linear-gradient(0deg, #b2cc81 0%, rgb(253, 253, 253) 50%)'
+      }
+    },
+    [theme.breakpoints.down('xs')]: {
+      background: 'initial',
+      '& .table-root': {
+        display: 'initial'
+      },
+      '& .row-root': {
+        width: 'initial',
+        marginBottom: '.5em'
       }
     }
   }

@@ -154,7 +154,7 @@ export const EnrollmentsWidget = ({ scheme, mode, enrolled, classes }) => {
   return (
     <React.Fragment>
       <Hidden smUp>
-        <Typography variant="title" style={{ margin: '0 0 .3em 0', fontWeight: 700, fontSize: '1.1em' }}>Записани участници</Typography>
+        <Typography variant="title" className={classes.mobile_heading}>Записани участници</Typography>
         <Paper className={classes.enrollments_widget}>
           <div style={{
             display: 'flex',
@@ -199,7 +199,7 @@ export const FinalMatchWidget = ({ scheme, classes, match }) => {
 
     return (
       <Paper className={isWinner ? 'row-root winner' : 'row-root'}>
-        <div>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
           <Thumbnail fileId={team.user1.thumbnailId} default="/assets/tennis-player-free-vector.jpg" style={{ height: '35px', width: '35px' }} />
           {team.user2 && <Thumbnail fileId={team.user2.thumbnailId} default="/assets/tennis-player-free-vector.jpg" style={{ height: '35px', width: '35px', marginLeft: '.3em' }} />}
         </div>
@@ -212,8 +212,8 @@ export const FinalMatchWidget = ({ scheme, classes, match }) => {
           justifyContent: 'center',
           marginLeft: '.5em'
         }}>
-          <Typography>{team.user1.name}</Typography>
-          {team.user2 && <Typography>{team.user2.name}</Typography>}
+          <Typography>{splitAndFormatName(team.user1.name)}</Typography>
+          {team.user2 && <Typography>{splitAndFormatName(team.user2.name)}</Typography>}
         </div>
 
         {isWinner && <Typography variant="title" color="primary" style={{
@@ -238,9 +238,42 @@ export const FinalMatchWidget = ({ scheme, classes, match }) => {
   }
 
   const TableView = (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+    <div className="table-root">
       <TableRow team={match.team1} isWinner={true} />
-      <TableRow team={match.team2} isWinner={match.winnerId && match.winnerId == match.team2.id} />
+      <TableRow team={match.team2} isWinner={match.winnerId && match.winnerId == match.team2Id} />
+    </div>
+  );
+
+  const SingleTeamView = ({ team, hasWinner, isWinner }) => {
+    return (
+      <div className="player">
+        {!team && <Typography>TBD</Typography>}
+        {team && <React.Fragment>
+          <Thumbnail fileId={team.user1.thumbnailId} default="/assets/tennis-player-free-vector.jpg" />
+          <div>
+            <Typography variant="headline">{team.user1.name}</Typography>
+            {hasWinner && isWinner && <Typography color="primary">Победител</Typography>}
+            {hasWinner && !isWinner && <Typography color="primary">Финалист</Typography>}
+          </div>
+        </React.Fragment>}
+      </div>
+    );
+  }
+
+  const SingleView = (
+    <div className="root">
+      <SingleTeamView team={match.team1} hasWinner={match.winnerId} isWinner={match.winnerId == match.team1Id} />
+
+      <div className="score">
+        {match.sets && match.sets.map(set => {
+          return (
+            <Typography variant="title" style={{ fontStyle: 'italic' }}>{set.team1} - {set.team2} {set.tiebreaker && <sup>({set.tiebreaker})</sup>}</Typography>
+          );
+        })}
+        {!match.sets.length && <Typography variant="headline" style={{ fontStyle: 'italic' }}>VS</Typography>}
+      </div>
+
+      <SingleTeamView team={match.team2} hasWinner={match.winnerId} isWinner={match.winnerId == match.team2Id} />
     </div>
   );
 
@@ -248,75 +281,24 @@ export const FinalMatchWidget = ({ scheme, classes, match }) => {
     <React.Fragment>
       <Hidden smUp>
         <div className={classes.finale_widget}>
-          <Typography variant="title" style={{ fontWeight: 600, marginBottom: '1em' }}>Финал</Typography>
+          <Typography variant="title" className={classes.mobile_heading}>Финал</Typography>
           {TableView}
         </div>
 
       </Hidden>
 
       <Hidden xsDown>
-        <Paper style={{ padding: '1em 0' }} className={classes.finale_widget}>
-          <Typography align="center" variant="title" style={{ fontWeight: 600, marginBottom: '1em' }}>Финал</Typography>
+        {/* <Paper style={{ padding: '1em 0' }} className={classes.finale_widget}>
+          <Typography align="center" variant="title" >Финал</Typography>
           {TableView}
-        </Paper>
-      </Hidden>
-    </React.Fragment>
-  );
-}
-
-export const SingleTeamsFinalMatchWidget = ({ scheme, classes, match }) => {
-  const Body = (<div className="root">
-    <div className="player">
-      {!match.team1 && <Typography>TBD</Typography>}
-      {match.team1 && <React.Fragment>
-        <Thumbnail fileId={match.team1.user1.thumbnailId} default="/assets/tennis-player-free-vector.jpg" />
-        <div>
-          <Typography variant="headline">{match.team1.user1.name}</Typography>
-          {match.winnerId && match.winnerId == match.team1Id && <Typography color="primary">Победител</Typography>}
-          {match.winnerId && match.winnerId != match.team1Id && <Typography color="primary">Финалист</Typography>}
-        </div>
-      </React.Fragment>}
-    </div>
-
-    <div className="score">
-      {match.sets.map(set => {
-        return (
-          <Typography variant="title" style={{ fontStyle: 'italic' }}>{set.team1} - {set.team2} {set.tiebreaker && <sup>({set.tiebreaker})</sup>}</Typography>
-        );
-      })}
-      {!match.sets.length && <Typography variant="headline" style={{ fontStyle: 'italic' }}>VS</Typography>}
-    </div>
-
-    <div className="player">
-      {!match.team2 && <Typography>TBD</Typography>}
-      {match.team2 && <React.Fragment>
-        <Thumbnail fileId={match.team2.user1.thumbnailId} default="/assets/tennis-player-free-vector.jpg" />
-        <div>
-          <Typography variant="headline">{match.team2.user1.name}</Typography>
-          {match.winnerId && match.winnerId == match.team2Id && <Typography color="primary">Победител</Typography>}
-          {match.winnerId && match.winnerId != match.team2Id && <Typography color="primary">Финалист</Typography>}
-        </div>
-      </React.Fragment>}
-    </div>
-  </div>);
-
-
-  return (
-    <React.Fragment>
-      <Hidden smUp>
-        <Typography variant="title" style={{ margin: '0 0 .3em 0', fontWeight: 700, fontSize: '1.1em' }}>Финал</Typography>
-        <Paper className={classes.single_teams_finale_mobile}>
-          {Body}
-        </Paper>
-      </Hidden>
-
-      <Hidden xsDown>
+        </Paper> */}
         <ExpansionPanel defaultExpanded>
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
             <Typography variant="title">Финал</Typography>
           </ExpansionPanelSummary>
           <ExpansionPanelDetails className={classes.single_teams_finale}>
-            {Body}
+            {scheme.singleTeams && SingleView}
+            {!scheme.singleTeams && TableView}
           </ExpansionPanelDetails>
         </ExpansionPanel>
       </Hidden>
@@ -324,7 +306,17 @@ export const SingleTeamsFinalMatchWidget = ({ scheme, classes, match }) => {
   );
 }
 
-export const DoubleTeamsFinalMatchWidget = ({ scheme, classes, match }) => {
-
+export function splitAndFormatName(name) {
+  return (name || '')
+    .split(' ')
+    .map((part, index, split) => {
+      if (index == 0)
+        return part.charAt(0) + '.';
+      else if (index == split.length - 1)
+        return part;
+      else
+        return '';
+    })
+    .join(' ');
 }
 
