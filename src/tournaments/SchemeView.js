@@ -46,8 +46,36 @@ class SchemeView extends React.Component {
       enrolled: [],
       hasError: false,
       scores: null,
-      eliminationPreview: null
+      eliminationPreview: null,
+      currentUser: null
     }
+
+    this.onCompleteRegisterAction = (action) => {
+      if (action === 'enroll')
+        return () => {
+          this.getData();
+        }
+      else
+        return () => {
+          this.getData();
+        }
+    }
+
+    this.onErrorRegisterAction = (action) => {
+      if (action === 'enroll')
+        return () => {
+
+        }
+      else
+        return () => {
+
+        }
+    }
+  }
+
+  componentDidMount() {
+    UserService.getAuthenticatedUser()
+      .then(currentUser => this.setState({ currentUser }));
   }
 
   render() {
@@ -107,7 +135,14 @@ class SchemeView extends React.Component {
                   <div className={classes.widgets_second_row}>
                     <div className="left">
                       {scheme.bracketStatus == BracketStatus.UNDRAWN && <div style={{ marginBottom: '1em' }}>
-                        <RegisterWidget scheme={scheme} refresh={() => this.getData()} classes={classes} />
+                        <RegisterWidget
+                          scheme={scheme}
+                          classes={classes}
+                          enrollment={this.getCurrentUserEnrollment()}
+                          mode={mode}
+                          onComplete={this.onCompleteRegisterAction}
+                          onError={this.onErrorRegisterAction}
+                        />
                       </div>}
                       <div>
                         <SchemesWidget scheme={scheme} classes={classes} history={history} />
@@ -124,6 +159,15 @@ class SchemeView extends React.Component {
         }}
       </UserService.WithApplicationMode>
     );
+  }
+
+  getCurrentUserEnrollment() {
+    const { currentUser, enrolled } = this.state;
+
+    if (!currentUser)
+      return null;
+    else
+      return enrolled.find(e => e.team1Id == currentUser.teamId || e.team2Id == currentUser.teamId);
   }
 
   componentDidMount() {

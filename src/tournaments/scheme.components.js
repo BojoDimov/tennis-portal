@@ -18,8 +18,9 @@ import EditBoxedIcon from '../components/icons/EditBoxedIcon';
 import WinnerIcon from '../components/icons/WinnerIcon';
 import QueryService from '../services/query.service';
 import EnrollmentsComponent from '../schemes/components/Enrollments';
-import { BracketStatus } from '../enums';
+import { BracketStatus, ApplicationMode } from '../enums';
 import Thumbnail from '../components/ThumbnailOrDefault';
+import ConfirmationDialog from '../components/ConfirmationDialog';
 
 export const SchemeInfoBar = ({ scheme, playerCount, classes }) => {
   return (
@@ -49,7 +50,8 @@ export const SchemeInfoBar = ({ scheme, playerCount, classes }) => {
   );
 }
 
-export const RegisterWidget = ({ scheme, refresh, classes }) => {
+export const RegisterWidget = (props) => {
+  const { scheme, classes, invitationTrigger, enrollment, mode, onComplete, onError } = props;
   let start = moment(scheme.registrationStart);
   let end = moment(scheme.registrationEnd);
   let duration = moment.duration(start.diff(moment()));
@@ -57,7 +59,21 @@ export const RegisterWidget = ({ scheme, refresh, classes }) => {
   if (moment().isBetween(start, end))
     duration = moment.duration(end.diff(moment()));
 
-  const Body = (
+  let enroll = () => dispatchEvent('menu-login');
+  if (mode != ApplicationMode.GUEST)
+    enroll = invitationTrigger || (() => QueryService
+      .get(`/schemes/${scheme.id}/enrollments/enroll`)
+      .then(onComplete('enroll'))
+      .catch(onError('enroll')));
+
+  const cancelEnroll = () => {
+    return QueryService
+      .delete(`/schemes/${scheme.id}/enrollments/${enrollment.id}/cancelEnroll`)
+      .then(onComplete('cancel'))
+      .catch(onError('cancel'));
+  }
+
+  let Body = (
     <React.Fragment>
       {moment().isBefore(start) && <React.Fragment>
         <Typography>Остават <b>{duration.days()} дни, {duration.hours()} часа</b> и <b> {duration.minutes()} минути</b> до началото на записването.</Typography>
@@ -72,7 +88,7 @@ export const RegisterWidget = ({ scheme, refresh, classes }) => {
       {moment().isBetween(start, end) && <React.Fragment>
         <Typography>Остават <b>{duration.days()} дни, {duration.hours()} часа</b> и <b> {duration.minutes()} минути</b> до края на записването.</Typography>
         <div className="buttons">
-          <Button variant="contained" color="primary">
+          <Button variant="contained" color="primary" onClick={enroll}>
             <EditBoxedIcon width="1em" height="1em" style={{ marginRight: '.3em' }} />
             Записване
             </Button>
@@ -84,6 +100,27 @@ export const RegisterWidget = ({ scheme, refresh, classes }) => {
       </React.Fragment>}
     </React.Fragment>
   );
+
+  if (enrollment)
+    Body = (
+      <React.Fragment>
+        <ConfirmationDialog
+          title="Отписване от турнир"
+          body={<Typography>
+            Сигурни ли сте че искате да се отпишете от турнир {scheme.name}?
+                <Typography variant="caption">Ако сте в отбор, то и другият играч ще бъде отписан.</Typography>
+          </Typography>}
+          onAccept={cancelEnroll()}
+        >
+          <div className="buttons">
+            <Button variant="contained" color="secondary">
+              <EditBoxedIcon width="1em" height="1em" style={{ marginRight: '.3em' }} />
+              Отписване
+            </Button>
+          </div>
+        </ConfirmationDialog>
+      </React.Fragment>
+    );
 
   return (
     <React.Fragment>
