@@ -86,28 +86,29 @@ export default (theme) => ({
     padding: '1em',
     background: 'linear-gradient(0deg, rgb(220, 220, 220) 0%, rgb(239, 239, 239) 100%)'
   },
-  single_teams_finale_mobile: {
-    padding: '1em',
-    background: 'linear-gradient(0deg, rgb(239, 239, 239) 0%, rgb(253, 253, 253) 100%)',
-    '& .root': {
-      flexDirection: 'column',
-      alignItems: 'center',
-      flexGrow: 1
-    },
-    '& .player': {
-      flexDirection: 'row',
-      justifyContent: 'flex-start',
-      margin: '.5em 0',
-      '& img': {
-        width: '50px !important',
-        height: '50px !important'
-      }
-    },
-    '& .score': {
-      alignSelf: 'center'
-    }
-  },
+  // single_teams_finale_mobile: {
+  //   padding: '1em',
+  //   background: 'linear-gradient(0deg, rgb(239, 239, 239) 0%, rgb(253, 253, 253) 100%)',
+  //   '& .root': {
+  //     flexDirection: 'column',
+  //     alignItems: 'center',
+  //     flexGrow: 1
+  //   },
+  //   '& .player': {
+  //     flexDirection: 'row',
+  //     justifyContent: 'flex-start',
+  //     margin: '.5em 0',
+  //     '& img': {
+  //       width: '50px !important',
+  //       height: '50px !important'
+  //     }
+  //   },
+  //   '& .score': {
+  //     alignSelf: 'center'
+  //   }
+  // },
   single_teams_finale: {
+    background: 'linear-gradient(0deg, #faffd6 0%, rgb(255, 255, 255) 65%)',
     display: 'flex',
     justifyContent: 'center',
     alignItems: 'center',
@@ -126,31 +127,31 @@ export default (theme) => ({
     '& .score': {
 
     },
-    [theme.breakpoints.down('xs')]: {
-      // justifyContent: 'flex-start',
-      '& .root': {
-        flexDirection: 'column',
-        alignItems: 'flex-start'
-      },
-      '& *': {
-        fontSize: '1em'
-      },
-      '& .player': {
-        flexDirection: 'row',
-        justifyContent: 'flex-start',
-        margin: '.5em 0',
-        '& img': {
-          width: '50px !important',
-          height: '50px !important'
-        }
-      },
-      '& .score': {
-        margin: '0 0 0 50px'
-      }
-    }
+    // [theme.breakpoints.down('xs')]: {
+    //   // justifyContent: 'flex-start',
+    //   '& .root': {
+    //     flexDirection: 'column',
+    //     alignItems: 'flex-start'
+    //   },
+    //   '& *': {
+    //     fontSize: '1em'
+    //   },
+    //   '& .player': {
+    //     flexDirection: 'row',
+    //     justifyContent: 'flex-start',
+    //     margin: '.5em 0',
+    //     '& img': {
+    //       width: '50px !important',
+    //       height: '50px !important'
+    //     }
+    //   },
+    //   '& .score': {
+    //     margin: '0 0 0 50px'
+    //   }
+    // }
   },
   finale_widget: {
-    background: 'linear-gradient(0deg, rgb(239, 239, 239) 0%, rgb(253, 253, 253) 100%)',
+    background: 'linear-gradient(0deg, rgb(239, 239, 239) 0%, rgb(255, 255, 255) 100%)',
     '& .table-root': {
       display: 'flex',
       flexDirection: 'column',
@@ -166,7 +167,8 @@ export default (theme) => ({
       padding: '.5em .8em',
       background: 'linear-gradient(0deg, rgb(239, 239, 239) 0%, rgb(253, 253, 253) 100%)',
       '&.winner': {
-        background: 'linear-gradient(0deg, #b2cc81 0%, rgb(253, 253, 253) 50%)'
+        background: 'linear-gradient(0deg, #faffd6 0%, rgb(255, 255, 255) 65%)'
+        // background: 'linear-gradient(0deg, #b2cc81 0%, rgb(253, 253, 253) 50%)'
       }
     },
     [theme.breakpoints.down('xs')]: {

@@ -7,8 +7,8 @@ import AssessmentIcon from '@material-ui/icons/Assessment';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 
 export const desktopRoutes = [
-  { id: 1, to: '/schedule', name: 'График', Icon: CalendarTodayIcon },
-  { id: 2, to: '/editions', name: 'Турнири', faIcon: 'trophy' }
+  { id: 1, to: '/schedule', name: 'График', Icon: CalendarTodayIcon, tag: 'schedule' },
+  { id: 2, to: '/editions', name: 'Турнири', faIcon: 'trophy', tag: 'tournaments' }
 ];
 
 export const adminRoutes = [

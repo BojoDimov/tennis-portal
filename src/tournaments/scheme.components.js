@@ -110,7 +110,7 @@ export const RegisterWidget = (props) => {
             Сигурни ли сте че искате да се отпишете от турнир {scheme.name}?
                 <Typography variant="caption">Ако сте в отбор, то и другият играч ще бъде отписан.</Typography>
           </Typography>}
-          onAccept={cancelEnroll()}
+          onAccept={cancelEnroll}
         >
           <div className="buttons">
             <Button variant="contained" color="secondary">
@@ -263,12 +263,21 @@ export const FinalMatchWidget = ({ scheme, classes, match }) => {
         <div style={{
           display: 'flex',
           alignItems: 'center',
-          marginLeft: '1em'
+          marginLeft: '1em',
+          fontStyle: 'italic'
         }}>
-          <Typography>6</Typography>
-          <Typography>3</Typography>
-          <Typography>5</Typography>
-          <Typography><sup>(11)</sup></Typography>
+          {match.sets && match.sets.map(set => {
+            return (
+              <div style={{ marginRight: '.3em', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                {match.team1Id == team.id && <Typography>{set.team1}</Typography>}
+                {match.team2Id == team.id && <Typography>{set.team2}</Typography>}
+                {set.tiebreaker && match.team1Id == team.id && set.team1 < set.team2
+                  && <Typography><sup>({set.tiebreaker})</sup></Typography>}
+                {set.tiebreaker && match.team2Id == team.id && set.team2 < set.team1
+                  && <Typography><sup>({set.tiebreaker})</sup></Typography>}
+              </div>
+            );
+          })}
         </div>
       </Paper>
     );
@@ -276,7 +285,7 @@ export const FinalMatchWidget = ({ scheme, classes, match }) => {
 
   const TableView = (
     <div className="table-root">
-      <TableRow team={match.team1} isWinner={true} />
+      <TableRow team={match.team1} isWinner={match.winnerId && match.winnerId == match.team1Id} />
       <TableRow team={match.team2} isWinner={match.winnerId && match.winnerId == match.team2Id} />
     </div>
   );
@@ -304,7 +313,7 @@ export const FinalMatchWidget = ({ scheme, classes, match }) => {
       <div className="score">
         {match.sets && match.sets.map(set => {
           return (
-            <Typography variant="title" style={{ fontStyle: 'italic' }}>{set.team1} - {set.team2} {set.tiebreaker && <sup>({set.tiebreaker})</sup>}</Typography>
+            <Typography key={set.id} variant="title" style={{ fontStyle: 'italic' }}>{set.team1} - {set.team2} {set.tiebreaker && <sup>({set.tiebreaker})</sup>}</Typography>
           );
         })}
         {!match.sets.length && <Typography variant="headline" style={{ fontStyle: 'italic' }}>VS</Typography>}
@@ -333,10 +342,13 @@ export const FinalMatchWidget = ({ scheme, classes, match }) => {
           <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
             <Typography variant="title">Финал</Typography>
           </ExpansionPanelSummary>
-          <ExpansionPanelDetails className={classes.single_teams_finale}>
-            {scheme.singleTeams && SingleView}
-            {!scheme.singleTeams && TableView}
-          </ExpansionPanelDetails>
+          {!scheme.singleTeams && <ExpansionPanelDetails className={classes.finale_widget}>
+            {TableView}
+          </ExpansionPanelDetails>}
+
+          {scheme.singleTeams && <ExpansionPanelDetails className={classes.single_teams_finale}>
+            {SingleView}
+          </ExpansionPanelDetails>}
         </ExpansionPanel>
       </Hidden>
     </React.Fragment>

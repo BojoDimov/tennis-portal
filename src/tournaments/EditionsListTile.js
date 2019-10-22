@@ -24,12 +24,12 @@ class EditionsListTile extends React.Component {
     const { edition, classes, history } = this.props;
 
     let showSchemeInfo = edition.schemes && edition.schemes.length === 1;
-    let ongoingSuffix = '';
+    let ongoingSuffix = ' inactive';
     if (moment(edition.startDate).isSameOrAfter(moment(), 'date'))
       ongoingSuffix = ' ongoing'
 
     if (edition.schemes && edition.schemes.length === 1 && edition.schemes[0].bracketStatus == BracketStatus.ELIMINATION_END)
-      ongoingSuffix = '';
+      ongoingSuffix = ' inactive';
 
     return (
       <Paper elevation={1} className={classes.tileRoot + ongoingSuffix} onClick={() => this.navigate()}>
@@ -44,17 +44,25 @@ class EditionsListTile extends React.Component {
         <div className={classes.name_root + ongoingSuffix}>
           <Typography className="title">{edition.name}</Typography>
           <Typography variant="caption">{edition.info}</Typography>
-          {edition.schemes && edition.schemes.length === 1 && edition.schemes[0].bracketStatus != BracketStatus.ELIMINATION_END
+          {showSchemeInfo && edition.schemes[0].bracketStatus != BracketStatus.ELIMINATION_END
             && <Typography style={{ display: 'flex', alignItems: 'center' }}>
               {moment(edition.schemes[0].date).format('hh:mm A')}
               {moment().isAfter(moment(edition.schemes[0].date)) && <Typography variant="caption" style={{ marginLeft: '.3em' }}>(Играе се)</Typography>}
             </Typography>}
-          {edition.schemes && edition.schemes.length === 1 && edition.schemes[0].final
+          {showSchemeInfo && edition.schemes[0].final
             && <div className={classes.finale}>
               {edition.schemes[0].final.winnerId == edition.schemes[0].final.team1Id && <WinnerIcon width="18px" height="18px" />}
-              <Typography>{edition.schemes[0].final.team1.user1.name}</Typography>
+              <div style={{ marginRight: '1em' }}>
+                <Typography>{edition.schemes[0].final.team1.user1.name}</Typography>
+                {edition.schemes[0].final.team1.user2 && <Typography>{edition.schemes[0].final.team1.user1.name}</Typography>}
+              </div>
+
               {edition.schemes[0].final.winnerId == edition.schemes[0].final.team2Id && <WinnerIcon width="18px" height="18px" />}
-              <Typography>{edition.schemes[0].final.team2.user1.name}</Typography>
+              <div>
+                <Typography>{edition.schemes[0].final.team2.user1.name}</Typography>
+                {edition.schemes[0].final.team2.user2 && <Typography>{edition.schemes[0].final.team2.user2.name}</Typography>}
+              </div>
+
             </div>}
         </div>
         {showSchemeInfo && <div className={classes.info_root + ongoingSuffix}>
@@ -66,7 +74,7 @@ class EditionsListTile extends React.Component {
 
             <Typography color="primary" className={classes.icon_and_text}>
               <PlayersIcon width="20px" height="20px" />
-              64
+              {edition.schemes[0].maxPlayerCount}
             </Typography>
           </div>
           <div className="schemeType">
@@ -93,6 +101,9 @@ const styles = (theme) => ({
     background: 'linear-gradient(0deg, rgb(220, 220, 220) 0%, rgb(239, 239, 239) 100%)',
     '&.ongoing': {
       background: 'linear-gradient(0deg, rgb(239, 239, 239) 0%, rgb(253, 253, 253) 100%)'
+    },
+    [theme.breakpoints.down('xs')]: {
+      flexWrap: 'wrap'
     }
   },
   date_root: {
@@ -137,7 +148,7 @@ const styles = (theme) => ({
   finale: {
     display: 'flex',
     justifyContent: 'flex-start',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     fontWeight: 700,
     '& > *+*': {
       marginLeft: '.3em'
@@ -150,6 +161,15 @@ const styles = (theme) => ({
   },
   info_root: {
     fontWeight: 700,
+    [theme.breakpoints.down('xs')]: {
+      marginTop: '.8em',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'space-between'
+    },
+    '&.inactive *': {
+      color: '#808080 !important'
+    },
     '& *': {
       fontWeight: 700
     },

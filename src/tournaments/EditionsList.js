@@ -105,7 +105,11 @@ const styles = (theme) => ({
   },
   heading: {
     marginBottom: '.8em',
-    fontWeight: 700
+    fontWeight: 700,
+    [theme.breakpoints.down('xs')]: {
+      display: 'flex',
+      justifyContent: 'center'
+    }
   }
 });
 

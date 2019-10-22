@@ -66,6 +66,16 @@ class App extends React.Component {
   }
 
   onRouteChanged(location) {
+    if (location.pathname.indexOf("/schedule") != -1)
+      this.setState({ currentRoute: 'schedule' });
+    else if (location.pathname.indexOf("/editions") != -1
+      || location.pathname.indexOf("/players") != -1
+      || location.pathname.indexOf("/leagues") != -1
+      || location.pathname.indexOf("/schemes") != -1)
+      this.setState({ currentRoute: 'tournaments' });
+    else
+      this.setState({ currentRoute: 'other' });
+
     // var route = (NavigationModel.routes
     //   .find(route => location.pathname.indexOf(route.to) != -1)
     //   || NavigationModel.adminRoutes

@@ -21,6 +21,7 @@ import {
   EnrollmentsWidget,
   FinalMatchWidget
 } from './scheme.components';
+import InvitationsModal from '../schemes/components/InvitationsModal';
 
 class SchemeView extends React.Component {
   constructor(props) {
@@ -47,7 +48,8 @@ class SchemeView extends React.Component {
       hasError: false,
       scores: null,
       eliminationPreview: null,
-      currentUser: null
+      currentUser: null,
+      invitationsModal: null
     }
 
     this.onCompleteRegisterAction = (action) => {
@@ -76,10 +78,14 @@ class SchemeView extends React.Component {
   componentDidMount() {
     UserService.getAuthenticatedUser()
       .then(currentUser => this.setState({ currentUser }));
+    this.getData();
+    catchEvent('logged-in', () => {
+      this.getData();
+    });
   }
 
   render() {
-    const { scheme, schemeModel, enrolled, scores, eliminationPreview } = this.state;
+    const { scheme, schemeModel, enrolled, scores, eliminationPreview, invitationsModal } = this.state;
     const { classes, history } = this.props;
 
     return (
@@ -111,6 +117,12 @@ class SchemeView extends React.Component {
                   }}
                   onClose={() => this.setState({ scores: null })}
                 />}
+              {invitationsModal
+                && <InvitationsModal
+                  onChange={() => this.setState({ invitationsModal: false }, () => this.getData())}
+                  onClose={() => this.setState({ invitationsModal: false })}
+                  scheme={scheme}
+                />}
 
               {eliminationPreview && <EliminationPreviewModal
                 teams={eliminationPreview}
@@ -140,6 +152,7 @@ class SchemeView extends React.Component {
                           classes={classes}
                           enrollment={this.getCurrentUserEnrollment()}
                           mode={mode}
+                          invitationTrigger={this.createInvitationTrigger()}
                           onComplete={this.onCompleteRegisterAction}
                           onError={this.onErrorRegisterAction}
                         />
@@ -163,18 +176,18 @@ class SchemeView extends React.Component {
 
   getCurrentUserEnrollment() {
     const { currentUser, enrolled } = this.state;
-
+    console.log(currentUser, enrolled);
     if (!currentUser)
       return null;
     else
       return enrolled.find(e => e.team1Id == currentUser.teamId || e.team2Id == currentUser.teamId);
   }
 
-  componentDidMount() {
-    this.getData();
-    catchEvent('logged-in', () => {
-      this.getData();
-    })
+  createInvitationTrigger() {
+    if (this.state.scheme.singleTeams)
+      return null;
+    else
+      return () => this.setState({ invitationsModal: true });
   }
 
   getData() {

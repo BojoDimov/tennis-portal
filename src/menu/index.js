@@ -48,7 +48,7 @@ class Menu extends React.Component {
   mapToolbarRoute(route, currentRoute) {
     return (
       <Link to={route.to} key={route.id}>
-        <Button color="primary" size="large" variant={route.id == currentRoute ? 'outlined' : 'text'}>
+        <Button color="primary" size="large" variant={route.tag == currentRoute ? 'outlined' : 'text'}>
           {route.name}
         </Button>
       </Link>

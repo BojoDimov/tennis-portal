@@ -84,11 +84,6 @@ class InvitationsComponent extends React.Component {
                   <Typography>{inv.inviter.name}</Typography>}
 
                 <div>
-                  <Link to={`/editions/${inv.scheme.editionId}`}>
-                    <Typography variant="body2">
-                      {inv.scheme.edition.name}
-                    </Typography>
-                  </Link>
                   <Link to={`/schemes/${inv.scheme.id}`}>
                     <Typography variant="body2">
                       {inv.scheme.name}

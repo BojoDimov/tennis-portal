@@ -40,7 +40,7 @@ class GroupsBracket extends React.Component {
       .then(({ groups, scheme }) => this.setState({
         groups,
         scheme,
-        enableActions: scheme.bracketStatus == BracketStatus.GROUPS_DRAWN || scheme.bracketStatus == BracketStatus.GROUPS_END
+        enableActions: scheme.bracketStatus == BracketStatus.GROUPS_DRAWN
       }));
   }
 
