@@ -52,6 +52,7 @@ export const SchemeInfoBar = ({ scheme, playerCount, classes }) => {
 
 export const RegisterWidget = (props) => {
   const { scheme, classes, invitationTrigger, enrollment, mode, onComplete, onError } = props;
+  console.log(enrollment);
   let start = moment(scheme.registrationStart);
   let end = moment(scheme.registrationEnd);
   let duration = moment.duration(start.diff(moment()));
@@ -144,7 +145,7 @@ export const RegisterWidget = (props) => {
 
 export const SchemesWidget = ({ scheme, classes, history }) => {
   const navigateBracket = () => {
-    if (scheme.bracketStatus == BracketStatus.ELIMINATION_DRAWN || scheme.status == BracketStatus.ELIMINATION_END)
+    if (scheme.bracketStatus == BracketStatus.ELIMINATION_DRAWN || scheme.bracketStatus == BracketStatus.ELIMINATION_END)
       history.push(`/schemes/${scheme.id}/elimination`);
   };
 
@@ -223,7 +224,7 @@ export const EnrollmentsWidget = ({ scheme, mode, enrolled, classes }) => {
         </Paper>
       </Hidden>
       <Hidden xsDown>
-        <EnrollmentsComponent scheme={scheme} mode={mode} />
+        <EnrollmentsComponent scheme={scheme} mode={mode} enrolled={enrolled} />
       </Hidden>
     </React.Fragment>
   );
@@ -293,7 +294,7 @@ export const FinalMatchWidget = ({ scheme, classes, match }) => {
   const SingleTeamView = ({ team, hasWinner, isWinner }) => {
     return (
       <div className="player">
-        {!team && <Typography>TBD</Typography>}
+        {!team && <Typography variant="headline" align="center">TBD</Typography>}
         {team && <React.Fragment>
           <Thumbnail fileId={team.user1.thumbnailId} default="/assets/tennis-player-free-vector.jpg" />
           <div>

@@ -51,6 +51,7 @@ class MatchesService {
     let transaction;
     try {
       transaction = await sequelize.transaction();
+      model.winnerId = getWinner(model);
       await Matches.create(model, {
         include: ['sets'],
         transaction

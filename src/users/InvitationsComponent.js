@@ -43,14 +43,14 @@ class InvitationsComponent extends React.Component {
     this.setState({ err: null });
     QueryService
       .post(`/invitations/${invitation.id}`)
-      .then(() => this.props.onChange())
+      .then(() => this.props.onAccept())
       .catch(err => this.setState({ err }));
   }
 
   cancel(invitation) {
     QueryService
       .delete(`/invitations/${invitation.id}`)
-      .then(() => this.props.onChange())
+      .then(() => this.props.onCancel())
       .catch(() => null);
   }
 

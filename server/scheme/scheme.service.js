@@ -29,7 +29,10 @@ class SchemeService {
         {
           model: Matches,
           as: 'matches',
-          include: MatchService.matchesIncludes()
+          include: MatchService.matchesIncludes(),
+          // where: {
+          //   groupId: null
+          // }
         }
       ],
       order: [
@@ -130,7 +133,7 @@ class SchemeService {
       await scheme.save({ transaction });
       for (const group of Bracket.drawGroups(scheme, scheme.seed, teams)) {
         await Groups.create(group, {
-          include: [{ model: GroupTeams, as: 'teams' }],
+          include: [{ model: GroupTeams, as: 'teams', }],
           transaction
         });
       }

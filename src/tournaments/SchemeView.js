@@ -92,6 +92,7 @@ class SchemeView extends React.Component {
       <UserService.WithApplicationMode>
         {mode => {
           let hasPermission = mode == ApplicationMode.ADMIN || mode == ApplicationMode.TOURNAMENT;
+          let finalMatch = this.getFinalMatch();
 
           return (
             <div className="container">
@@ -139,11 +140,9 @@ class SchemeView extends React.Component {
                 <SchemeInfoBar scheme={scheme} playerCount={enrolled.length} classes={classes} />
                 <Typography style={{ marginBottom: '1em' }}>{scheme.info}</Typography>
                 <div className={classes.widgets_root}>
-                  {/* && scheme.bracketSize == scheme.matches[0].round */}
-                  {scheme.matches && scheme.matches[0]
-                    && <div style={{ width: '100%', marginBottom: '1em' }}>
-                      <FinalMatchWidget match={scheme.matches[0]} classes={classes} scheme={scheme} />
-                    </div>}
+                  {finalMatch && <div style={{ width: '100%', marginBottom: '1em' }}>
+                    <FinalMatchWidget match={finalMatch} classes={classes} scheme={scheme} />
+                  </div>}
                   <div className={classes.widgets_second_row}>
                     <div className="left">
                       {scheme.bracketStatus == BracketStatus.UNDRAWN && <div style={{ marginBottom: '1em' }}>
@@ -176,11 +175,22 @@ class SchemeView extends React.Component {
 
   getCurrentUserEnrollment() {
     const { currentUser, enrolled } = this.state;
-    console.log(currentUser, enrolled);
     if (!currentUser)
       return null;
+    else {
+      var t = enrolled.find(e => e.team.user1Id == currentUser.id || e.team.user2Id == currentUser.id);
+      console.log(currentUser);
+      console.log(t);
+      return t;
+    }
+  }
+
+  getFinalMatch() {
+    const { scheme } = this.state;
+    if (!scheme.matches || scheme.matches.length === 0 || !scheme.bracketRounds)
+      return null;
     else
-      return enrolled.find(e => e.team1Id == currentUser.teamId || e.team2Id == currentUser.teamId);
+      return scheme.matches.find(e => e.round == scheme.bracketRounds);
   }
 
   createInvitationTrigger() {

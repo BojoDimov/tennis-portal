@@ -73,7 +73,7 @@ class InvitationsModal extends React.Component {
         <Button variant="contained" color="primary" size="small" style={{ marginLeft: '1rem' }} disabled={!selectedUser} onClick={() => this.invite()}>Покани</Button>
       </div>
 
-      <InvitationsComponent invitations={this.state.invitations} onChange={() => this.getData()} />
+      <InvitationsComponent invitations={this.state.invitations} onCancel={() => this.getData()} onAccept={this.props.onChange} />
     </React.Fragment>
 
     return (

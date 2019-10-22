@@ -182,7 +182,7 @@ class AccountView extends React.Component {
               {invCollapsed && <ExpandLessIcon />}
               {!invCollapsed && <ExpandMoreIcon />}
             </Typography>
-            {invCollapsed && <InvitationsComponent invitations={this.state.invitations} onChange={() => this.getData()} />}
+            {invCollapsed && <InvitationsComponent invitations={this.state.invitations} onCancel={() => this.getData()} onAccept={() => this.getData()} />}
           </CardContent>
         </Card>}
 
