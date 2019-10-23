@@ -29,10 +29,17 @@ class GroupsBracket extends React.Component {
       matchModel: null,
       enableActions: false
     }
+
+    this.refreshHandle = null;
   }
 
   componentDidMount() {
     this.getData();
+    this.refreshHandle = setInterval(() => this.getData(), 15 * 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.refreshHandle);
   }
 
   getData() {
@@ -40,7 +47,7 @@ class GroupsBracket extends React.Component {
       .then(({ groups, scheme }) => this.setState({
         groups,
         scheme,
-        enableActions: scheme.bracketStatus == BracketStatus.GROUPS_DRAWN || scheme.bracketStatus == BracketStatus.GROUPS_END
+        enableActions: scheme.bracketStatus == BracketStatus.GROUPS_DRAWN
       }));
   }
 
@@ -105,15 +112,12 @@ class GroupsBracket extends React.Component {
                     this.getData();
                     this.setState({ matchModel: null })
                   }}
+                  singleTeams={scheme.singleTeams}
                   onClose={() => this.setState({ matchModel: null })}
                 />}
 
               <Typography align="center" variant="headline">
-                Групова фаза за
-              <Link to={`/editions/${scheme.edition.id}`}>
-                  <Typography variant="display1">{scheme.edition.name}</Typography>
-                </Link>
-                -
+                Групова фаза
               <Link to={`/schemes/${scheme.id}`}>
                   <Typography variant="display1">{scheme.name}</Typography>
                 </Link>

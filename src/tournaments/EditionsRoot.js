@@ -2,7 +2,7 @@ import React from 'react';
 import { Switch, Route } from 'react-router-dom';
 
 import EditionsList from './EditionsList';
-import EditionView from './EditionView';
+import EditionView from '../editions/EditionView';
 
 class EditionsRoot extends React.Component {
   render() {

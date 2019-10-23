@@ -1,4 +1,5 @@
 import React from 'react';
+import moment from 'moment-timezone';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -117,15 +118,15 @@ class EditionFormModal extends React.Component {
 
           <DatePicker
             autoOk
-            label="Начало на турнира"
-            labelFunc={(date) => date ? new Date(date).toLocaleDateString() : ''}
+            label="Дата"
+            labelFunc={(date) => date ? moment(model.date).format('DD.MM.YYYY') : ''}
             clearable
             fullWidth={true}
             value={model.startDate}
             onChange={this.handleCustomChange('startDate')}
           />
 
-          <DatePicker
+          {/* <DatePicker
             autoOk
             label="Край на турнира"
             labelFunc={(date) => date ? new Date(date).toLocaleDateString() : ''}
@@ -133,7 +134,7 @@ class EditionFormModal extends React.Component {
             fullWidth={true}
             value={model.endDate}
             onChange={this.handleCustomChange('endDate')}
-          />
+          /> */}
 
         </DialogContent>
 

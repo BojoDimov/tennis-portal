@@ -10,6 +10,7 @@ import TournamentFormModal from './TournamentFormModal';
 import ConfirmationDialog from '../components/ConfirmationDialog';
 import QueryService from '../services/query.service';
 import UserService from '../services/user.service';
+import { catchEvent } from '../services/events.service';
 import { ApplicationMode, Status } from '../enums';
 import Snackbar from '@material-ui/core/Snackbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -48,6 +49,9 @@ class TournamentsRoot extends React.Component {
 
   componentDidMount() {
     this.getData();
+    catchEvent('logged-in', () => {
+      this.getData();
+    });
   }
 
   getData() {

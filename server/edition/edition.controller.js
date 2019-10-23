@@ -6,7 +6,7 @@ const identity = require('../infrastructure/middlewares/identity');
 const filter = async (req, res, next) => {
   try {
     let includeDrafts = req.user && (req.user.isAdmin || req.user.isTournamentAdmin);
-    const items = await EditionsService.filter(includeDrafts);
+    const items = await EditionsService.filter(includeDrafts, req.query);
     return res.json(items);
   }
   catch (err) {

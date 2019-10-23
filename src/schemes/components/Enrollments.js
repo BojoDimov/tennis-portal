@@ -28,6 +28,13 @@ class EnrollmentsComponent extends React.Component {
     }
   }
 
+  componentDidMount() {
+    if (!this.props.enrolled)
+      this.getData();
+    else
+      this.setState({ enrolled: this.props.enrolled });
+  }
+
   componentDidUpdate(prevProps) {
     if (prevProps.scheme != this.props.scheme)
       this.getData();
@@ -70,9 +77,9 @@ class EnrollmentsComponent extends React.Component {
     let hasPermission = mode == ApplicationMode.ADMIN || mode == ApplicationMode.TOURNAMENT;
 
     return (
-      <ExpansionPanel style={{ marginTop: '1rem' }} defaultExpanded>
+      <ExpansionPanel defaultExpanded className={classes.root}>
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-          <Typography variant="title">Играчи</Typography>
+          <Typography variant="title">Записани участници</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails style={{ flexDirection: 'column' }}>
           {openTeamModal && <SelectTeamModal
@@ -90,7 +97,9 @@ class EnrollmentsComponent extends React.Component {
             Добави
             </Button></div>}
 
-          <Table>
+          {enrolled.length === 0 && <Typography>Няма записани играчи</Typography>}
+
+          {enrolled.length !== 0 && <Table>
             <TableHead>
               <TableRow>
                 <TableCell padding="none">№</TableCell>
@@ -147,7 +156,7 @@ class EnrollmentsComponent extends React.Component {
                 );
               })}
             </TableBody>
-          </Table>
+          </Table>}
         </ExpansionPanelDetails>
       </ExpansionPanel>
     )
@@ -157,7 +166,6 @@ class EnrollmentsComponent extends React.Component {
 const styles = (theme) => {
   return ({
     root: {
-      marginLeft: 0
     },
     seedDivider: {
       backgroundColor: lighten(theme.palette.primary.main, .9),

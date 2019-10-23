@@ -40,7 +40,7 @@ module.exports = (db, Sequelize) => {
       as: 'groupTeams',
       foreignKey: {
         name: 'teamId',
-        allowNull: false
+        allowNull: true
       }
     });
   }

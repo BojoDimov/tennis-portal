@@ -51,6 +51,7 @@ class MatchesService {
     let transaction;
     try {
       transaction = await sequelize.transaction();
+      model.winnerId = getWinner(model);
       await Matches.create(model, {
         include: ['sets'],
         transaction
@@ -82,7 +83,11 @@ class MatchesService {
       await this.manageSets(model.sets, transaction);
       await match.save({ transaction });
       match = await this.get(id, transaction);
-      if (scheme.bracketStatus == BracketStatus.ELIMINATION_DRAWN)
+      match.winnerId = getWinner(match);
+      await match.save({ transaction });
+
+      if (scheme.bracketStatus == BracketStatus.ELIMINATION_DRAWN
+        && scheme.bracketRounds > match.round)
         await this.manageNextMatch(match, transaction);
       if (scheme.bracketStatus == BracketStatus.GROUPS_DRAWN)
         await this.manageGroupOrder(match, transaction);
@@ -169,8 +174,7 @@ class MatchesService {
   }
 
   async manageNextMatch(match, transaction) {
-    let winner = getWinner(match);
-    if (!winner)
+    if (!match.winnerId)
       return;
 
     const [nextMatch, created] = await Matches.findOrCreate({
@@ -183,9 +187,9 @@ class MatchesService {
     });
 
     if (match.match % 2 == 0)
-      nextMatch.team2Id = winner;
+      nextMatch.team2Id = match.winnerId;
     else
-      nextMatch.team1Id = winner;
+      nextMatch.team1Id = match.winnerId;
 
     await nextMatch.save({ transaction });
   }

@@ -48,7 +48,7 @@ class Menu extends React.Component {
   mapToolbarRoute(route, currentRoute) {
     return (
       <Link to={route.to} key={route.id}>
-        <Button color="primary" size="large" variant={route.id == currentRoute ? 'outlined' : 'text'}>
+        <Button color="primary" size="large" variant={route.tag == currentRoute ? 'outlined' : 'text'}>
           {route.name}
         </Button>
       </Link>
@@ -79,7 +79,7 @@ class Menu extends React.Component {
         {currentRoute => (<UserService.WithApplicationMode>
           {mode => (
             <div className={"container " + classes.root}>
-              <img src="assets/logo3.png" />
+              <img src="/assets/logo3.png" />
               <Toolbar className={classes.toolbar} >
                 <Hidden smDown>
                   {desktopRoutes.map(route => this.mapToolbarRoute(route, currentRoute))}

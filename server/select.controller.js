@@ -85,8 +85,8 @@ const selectTeams = async (request, response) => {
     };
   else
     options.where = {
-      user2Id: {
-        [Op.not]: null
+      [Op.not]: {
+        user2Id: null
       }
     };
 
@@ -141,6 +141,7 @@ const selectTournament = async (request, response) => {
 }
 
 const selectInvited = async (request, response) => {
+  const filter = request.body;
   const schemeEnrollments = await Enrollments.findAll({
     where: {
       schemeId: request.body.schemeId
@@ -151,6 +152,9 @@ const selectInvited = async (request, response) => {
   const userIds = schemeEnrollments
     .reduce((acc, { team }) => acc.concat([team.user1Id, team.user2Id]), [])
     .filter(id => id);
+
+  if (filter.userId)
+    userIds.push(filter.userId);
 
   const result = await Users.findAndCountAll({
     where: {

@@ -43,14 +43,14 @@ class InvitationsComponent extends React.Component {
     this.setState({ err: null });
     QueryService
       .post(`/invitations/${invitation.id}`)
-      .then(() => this.props.onChange())
+      .then(() => this.props.onAccept())
       .catch(err => this.setState({ err }));
   }
 
   cancel(invitation) {
     QueryService
       .delete(`/invitations/${invitation.id}`)
-      .then(() => this.props.onChange())
+      .then(() => this.props.onCancel())
       .catch(() => null);
   }
 
@@ -84,11 +84,6 @@ class InvitationsComponent extends React.Component {
                   <Typography>{inv.inviter.name}</Typography>}
 
                 <div>
-                  <Link to={`/editions/${inv.scheme.editionId}`}>
-                    <Typography variant="body2">
-                      {inv.scheme.edition.name}
-                    </Typography>
-                  </Link>
                   <Link to={`/schemes/${inv.scheme.id}`}>
                     <Typography variant="body2">
                       {inv.scheme.name}

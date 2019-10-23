@@ -7,6 +7,8 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import ExpandLessIcon from '@material-ui/icons/ExpandLess';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import ClearIcon from '@material-ui/icons/Clear';
+import EditIcon from '@material-ui/icons/Edit';
 import { withStyles } from '@material-ui/core/styles';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Switch from '@material-ui/core/Switch';
@@ -19,6 +21,7 @@ import { UserPersonalInfo, UserPlayerInfo } from './UserProfile';
 import UserProfileFormModal from './UserProfileFormModal';
 import ChangePasswordModal from './ChangePasswordModal'
 import InvitationsComponent from './InvitationsComponent';
+import ImageField from '../components/ImageField';
 
 class AccountView extends React.Component {
   constructor(props) {
@@ -35,7 +38,40 @@ class AccountView extends React.Component {
       resCollapsed: true,
       invCollapsed: true,
       userModel: null,
-      changePassword: false
+      changePassword: false,
+      errorMessage: null
+    }
+
+    this.handleThumbnail = (e, isDelete) => {
+      const user = this.state.user;
+      if (isDelete) {
+        user.thumbnail = null;
+        user.thumbnailId = null;
+        this.setState({ user, errorMessage: null });
+        return QueryService
+          .post(`/users/${user.team.id}/updateThumbnail`, { fileId: null })
+          .catch(({ message }) => {
+            this.setState({ errorMessage: message });
+            setTimeout(() => this.setState({ errorMessage: null }), 60 * 1000);
+          });
+      }
+
+      if (!e || !e.target.files || !e.target.files[0])
+        return;
+
+      return QueryService
+        .uploadFile(e.target.files[0])
+        .then(file => {
+          user.thumbnail = file;
+          user.thumbnailId = file.id;
+          return QueryService.post(`/users/${user.team.id}/updateThumbnail`, { fileId: file.id });
+        }).then(({ thumbnailId }) => {
+          user.thumbnailId = thumbnailId;
+          this.setState({ user, errorMessage: null });
+        }).catch(({ message }) => {
+          this.setState({ errorMessage: message });
+          setTimeout(() => this.setState({ errorMessage: null }), 60 * 1000);
+        });
     }
   }
 
@@ -80,7 +116,8 @@ class AccountView extends React.Component {
       subsCollapsed,
       resCollapsed,
       invCollapsed,
-      changePassword
+      changePassword,
+      errorMessage
     } = this.state;
     const { mode, classes } = this.props;
 
@@ -97,10 +134,18 @@ class AccountView extends React.Component {
 
         <Card classes={{ root: classes.sectionRoot }}>
           <CardContent classes={{ root: classes.cardContentRoot }}>
+            <Typography style={{ color: 'darkred', fontStyle: 'italic', fontWeight: 700 }}>{errorMessage}</Typography>
             <Typography classes={{ root: classes.sectionHeadline }} variant="headline">{user.name}</Typography>
-            <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
-              <UserPersonalInfo user={user} />
-              <UserPlayerInfo user={user} style={{ marginLeft: '2rem' }} />
+            <div style={{ display: 'flex', justifyContent: 'flex-start', flexWrap: 'wrap', marginLeft: '-1rem' }}>
+              <div style={{ position: 'relative', margin: '0 1rem' }}>
+                <input ref={ref => this.inputRef = ref} onChange={this.handleThumbnail} type="file" style={{ display: 'none' }} accept="image/*" />
+                {!user.thumbnailId && <img src="/assets/tennis-player-free-vector.jpg" style={{ borderRadius: '5px', height: '150px' }} />}
+                {user.thumbnailId && <img src={QueryService.getFileUrl(user.thumbnailId)} style={{ borderRadius: '5px', height: '150px' }} />}
+                <EditIcon color="primary" style={{ position: 'absolute', top: '5px', left: '5px', height: '25px', cursor: 'pointer' }} onClick={() => this.inputRef.click()} />
+                {user.thumbnailId && <ClearIcon color="secondary" style={{ position: 'absolute', top: '5px', right: '5px', height: '25px', cursor: 'pointer' }} onClick={(e) => this.handleThumbnail(e, true)} />}
+              </div>
+              <UserPersonalInfo user={user} style={{ marginLeft: '1.1rem' }} />
+              <UserPlayerInfo user={user} style={{ marginLeft: '1.1rem' }} />
             </div>
             <div style={{ marginBottom: '1rem' }}>
               <FormControlLabel
@@ -137,7 +182,7 @@ class AccountView extends React.Component {
               {invCollapsed && <ExpandLessIcon />}
               {!invCollapsed && <ExpandMoreIcon />}
             </Typography>
-            {invCollapsed && <InvitationsComponent invitations={this.state.invitations} onChange={() => this.getData()} />}
+            {invCollapsed && <InvitationsComponent invitations={this.state.invitations} onCancel={() => this.getData()} onAccept={() => this.getData()} />}
           </CardContent>
         </Card>}
 

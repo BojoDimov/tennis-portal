@@ -129,6 +129,19 @@ const updateSecondaryData = async (req, res, next) => {
   }
 }
 
+const updateThumbnail = async (req, res, next) => {
+  if (!req.user || req.user.id != req.params.id)
+    return next({ name: 'DomainActionError', error: 'notEnoughPermissions' }, req, res, null);
+
+  try {
+    let thumbnailId = await UserService.updateThumbnail(req.params.id, req.body);
+    return res.json({ thumbnailId });
+  }
+  catch (err) {
+    return next(err, req, res, null);
+  }
+}
+
 const changePassword = async (req, res, next) => {
   try {
     await UserService.changePassword(req.user.id, req.body);
@@ -148,6 +161,7 @@ router.get('/', auth, getAll);
 router.post('/recovery/step2', recoverAccount);
 router.post('/updateSecondaryData', auth, updateSecondaryData);
 router.post('/changePassword', auth, changePassword);
+router.post('/:id/updateThumbnail', identity, updateThumbnail);
 router.post('/:id', auth, update);
 router.post('/', create);
 router.delete('/:id', auth, remove);

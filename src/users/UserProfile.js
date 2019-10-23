@@ -22,7 +22,9 @@ class UserProfile extends React.Component {
     super(props);
     this.state = {
       loggedInUser: null,
-      user: {},
+      user: {
+        team: {}
+      },
       subscriptions: null,
       reservations: null,
       invitations: null,
@@ -89,6 +91,10 @@ class UserProfile extends React.Component {
           <CardContent classes={{ root: classes.cardContentRoot }}>
             <Typography classes={{ root: classes.sectionHeadline }} variant="headline">{user.name}</Typography>
             <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+              <div style={{ position: 'relative', margin: '0 1rem' }}>
+                {!user.thumbnailId && <img src="/assets/tennis-player-free-vector.jpg" style={{ borderRadius: '5px', height: '150px' }} />}
+                {user.thumbnailId && <img src={QueryService.getFileUrl(user.thumbnailId)} style={{ borderRadius: '5px', height: '150px' }} />}
+              </div>
               <UserPersonalInfo user={user} />
               <UserPlayerInfo user={user} style={{ marginLeft: '2rem' }} />
             </div>

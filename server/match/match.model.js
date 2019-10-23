@@ -24,6 +24,14 @@ module.exports = (db, Sequelize) => {
       }
     });
 
+    models.Matches.belongsTo(models.Teams, {
+      as: 'winner',
+      foreignKey: {
+        name: 'winnerId',
+        allowNull: true
+      }
+    });
+
     models.Matches.belongsTo(models.Schemes, {
       as: 'scheme',
       foreignKey: {

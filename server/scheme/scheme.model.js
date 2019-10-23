@@ -4,7 +4,8 @@ module.exports = (db, Sequelize) => {
   const Schemes = db.define('Schemes', {
     name: { type: Sequelize.STRING, allowNull: false },
     info: Sequelize.TEXT,
-    date: { type: Sequelize.DATEONLY, allowNull: false },
+    // date: { type: Sequelize.DATEONLY, allowNull: false },
+    date: { type: Sequelize.DATE, allowNull: false },
     singleTeams: { type: Sequelize.BOOLEAN, allowNull: false },
     maleTeams: { type: Sequelize.BOOLEAN, allowNull: false },
     femaleTeams: { type: Sequelize.BOOLEAN, allowNull: false },
@@ -18,6 +19,7 @@ module.exports = (db, Sequelize) => {
     registrationStart: { type: Sequelize.DATE, allowNull: false, },
     registrationEnd: { type: Sequelize.DATE, allowNull: false },
     hasGroupPhase: { type: Sequelize.BOOLEAN, allowNull: false, defaultValue: false },
+    bracketRounds: { type: Sequelize.INTEGER, allowNull: false, defaultValue: 0 },
     bracketStatus: {
       type: Sequelize.ENUM, allowNull: false,
       values: [
@@ -36,45 +38,45 @@ module.exports = (db, Sequelize) => {
     cPoints: { type: Sequelize.INTEGER, defaultValue: 0, allowNull: false }
     // isActive: { type: Sequelize.BOOLEAN, defaultValue: true, allowNull: false }
   }, {
-      validate: {
-        // mixedSingleTeams() {
-        //   if (this.singleTeams && this.mixedTeams)
-        //     throw new Error('Cannot have mixed teams when the scheme is for single teams');
-        // },
-        // ageFromTo() {
-        //   if (this.ageFrom && this.ageTo && this.ageFrom > this.ageTo)
-        //     throw new Error('Age from must be <= Age to');
-        // },
-        // registrationStartEnd() {
-        //   if (new Date(this.registrationStart) > new Date(this.registrationEnd))
-        //     throw new Error('Registration start date cannot be after registration end date');
-        // },
-        // tournamentDate() {
-        //   if (this.date < new Date(this.registrationStart))
-        //     throw new Error('Tournament start cannot be before registration start date');
-        // },
-        // schemeFormat() {
-        //   if (!this.maleTeams && !this.femaleTeams && !this.mixedTeams)
-        //     throw new Error('');
-        // },
-        // eTeamCount() {
-        //   if (this.schemeType == ELIMINATION && !this.maxPlayerCount)
-        //     throw new Error();
-        // },
-        // gCount() {
-        //   if (this.schemeType == GROUP && !this.groupCount)
-        //     throw new Error();
-        // },
-        // rrTeamCount() {
-        //   if (this.schemeType == GROUP && !this.teamsPerGroup)
-        //     throw new Error();
-        // },
-        // groupPhase() {
-        //   if (!this.groupPhaseId && this.hasGroupPhase)
-        //     throw new Error();
-        // }
-      }
-    });
+    validate: {
+      // mixedSingleTeams() {
+      //   if (this.singleTeams && this.mixedTeams)
+      //     throw new Error('Cannot have mixed teams when the scheme is for single teams');
+      // },
+      // ageFromTo() {
+      //   if (this.ageFrom && this.ageTo && this.ageFrom > this.ageTo)
+      //     throw new Error('Age from must be <= Age to');
+      // },
+      // registrationStartEnd() {
+      //   if (new Date(this.registrationStart) > new Date(this.registrationEnd))
+      //     throw new Error('Registration start date cannot be after registration end date');
+      // },
+      // tournamentDate() {
+      //   if (this.date < new Date(this.registrationStart))
+      //     throw new Error('Tournament start cannot be before registration start date');
+      // },
+      // schemeFormat() {
+      //   if (!this.maleTeams && !this.femaleTeams && !this.mixedTeams)
+      //     throw new Error('');
+      // },
+      // eTeamCount() {
+      //   if (this.schemeType == ELIMINATION && !this.maxPlayerCount)
+      //     throw new Error();
+      // },
+      // gCount() {
+      //   if (this.schemeType == GROUP && !this.groupCount)
+      //     throw new Error();
+      // },
+      // rrTeamCount() {
+      //   if (this.schemeType == GROUP && !this.teamsPerGroup)
+      //     throw new Error();
+      // },
+      // groupPhase() {
+      //   if (!this.groupPhaseId && this.hasGroupPhase)
+      //     throw new Error();
+      // }
+    }
+  });
 
   Schemes.associate = (models) => {
     models.Schemes.belongsTo(models.Editions, {
@@ -98,6 +100,14 @@ module.exports = (db, Sequelize) => {
       foreignKey: {
         name: 'schemeId',
         allowNull: false
+      }
+    });
+
+    models.Schemes.belongsTo(models.Matches, {
+      as: 'final',
+      foreignKey: {
+        name: 'finalId',
+        allowNull: true
       }
     });
 

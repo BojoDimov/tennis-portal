@@ -1,28 +1,61 @@
-const { Tournaments, Editions, Schemes, sequelize } = require('../db');
+const { Tournaments, Editions, Schemes, sequelize, Matches } = require('../db');
 const Op = sequelize.Op;
 const moment = require('moment-timezone');
 const { Status } = require('../infrastructure/enums');
+const MatchService = require('../match/match.service');
 
 class EditionsService {
-  async filter(includeDraft) {
+  async filter(includeDraft, query) {
     let options = {
       where: {},
       include: [
         {
           model: Tournaments,
-          as: 'tournament',
-          include: ['thumbnail']
+          as: 'tournament'
+        },
+        {
+          model: Schemes,
+          as: 'schemes',
+          include: [
+            { model: Matches, as: 'final', include: MatchService.matchesIncludes() }
+          ]
         }
       ],
-      order: [['id', 'desc']]
+      limit: query.limit,
+      offset: query.offset,
+      order: [['startDate', 'desc']]
     };
 
-    if (!includeDraft)
+    if (!includeDraft) {
       options.where[Op.not] = {
         status: Status.DRAFT
       };
+      options.include = [
+        {
+          model: Tournaments,
+          as: 'tournament'
+        },
+        {
+          model: Schemes,
+          as: 'schemes',
+          where: {
+            [Op.not]: {
+              status: Status.DRAFT
+            }
+          },
+          include: [
+            { model: Matches, as: 'final', include: MatchService.matchesIncludes() }
+          ]
+        }
+      ]
+    }
 
-    return await Editions.findAll(options);
+    let result = await Editions.findAndCount(options);
+
+    return {
+      editions: result.rows,
+      totalCount: result.count
+    };
   }
 
   async get(id, includeDraft) {
@@ -33,8 +66,7 @@ class EditionsService {
       include: [
         {
           model: Tournaments,
-          as: 'tournament',
-          include: ['thumbnail']
+          as: 'tournament'
         },
         {
           model: Schemes,

@@ -1,4 +1,4 @@
-const { Teams, Users, sequelize } = require('../db');
+const { Teams, Users, Files, sequelize } = require('../db');
 const { Gender } = require('../infrastructure/enums');
 
 class TeamsService {

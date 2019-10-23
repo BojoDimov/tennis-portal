@@ -67,7 +67,7 @@ function initStats(container, key) {
 }
 
 function getStatsFromMatch(container, match) {
-  const winner = getWinner(match);
+  const winner = match.winnerId;//= getWinner(match);
   if (!winner)
     return;
 
