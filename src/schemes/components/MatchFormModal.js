@@ -104,10 +104,10 @@ class MatchFormModal extends React.Component {
 
   render() {
     const { model, errors } = this.state;
-    const { onClose, classes, fullScreen, doubles } = this.props;
+    const { onClose, classes, fullScreen, singleTeams } = this.props;
 
     const enableTeamChange = model.round == 1 || model.groupId;
-    const label = (doubles ? 'Отбор ' : 'Играч ');
+    const label = (singleTeams ? 'Играч ' : 'Отбор ');
 
     return (
       <Dialog
@@ -128,17 +128,17 @@ class MatchFormModal extends React.Component {
               value={model.team1}
               query="teams"
               filter={{
-                singleTeams: !doubles,
+                singleTeams: singleTeams,
                 schemeId: model.schemeId,
                 groupId: model.groupId
               }}
               noOptionsMessage={() => 'Няма намерени играчи/отбори'}
               formatOptionLabel={(option) => {
                 return (
-                  <React.Fragment>
-                    <Typography component="span">{option.user1.name}</Typography>
-                    {doubles && <Typography component="span">{option.user2.name}</Typography>}
-                  </React.Fragment>
+                  <div>
+                    <Typography >{option.user1.name}</Typography>
+                    {option.user2 && <Typography>{option.user2.name}</Typography>}
+                  </div>
                 );
               }}
               onChange={this.handleCustomChange('team1')}
@@ -149,17 +149,17 @@ class MatchFormModal extends React.Component {
               value={model.team2}
               query="teams"
               filter={{
-                singleTeams: !doubles,
+                singleTeams: singleTeams,
                 schemeId: model.schemeId,
                 groupId: model.groupId
               }}
               noOptionsMessage={() => 'Няма намерени отбори'}
               formatOptionLabel={(option) => {
                 return (
-                  <React.Fragment>
-                    <Typography component="span">{option.user1.name}</Typography>
-                    {doubles && <Typography component="span">{option.user2.name}</Typography>}
-                  </React.Fragment>
+                  <div>
+                    <Typography>{option.user1.name}</Typography>
+                    {option.user2 && <Typography>{option.user2.name}</Typography>}
+                  </div>
                 );
               }}
               onChange={this.handleCustomChange('team2')}
@@ -170,13 +170,13 @@ class MatchFormModal extends React.Component {
             <React.Fragment><Typography>
               <Typography variant="caption">{label + 1}</Typography>
               {model.team1 ? model.team1.user1.name : 'BYE'}
-              {doubles && model.team1 && <Typography>{model.team1.user2.name}</Typography>}
+              {!singleTeams && model.team1 && <Typography>{model.team1.user2.name}</Typography>}
             </Typography>
 
               <Typography>
                 <Typography variant="caption">{label + 2}</Typography>
                 {model.team2 ? model.team2.user1.name : 'BYE'}
-                {doubles && model.team2 && <Typography>{model.team2.user2.name}</Typography>}
+                {!singleTeams && model.team2 && <Typography>{model.team2.user2.name}</Typography>}
               </Typography>
             </React.Fragment>}
 
@@ -190,11 +190,11 @@ class MatchFormModal extends React.Component {
                 <MenuItem value={null}>Няма</MenuItem>
                 <MenuItem value={1}>
                   <Typography>{model.team1.user1.name} </Typography>
-                  {doubles && <Typography>{model.team1.user2.name} </Typography>}
+                  {model.team1.user2 && <Typography>{model.team1.user2.name} </Typography>}
                 </MenuItem>
                 <MenuItem value={2}>
                   <Typography>{model.team2.user1.name} </Typography>
-                  {doubles && <Typography>{model.team2.user2.name} </Typography>}
+                  {model.team2.user2 && <Typography>{model.team2.user2.name} </Typography>}
                 </MenuItem>
               </Select>
             </FormControl>}

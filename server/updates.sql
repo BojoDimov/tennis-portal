@@ -168,3 +168,6 @@ add "thumbnailId" int null;
 
 alter table "Users"
 add constraint "FK_Users_Files" foreign key ("thumbnailId") references "Files" (id);
+
+alter table "GroupTeams"
+alter "teamId" drop not null;

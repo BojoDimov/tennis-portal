@@ -105,6 +105,7 @@ class GroupsBracket extends React.Component {
                     this.getData();
                     this.setState({ matchModel: null })
                   }}
+                  singleTeams={scheme.singleTeams}
                   onClose={() => this.setState({ matchModel: null })}
                 />}
 

@@ -164,17 +164,17 @@ class EditionView extends React.Component {
 
               <div className={classes.schemesRoot}>
                 {edition.schemes.map(scheme => {
-                  const actions = <SchemeDetailsActions
-                    scheme={scheme}
-                    enableViewLink
-                    enrollment={enrolled[scheme.id]}
-                    mode={mode}
-                    reload={() => this.getData()}
-                  />;
+                  // const actions = <SchemeDetailsActions
+                  //   scheme={scheme}
+                  //   enableViewLink
+                  //   enrollment={enrolled[scheme.id]}
+                  //   mode={mode}
+                  //   reload={() => this.getData()}
+                  // />;
                   return <SchemeDetails
                     key={scheme.id}
                     scheme={scheme}
-                    actions={actions}
+                    actions={null}
                     CardProps={{
                       className: classes.schemesItem
                     }} />

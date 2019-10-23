@@ -105,6 +105,7 @@ class EliminationBracket extends React.Component {
                     this.setState({ matchModel: null });
                     this.getData();
                   }}
+                  singleTeams={scheme.singleTeams}
                   onClose={() => this.setState({ matchModel: null })}
                 />}
 

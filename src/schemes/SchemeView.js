@@ -71,12 +71,10 @@ class SchemeView extends React.Component {
               />}
 
               {hasPermission && this.getButtons()}
-
+              {/* <SchemeDetailsActions mode={mode} scheme={scheme} reload={() => this.getData()} enrollment={enrolled[scheme.id]} /> */}
               <SchemeDetails
                 scheme={scheme}
-                actions={
-                  <SchemeDetailsActions mode={mode} scheme={scheme} reload={() => this.getData()} enrollment={enrolled[scheme.id]} />
-                }
+                actions={null}
                 enableEditionLink
               />
               <EnrollmentsComponent scheme={scheme} style={{ marginTop: '1rem' }} mode={mode} />

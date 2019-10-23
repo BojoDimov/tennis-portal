@@ -85,8 +85,8 @@ const selectTeams = async (request, response) => {
     };
   else
     options.where = {
-      user2Id: {
-        [Op.not]: null
+      [Op.not]: {
+        user2Id: null
       }
     };
 
