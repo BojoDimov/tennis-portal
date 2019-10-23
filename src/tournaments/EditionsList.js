@@ -2,6 +2,7 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
+import TablePagination from '@material-ui/core/TablePagination';
 import { withStyles } from '@material-ui/core/styles';
 
 import TournamentFormModal from '../tournaments/TournamentFormModal';
@@ -18,7 +19,10 @@ class EditionsList extends React.Component {
     this.state = {
       editions: [],
       editionModel: null,
-      tournamentModel: null
+      tournamentModel: null,
+      page: 0,
+      rowsPerPage: 10,
+      totalCount: 0
     };
   }
 
@@ -31,16 +35,12 @@ class EditionsList extends React.Component {
 
   getData() {
     return QueryService
-      .post(`/editions/filter`, {})
-      .then(editions => this.setState({ editions }));
-  }
-
-  navigateToEdition(edition) {
-
+      .post(`/editions/filter?offset=${this.state.page * this.state.rowsPerPage}&limit=${this.state.rowsPerPage}`, {})
+      .then(data => this.setState(data));
   }
 
   render() {
-    const { editions, editionModel, tournamentModel } = this.state;
+    const { editions, editionModel, tournamentModel, page, rowsPerPage, totalCount } = this.state;
     const { classes } = this.props;
 
     return (
@@ -88,6 +88,17 @@ class EditionsList extends React.Component {
               <Paper className={classes.root}>
                 <Typography variant="h5" className={classes.heading}>Турнири</Typography>
                 {editions.map((edition) => <EditionsListTile key={edition.id} edition={edition} history={this.props.history} mode={mode} />)}
+                <TablePagination
+                  component="div"
+                  count={totalCount}
+                  rowsPerPage={rowsPerPage}
+                  rowsPerPageOptions={[10, 25, 50]}
+                  labelRowsPerPage="Покажи:"
+                  labelDisplayedRows={({ from, to, count }) => `${from}-${to} от ${count}`}
+                  page={page}
+                  onChangePage={(e, page) => this.setState({ page }, () => this.getData())}
+                  onChangeRowsPerPage={e => this.setState({ rowsPerPage: e.target.value, page: 0 }, () => this.getData())}
+                />
               </Paper>
             </div>
           );

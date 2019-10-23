@@ -5,7 +5,7 @@ const { Status } = require('../infrastructure/enums');
 const MatchService = require('../match/match.service');
 
 class EditionsService {
-  async filter(includeDraft) {
+  async filter(includeDraft, query) {
     let options = {
       where: {},
       include: [
@@ -21,6 +21,8 @@ class EditionsService {
           ]
         }
       ],
+      limit: query.limit,
+      offset: query.offset,
       order: [['startDate', 'desc']]
     };
 
@@ -48,7 +50,12 @@ class EditionsService {
       ]
     }
 
-    return await Editions.findAll(options);
+    let result = await Editions.findAndCount(options);
+
+    return {
+      editions: result.rows,
+      totalCount: result.count
+    };
   }
 
   async get(id, includeDraft) {
