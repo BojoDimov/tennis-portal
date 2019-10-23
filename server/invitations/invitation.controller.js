@@ -60,6 +60,9 @@ const accept = async (req, res, next) => {
     if (!invitation)
       throw { name: 'NotFound' };
 
+    if (invitation.inviterId == invitation.invitedId)
+      throw { name: 'DomainActionError', error: 'Cannot invite yourself' };
+
     const team = await TeamsService.findOrCreate({
       user1: invitation.inviter,
       user2: invitation.invited

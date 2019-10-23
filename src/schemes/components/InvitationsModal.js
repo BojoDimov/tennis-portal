@@ -26,7 +26,7 @@ class InvitationsModal extends React.Component {
 
   getData() {
     QueryService
-      .get('/invitations')
+      .get(`/invitations?schemeId=${this.props.scheme.id}`)
       .then(invitations => this.setState({ invitations }));
   }
 
@@ -45,7 +45,7 @@ class InvitationsModal extends React.Component {
 
   render() {
     const { selectedUser } = this.state;
-    const { onClose, scheme } = this.props;
+    const { onClose, scheme, currentUser } = this.props;
     const title = `Менажиране на поканите за схема ${scheme.name}`;
     const actions = <Button variant="outlined" color="primary" onClick={onClose} size="small">Затвори</Button>
     const body = <React.Fragment>
@@ -61,7 +61,8 @@ class InvitationsModal extends React.Component {
           value={selectedUser}
           query="invitable"
           filter={{
-            schemeId: scheme.id
+            schemeId: scheme.id,
+            userId: currentUser.id
           }}
           noOptionsMessage={() => 'Няма намерени играчи, отговарящи на изискванията'}
           formatOptionLabel={(option) => <Typography component="span">

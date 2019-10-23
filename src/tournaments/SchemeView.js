@@ -85,7 +85,7 @@ class SchemeView extends React.Component {
   }
 
   render() {
-    const { scheme, schemeModel, enrolled, scores, eliminationPreview, invitationsModal } = this.state;
+    const { scheme, schemeModel, enrolled, scores, eliminationPreview, invitationsModal, currentUser } = this.state;
     const { classes, history } = this.props;
 
     return (
@@ -122,6 +122,7 @@ class SchemeView extends React.Component {
                 && <InvitationsModal
                   onChange={() => this.setState({ invitationsModal: false }, () => this.getData())}
                   onClose={() => this.setState({ invitationsModal: false })}
+                  currentUser={currentUser}
                   scheme={scheme}
                 />}
 

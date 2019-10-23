@@ -9,6 +9,7 @@ import EditionFormModal from '../editions/EditionFormModal';
 import EditionsListTile from './EditionsListTile';
 import QueryService from '../services/query.service';
 import UserService from '../services/user.service';
+import { catchEvent } from '../services/events.service';
 import { ApplicationMode, Status } from '../enums';
 
 class EditionsList extends React.Component {
@@ -23,6 +24,9 @@ class EditionsList extends React.Component {
 
   componentDidMount() {
     this.getData();
+    catchEvent('logged-in', () => {
+      this.getData();
+    });
   }
 
   getData() {

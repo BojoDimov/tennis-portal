@@ -68,15 +68,18 @@ class EliminationPreviewModal extends React.Component {
     const body = <List>
       <Typography color="secondary">Играч/oтбор без позиция бива изключен от схемата!</Typography>
       {teams.map((team, index) => {
-        return (<React.Fragment key={team.team.id}>
+        return (<React.Fragment key={index}>
           <div style={{ display: 'flex', width: '100%' }}>
             <div style={{ marginRight: '.3em', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
               <Typography>{index + 1}.</Typography>
             </div>
-            <div style={{ flexBasis: '70%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+            {team.team && <div style={{ flexBasis: '70%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
               <Typography>{team.team.user1.name}</Typography>
               {team.team.user2 && <Typography>{team.team.user2.name}</Typography>}
-            </div>
+            </div>}
+            {!team.team && <div style={{ flexBasis: '70%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              <Typography>BYE</Typography>
+            </div>}
             <div style={{}}>
               <TextField label={team.order ? 'Позиция' : 'НЕ ИГРАЕ'} value={team.order} type="number" onChange={e => this.changeOrder(e, index)} />
             </div>
