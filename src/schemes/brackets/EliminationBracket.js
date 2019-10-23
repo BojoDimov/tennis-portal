@@ -19,10 +19,16 @@ class EliminationBracket extends React.Component {
       bracket: [],
       scheme: null
     }
+    this.refreshHandle = null;
   }
 
   componentDidMount() {
     this.getData();
+    this.refreshHandle = setInterval(() => this.getData(), 15 * 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.refreshHandle);
   }
 
   getData() {

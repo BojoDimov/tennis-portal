@@ -29,10 +29,17 @@ class GroupsBracket extends React.Component {
       matchModel: null,
       enableActions: false
     }
+
+    this.refreshHandle = null;
   }
 
   componentDidMount() {
     this.getData();
+    this.refreshHandle = setInterval(() => this.getData(), 15 * 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.refreshHandle);
   }
 
   getData() {
