@@ -10,8 +10,6 @@
 
 # production
 /build
-/client/build
-/admin/build
 
 # misc
 /environments
