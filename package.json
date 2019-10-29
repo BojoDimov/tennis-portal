@@ -21,7 +21,7 @@
   "scripts": {
     "server": "node server/server.js",
     "setup": "npm run setup-admin && npm run setup-client",
-    "setup-admin": "cd client && npm i",
+    "setup-admin": "cd admin && npm i",
     "setup-client": "cd client && npm i",
     "build": "npm run build-client && npm run build-admin",
     "build-admin": "cd admin && react-scripts build",
