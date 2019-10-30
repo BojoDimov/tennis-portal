@@ -1,7 +1,10 @@
 import * as Enums from '../enums';
 import * as UserService from './user';
 import { get } from './fetch';
-const config = window.config;
+const config = window.config || {
+  backend: "http://localhost:8080/api",
+  tournamentId: "1"
+};
 
 const Queries = {
   Editions: {

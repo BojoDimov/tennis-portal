@@ -1,4 +1,7 @@
-const config = window.config;
+const config = window.config || {
+  backend: "http://localhost:8080/api",
+  tournamentId: "1"
+};
 
 module.exports = {
   imgUrl: function (id) {

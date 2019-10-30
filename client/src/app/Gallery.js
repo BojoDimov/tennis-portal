@@ -2,7 +2,10 @@ import React from 'react'
 
 import { createOpenModalEvent, createCloseModalEvent } from './Infrastructure';
 import { get, imgUrl } from '../services/fetch';
-const config = window.config
+const config = window.config || {
+  backend: "http://localhost:8080/api",
+  tournamentId: "1"
+};
 
 export default class Gallery extends React.Component {
   constructor(props) {
