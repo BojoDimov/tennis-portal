@@ -59,6 +59,12 @@ const Queries = {
       const userQuery = user ? 'userId=' + user.id : '';
       return get(`/schemes/${schemeId}/collect?${userQuery}`)
     }
+  },
+  Ranking: {
+    get: () => {
+      return get(`/tournaments/${config.tournamentId}`)
+        .then(({ ranking }) => ranking);
+    }
   }
 }
 

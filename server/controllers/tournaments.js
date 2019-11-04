@@ -8,6 +8,7 @@ const {
   Users,
   Teams
 } = require('../models');
+const auth = require('../middlewares/auth');
 
 const getAll = (req, res) => {
   Tournaments
@@ -24,7 +25,7 @@ const getTournament = (req, res) => {
           model: Rankings,
           as: 'ranking',
           include: [
-            { model: Teams, as: 'team', include: Teams.getAggregateRoot() }
+            { model: Teams, as: 'team', include: Teams.getRestrictedAggregateRoot() }
           ]
         }
       ],
@@ -68,8 +69,8 @@ function setStatus(id, status) {
 
 router.get('/', getAll);
 router.get('/:id', getTournament);
-router.get('/:id/publish', publish);
-router.get('/:id/draft', draft);
-router.post('/', createTournament);
-router.post('/edit', editTournament);
+router.get('/:id/publish', auth, publish);
+router.get('/:id/draft', auth, draft);
+router.post('/', auth, createTournament);
+router.post('/edit', auth, editTournament);
 module.exports = router;

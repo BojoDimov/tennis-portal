@@ -4,7 +4,7 @@ const { Rankings } = require('../db');
 function update(scheme, draw, trn) {
   let points = null;
   if (draw.schemeType == 'elimination')
-    promise = Matches.generatePoints(scheme, draw.data, true);
+    points = Matches.generatePoints(scheme, draw.data, true);
   else {
     let matches = [];
     draw.data.forEach(group => matches = matches.concat(group.matches));

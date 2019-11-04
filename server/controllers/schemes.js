@@ -80,6 +80,8 @@ const collect = (req, res) => {
 const create = (req, res, next) => {
   let model = req.body;
   model.status = 'draft';
+  model.ageFrom = parseInt(model.ageFrom) || null;
+  model.ageTo = parseInt(model.ageTo) || null;
 
   return TournamentSchemes.create(model)
     .then(e => res.json(e))
@@ -87,10 +89,14 @@ const create = (req, res, next) => {
 };
 
 const edit = (req, res, next) => {
+  let model = req.body;
+  model.ageFrom = parseInt(model.ageFrom) || null;
+  model.ageTo = parseInt(model.ageTo) || null;
+
   return TournamentSchemes
     .findById(req.body.id)
-    .then(oldScheme => Enrollments.update(oldScheme, req.body))
-    .then(oldScheme => oldScheme.update(req.body))
+    .then(oldScheme => Enrollments.update(oldScheme, model))
+    .then(oldScheme => oldScheme.update(model))
     .then(newScheme => res.json(newScheme))
     .catch(err => next(err, req, res, null));
 };
