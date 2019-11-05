@@ -82,7 +82,8 @@ const sendPasswordRecovery = (req, res, next) => {
     .findOne({ where: { email: req.query.email } })
     .then(user => UserActivationCodes.create({ userId: user.id, token: token, expires: expires }))
     .then(() => sendEmail(EmailType.RECOVERY, { recovery }, [req.query.email]))
-    .then(() => res.json({}));
+    .then(() => res.json({}))
+    .catch(ex => next(ex, req, res, null));
 }
 
 const acceptPasswordRecovery = (req, res, next) => {
