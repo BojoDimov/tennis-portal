@@ -25,6 +25,7 @@
     "setup-client": "cd client && npm i",
     "build": "npm run build-client && npm run build-admin",
     "build-admin": "cd admin && react-scripts build",
-    "build-client": "cd client && react-scripts build"
+    "build-client": "cd client && react-scripts build",
+    "email-diagnostics": "node server/email.diagnostics.js"
   }
 }
