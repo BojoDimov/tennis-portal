@@ -1,5 +1,5 @@
 module.exports = (db, Sequelize) => {
-  const Gallery = db.define('Galleries');
+  const Gallery = db.define('Gallery');
 
   Gallery.associate = function (models) {
     models.Gallery.belongsTo(models.Tournaments, {
