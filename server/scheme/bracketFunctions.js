@@ -56,6 +56,8 @@ function drawEliminationsFromGroups(groups, schemeId) {
       round: 1
     })
   }
+  //Handle default wins from bye's
+  matches.push(...get_default_wins(matches));
 
   return matches;
 }
@@ -123,6 +125,12 @@ function drawEliminations(scheme, seed, enrollments) {
   matches = matches.slice(1);
 
   //Handle default wins from bye's
+  matches.push(...get_default_wins(matches));
+
+  return matches;
+}
+
+function get_default_wins(matches) {
   let secondRound = [];
   matches.forEach(match => {
     if (match.team1Id && match.team2Id)
@@ -139,14 +147,12 @@ function drawEliminations(scheme, seed, enrollments) {
       secondRound.push(existingMatch);
     }
 
-    if (existingMatch.match % 2 == 0)
+    if (match.match % 2 == 0)
       existingMatch.team2Id = defaultWinner;
     else
       existingMatch.team1Id = defaultWinner;
   });
-  matches.push(...secondRound);
-
-  return matches;
+  return secondRound;
 }
 
 function get_group_order(seed, nGroups, nTeamsPerGroup) {

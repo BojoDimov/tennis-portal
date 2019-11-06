@@ -59,7 +59,7 @@ const finishPhase = async (req, res, next) => {
 
 router.get('/groupPhase', identity, drawGroupPhase);
 router.get('/eliminationPhase/preview', identity, previewEliminationPhase);
-router.post('/eliminationPhase', identity, drawEliminationPhase);
+router.get('/eliminationPhase', identity, drawEliminationPhase);
 router.get('/finish', identity, finishPhase);
 
 module.exports = router;
