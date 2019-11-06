@@ -21,7 +21,9 @@ const drawEliminationPhase = async (req, res, next) => {
     return next({ name: 'DomainActionError', error: 'notEnoughPermissions' }, req, res, null);
 
   try {
-    await SchemeService.drawEliminationPhase(req.scheme, req.body.teams);
+    //await SchemeService.drawEliminationPhase(req.scheme, req.body.teams);
+    //Reverted to old functionality because client wanted it.
+    await SchemeService.drawElimination_old_but_working(req.scheme);
     return res.json({});
   }
   catch (err) {

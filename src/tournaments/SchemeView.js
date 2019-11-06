@@ -235,6 +235,11 @@ class SchemeView extends React.Component {
       .then(() => this.getData());
   }
 
+  drawEliminationPhase() {
+    return QueryService.get(`/schemes/${this.state.scheme.id}/draw/eliminationPhase`)
+      .then(() => this.getData());
+  }
+
   finishPhase() {
     return QueryService.get(`/schemes/${this.state.scheme.id}/draw/finish`)
       .then(() => this.getData());
@@ -270,7 +275,7 @@ class SchemeView extends React.Component {
                   </Button>
           </ConfirmationDialog>}
 
-        {((scheme.bracketStatus == BracketStatus.UNDRAWN && !scheme.hasGroupPhase)
+        {/* {((scheme.bracketStatus == BracketStatus.UNDRAWN && !scheme.hasGroupPhase)
           || (scheme.bracketStatus == BracketStatus.GROUPS_END))
           && <Button
             variant="contained"
@@ -280,7 +285,24 @@ class SchemeView extends React.Component {
             onClick={() => this.previewElimination()}
           >
             Изтегляне
-        </Button>}
+        </Button>} */}
+
+        {((scheme.bracketStatus == BracketStatus.UNDRAWN && !scheme.hasGroupPhase)
+          || (scheme.bracketStatus == BracketStatus.GROUPS_END))
+          && <ConfirmationDialog
+            title="Изтегляне на схема"
+            body={<Typography>Сигурни ли сте, че искате да изтеглите схемата?</Typography>}
+            onAccept={() => this.drawEliminationPhase()}
+          >
+            <Button
+              variant="contained"
+              color="primary"
+              size="small"
+              style={{ marginLeft: '.3rem' }}
+            >
+              Изтегляне
+        </Button>
+          </ConfirmationDialog>}
 
         {scheme.bracketStatus == BracketStatus.UNDRAWN && scheme.hasGroupPhase
           && <ConfirmationDialog

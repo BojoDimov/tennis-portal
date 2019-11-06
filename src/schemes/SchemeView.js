@@ -14,6 +14,7 @@ import MessageModal from '../components/MessageModal';
 import ScoresModal from './components/ScoresModal';
 import EliminationPreviewModal from './components/EliminationPreviewModal';
 
+///DEPRECATED
 class SchemeView extends React.Component {
 
   constructor(props) {
