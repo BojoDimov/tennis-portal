@@ -47,7 +47,7 @@ class MatchesService {
   }
 
   async create(model, scheme) {
-    model.sets = model.sets.filter((set) => (set.team1 || set.team2)).map(parseSet);
+    model.sets = model.sets.filter((set) => (set.team1 !== undefined || set.team2 !== undefined)).map(parseSet);
     let transaction;
     try {
       transaction = await sequelize.transaction();
@@ -209,10 +209,17 @@ class MatchesService {
   }
 
   async manageSets(sets, transaction) {
+    sets.forEach(set => {
+      if (set.team1 === "")
+        set.team1 = undefined;
+      if (set.team2 === "")
+        set.team2 = undefined;
+    });
+
     //has id but scores are removed => DELETED
-    let deleted = sets.filter(set => set.id && !set.team1 && !set.team2);
+    let deleted = sets.filter(set => set.id && set.team1 === undefined && set.team2 === undefined);
     //filter empty sets
-    sets = sets.filter((set) => (set.team1 || set.team2));
+    sets = sets.filter((set) => (set.team1 !== undefined || set.team2 !== undefined));
     //parse score inputs
     sets = sets.map(parseSet);
     //has id => UPDATED

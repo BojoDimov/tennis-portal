@@ -26,7 +26,7 @@ if (process.env.TYPE == 'prod') {
     ));
   });
 
-  app.use(/^.*(png|jpeg)$/, (req, res, next) => {
+  app.use(/^.*(png|jpeg|jpg)$/, (req, res, next) => {
     const file = req.baseUrl.split('/').reverse()[0];
     res.sendFile(path.join(
       __dirname,

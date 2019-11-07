@@ -23,7 +23,7 @@ function getWinner(match) {
 function parseSet(set) {
   const scoreParser = /^(\d+)(\(\d+\))*$/;
 
-  if (!set.team1 || !set.team2)
+  if (set.team1 === undefined || set.team2 === undefined)
     throw { name: 'DomainActionError', error: { message: 'Invalid format: match->set' } };
 
   let t1m = set.team1.toString().match(scoreParser);

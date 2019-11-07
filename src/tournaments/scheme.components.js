@@ -8,7 +8,6 @@ import moment from 'moment-timezone';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import SnowIcon from '../components/icons/SnowIcon';
 import PlayersIcon from '../components/icons/PlayersIcon';
 import GroupIcon from '../components/icons/GroupIcon';
 import BracketIcon from '../components/icons/BracketIcon';
@@ -16,6 +15,7 @@ import CalendarIcon from '../components/icons/CalendarIcon';
 import TournamentIcon from '../components/icons/TournamentIcon';
 import EditBoxedIcon from '../components/icons/EditBoxedIcon';
 import WinnerIcon from '../components/icons/WinnerIcon';
+import SeasonIcon from '../components/SeasonIcon';
 import QueryService from '../services/query.service';
 import EnrollmentsComponent from '../schemes/components/Enrollments';
 import { BracketStatus, ApplicationMode } from '../enums';
@@ -26,7 +26,8 @@ export const SchemeInfoBar = ({ scheme, playerCount, classes }) => {
   return (
     <div className={classes.info_bar_root}>
       <Typography color="primary">
-        <SnowIcon width="25px" height="25px" />
+        {/* <SnowIcon width="25px" height="25px" /> */}
+        <SeasonIcon date={scheme.date} />
         {scheme.edition.tournament.name}
       </Typography>
       <Typography color="primary">

@@ -5,9 +5,10 @@ import Paper from '@material-ui/core/Paper';
 import { withStyles } from '@material-ui/core/styles';
 import { ApplicationMode, Status, BracketStatus } from '../enums';
 
-import SnowIcon from '../components/icons/SnowIcon';
 import PlayersIcon from '../components/icons/PlayersIcon';
 import WinnerIcon from '../components/icons/WinnerIcon';
+import FlagIcon from '../components/icons/FlagIcon';
+import SeasonIcon from '../components/SeasonIcon';
 
 class EditionsListTile extends React.Component {
   navigate() {
@@ -52,12 +53,14 @@ class EditionsListTile extends React.Component {
           {showSchemeInfo && edition.schemes[0].final
             && <div className={classes.finale}>
               {edition.schemes[0].final.winnerId == edition.schemes[0].final.team1Id && <WinnerIcon width="18px" height="18px" />}
+              {edition.schemes[0].final.winnerId != edition.schemes[0].final.team1Id && <FlagIcon width="18px" height="18px" />}
               <div style={{ marginRight: '1em' }}>
                 <Typography>{edition.schemes[0].final.team1.user1.name}</Typography>
                 {edition.schemes[0].final.team1.user2 && <Typography>{edition.schemes[0].final.team1.user1.name}</Typography>}
               </div>
 
               {edition.schemes[0].final.winnerId == edition.schemes[0].final.team2Id && <WinnerIcon width="18px" height="18px" />}
+              {edition.schemes[0].final.winnerId != edition.schemes[0].final.team2Id && <FlagIcon width="18px" height="18px" />}
               <div>
                 <Typography>{edition.schemes[0].final.team2.user1.name}</Typography>
                 {edition.schemes[0].final.team2.user2 && <Typography>{edition.schemes[0].final.team2.user2.name}</Typography>}
@@ -68,7 +71,7 @@ class EditionsListTile extends React.Component {
         {showSchemeInfo && <div className={classes.info_root + ongoingSuffix}>
           <div>
             <Typography color="secondary" className={classes.icon_and_text}>
-              <SnowIcon width="25px" height="25px" />
+              <SeasonIcon date={edition.schemes[0].date} />
               {edition.tournament.name}
             </Typography>
 

@@ -239,7 +239,7 @@ class GroupMatchesView extends React.Component {
         {matches.map(match => {
           return (
             <div key={match.id} style={{ padding: '0.3rem 0', display: 'flex', width: '100%', justifyContent: 'space-between', borderBottom: '1px solid lightgrey' }}>
-              <div style={{ margin: '0 .2rem' }}>
+              {match.team1 && <div style={{ margin: '0 .2rem' }}>
                 <Typography>
                   {match.team1.user1.name}
                 </Typography>
@@ -247,7 +247,8 @@ class GroupMatchesView extends React.Component {
                   && <Typography>
                     {match.team1.user2.name}
                   </Typography>}
-              </div>
+              </div>}
+
               <Typography variant="caption" align="center">
                 {match.sets.map(set => {
                   return (
@@ -259,7 +260,7 @@ class GroupMatchesView extends React.Component {
                   );
                 })}
               </Typography>
-              <div style={{ margin: '0 .2rem' }}>
+              {match.team2 && <div style={{ margin: '0 .2rem' }}>
                 <Typography>
                   {match.team2.user1.name}
                 </Typography>
@@ -267,7 +268,7 @@ class GroupMatchesView extends React.Component {
                   && <Typography>
                     {match.team2.user2.name}
                   </Typography>}
-              </div>
+              </div>}
 
               {hasPermission && <div>
                 <EditIcon color="primary" style={{ cursor: 'pointer' }} onClick={() => onEditMatch(match)}></EditIcon>

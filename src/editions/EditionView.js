@@ -150,14 +150,14 @@ class EditionView extends React.Component {
 
                   <div style={{ display: 'flex', marginTop: '1rem' }}>
                     <Typography variant="caption" style={{ paddingRight: '1rem' }}>
-                      Начало
-              <Typography>{moment(edition.startDate).format('DD.MM.YYYY')}</Typography>
+                      Дата
+                      <Typography>{moment(edition.startDate).format('DD.MM.YYYY')}</Typography>
                     </Typography>
 
-                    <Typography variant="caption">
+                    {/* <Typography variant="caption">
                       Край
-              <Typography>{moment(edition.endDate).format('DD.MM.YYYY')}</Typography>
-                    </Typography>
+                      <Typography>{moment(edition.endDate).format('DD.MM.YYYY')}</Typography>
+                    </Typography> */}
                   </div>
                 </CardContent>
               </Card>

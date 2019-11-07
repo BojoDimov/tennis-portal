@@ -119,7 +119,7 @@ class EditionFormModal extends React.Component {
           <DatePicker
             autoOk
             label="Дата"
-            labelFunc={(date) => date ? moment(model.date).format('DD.MM.YYYY') : ''}
+            labelFunc={(date) => date ? moment(model.startDate).format('DD.MM.YYYY') : ''}
             clearable
             fullWidth={true}
             value={model.startDate}

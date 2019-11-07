@@ -167,6 +167,7 @@ class SchemeService {
       if (scheme.bracketStatus == BracketStatus.UNDRAWN && !scheme.hasGroupPhase) {
         //draw elimination phase
         scheme.bracketStatus = BracketStatus.ELIMINATION_DRAWN;
+        scheme.bracketRounds = Math.ceil(Math.log2(teams.length));
         await scheme.save();
         let matches = Bracket.drawEliminations(scheme, scheme.seed, teams);
         await Matches.bulkCreate(matches, { transaction });
@@ -184,7 +185,9 @@ class SchemeService {
         groups = Bracket.fillGroups(groups);
         const matches = Bracket.drawEliminationsFromGroups(groups, scheme.id);
         await Matches.bulkCreate(matches, { transaction });
-        await scheme.update({ bracketStatus: BracketStatus.ELIMINATION_DRAWN }, { transaction });
+        let firstRoundMatches = matches.filter(e => e.round == 1).length;
+        let bracketRounds = Math.log2(firstRoundMatches) + 1;
+        await scheme.update({ bracketStatus: BracketStatus.ELIMINATION_DRAWN, bracketRounds }, { transaction });
       }
       else
         throw { name: 'DomainActionError', error: 'invalidState' };
