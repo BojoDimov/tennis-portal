@@ -7,6 +7,7 @@ import Tab from '@material-ui/core/Tab';
 import Button from '@material-ui/core/Button';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import { withStyles } from '@material-ui/core/styles';
 
 import './styles.scss';
 import { ApplicationMode } from '../../enums';
@@ -86,6 +87,7 @@ class GroupsBracket extends React.Component {
 
   render() {
     const { scheme, groups, groupModel, matchModel, enableActions } = this.state;
+    const { classes } = this.props;
 
     return (
       <UserService.WithApplicationMode>
@@ -128,7 +130,7 @@ class GroupsBracket extends React.Component {
                   <Button variant="contained" color="primary" size="small" onClick={() => this.addGroup()}>Добави група</Button>
                 </div>}
 
-              <div style={{ display: 'flex', justifyContent: 'space-around', marginTop: '2rem', flexWrap: 'wrap' }}>
+              <div className={classes.groupsContainer}>
                 {groups.map(group => {
                   return (
                     <Group
@@ -311,4 +313,16 @@ class GroupTeamInfo extends React.Component {
   }
 }
 
-export default GroupsBracket;
+const styles = (theme) => ({
+  groupsContainer: {
+    display: 'flex',
+    justifyContent: 'space-around',
+    marginTop: '2rem',
+    flexWrap: 'wrap',
+    [theme.breakpoints.down('xs')]: {
+      display: 'initial'
+    }
+  }
+});
+
+export default withStyles(styles)(GroupsBracket);
