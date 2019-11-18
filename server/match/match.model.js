@@ -1,5 +1,6 @@
 module.exports = (db, Sequelize) => {
   const Matches = db.define("Matches", {
+    info: Sequelize.STRING,
     match: Sequelize.INTEGER,
     round: Sequelize.INTEGER,
     seed1: { type: Sequelize.INTEGER, allowNull: true },

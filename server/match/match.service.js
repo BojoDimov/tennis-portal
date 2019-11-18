@@ -80,6 +80,7 @@ class MatchesService {
       match.team1Id = model.team1Id;
       match.team2Id = model.team2Id;
       match.withdraw = model.withdraw;
+      match.info = model.info;
       await this.manageSets(model.sets, transaction);
       await match.save({ transaction });
       match = await this.get(id, transaction);

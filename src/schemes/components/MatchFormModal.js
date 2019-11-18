@@ -15,6 +15,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import withMobileDialog from '@material-ui/core/withMobileDialog';
+import TextField from '@material-ui/core/TextField';
 import { withStyles } from '@material-ui/core/styles';
 
 import QueryService from '../../services/query.service';
@@ -122,6 +123,15 @@ class MatchFormModal extends React.Component {
           </Typography>
         </DialogTitle>
         <DialogContent>
+          <TextField
+            style={{ marginBottom: '1em' }}
+            label="Допълнителна информация"
+            value={model.info}
+            multiline={true}
+            fullWidth={true}
+            onChange={this.handleChange('info')}
+          />
+
           {enableTeamChange && <React.Fragment>
             <AsyncSelect
               label={label + 1}
@@ -233,7 +243,7 @@ class MatchFormModal extends React.Component {
             Отказ
           </Button>
         </DialogActions>
-      </Dialog>
+      </Dialog >
     );
   }
 }

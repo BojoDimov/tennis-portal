@@ -171,3 +171,7 @@ add constraint "FK_Users_Files" foreign key ("thumbnailId") references "Files" (
 
 alter table "GroupTeams"
 alter "teamId" drop not null;
+
+--------------UPDATE 8-------------
+alter table "Matches"
+add "info" varchar(64);

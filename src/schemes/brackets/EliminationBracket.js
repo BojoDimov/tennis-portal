@@ -165,6 +165,7 @@ class Match extends React.Component {
           <Paper elevation={4} className="match-box" style={{ cursor: 'pointer' }}>
             <TeamInfo team={match.team1} match={match} round={match.round} pos={1} />
             <TeamInfo team={match.team2} match={match} round={match.round} pos={2} />
+            {match.info && <Typography style={{ position: 'absolute', top: '-40%', left: '0%' }}>{match.info}</Typography>}
           </Paper>
         </Tooltip>
       );
@@ -174,6 +175,7 @@ class Match extends React.Component {
         <Paper elevation={4} className="match-box">
           <TeamInfo team={match.team1} match={match} round={match.round} pos={1} />
           <TeamInfo team={match.team2} match={match} round={match.round} pos={2} />
+          {match.info && <Typography style={{ position: 'absolute', top: '-40%', left: '0%' }}>{match.info}</Typography>}
         </Paper>
       );
   }
