@@ -49,7 +49,7 @@ class AccountView extends React.Component {
         user.thumbnailId = null;
         this.setState({ user, errorMessage: null });
         return QueryService
-          .post(`/users/${user.team.id}/updateThumbnail`, { fileId: null })
+          .post(`/users/${user.id}/updateThumbnail`, { fileId: null })
           .catch(({ message }) => {
             this.setState({ errorMessage: message });
             setTimeout(() => this.setState({ errorMessage: null }), 60 * 1000);
@@ -64,7 +64,7 @@ class AccountView extends React.Component {
         .then(file => {
           user.thumbnail = file;
           user.thumbnailId = file.id;
-          return QueryService.post(`/users/${user.team.id}/updateThumbnail`, { fileId: file.id });
+          return QueryService.post(`/users/${user.id}/updateThumbnail`, { fileId: file.id });
         }).then(({ thumbnailId }) => {
           user.thumbnailId = thumbnailId;
           this.setState({ user, errorMessage: null });

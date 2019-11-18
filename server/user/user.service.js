@@ -13,7 +13,8 @@ const {
   Teams,
   UserActivationCodes,
   sequelize,
-  Sequelize
+  Sequelize,
+  Files
 } = require('../db');
 
 
