@@ -125,7 +125,7 @@ class MatchFormModal extends React.Component {
         <DialogContent>
           <TextField
             style={{ marginBottom: '1em' }}
-            label="Допълнителна информация"
+            label="Допълнителна информация (до 64 символа)"
             value={model.info}
             multiline={true}
             fullWidth={true}
