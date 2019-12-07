@@ -4,8 +4,6 @@ import Configuration from '../configuration';
 class QueryService {
   constructor() {
     this.backend = (window.configuration || Configuration).backend;
-
-    console.log(this.backend);
   }
 
   uploadFile(content, options) {

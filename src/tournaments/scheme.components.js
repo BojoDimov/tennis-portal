@@ -53,7 +53,6 @@ export const SchemeInfoBar = ({ scheme, playerCount, classes }) => {
 
 export const RegisterWidget = (props) => {
   const { scheme, classes, invitationTrigger, enrollment, mode, onComplete, onError } = props;
-  console.log(enrollment);
   let start = moment(scheme.registrationStart);
   let end = moment(scheme.registrationEnd);
   let duration = moment.duration(start.diff(moment()));

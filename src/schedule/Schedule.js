@@ -139,7 +139,6 @@ class Schedule extends React.Component {
   }
 
   shuffleOnSelect(item) {
-    //console.log('select', item);
     const shuffle = this.state.shuffle;
     shuffle.unshift(item);
     shuffle.splice(2, 1);
@@ -147,7 +146,6 @@ class Schedule extends React.Component {
   }
 
   shuffleOnUnselect(index) {
-    //console.log('unselect', index);
     const shuffle = this.state.shuffle;
     shuffle.splice(index, 1);
     this.setState({ shuffle });

@@ -12,7 +12,6 @@ import UserService from '../../services/user.service';
 import MatchDetailsEdit from './MatchDetailsEdit';
 
 const styles = (theme) => {
-  //console.log(theme);
   return ({
     cardRoot: {
       width: '100%',

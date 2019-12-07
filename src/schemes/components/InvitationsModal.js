@@ -39,8 +39,7 @@ class InvitationsModal extends React.Component {
         invitedId: this.state.selectedUser.id,
         schemeId: this.props.scheme.id
       })
-      .then(() => this.getData())
-      .catch(err => console.log(err));
+      .then(() => this.getData());
   }
 
   render() {

@@ -36,7 +36,7 @@ class Calendar extends React.Component {
       day: today.get('date'),
       date: today
     };
-    this.years = [2016, 2017, 2018, 2019];
+    this.years = [2016, 2017, 2018, 2019, 2020, 2021, 2022];
     this.monts = ['Януари', 'Февруари', 'Март', 'Април', 'Май', 'Юни', 'Юли', 'Август', 'Септември', 'Октомври', 'Ноември', 'Декември'];
 
     this.handleChange = (prop) => (e) => {

@@ -180,8 +180,6 @@ class SchemeView extends React.Component {
       return null;
     else {
       var t = enrolled.find(e => e.team.user1Id == currentUser.id || e.team.user2Id == currentUser.id);
-      console.log(currentUser);
-      console.log(t);
       return t;
     }
   }
