@@ -158,7 +158,7 @@ class SchemeView extends React.Component {
                         />
                       </div>}
                       <div>
-                        <SchemesWidget scheme={scheme} classes={classes} history={history} />
+                        {scheme.bracketStatus != BracketStatus.UNDRAWN && <SchemesWidget scheme={scheme} classes={classes} history={history} />}
                       </div>
                     </div>
                     <div className="right">

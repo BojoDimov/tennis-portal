@@ -145,26 +145,26 @@ export const RegisterWidget = (props) => {
 
 export const SchemesWidget = ({ scheme, classes, history }) => {
   const navigateBracket = () => {
-    if (scheme.bracketStatus == BracketStatus.ELIMINATION_DRAWN || scheme.bracketStatus == BracketStatus.ELIMINATION_END)
-      history.push(`/schemes/${scheme.id}/elimination`);
+    history.push(`/schemes/${scheme.id}/elimination`);
   };
 
   const navigateGroups = () => {
-    if (scheme.bracketStatus != BracketStatus.UNDRAWN)
-      history.push(`/schemes/${scheme.id}/groups`);
+    history.push(`/schemes/${scheme.id}/groups`);
   };
 
   const Body = (
     <React.Fragment>
-      {scheme.hasGroupPhase && <Paper elevation={1} className={classes.schemes_widget_tile} onClick={navigateGroups}>
-        <GroupIcon width="100px" height="100px" />
-        <Typography>Групи</Typography>
-      </Paper>}
+      {scheme.hasGroupPhase && scheme.bracketStatus != BracketStatus.UNDRAWN
+        && <Paper elevation={1} className={classes.schemes_widget_tile} onClick={navigateGroups}>
+          <GroupIcon width="100px" height="100px" />
+          <Typography>Групи</Typography>
+        </Paper>}
 
-      <Paper elevation={1} className={classes.schemes_widget_tile} onClick={navigateBracket}>
-        <BracketIcon width="100px" height="100px" />
-        <Typography>Преглед</Typography>
-      </Paper>
+      {(scheme.bracketStatus == BracketStatus.ELIMINATION_DRAWN || scheme.bracketStatus == BracketStatus.ELIMINATION_END)
+        && <Paper elevation={1} className={classes.schemes_widget_tile} onClick={navigateBracket}>
+          <BracketIcon width="100px" height="100px" />
+          <Typography>Преглед</Typography>
+        </Paper>}
     </React.Fragment>
   );
 
