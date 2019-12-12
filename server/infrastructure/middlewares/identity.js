@@ -21,6 +21,9 @@ module.exports = async (req, _, next) => {
       include: ['team']
     }]
   });
+
+  if (token && token.expires < new Date())
+    return next();
   if (!token)
     return next();
 

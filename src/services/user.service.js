@@ -25,6 +25,10 @@ class UserService {
     return this.user;
   }
 
+  async isLoggedIn() {
+    return await QueryService.get('/login/authData').data != null;
+  }
+
   login(data) {
     localStorage.setItem('token', data.token);
     this.cached = false;

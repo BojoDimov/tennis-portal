@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 
 import * as ReservationStyles from './styles';
 import { ReservationType } from '../../enums';
+import { dispatchEvent } from '../../services/events.service';
 
 class GuestReservation extends React.Component {
   render() {
@@ -16,8 +17,13 @@ class GuestReservation extends React.Component {
       type = classes.unavaliable;
 
     return (
-      <TableCell padding="none" className={type}></TableCell>
+      <TableCell padding="none" className={type} onClick={() => this.promptLogin()}></TableCell>
     );
+  }
+
+  promptLogin() {
+    if (this.props.available)
+      dispatchEvent('menu-login');
   }
 }
 

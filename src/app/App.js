@@ -57,6 +57,8 @@ class App extends React.Component {
       this.props.history.replace('/');
     });
     this.onRouteChanged(this.props.location);
+    if (!UserService.isLoggedIn())
+      UserService.logout();
   }
 
   componentDidUpdate(prevProps) {
