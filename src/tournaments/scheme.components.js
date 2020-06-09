@@ -21,6 +21,7 @@ import EnrollmentsComponent from '../schemes/components/Enrollments';
 import { BracketStatus, ApplicationMode } from '../enums';
 import Thumbnail from '../components/ThumbnailOrDefault';
 import ConfirmationDialog from '../components/ConfirmationDialog';
+import { dispatchEvent } from '../services/events.service';
 
 export const SchemeInfoBar = ({ scheme, playerCount, classes }) => {
   return (

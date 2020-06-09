@@ -22,7 +22,7 @@ import Calendar from '../components/calendar/Calendar';
 import Legend from './Legend';
 import ConfirmationDialog from '../components/ConfirmationDialog';
 import AsyncSelect from '../components/select/AsyncSelect';
-import { getHour } from '../utils';
+import { getHour, getRange } from '../utils';
 import { ApplicationMode } from '../enums';
 import { catchEvent } from '../services/events.service';
 
@@ -329,12 +329,6 @@ class Schedule extends React.Component {
       </UserService.WithApplicationMode>
     );
   }
-}
-
-function getRange(start, end) {
-  if (!start || !end)
-    return [];
-  return [...new Array(end - start + 1).keys()].map(e => e + start);
 }
 
 const ErrorTexts = {

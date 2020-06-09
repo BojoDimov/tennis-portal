@@ -6,6 +6,7 @@ import Select from '@material-ui/core/Select';
 import { withStyles } from '@material-ui/core/styles';
 import UserService from '../../services/user.service';
 import DateComponent from './DateComponent';
+import { getRange } from '../../utils';
 
 const styles = (theme) => ({
   root: {
@@ -36,7 +37,8 @@ class Calendar extends React.Component {
       day: today.get('date'),
       date: today
     };
-    this.years = [2016, 2017, 2018, 2019, 2020, 2021, 2022];
+
+    this.years = getRange(2016, moment().get('year') + 2);
     this.monts = ['Януари', 'Февруари', 'Март', 'Април', 'Май', 'Юни', 'Юли', 'Август', 'Септември', 'Октомври', 'Ноември', 'Декември'];
 
     this.handleChange = (prop) => (e) => {

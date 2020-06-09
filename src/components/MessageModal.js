@@ -6,12 +6,13 @@ class MessageModal extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: false
+      open: false,
+      updated: false
     }
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.activation != this.props.activation && this.props.activation)
+    if (prevProps.activation != this.props.activation && (this.props.activation || this.state.updated))
       this.show();
   }
 
@@ -26,7 +27,7 @@ class MessageModal extends React.Component {
 
     const closeBtn = <Button
       variant="outlined"
-      onClick={() => this.setState({ open: false })}
+      onClick={() => this.setState({ open: false, updated: true })}
     >
       Добре
     </Button>;

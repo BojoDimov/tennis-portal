@@ -49,7 +49,8 @@ class SchemeView extends React.Component {
       scores: null,
       eliminationPreview: null,
       currentUser: null,
-      invitationsModal: null
+      invitationsModal: null,
+      enrollError: false
     }
 
     this.onCompleteRegisterAction = (action) => {
@@ -66,7 +67,7 @@ class SchemeView extends React.Component {
     this.onErrorRegisterAction = (action) => {
       if (action === 'enroll')
         return () => {
-
+          this.setState({ enrollError: !this.state.enrollError });
         }
       else
         return () => {
@@ -98,6 +99,11 @@ class SchemeView extends React.Component {
             <div className="container">
               <MessageModal activation={this.state.hasError}>
                 <Typography>Неуспешно изтриване на схема. Възможна причина за грешката е съществуващи записи на играчи.</Typography>
+              </MessageModal>
+              <MessageModal activation={this.state.enrollError}>
+                <Typography>
+                  Неуспешно записване за схема. Потребителят не отговаря на ограниченията по пол и/или възраст. Моля, попълнете вашите данни от профилната ви страница.
+                </Typography>
               </MessageModal>
               {hasPermission && schemeModel
                 && <SchemeFormModal
