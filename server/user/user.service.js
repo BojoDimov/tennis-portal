@@ -345,6 +345,7 @@ class UserService {
 
       await UserActivationCodes.destroy({ where: { id: uac.id }, transaction: trn });
       this.encryptPassword(uac.user, model.password);
+      uac.user.isActive = true;
       await uac.user.save({ transaction: trn });
     });
   }
