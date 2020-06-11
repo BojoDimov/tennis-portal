@@ -78,8 +78,7 @@ class RegistrationStepper extends React.Component {
 
         <div style={{ margin: '1rem 0' }}>
           <em>
-            Натискайки бутонът "Регистрация", Вие се съгласявате при нужда да бъдете потърсени по
-            телефонния номер, който сте предоставили.
+            Натискайки бутона "Регистрация", Вие се съгласявате при нужда да бъдете потърсени на предоставения телефонен номер
           </em>
           <div className={classes.action}>
             <Button style={{ marginRight: '.3rem', padding: '.3rem 2rem' }} variant="contained" color="primary" onClick={() => this.register()}>

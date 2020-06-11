@@ -20,7 +20,13 @@ class RecoveryStep2 extends React.Component {
   }
 
   componentDidMount() {
-    this.setState({ token: this.props.location.search.split('?token=')[1] });
+    let token = this.props.location.search.split('?token=');
+    if (token.length > 1)
+      token = token[1].trim();
+    else
+      token = "";
+
+    this.setState({ token });
   }
 
   recover() {

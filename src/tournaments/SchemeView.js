@@ -98,11 +98,11 @@ class SchemeView extends React.Component {
           return (
             <div className="container">
               <MessageModal activation={this.state.hasError}>
-                <Typography>Неуспешно изтриване на схема. Възможна причина за грешката е съществуващи записи на играчи.</Typography>
+                <Typography>Неуспешно изтриване на схема. Възможна причина за грешката е съществуващи записи на играчи</Typography>
               </MessageModal>
               <MessageModal activation={this.state.enrollError}>
                 <Typography>
-                  Неуспешно записване за схема. Потребителят не отговаря на ограниченията по пол и/или възраст. Моля, попълнете вашите данни от профилната ви страница.
+                  Не отговаряте на изискванията за пол/възраст. Моля, попълнете допълнителните данни в профилната ви страница и позволете участие в турнири, след което се запишете
                 </Typography>
               </MessageModal>
               {hasPermission && schemeModel

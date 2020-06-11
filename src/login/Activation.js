@@ -17,7 +17,12 @@ class AccountActivation extends React.Component {
   }
 
   componentDidMount() {
-    const token = this.props.location.search.split('?token=')[1];
+    let token = this.props.location.search.split('?token=');
+    if (token.length > 1)
+      token = token[1].trim();
+    else
+      token = "";
+
     return QueryService
       .get(`/users/activation?token=${token}`)
       .then(_ => {

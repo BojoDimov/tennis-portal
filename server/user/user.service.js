@@ -315,7 +315,7 @@ class UserService {
       if (!uac)
         throw { name: 'DomainActionError' };
 
-      await UserActivationCodes.destroy({ where: { id: uac.id }, transaction: trn });
+      //await UserActivationCodes.destroy({ where: { id: uac.id }, transaction: trn });
       return await uac.user.update({ isActive: true }, { transaction: trn });
     });
   }
