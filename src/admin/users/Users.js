@@ -60,7 +60,7 @@ class Users extends React.Component {
   filterUsers() {
     if (this.state.usersFilter.length > 0)
       return this.state.users.filter(e => {
-        return e.name.toLowerCase().includes(this.state.usersFilter) 
+        return e.name.toLowerCase().includes(this.state.usersFilter)
           || e.email.toLowerCase().includes(this.state.usersFilter);
       });
     else return this.state.users;
@@ -81,15 +81,12 @@ class Users extends React.Component {
     this.setState({ users, subsUser: users[index] });
   }
 
-  remove(index) {
+  remove(userId) {
     const users = this.state.users;
 
     return QueryService
-      .delete(`/users/${users[index].id}`)
-      .then(_ => {
-        users.splice(index, 1);
-        this.setState({ users });
-      })
+      .delete(`/users/${userId}`)
+      .then(_ => this.getData())
       .catch(err => null);
   }
 
@@ -175,7 +172,7 @@ class Users extends React.Component {
                         <ConfirmationDialog
                           title="Изтриване на потребител"
                           body={<Typography>Сигурни ли сте че искате да изтриете {user.name}</Typography>}
-                          onAccept={() => this.remove(index)}
+                          onAccept={() => this.remove(user.id)}
                         >
                           <Tooltip title="изтриване" placement="top-start" TransitionComponent={Zoom} enterDelay={500}>
                             <IconButton color="secondary">

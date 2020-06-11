@@ -105,12 +105,21 @@ class UserService {
   }
 
   async updateSecondaryData(user, model) {
-    user.birthDate = model.birthDate || null;
-    user.gender = model.gender || null;
-    user.playStyle = model.playStyle || null;
-    user.backhandType = model.backhandType || null;
-    user.courtType = model.courtType || null;
-    user.startedPlaying = parseInt(model.startedPlaying) || null;
+    let k = new Date();
+    model.startedPlaying = model.startedPlaying ? parseInt(model.startedPlaying) : null;
+    model.birthDate = model.birthDate ? new Date(model.birthDate) : null;
+    model.gender = model.gender || null;
+    model.playStyle = model.playStyle || null;
+    model.courtType = model.courtType || null;
+    model.backhandType = model.backhandType || null;
+    this.validateSecondaryData(model);
+
+    user.startedPlaying = model.startedPlaying;
+    user.birthDate = model.birthDate;
+    user.gender = model.gender;
+    user.playStyle = model.playStyle;
+    user.courtType = model.courtTypel;
+    user.backhandType = model.backhandType;
     await user.save();
   }
 
@@ -179,6 +188,49 @@ class UserService {
     model.passwordHash = hash.digest('hex').slice(40);
   }
 
+  validateSecondaryData(model) {
+    const errors = {
+      email: [],
+      password: [],
+      confirmPassword: [],
+      firstName: [],
+      lastName: [],
+      telephone: [],
+      birthDate: [],
+      gender: [],
+      startedPlaying: [],
+      playStyle: [],
+      backhandType: [],
+      courtType: [],
+      reservationDebt: [],
+      subscriptionDebt: []
+    };
+
+    if (isNaN(model.startedPlaying))
+      errors.startedPlaying.push('invalid');
+
+    if (model.birthDate && (model.birthDate > new Date() || model.birthDate < new Date(1900, 1, 1)))
+      errors.birthDate.push('invalid');
+
+    if (this.validateEnum(Gender, model.gender) === false)
+      errors.gender.push('invalid');
+
+    if (this.validateEnum(PlayStyle, model.playStyle) === false)
+      errors.playStyle.push('invalid');
+
+    if (this.validateEnum(BackhandType, model.backhandType) === false)
+      errors.backhandType.push('invalid');
+
+    if (this.validateEnum(CourtType, model.courtType) === false)
+      errors.courtType.push('invalid');
+
+    let errCount = Object.keys(errors).reduce((acc, curr) => acc + errors[curr].length, 0);
+
+    if (errCount > 0)
+      throw { name: 'DomainActionError', error: errors };
+    return model;
+  }
+
   async validate(model, isEditMode = false) {
     const errors = {
       email: [],
@@ -223,15 +275,15 @@ class UserService {
     //invalid values
     if (isNaN(model.startedPlaying))
       errors.startedPlaying.push('invalid');
-    if (!isNaN(model.startedPlaying)
-      && model.startedPlaying != null
-      && model.birthDate
-      && new Date(model.startedPlaying) <= model.birthDate.getFullYear())
-      errors.startedPlaying.push('range');
-    if (!isNaN(model.startedPlaying)
-      && model.startedPlaying != null
-      && model.startedPlaying > new Date().getFullYear())
-      errors.startedPlaying.push('future');
+    // if (!isNaN(model.startedPlaying)
+    //   && model.startedPlaying != null
+    //   && model.birthDate
+    //   && new Date(model.startedPlaying) <= model.birthDate.getFullYear())
+    //   errors.startedPlaying.push('range');
+    // if (!isNaN(model.startedPlaying)
+    //   && model.startedPlaying != null
+    //   && model.startedPlaying > new Date().getFullYear())
+    //   errors.startedPlaying.push('future');
 
     if (model.email && !model.email.match(/^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/))
       errors.email.push('invalid');
@@ -268,7 +320,7 @@ class UserService {
       transaction = await sequelize.transaction();
       await UserActivationCodes.destroy({ where: { userId: id }, transaction });
       await Tokens.destroy({ where: { userId: id }, transaction });
-      await Teams.destroy({ where: { user1Id: id, user2Id: null }, transaction });
+      await Teams.destroy({ where: { user1Id: id }, transaction });
       await Users.destroy({ where: { id: id }, transaction });
       await transaction.commit();
     }

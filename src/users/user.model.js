@@ -183,7 +183,17 @@ class UserModel {
   }
 
   UserPlayerSecondaryData(props) {
-    const { user, onChange, errors } = props;
+    const { user, onChange } = props;
+    const errors = {
+      birthDate: [],
+      gender: [],
+      startedPlaying: [],
+      playStyle: [],
+      backhandType: [],
+      courtType: [],
+      ...props.errors
+    };
+
     return (
       <React.Fragment>
         <DatePicker
