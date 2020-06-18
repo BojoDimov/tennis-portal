@@ -158,6 +158,9 @@ class UserService {
 
   trim(model) {
     model.email = model.email.trim();
+    if (model.email.length > 0) {
+      model.email = model.email.charAt(0).toLowerCase() + model.email.slice(1);
+    }
     model.firstName = model.firstName.trim();
     model.lastName = model.lastName.trim();
     model.telephone = model.telephone.trim();

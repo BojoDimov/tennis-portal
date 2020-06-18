@@ -77,6 +77,7 @@ class UserModel {
         <TextField
           id="email"
           label="Email"
+          type="email"
           value={user.email}
           required={true}
           fullWidth={true}
