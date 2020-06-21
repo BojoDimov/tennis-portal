@@ -35,11 +35,11 @@ class EditionsListTile extends React.Component {
     return (
       <Paper elevation={1} className={classes.tileRoot + ongoingSuffix} onClick={() => this.navigate()}>
         <div className={classes.date_root + ongoingSuffix}>
-          <Typography className="month_part">
-            {getMonth(edition.startDate)}
+          <Typography className="month_part" style={{ textTransform: 'uppercase' }}>
+            {moment(edition.startDate).format('MMM')}
           </Typography>
           <Typography className="date_part">
-            {new Date(edition.startDate).getDate()}
+            {moment(edition.startDate).format('D')}
           </Typography>
         </div>
         <div className={classes.name_root + ongoingSuffix}>
