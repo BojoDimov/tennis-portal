@@ -52,20 +52,8 @@ class EditionsListTile extends React.Component {
             </Typography>}
           {showSchemeInfo && edition.schemes[0].final
             && <div className={classes.finale}>
-              {edition.schemes[0].final.winnerId == edition.schemes[0].final.team1Id && <WinnerIcon width="18px" height="18px" />}
-              {edition.schemes[0].final.winnerId != edition.schemes[0].final.team1Id && <FlagIcon width="18px" height="18px" />}
-              <div style={{ marginRight: '1em' }}>
-                <Typography>{edition.schemes[0].final.team1.user1.name}</Typography>
-                {edition.schemes[0].final.team1.user2 && <Typography>{edition.schemes[0].final.team1.user1.name}</Typography>}
-              </div>
-
-              {edition.schemes[0].final.winnerId == edition.schemes[0].final.team2Id && <WinnerIcon width="18px" height="18px" />}
-              {edition.schemes[0].final.winnerId != edition.schemes[0].final.team2Id && <FlagIcon width="18px" height="18px" />}
-              <div>
-                <Typography>{edition.schemes[0].final.team2.user1.name}</Typography>
-                {edition.schemes[0].final.team2.user2 && <Typography>{edition.schemes[0].final.team2.user2.name}</Typography>}
-              </div>
-
+              {getWinnerOrFirstTeam(edition.schemes[0].final)}
+              {getRunnerUpOrSecondTeam(edition.schemes[0].final)}
             </div>}
         </div>
         {showSchemeInfo && <div className={classes.info_root + ongoingSuffix}>
@@ -90,9 +78,52 @@ class EditionsListTile extends React.Component {
   }
 }
 
-function getMonth(date) {
-  return ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'][new Date(date).getMonth()];
+function getWinnerOrFirstTeam(match) {
+  if (match.winnerId) {
+    let winner = match.winnerId == match.team1Id ? match.team1 : match.team2;
+
+    return (
+      <React.Fragment>
+        <WinnerIcon width="18px" height="18px" />
+        <div>
+          <Typography>{winner.user1.name}</Typography>
+          {winner.user2 && <Typography>{winner.user2.name}</Typography>}
+        </div>
+      </React.Fragment>
+    );
+  } else if (match.team1) {
+    return (
+      <div>
+        <Typography>{match.team1.user1.name}</Typography>
+        {match.team1.user2 && <Typography>{match.team1.user2.name}</Typography>}
+      </div>
+    );
+  }
 }
+
+function getRunnerUpOrSecondTeam(match) {
+  if (match.winnerId) {
+    let runnerUp = match.winnerId == match.team1Id ? match.team2 : match.team1;
+
+    return (
+      <React.Fragment>
+        <FlagIcon width="18px" height="18px" />
+        <div>
+          <Typography>{runnerUp.user1.name}</Typography>
+          {runnerUp.user2 && <Typography>{runnerUp.user2.name}</Typography>}
+        </div>
+      </React.Fragment>
+    );
+  } else if (match.team2) {
+    return (
+      <div>
+        <Typography>{match.team2.user1.name}</Typography>
+        {match.team2.user2 && <Typography>{match.team2.user2.name}</Typography>}
+      </div>
+    );
+  }
+}
+
 
 const styles = (theme) => ({
   tileRoot: {
