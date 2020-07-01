@@ -143,14 +143,14 @@ class MatchFormModal extends React.Component {
                 groupId: model.groupId
               }}
               noOptionsMessage={() => 'Няма намерени играчи/отбори'}
-              formatOptionLabel={(option) => {
-                return (
-                  <div>
-                    <Typography >{option.user1.name}</Typography>
-                    {option.user2 && <Typography>{option.user2.name}</Typography>}
-                  </div>
-                );
-              }}
+              formatOptionLabel={(option) => <React.Fragment>
+                <Typography component="span">
+                  {option.user1.name} ({option.user1.email})
+                </Typography>
+                {option.user2 && <Typography component="span">
+                  {option.user2.name} ({option.user2.email})
+                </Typography>}
+              </React.Fragment>}
               onChange={this.handleCustomChange('team1')}
             />
 
@@ -164,14 +164,14 @@ class MatchFormModal extends React.Component {
                 groupId: model.groupId
               }}
               noOptionsMessage={() => 'Няма намерени отбори'}
-              formatOptionLabel={(option) => {
-                return (
-                  <div>
-                    <Typography>{option.user1.name}</Typography>
-                    {option.user2 && <Typography>{option.user2.name}</Typography>}
-                  </div>
-                );
-              }}
+              formatOptionLabel={(option) => <React.Fragment>
+                <Typography component="span">
+                  {option.user1.name} ({option.user1.email})
+                </Typography>
+                {option.user2 && <Typography component="span">
+                  {option.user2.name} ({option.user2.email})
+                </Typography>}
+              </React.Fragment>}
               onChange={this.handleCustomChange('team2')}
             />
           </React.Fragment>}

@@ -105,6 +105,10 @@ class AsyncSelect extends React.Component {
             }}
             value={value}
             options={this.state.options}
+            filterOption={(options, filter, current_values) => {
+              // Whoever made the default automatic filtering is a FUCKING LOSER
+              return options;
+            }}
             getOptionLabel={_getOptionLabel}
             getOptionValue={_getOptionValue}
             formatOptionLabel={formatOptionLabel}

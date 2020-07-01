@@ -67,10 +67,42 @@ const selectTeams = async (request, response) => {
     include: [
       { model: Users, as: 'user1', attributes: ['id', 'name', 'email'] },
       { model: Users, as: 'user2', attributes: ['id', 'name', 'email'] }
-    ]
+    ],
+    attributes: ['id', 'user1Id', 'user2Id'],
+    limit: filter.limit,
+    offset: filter.offset
+  };
+
+  let filterQuery = null;
+
+  if (filter.searchTerm) {
+    filterQuery = {
+      [Op.or]: [
+        {
+          '$user1.name$': {
+            [Op.iLike]: '%' + filter.searchTerm + '%'
+          }
+        },
+        {
+          '$user1.email$': {
+            [Op.iLike]: '%' + filter.searchTerm + '%'
+          }
+        },
+        {
+          '$user2.name$': {
+            [Op.iLike]: '%' + filter.searchTerm + '%'
+          }
+        },
+        {
+          '$user2.email$': {
+            [Op.iLike]: '%' + filter.searchTerm + '%'
+          }
+        }
+      ]
+    };
   }
 
-  if (filter.groupId)
+  if (filter.groupId) {
     options.include.push({
       model: GroupTeams,
       as: 'groupTeams',
@@ -78,17 +110,27 @@ const selectTeams = async (request, response) => {
         groupId: filter.groupId
       }
     });
+  }
 
-  if (filter.singleTeams)
+  if (filter.singleTeams) {
     options.where = {
-      user2Id: null
+      [Op.and]: [
+        { user2Id: null },
+        filterQuery || true
+      ]
     };
-  else
+  } else {
     options.where = {
-      [Op.not]: {
-        user2Id: null
-      }
+      [Op.and]: [
+        {
+          user2Id: {
+            [Op.not]: null
+          }
+        },
+        filterQuery || true
+      ]
     };
+  }
 
   const result = await Teams.findAndCountAll(options);
   return response.json({
