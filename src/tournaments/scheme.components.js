@@ -190,6 +190,10 @@ export const SchemesWidget = ({ scheme, classes, history }) => {
 }
 
 export const EnrollmentsWidget = ({ scheme, mode, enrolled, classes }) => {
+  const halfOfEnrolled = Math.ceil(enrolled.length) / 2;
+  const isSeed = (index) => index + 1 <= scheme.seed;
+  const isReserve = (index) => index + 1 > scheme.maxPlayerCount;
+
   return (
     <React.Fragment>
       <Hidden smUp>
@@ -200,10 +204,10 @@ export const EnrollmentsWidget = ({ scheme, mode, enrolled, classes }) => {
             justifyContent: 'space-between'
           }}>
             <div style={{ flexBasis: '45%' }}>
-              {enrolled.slice(0, enrolled.length / 2).map((enrollment, index) => {
+              {enrolled.slice(0, halfOfEnrolled).map((enrollment, index) => {
                 return (
                   <React.Fragment key={index}>
-                    <Typography>{enrollment.team.user1.name}</Typography>
+                    <Typography color={isSeed(index) ? 'primary' : 'textPrimary'}>{enrollment.team.user1.name}</Typography>
                     {enrollment.team.user2
                       && <Typography style={{ marginBottom: '.3em' }}>{enrollment.team.user2.name}</Typography>}
                   </React.Fragment>
@@ -211,12 +215,12 @@ export const EnrollmentsWidget = ({ scheme, mode, enrolled, classes }) => {
               })}
             </div>
             <div style={{ flexBasis: '45%' }}>
-              {enrolled.slice(enrolled.length / 2).map((enrollment, index) => {
+              {enrolled.slice(halfOfEnrolled).map((enrollment, index) => {
                 return (
                   <React.Fragment key={index}>
-                    <Typography>{enrollment.team.user1.name}</Typography>
+                    <Typography color={isReserve(index + halfOfEnrolled) ? 'secondary' : 'textPrimary'}>{enrollment.team.user1.name}</Typography>
                     {enrollment.team.user2
-                      && <Typography style={{ marginBottom: '.3em' }}>{enrollment.team.user2.name}</Typography>}
+                      && <Typography style={{ marginBottom: '.3em' }} color={isReserve(index + halfOfEnrolled) ? 'secondary' : 'textPrimary'}>{enrollment.team.user2.name}</Typography>}
                   </React.Fragment>
                 );
               })}
