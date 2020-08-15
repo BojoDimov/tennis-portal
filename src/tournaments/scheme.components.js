@@ -190,7 +190,6 @@ export const SchemesWidget = ({ scheme, classes, history }) => {
 }
 
 export const EnrollmentsWidget = ({ scheme, mode, enrolled, classes }) => {
-  console.log(enrolled);
   const halfOfEnrolled = Math.ceil(enrolled.length / 2);
 
   function getColor(position) {
