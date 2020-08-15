@@ -190,9 +190,17 @@ export const SchemesWidget = ({ scheme, classes, history }) => {
 }
 
 export const EnrollmentsWidget = ({ scheme, mode, enrolled, classes }) => {
-  const halfOfEnrolled = Math.ceil(enrolled.length) / 2;
-  const isSeed = (index) => index + 1 <= scheme.seed;
-  const isReserve = (index) => index + 1 > scheme.maxPlayerCount;
+  console.log(enrolled);
+  const halfOfEnrolled = Math.ceil(enrolled.length / 2);
+
+  function getColor(position) {
+    if (position <= scheme.seed)
+      return 'primary';
+    else if (position > scheme.maxPlayerCount)
+      return 'secondary';
+    else
+      return 'textPrimary';
+  }
 
   return (
     <React.Fragment>
@@ -207,7 +215,7 @@ export const EnrollmentsWidget = ({ scheme, mode, enrolled, classes }) => {
               {enrolled.slice(0, halfOfEnrolled).map((enrollment, index) => {
                 return (
                   <React.Fragment key={index}>
-                    <Typography color={isSeed(index) ? 'primary' : 'textPrimary'}>{enrollment.team.user1.name}</Typography>
+                    <Typography color={getColor(index + 1)}>{enrollment.team.user1.name}</Typography>
                     {enrollment.team.user2
                       && <Typography style={{ marginBottom: '.3em' }}>{enrollment.team.user2.name}</Typography>}
                   </React.Fragment>
@@ -218,9 +226,9 @@ export const EnrollmentsWidget = ({ scheme, mode, enrolled, classes }) => {
               {enrolled.slice(halfOfEnrolled).map((enrollment, index) => {
                 return (
                   <React.Fragment key={index}>
-                    <Typography color={isReserve(index + halfOfEnrolled) ? 'secondary' : 'textPrimary'}>{enrollment.team.user1.name}</Typography>
+                    <Typography color={getColor(index + 1 + halfOfEnrolled)}>{enrollment.team.user1.name}</Typography>
                     {enrollment.team.user2
-                      && <Typography style={{ marginBottom: '.3em' }} color={isReserve(index + halfOfEnrolled) ? 'secondary' : 'textPrimary'}>{enrollment.team.user2.name}</Typography>}
+                      && <Typography style={{ marginBottom: '.3em' }} color={getColor(index + 1 + halfOfEnrolled)}>{enrollment.team.user2.name}</Typography>}
                   </React.Fragment>
                 );
               })}
