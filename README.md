@@ -53,7 +53,8 @@ node server/dbsync.js
     };
 </script>
 ```
-7. npm start
+7. ```node server```
+8. ```npm start```
 
 ### Building for production
 Change the above configuration to the proper domain
